@@ -3,19 +3,22 @@ package dev.nmullaney.tesladashboard
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.InetSocketAddress
-import kotlin.experimental.and
 import kotlin.random.Random
 
 
+@ExperimentalCoroutinesApi
 class PandaService  {
     private val TAG = PandaService::class.java.simpleName
 
     private lateinit var speedFlow : Flow<Int>
+    @ExperimentalCoroutinesApi
+    private val carStateFlow = MutableStateFlow(CarState())
     private val random = Random
     private val ipAddress = "192.168.2.4"
     private val port = 1338
@@ -25,7 +28,7 @@ class PandaService  {
 
     init {
         GlobalScope.launch(Dispatchers.IO) {
-            setup()
+            startRequests()
         }
     }
 
@@ -39,7 +42,13 @@ class PandaService  {
         return speedFlow
     }
 
-    private suspend fun setup() {
+    @ExperimentalCoroutinesApi
+    fun carState() : Flow<CarState> {
+        return carStateFlow
+    }
+
+    @ExperimentalCoroutinesApi
+    private suspend fun startRequests() {
         withContext(Dispatchers.IO) {
             try {
                 val socket = DatagramSocket()
@@ -71,11 +80,10 @@ class PandaService  {
                                 channel.bitLength
                             ) * channel.factor + channel.offset
                             Log.d(TAG, channel.name + " = " + value)
+                            carStateFlow.value.updateValue(channel.name, value)
+                            carStateFlow.value = CarState(carStateFlow.value.carData)
                         }
                     }
-
-
-
                 }
 
                 socket.close()

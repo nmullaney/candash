@@ -27,7 +27,7 @@ class FullscreenActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.fragment_container, DashFragment())
+            .add(R.id.fragment_container, InfoFragment())
             .commit()
     }
 }
