@@ -1,14 +1,10 @@
 package dev.nmullaney.tesladashboard
 
-import androidx.appcompat.app.AppCompatActivity
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -17,6 +13,8 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class FullscreenActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: DashViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,5 +27,21 @@ class FullscreenActivity : AppCompatActivity() {
             .beginTransaction()
             .add(R.id.fragment_container, InfoFragment())
             .commit()
+
+        viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
+        viewModel.fragmentNameToShow().observe(this, {
+            when(it) {
+                "dash" -> switchToFragment(DashFragment())
+                "info" -> switchToFragment(InfoFragment())
+                else -> throw IllegalStateException("Attempting to switch to unknown fragment: $it")
+        }})
     }
+
+    private fun switchToFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+    }
+
 }

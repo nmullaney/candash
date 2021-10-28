@@ -7,9 +7,8 @@ import javax.inject.Inject
 class DashRepository @ExperimentalCoroutinesApi
 @Inject constructor(val pandaService: PandaService) {
 
-    @ExperimentalCoroutinesApi
-    fun speed() : Flow<Int> {
-        return pandaService.speed()
+    suspend fun startRequests() {
+        pandaService.startRequests()
     }
 
     @ExperimentalCoroutinesApi

@@ -31,6 +31,34 @@ class InfoFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
+
+        binding.root.setOnLongClickListener {
+            switchToDash()
+        }
+        binding.infoText.setOnLongClickListener{
+            switchToDash()
+        }
+        binding.scrollView.setOnLongClickListener{
+            switchToDash()
+        }
+
+    }
+
+    fun switchToDash() : Boolean {
+        viewModel.switchToDashFragment()
+        return true
+    }
+
+    fun logCarState(carState: CarState) {
+        Log.d(TAG, "Car state size: " + carState.carData.size)
+        carState.carData.forEach {
+            Log.d(TAG, "Name: " + it.key + ", Value: " + it.value)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.startUp()
         viewModel.carState().observe(viewLifecycleOwner, { carState ->
             logCarState(carState)
             binding.infoText.text = buildSpannedString {
@@ -44,13 +72,6 @@ class InfoFragment() : Fragment() {
                 }
             }
         })
-    }
-
-    fun logCarState(carState: CarState) {
-        Log.d(TAG, "Car state size: " + carState.carData.size)
-        carState.carData.forEach {
-            Log.d(TAG, "Name: " + it.key + ", Value: " + it.value)
-        }
     }
 
     override fun onStop() {

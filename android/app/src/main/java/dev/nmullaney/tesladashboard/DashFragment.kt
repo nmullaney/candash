@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 
@@ -28,9 +27,16 @@ class DashFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        viewModel.speed().observe(viewLifecycleOwner, {
-            binding.speed.text = it.toString()
-        })
+
+        binding.root.setOnLongClickListener {
+            viewModel.switchToInfoFragment()
+            return@setOnLongClickListener true
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.startUp()
     }
 
     override fun onStop() {

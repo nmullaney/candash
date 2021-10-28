@@ -1,14 +1,12 @@
 package dev.nmullaney.tesladashboard
 
+import android.icu.util.DateInterval
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.InetSocketAddress
+import java.net.*
 import kotlin.random.Random
 
 
@@ -19,28 +17,18 @@ class PandaService  {
     private lateinit var speedFlow : Flow<Int>
     @ExperimentalCoroutinesApi
     private val carStateFlow = MutableStateFlow(CarState())
+    private val carState : CarState = CarState()
     private val random = Random
+    // For PIWIS-WLAN
     private val ipAddress = "192.168.2.4"
+    // For CANServer
+    //private val ipAddress = "192.168.4.1"
     private val port = 1338
     private var shutdown = false
     private val heartbeat = "ehllo"
+    private var lastHeartbeatTimestamp = 0L
+    private val heartBeatIntervalMs = 5_000
     private val signalHelper = CANSignalHelper()
-
-    init {
-        GlobalScope.launch(Dispatchers.IO) {
-            startRequests()
-        }
-    }
-
-    fun speed() : Flow<Int> {
-        speedFlow = flow {
-            while(true) {
-                emit(random.nextInt(0, 60))
-                delay(10000)
-            }
-        }
-        return speedFlow
-    }
 
     @ExperimentalCoroutinesApi
     fun carState() : Flow<CarState> {
@@ -48,21 +36,36 @@ class PandaService  {
     }
 
     @ExperimentalCoroutinesApi
-    private suspend fun startRequests() {
+    suspend fun startRequests() {
+        shutdown = false
         withContext(Dispatchers.IO) {
             try {
                 val socket = DatagramSocket()
+                socket.soTimeout = heartBeatIntervalMs
+                socket.reuseAddress = true
 
+                Log.d(TAG, "Sending heartbeat")
                 sendHello(socket)
 
                 while (!shutdown) {
-                    val buf = ByteArray(16)
-                    val bytes = "\u00ff\u0000\u00cf\tabc".toByteArray()
 
+                    if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
+                        Log.d(TAG, "Sending heartbeat")
+                        sendHello(socket)
+                    }
+
+                    val buf = ByteArray(16)
                     val packet = DatagramPacket(buf, buf.size, serverAddress())
                     Log.d(TAG, "C: Waiting to receive...")
-                    socket.receive(packet)
-                    //Log.d(TAG, "C: Receiving: '" + String(buf) + "'")
+
+                    try {
+                        socket.receive(packet)
+                    } catch (socketTimeoutException : SocketTimeoutException) {
+                        Log.w(TAG, "Socket timed out without receiving a packet")
+                        continue
+                    }
+
+                    Log.d(TAG, "Packet from: " + packet.address + ":" + packet.port)
 
                     val pandaFrame = PandaFrame(buf)
                     Log.d(TAG, "FrameId = " + pandaFrame.frameIdHex.hexString)
@@ -80,15 +83,15 @@ class PandaService  {
                                 channel.bitLength
                             ) * channel.factor + channel.offset
                             Log.d(TAG, channel.name + " = " + value)
-                            carStateFlow.value.updateValue(channel.name, value)
-                            carStateFlow.value = CarState(carStateFlow.value.carData)
+                            carState.updateValue(channel.name, value)
+                            carStateFlow.value = CarState(HashMap(carState.carData))
                         }
                     }
                 }
-
+                socket.disconnect()
                 socket.close()
             } catch (exception: Exception) {
-                Log.e(TAG, "Exception while sending hello", exception)
+                Log.e(TAG, "Exception while sending or receiving data", exception)
             }
         }
     }
@@ -112,6 +115,7 @@ class PandaService  {
         val buf: ByteArray = udpOutputData.toByteArray()
 
         sendData(socket, buf)
+        lastHeartbeatTimestamp = System.currentTimeMillis()
     }
 
     private fun sendFilter(socket: DatagramSocket) {

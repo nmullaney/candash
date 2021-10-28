@@ -5,29 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class DashViewModel @Inject constructor(private val dashRepository: DashRepository) : ViewModel() {
-    private lateinit var speedData: MutableLiveData<Int>
     private lateinit var careStateData: MutableLiveData<CarState>
+    private var viewToShowData: MutableLiveData<String> = MutableLiveData()
 
-    fun speed() : LiveData<Int> {
-        speedData = MutableLiveData()
+    fun startUp() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                dashRepository.speed().collect {
-                    speedData.postValue(it)
-                }
-            }
+            dashRepository.startRequests()
         }
-        return speedData
     }
 
     fun shutdown() {
@@ -42,5 +32,15 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
             }
         }
         return careStateData
+    }
+
+    fun fragmentNameToShow() : LiveData<String> = viewToShowData
+
+    fun switchToDashFragment() {
+        viewToShowData.value = "dash"
+    }
+
+    fun switchToInfoFragment() {
+        viewToShowData.value = "info"
     }
 }
