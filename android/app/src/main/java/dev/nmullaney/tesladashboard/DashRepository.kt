@@ -12,7 +12,7 @@ class DashRepository @ExperimentalCoroutinesApi
     }
 
     @ExperimentalCoroutinesApi
-    fun shutdown() {
+    suspend fun shutdown() {
         pandaService.shutdown()
     }
 

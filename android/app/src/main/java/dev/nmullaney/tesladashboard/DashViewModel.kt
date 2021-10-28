@@ -1,5 +1,6 @@
 package dev.nmullaney.tesladashboard
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashViewModel @Inject constructor(private val dashRepository: DashRepository) : ViewModel() {
+    private val TAG = DashViewModel::class.java.simpleName
+
     private lateinit var careStateData: MutableLiveData<CarState>
     private var viewToShowData: MutableLiveData<String> = MutableLiveData()
 
@@ -21,7 +24,9 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     fun shutdown() {
-        dashRepository.shutdown()
+        viewModelScope.launch {
+            dashRepository.shutdown()
+        }
     }
 
     fun carState() : LiveData<CarState> {
@@ -42,5 +47,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     fun switchToInfoFragment() {
         viewToShowData.value = "info"
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(TAG, "DashViewModel is cleared")
     }
 }

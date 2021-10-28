@@ -42,6 +42,19 @@ class InfoFragment() : Fragment() {
             switchToDash()
         }
 
+        viewModel.carState().observe(viewLifecycleOwner, { carState ->
+            logCarState(carState)
+            binding.infoText.text = buildSpannedString {
+                carState.carData.forEach { entry ->
+                    bold {
+                        append(entry.key)
+                        append(": ")
+                    }
+                    append(entry.value.toString())
+                    append("\n")
+                }
+            }
+        })
     }
 
     fun switchToDash() : Boolean {
@@ -59,19 +72,6 @@ class InfoFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         viewModel.startUp()
-        viewModel.carState().observe(viewLifecycleOwner, { carState ->
-            logCarState(carState)
-            binding.infoText.text = buildSpannedString {
-                carState.carData.forEach { entry ->
-                    bold {
-                        append(entry.key)
-                        append(": ")
-                    }
-                    append(entry.value.toString())
-                    append("\n")
-                }
-            }
-        })
     }
 
     override fun onStop() {

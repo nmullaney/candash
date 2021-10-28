@@ -1,11 +1,12 @@
 package dev.nmullaney.tesladashboard
 
-import android.icu.util.DateInterval
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import java.net.*
 import kotlin.random.Random
 
@@ -29,29 +30,38 @@ class PandaService  {
     private var lastHeartbeatTimestamp = 0L
     private val heartBeatIntervalMs = 5_000
     private val signalHelper = CANSignalHelper()
+    private val pandaContext = newSingleThreadContext("PandaContext")
+    private lateinit var socket : DatagramSocket
 
     @ExperimentalCoroutinesApi
     fun carState() : Flow<CarState> {
         return carStateFlow
     }
 
+    fun getSocket() : DatagramSocket {
+        if (!this::socket.isInitialized) {
+            socket = DatagramSocket(null)
+            socket.soTimeout = heartBeatIntervalMs
+            socket.reuseAddress = true
+        }
+        return socket
+    }
+
     @ExperimentalCoroutinesApi
     suspend fun startRequests() {
-        shutdown = false
-        withContext(Dispatchers.IO) {
+        Log.d(TAG, "Starting requests")
+        withContext(pandaContext) {
+            shutdown = false
             try {
-                val socket = DatagramSocket()
-                socket.soTimeout = heartBeatIntervalMs
-                socket.reuseAddress = true
 
                 Log.d(TAG, "Sending heartbeat")
-                sendHello(socket)
+                sendHello(getSocket())
 
                 while (!shutdown) {
 
                     if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
                         Log.d(TAG, "Sending heartbeat")
-                        sendHello(socket)
+                        sendHello(getSocket())
                     }
 
                     val buf = ByteArray(16)
@@ -59,7 +69,7 @@ class PandaService  {
                     Log.d(TAG, "C: Waiting to receive...")
 
                     try {
-                        socket.receive(packet)
+                        getSocket().receive(packet)
                     } catch (socketTimeoutException : SocketTimeoutException) {
                         Log.w(TAG, "Socket timed out without receiving a packet")
                         continue
@@ -74,7 +84,7 @@ class PandaService  {
 
                     if (pandaFrame.frameId == 6L && pandaFrame.busId == 15L) {
                         // It's an ack
-                        sendFilter(socket)
+                        sendFilter(getSocket())
                     }
                     else if (!signalHelper.getSignalsForFrame(pandaFrame.frameIdHex).isEmpty()) {
                         signalHelper.getSignalsForFrame(pandaFrame.frameIdHex).forEach { channel ->
@@ -87,13 +97,21 @@ class PandaService  {
                             carStateFlow.value = CarState(HashMap(carState.carData))
                         }
                     }
+                    yield()
                 }
-                socket.disconnect()
-                socket.close()
+                Log.d(TAG, "End while loop: shutdown requests received")
+
+                getSocket().disconnect()
+                Log.d(TAG, "Socket disconnected")
+                // For some reason, closing the socket doesn't allow for reconnecting later, so for now
+                // we're just never closing it
+                //getSocket().close()
+                //Log.d(TAG, "Socket closed")
             } catch (exception: Exception) {
                 Log.e(TAG, "Exception while sending or receiving data", exception)
             }
         }
+        Log.d(TAG, "Stopping requests")
     }
 
     private fun handleFrame(frame: PandaFrame) {
@@ -103,8 +121,10 @@ class PandaService  {
         }
     }
 
-    fun shutdown() {
-        shutdown = true
+    suspend fun shutdown() {
+        withContext(pandaContext) {
+            shutdown = true
+        }
     }
 
     private fun sendHello(socket: DatagramSocket) {
