@@ -34,7 +34,7 @@ class DashFragment : Fragment() {
         }
 
         viewModel.carState().observe(viewLifecycleOwner, {
-            binding.speed.text = (it.getValue(ChannelConstants.uiSpeed) ?: "").toString()
+            binding.speed.text = (it.getValue(ChannelConstants.uiSpeed)?.toInt() ?: "").toString()
         })
     }
 

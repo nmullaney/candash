@@ -8,29 +8,37 @@
 
     <TextView
         android:id="@+id/speed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="300sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:autoSizeMaxTextSize="800sp"
+        app:autoSizeMinTextSize="30sp"
+        app:autoSizeStepGranularity="10sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="50"
+        tools:text="50"
         />
 
     <TextView
         android:id="@+id/unit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="50sp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_horizontal|top"
+        android:text="@string/mph"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="550sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeStepGranularity="10sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/speed"
-        app:layout_constraintVertical_bias="0"
-        android:text="MPH"
         />
 
     <ImageView
