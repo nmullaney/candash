@@ -2,24 +2,22 @@ package dev.nmullaney.tesladashboard
 
 import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.net.*
-import kotlin.random.Random
+import java.util.concurrent.Executors
 
 
 @ExperimentalCoroutinesApi
 class PandaService  {
     private val TAG = PandaService::class.java.simpleName
 
-    private lateinit var speedFlow : Flow<Int>
     @ExperimentalCoroutinesApi
     private val carStateFlow = MutableStateFlow(CarState())
     private val carState : CarState = CarState()
-    private val random = Random
     // For PIWIS-WLAN
     private val ipAddress = "192.168.2.4"
     // For CANServer
@@ -30,7 +28,7 @@ class PandaService  {
     private var lastHeartbeatTimestamp = 0L
     private val heartBeatIntervalMs = 5_000
     private val signalHelper = CANSignalHelper()
-    private val pandaContext = newSingleThreadContext("PandaContext")
+    private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private lateinit var socket : DatagramSocket
 
     @ExperimentalCoroutinesApi
@@ -38,7 +36,7 @@ class PandaService  {
         return carStateFlow
     }
 
-    fun getSocket() : DatagramSocket {
+    private fun getSocket() : DatagramSocket {
         if (!this::socket.isInitialized) {
             socket = DatagramSocket(null)
             socket.soTimeout = heartBeatIntervalMs
@@ -86,16 +84,8 @@ class PandaService  {
                         // It's an ack
                         sendFilter(getSocket())
                     }
-                    else if (!signalHelper.getSignalsForFrame(pandaFrame.frameIdHex).isEmpty()) {
-                        signalHelper.getSignalsForFrame(pandaFrame.frameIdHex).forEach { channel ->
-                            val value = pandaFrame.getPayloadValue(
-                                channel.startBit,
-                                channel.bitLength
-                            ) * channel.factor + channel.offset
-                            Log.d(TAG, channel.name + " = " + value)
-                            carState.updateValue(channel.name, value)
-                            carStateFlow.value = CarState(HashMap(carState.carData))
-                        }
+                    else {
+                        handleFrame(pandaFrame)
                     }
                     yield()
                 }
@@ -115,9 +105,14 @@ class PandaService  {
     }
 
     private fun handleFrame(frame: PandaFrame) {
-        val signalList = signalHelper.getSignalsForFrame(frame.frameIdHex)
-        signalList.forEach {
-
+        signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
+            val value = frame.getPayloadValue(
+                channel.startBit,
+                channel.bitLength
+            ) * channel.factor + channel.offset
+            Log.d(TAG, channel.name + " = " + value)
+            carState.updateValue(channel.name, value)
+            carStateFlow.value = CarState(HashMap(carState.carData))
         }
     }
 
