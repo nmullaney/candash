@@ -40,48 +40,48 @@ class MockPandaService : PandaService {
     private fun mockCarStates() : List<CarState> =
         listOf(
             CarState(mutableMapOf(
-                ChannelConstants.battVolts to 390.1,
-                ChannelConstants.blindSpotLeft to 3.0,
-                ChannelConstants.blindSpotRight to 3.0,
-                ChannelConstants.displayBrightnessLev to 11.5,
-                ChannelConstants.stateOfCharge to 80.0,
-                ChannelConstants.uiRange to 273.0,
-                ChannelConstants.uiSpeed to 0.0
+                Constants.battVolts to 390.1,
+                Constants.blindSpotLeft to 3.0,
+                Constants.blindSpotRight to 3.0,
+                Constants.displayBrightnessLev to 11.5,
+                Constants.stateOfCharge to 80.0,
+                Constants.uiRange to 273.0,
+                Constants.uiSpeed to 0.0
             )),
             CarState(mutableMapOf(
-                ChannelConstants.battVolts to 390.0,
-                ChannelConstants.blindSpotLeft to 2.0,
-                ChannelConstants.blindSpotRight to 2.0,
-                ChannelConstants.displayBrightnessLev to 10.5,
-                ChannelConstants.stateOfCharge to 79.0,
-                ChannelConstants.uiRange to 270.0,
-                ChannelConstants.uiSpeed to 10.0
+                Constants.battVolts to 390.0,
+                Constants.blindSpotLeft to 2.0,
+                Constants.blindSpotRight to 2.0,
+                Constants.displayBrightnessLev to 10.5,
+                Constants.stateOfCharge to 79.0,
+                Constants.uiRange to 270.0,
+                Constants.uiSpeed to 10.0
             )),
             CarState(mutableMapOf(
-                ChannelConstants.battVolts to 389.9,
-                ChannelConstants.blindSpotLeft to 1.0,
-                ChannelConstants.blindSpotRight to 1.0,
-                ChannelConstants.displayBrightnessLev to 9.5,
-                ChannelConstants.stateOfCharge to 78.0,
-                ChannelConstants.uiRange to 268.0,
-                ChannelConstants.uiSpeed to 20.0
+                Constants.battVolts to 389.9,
+                Constants.blindSpotLeft to 1.0,
+                Constants.blindSpotRight to 1.0,
+                Constants.displayBrightnessLev to 9.5,
+                Constants.stateOfCharge to 78.0,
+                Constants.uiRange to 268.0,
+                Constants.uiSpeed to 20.0
             )),
             CarState(mutableMapOf(
-                ChannelConstants.battVolts to 389.8,
-                ChannelConstants.blindSpotLeft to 0.0,
-                ChannelConstants.blindSpotRight to 0.0,
-                ChannelConstants.displayBrightnessLev to 8.5,
-                ChannelConstants.stateOfCharge to 77.0,
-                ChannelConstants.uiRange to 265.0,
-                ChannelConstants.uiSpeed to 30.0
+                Constants.battVolts to 389.8,
+                Constants.blindSpotLeft to 0.0,
+                Constants.blindSpotRight to 0.0,
+                Constants.displayBrightnessLev to 8.5,
+                Constants.stateOfCharge to 77.0,
+                Constants.uiRange to 265.0,
+                Constants.uiSpeed to 30.0
             )),
             CarState(mutableMapOf(
-                ChannelConstants.battVolts to 389.7,
-                ChannelConstants.blindSpotLeft to 2.0,
-                ChannelConstants.blindSpotRight to 2.0,
-                ChannelConstants.displayBrightnessLev to 7.5,
-                ChannelConstants.stateOfCharge to 76.0,
-                ChannelConstants.uiRange to 264.0,
-                ChannelConstants.uiSpeed to 40.0
+                Constants.battVolts to 389.7,
+                Constants.blindSpotLeft to 2.0,
+                Constants.blindSpotRight to 2.0,
+                Constants.displayBrightnessLev to 7.5,
+                Constants.stateOfCharge to 76.0,
+                Constants.uiRange to 264.0,
+                Constants.uiSpeed to 40.0
             )))
 }

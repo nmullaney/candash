@@ -47,13 +47,13 @@ class CANSignalHelper {
         addToMapList(mFrameSignalMap, CANSignal.frameId, CANSignal)
     }
     fun createCANSignals() {
-        insertCANSignal(ChannelConstants.stateOfCharge, 0, Hex(0x33A), 48, 7, 1f, 0)
-        insertCANSignal(ChannelConstants.battVolts, 0, Hex(0x132), 0, 16, 0.01f, 0)
-        insertCANSignal(ChannelConstants.uiSpeed, 0, Hex(0x257), 24, 9, 1f, 0)
-        insertCANSignal(ChannelConstants.blindSpotLeft, 1, Hex(0x399), 4, 2, 1f, 0)
-        insertCANSignal(ChannelConstants.blindSpotRight, 1, Hex(0x399), 6, 2, 1f, 0)
-        insertCANSignal(ChannelConstants.displayBrightnessLev, 0, Hex(0x273), 32, 8, .5f, 0)
-        insertCANSignal(ChannelConstants.uiRange, 1, Hex(0x33A), 0, 10, 1f, 0)
+        insertCANSignal(Constants.stateOfCharge, 0, Hex(0x33A), 48, 7, 1f, 0)
+        insertCANSignal(Constants.battVolts, 0, Hex(0x132), 0, 16, 0.01f, 0)
+        insertCANSignal(Constants.uiSpeed, 0, Hex(0x257), 24, 9, 1f, 0)
+        insertCANSignal(Constants.blindSpotLeft, 1, Hex(0x399), 4, 2, 1f, 0)
+        insertCANSignal(Constants.blindSpotRight, 1, Hex(0x399), 6, 2, 1f, 0)
+        insertCANSignal(Constants.displayBrightnessLev, 0, Hex(0x273), 32, 8, .5f, 0)
+        insertCANSignal(Constants.uiRange, 1, Hex(0x33A), 0, 10, 1f, 0)
 
     }
 

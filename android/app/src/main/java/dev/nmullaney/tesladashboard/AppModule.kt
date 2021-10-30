@@ -1,8 +1,11 @@
 package dev.nmullaney.tesladashboard
 
+import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
@@ -12,12 +15,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
-    private val USE_PANDA_MOCK = false
+    @Singleton
+    @Provides
+    fun providePandaServiceImpl(sharedPreferences: SharedPreferences) : PandaServiceImpl {
+        return PandaServiceImpl(sharedPreferences)
+    }
 
     @Singleton
     @Provides
-    fun providePandaService() : PandaService {
-        return if (USE_PANDA_MOCK) MockPandaService() else PandaServiceImpl()
+    fun provideMockPandaService() : MockPandaService {
+        return MockPandaService()
     }
 
     @Singleton
@@ -26,5 +33,11 @@ class AppModule {
         return OkHttpClient.Builder()
             .pingInterval(3, TimeUnit.SECONDS)
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(@ApplicationContext context: Context) : SharedPreferences {
+        return context.getSharedPreferences("pref", Context.MODE_PRIVATE)
     }
 }

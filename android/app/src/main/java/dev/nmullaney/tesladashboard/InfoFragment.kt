@@ -1,6 +1,8 @@
 package dev.nmullaney.tesladashboard
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +33,15 @@ class InfoFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
+
+
+        binding.toggleServerGroup.check(if (viewModel.useMockServer()) R.id.mock_server_button else R.id.real_server_button)
+
+        binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
+
+        binding.saveButton.setOnClickListener {
+            viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
+        }
 
         binding.root.setOnLongClickListener {
             switchToDash()

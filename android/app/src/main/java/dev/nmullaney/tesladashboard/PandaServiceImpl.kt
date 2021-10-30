@@ -1,5 +1,6 @@
 package dev.nmullaney.tesladashboard
 
+import android.content.SharedPreferences
 import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -11,16 +12,12 @@ import java.net.*
 import java.util.concurrent.Executors
 
 @ExperimentalCoroutinesApi
-class PandaServiceImpl : PandaService {
+class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService {
     private val TAG = PandaServiceImpl::class.java.simpleName
 
     @ExperimentalCoroutinesApi
     private val carStateFlow = MutableStateFlow(CarState())
     private val carState : CarState = CarState()
-    // For PIWIS-WLAN
-    private val ipAddress = "192.168.2.4"
-    // For CANServer
-    //private val ipAddress = "192.168.4.1"
     private val port = 1338
     private var shutdown = false
     private val heartbeat = "ehllo"
@@ -69,6 +66,7 @@ class PandaServiceImpl : PandaService {
                         getSocket().receive(packet)
                     } catch (socketTimeoutException : SocketTimeoutException) {
                         Log.w(TAG, "Socket timed out without receiving a packet")
+                        yield()
                         continue
                     }
 
@@ -149,5 +147,7 @@ class PandaServiceImpl : PandaService {
     }
 
     private fun serverAddress() : InetSocketAddress =
-        InetSocketAddress(InetAddress.getByName(ipAddress), port)
+        InetSocketAddress(InetAddress.getByName(ipAddress()), port)
+
+    private fun ipAddress() = sharedPreferences.getString(Constants.ipAddressPrefKey, Constants.ipAddressLocalNetwork)
 }
