@@ -14,4 +14,7 @@ object Constants {
     const val ipAddressLocalNetwork = "192.168.2.4"
     const val ipAddressCANServer = "192.168.4.1"
     const val useMockServerPrefKey = "use_mock_server"
+    const val turnSignalLeft = "VCFRONT_indicatorLef"
+    const val turnSignalRight = "VCFRONT_indicatorRig"
+
 }

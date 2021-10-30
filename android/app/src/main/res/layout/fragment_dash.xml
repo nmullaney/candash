@@ -48,7 +48,8 @@
         android:src="@drawable/ic_baseline_arrow_left_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/light_green"
+        app:tint="@color/turn_signal"
+        android:visibility="gone"
         />
 
     <ImageView
@@ -58,7 +59,8 @@
         android:src="@drawable/ic_baseline_arrow_right_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/light_green"
+        app:tint="@color/turn_signal"
+        android:visibility="gone"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

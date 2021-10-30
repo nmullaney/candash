@@ -35,6 +35,14 @@ class DashFragment : Fragment() {
 
         viewModel.carState().observe(viewLifecycleOwner, {
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
+            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
+                binding.leftTurnSignal.visibility = if (leftTurnSignalVal.toInt() > 0) View.VISIBLE else View.GONE
+                binding.leftTurnSignal.isSelected = leftTurnSignalVal.toInt() > 1
+            }
+            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
+                binding.rightTurnSignal.visibility = if (rightTurnSignalVal.toInt() > 0) View.VISIBLE else View.GONE
+                binding.rightTurnSignal.isSelected = rightTurnSignalVal.toInt() > 1
+            }
         })
     }
 

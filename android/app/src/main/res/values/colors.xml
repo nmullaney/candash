@@ -14,4 +14,6 @@
     <color name="black_overlay">#66000000</color>
     <color name="light_green">#8BC34A</color>
     <color name="green">#FF00FF00</color>
+    <color name="high_active_signal">@color/light_green</color>
+    <color name="low_active_signal">@color/green</color>
 </resources>

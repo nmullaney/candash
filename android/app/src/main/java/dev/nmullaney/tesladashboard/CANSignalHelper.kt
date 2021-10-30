@@ -54,6 +54,10 @@ class CANSignalHelper {
         insertCANSignal(Constants.blindSpotRight, 1, Hex(0x399), 6, 2, 1f, 0)
         insertCANSignal(Constants.displayBrightnessLev, 0, Hex(0x273), 32, 8, .5f, 0)
         insertCANSignal(Constants.uiRange, 1, Hex(0x33A), 0, 10, 1f, 0)
+        insertCANSignal(Constants.turnSignalLeft, 0, Hex(0x3F5), 0, 2, 1f, 0)
+        insertCANSignal(Constants.turnSignalRight, 0, Hex(0x3F5), 2, 2, 1f, 0)
+
+
 
     }
 
