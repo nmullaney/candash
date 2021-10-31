@@ -44,10 +44,10 @@ class DashFragment : Fragment() {
                 binding.rightTurnSignal.isSelected = rightTurnSignalVal.toInt() > 1
             }
             it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
-                binding.blindSpotLeft1.visibility = if (blindSpotLeftVal.toInt() > 0) View.VISIBLE else View.GONE
+                binding.blindSpotLeft1.visibility = if ((blindSpotLeftVal.toInt() > 0) and (blindSpotLeftVal.toInt() < 3)) View.VISIBLE else View.GONE
             }
             it.getValue(Constants.blindSpotRight)?.let { blindSpotRightVal ->
-                binding.blindSpotRight1.visibility = if (blindSpotRightVal.toInt() > 0) View.VISIBLE else View.GONE
+                binding.blindSpotRight1.visibility = if ((blindSpotRightVal.toInt() > 0) and (blindSpotRightVal.toInt() < 3))View.VISIBLE else View.GONE
             }
 
 
