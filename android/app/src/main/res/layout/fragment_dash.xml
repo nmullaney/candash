@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,23 +9,25 @@
         android:id="@+id/speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fontFamily="sans-serif"
         android:gravity="center"
         android:textColor="@color/black"
         app:autoSizeMaxTextSize="800sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"
         app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@id/unit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.7"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="50"
-        />
+        tools:text="50" />
 
     <TextView
         android:id="@+id/unit"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
         android:text="@string/mph"
         android:textStyle="bold"
@@ -37,30 +38,89 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/speed"
-        />
+        app:layout_constraintStart_toEndOf="@id/modely"
+        app:layout_constraintTop_toBottomOf="@+id/speed"
+        app:layout_constraintVertical_bias="0"
+         />
 
     <ImageView
         android:id="@+id/left_turn_signal"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/ic_baseline_arrow_left_24"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/turn_signal"
-        android:visibility="gone"
-        />
+        app:tint="@color/turn_signal" />
+
 
     <ImageView
         android:id="@+id/right_turn_signal"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/ic_baseline_arrow_right_24"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/turn_signal"
-        android:visibility="gone"
+        app:tint="@color/turn_signal" />
+
+    <ImageView
+        android:id="@+id/modely"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_modely"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+         />
+
+    <Space
+        android:id="@+id/bottom_spacer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/modely"
+        app:layout_constraintEnd_toEndOf="@id/modely"
+        app:layout_constraintStart_toStartOf="@id/modely"
         />
+
+    <Space
+        android:id="@+id/middle_spacer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/modely"
+        app:layout_constraintEnd_toEndOf="@id/modely"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="@id/modely"
+        app:layout_constraintWidth_percent=".2"
+        />
+
+    <ImageView
+        android:id="@+id/blind_spot_left_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_bsl1"
+        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHorizontal_bias=".75"
+        app:layout_constraintStart_toStartOf="@id/middle_spacer"
+        app:layout_constraintWidth_percent=".05"
+        />
+
+    <ImageView
+        android:id="@+id/blind_spot_right_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_bsr1"
+        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/middle_spacer"
+        app:layout_constraintHorizontal_bias=".25"
+        app:layout_constraintWidth_percent=".05"
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
