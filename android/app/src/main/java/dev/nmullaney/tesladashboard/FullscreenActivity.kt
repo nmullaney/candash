@@ -54,6 +54,7 @@ class FullscreenActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN
     }
 
 }

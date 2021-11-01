@@ -1,5 +1,6 @@
 package dev.nmullaney.tesladashboard
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,14 +35,21 @@ class DashFragment : Fragment() {
         }
 
         viewModel.carState().observe(viewLifecycleOwner, {
+            it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
+                if (isSunUpVal.toInt() == 0) view.setBackgroundColor(Color.BLACK) else view.setBackgroundColor(Color.WHITE)
+                if (isSunUpVal.toInt() == 0) binding.speed.setTextColor(Color.WHITE) else binding.speed.setTextColor(Color.BLACK)
+                if (isSunUpVal.toInt() == 0) binding.unit.setTextColor(Color.LTGRAY) else binding.unit.setTextColor(Color.DKGRAY)
+
+
+            }
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
-                binding.leftTurnSignal.visibility = if (leftTurnSignalVal.toInt() > 0) View.VISIBLE else View.GONE
-                binding.leftTurnSignal.isSelected = leftTurnSignalVal.toInt() > 1
+                binding.leftTurnSignalDark.visibility = if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE
+                binding.leftTurnSignalLight.visibility = if (leftTurnSignalVal.toInt() == 2) View.VISIBLE else View.GONE
             }
             it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
-                binding.rightTurnSignal.visibility = if (rightTurnSignalVal.toInt() > 0) View.VISIBLE else View.GONE
-                binding.rightTurnSignal.isSelected = rightTurnSignalVal.toInt() > 1
+                binding.rightTurnSignalDark.visibility = if (rightTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE
+                binding.rightTurnSignalLight.visibility = if (rightTurnSignalVal.toInt() == 2) View.VISIBLE else View.GONE
             }
             it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
                 binding.blindSpotLeft1.visibility = if ((blindSpotLeftVal.toInt() > 0) and (blindSpotLeftVal.toInt() < 3)) View.VISIBLE else View.GONE

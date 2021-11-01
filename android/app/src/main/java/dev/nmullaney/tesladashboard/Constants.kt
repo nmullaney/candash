@@ -8,6 +8,7 @@ object Constants {
     const val blindSpotRight = "BSR"
     const val displayBrightnessLev = "displayBrightnessLev"
     const val uiRange = "UI_Range"
+    const val isSunUp = "isSunUp"
 
     const val ipAddressPrefKey = "ip_address_pref_key"
     // For PIWIS-WLAN

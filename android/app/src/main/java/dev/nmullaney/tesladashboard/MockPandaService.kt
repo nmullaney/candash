@@ -48,7 +48,9 @@ class MockPandaService : PandaService {
                 Constants.uiRange to 273.0,
                 Constants.uiSpeed to 0.0,
                 Constants.blindSpotLeft to 0.0,
-                Constants.blindSpotRight to 0.0
+                Constants.blindSpotRight to 0.0,
+                Constants.turnSignalLeft to 1.0,
+                Constants.isSunUp to 0.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 390.0,
@@ -59,7 +61,9 @@ class MockPandaService : PandaService {
                 Constants.uiRange to 270.0,
                 Constants.uiSpeed to 10.0,
                 Constants.blindSpotLeft to 1.0,
-                Constants.blindSpotRight to 0.0
+                Constants.blindSpotRight to 0.0,
+                Constants.turnSignalLeft to 2.0,
+                Constants.isSunUp to 0.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.9,
@@ -70,7 +74,9 @@ class MockPandaService : PandaService {
                 Constants.uiRange to 268.0,
                 Constants.uiSpeed to 20.0,
                 Constants.blindSpotLeft to 0.0,
-                Constants.blindSpotRight to 2.0
+                Constants.blindSpotRight to 2.0,
+                Constants.turnSignalLeft to 1.0,
+                Constants.isSunUp to 1.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.8,
@@ -81,7 +87,9 @@ class MockPandaService : PandaService {
                 Constants.uiRange to 265.0,
                 Constants.uiSpeed to 30.0,
                 Constants.blindSpotLeft to 0.0,
-                Constants.blindSpotRight to 1.0
+                Constants.blindSpotRight to 1.0,
+                Constants.turnSignalLeft to 0.0,
+                Constants.isSunUp to 1.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.7,
@@ -92,6 +100,8 @@ class MockPandaService : PandaService {
                 Constants.uiRange to 264.0,
                 Constants.uiSpeed to 40.0,
                 Constants.blindSpotLeft to 2.0,
-                Constants.blindSpotRight to 0.0
+                Constants.blindSpotRight to 0.0,
+                Constants.turnSignalLeft to 1.0,
+                Constants.isSunUp to 0.0
             )))
 }

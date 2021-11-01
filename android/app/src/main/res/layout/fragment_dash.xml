@@ -9,7 +9,7 @@
         android:id="@+id/speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/montserratlight"
         android:gravity="center"
         android:textColor="@color/black"
         app:autoSizeMaxTextSize="800sp"
@@ -27,7 +27,7 @@
         android:id="@+id/unit"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/montserratbold"
         android:gravity="center_horizontal|top"
         android:text="@string/mph"
         android:textStyle="bold"
@@ -40,29 +40,49 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toEndOf="@id/modely"
         app:layout_constraintTop_toBottomOf="@+id/speed"
-        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_bias="10"
          />
 
     <ImageView
-        android:id="@+id/left_turn_signal"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_baseline_arrow_left_24"
+        android:id="@+id/left_turn_signal_light"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_turnleftbright"
         android:visibility="gone"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/turn_signal" />
-
+        />
 
     <ImageView
-        android:id="@+id/right_turn_signal"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_baseline_arrow_right_24"
+        android:id="@+id/right_turn_signal_light"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_turnrightbright"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/turn_signal" />
+        />
+    <ImageView
+        android:id="@+id/left_turn_signal_dark"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_turnleftdark"
+        android:visibility="gone"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/right_turn_signal_dark"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_turnrightdark"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <ImageView
         android:id="@+id/modely"

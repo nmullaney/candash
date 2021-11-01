@@ -56,6 +56,8 @@ class CANSignalHelper {
         insertCANSignal(Constants.uiRange, 1, Hex(0x33A), 0, 10, 1f, 0)
         insertCANSignal(Constants.turnSignalLeft, 0, Hex(0x3F5), 0, 2, 1f, 0)
         insertCANSignal(Constants.turnSignalRight, 0, Hex(0x3F5), 2, 2, 1f, 0)
+        insertCANSignal(Constants.isSunUp, 0, Hex(0x2D3), 25, 2, 1f, 0)
+
 
 
 
