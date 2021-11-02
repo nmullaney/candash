@@ -10,8 +10,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="@font/montserratlight"
+        android:fontFeatureSettings="tnum"
         android:gravity="center"
         android:textColor="@color/black"
+        android:letterSpacing="0"
         app:autoSizeMaxTextSize="800sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"
@@ -48,6 +50,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnleftbright"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +63,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnrightbright"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
         android:visibility="gone"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
@@ -68,6 +75,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnleftdark"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +88,8 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnrightdark"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

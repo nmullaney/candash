@@ -57,6 +57,9 @@ class CANSignalHelper {
         insertCANSignal(Constants.turnSignalLeft, 0, Hex(0x3F5), 0, 2, 1f, 0)
         insertCANSignal(Constants.turnSignalRight, 0, Hex(0x3F5), 2, 2, 1f, 0)
         insertCANSignal(Constants.isSunUp, 0, Hex(0x2D3), 25, 2, 1f, 0)
+        insertCANSignal(Constants.rearLeftVehicle, 1, Hex(0x24A), 63, 1, 1f, 0)
+        insertCANSignal(Constants.rearRightVehicle, 1, Hex(0x24A), 62, 1, 1f, 0)
+
 
 
 

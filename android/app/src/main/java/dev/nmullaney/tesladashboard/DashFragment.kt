@@ -36,11 +36,16 @@ class DashFragment : Fragment() {
 
         viewModel.carState().observe(viewLifecycleOwner, {
             it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
-                if (isSunUpVal.toInt() == 0) view.setBackgroundColor(Color.BLACK) else view.setBackgroundColor(Color.WHITE)
-                if (isSunUpVal.toInt() == 0) binding.speed.setTextColor(Color.WHITE) else binding.speed.setTextColor(Color.BLACK)
-                if (isSunUpVal.toInt() == 0) binding.unit.setTextColor(Color.LTGRAY) else binding.unit.setTextColor(Color.DKGRAY)
-
-
+                // Not using dark-mode for compatibility with older version of Android (pre-29)
+                if (isSunUpVal.toInt() == 0) {
+                    view.setBackgroundColor(Color.BLACK)
+                    binding.speed.setTextColor(Color.WHITE)
+                    binding.unit.setTextColor(Color.LTGRAY)
+                } else {
+                    view.setBackgroundColor(Color.WHITE)
+                    binding.speed.setTextColor(Color.BLACK)
+                    binding.unit.setTextColor(Color.DKGRAY)
+                }
             }
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
@@ -56,6 +61,12 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.blindSpotRight)?.let { blindSpotRightVal ->
                 binding.blindSpotRight1.visibility = if ((blindSpotRightVal.toInt() > 0) and (blindSpotRightVal.toInt() < 3))View.VISIBLE else View.GONE
+            }
+            it.getValue(Constants.rearLeftVehicle)?.let { rearLeftVehDetected ->
+                binding.blindSpotLeft1.visibility = if ( rearLeftVehDetected.toInt() == 1) View.VISIBLE else View.GONE
+            }
+            it.getValue(Constants.rearRightVehicle)?.let { rearRightVehDetected ->
+                binding.blindSpotRight1.visibility = if (rearRightVehDetected.toInt() == 1)View.VISIBLE else View.GONE
             }
 
 

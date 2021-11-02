@@ -17,5 +17,7 @@ object Constants {
     const val useMockServerPrefKey = "use_mock_server"
     const val turnSignalLeft = "VCFRONT_indicatorLef"
     const val turnSignalRight = "VCFRONT_indicatorRig"
+    const val rearLeftVehicle = "rearLeftVehDetected"
+    const val rearRightVehicle = "rearRightVehDetected"
 
 }
