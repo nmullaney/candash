@@ -134,6 +134,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl1"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintHorizontal_bias=".75"
@@ -147,11 +148,40 @@
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsr1"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@id/middle_spacer"
         app:layout_constraintHorizontal_bias=".25"
         app:layout_constraintWidth_percent=".05"
          />
+
+    <ImageView
+        android:id="@+id/blind_spot_left_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_bsl2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintHorizontal_bias=".75"
+        app:layout_constraintStart_toStartOf="@id/middle_spacer"
+        app:layout_constraintWidth_percent=".05"
+        />
+
+    <ImageView
+        android:id="@+id/blind_spot_right_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_bsr2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/middle_spacer"
+        app:layout_constraintHorizontal_bias=".25"
+        app:layout_constraintWidth_percent=".05"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

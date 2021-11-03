@@ -19,5 +19,8 @@ object Constants {
     const val turnSignalRight = "VCFRONT_indicatorRig"
     const val rearLeftVehicle = "rearLeftVehDetected"
     const val rearRightVehicle = "rearRightVehDetected"
+    const val leftVehicle = "leftVehDetected"
+    const val rightVehicle = "rightVehDetected"
+
 
 }
