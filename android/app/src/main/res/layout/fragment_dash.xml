@@ -13,7 +13,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="center"
         android:textColor="@color/black"
-        android:letterSpacing="0"
+        android:letterSpacing="-.1"
         app:autoSizeMaxTextSize="800sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"
@@ -42,8 +42,7 @@
         app:layout_constraintHeight_percent="0.2"
         app:layout_constraintStart_toEndOf="@id/modely"
         app:layout_constraintTop_toBottomOf="@+id/speed"
-        app:layout_constraintVertical_bias="10"
-         />
+        app:layout_constraintVertical_bias="10" />
 
     <ImageView
         android:id="@+id/left_turn_signal_light"
@@ -55,8 +54,7 @@
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/right_turn_signal_light"
@@ -68,8 +66,8 @@
         android:visibility="gone"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/left_turn_signal_dark"
         android:layout_width="75dp"
@@ -80,8 +78,7 @@
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/right_turn_signal_dark"
@@ -92,8 +89,7 @@
         android:paddingRight="20dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/modely"
@@ -105,11 +101,7 @@
         app:layout_constraintHeight_percent=".7"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent=".5"
-         />
-
-
-
+        app:layout_constraintWidth_percent=".5" />
 
 
     <ImageView
@@ -121,7 +113,7 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
-        app:layout_constraintCircleRadius="135dp"
+        app:layout_constraintCircleRadius="135dp" />
 
     <ImageView
         android:id="@+id/blind_spot_right_1"
@@ -132,7 +124,7 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
-        app:layout_constraintCircleRadius="135dp"
+        app:layout_constraintCircleRadius="135dp" />
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
@@ -143,7 +135,7 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
-        app:layout_constraintCircleRadius="135dp"
+        app:layout_constraintCircleRadius="135dp" />
 
     <ImageView
         android:id="@+id/blind_spot_right_2"
@@ -154,6 +146,6 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
-        app:layout_constraintCircleRadius="135dp"
+        app:layout_constraintCircleRadius="135dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
