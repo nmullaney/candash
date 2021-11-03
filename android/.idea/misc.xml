@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_autopilot.xml" value="0.5315" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/activity_fullscreen.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_bs_warning.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_dash.xml" value="0.182370820668693" />

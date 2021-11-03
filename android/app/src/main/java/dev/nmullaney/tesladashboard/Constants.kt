@@ -21,6 +21,7 @@ object Constants {
     const val rearRightVehicle = "rearRightVehDetected"
     const val leftVehicle = "leftVehDetected"
     const val rightVehicle = "rightVehDetected"
+    const val autopilotState = "AutopilotState"
 
 
 }

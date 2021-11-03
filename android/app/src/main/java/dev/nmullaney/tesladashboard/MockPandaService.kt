@@ -50,7 +50,8 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 0.0,
                 Constants.blindSpotRight to 0.0,
                 Constants.turnSignalLeft to 1.0,
-                Constants.isSunUp to 1.0
+                Constants.isSunUp to 1.0,
+                Constants.autopilotState to 2
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 390.0,
@@ -63,7 +64,8 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 1.0,
                 Constants.blindSpotRight to 0.0,
                 Constants.turnSignalLeft to 2.0,
-                Constants.isSunUp to 1.0
+                Constants.isSunUp to 1.0,
+                Constants.autopilotState to 3
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.9,
@@ -76,7 +78,8 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 0.0,
                 Constants.blindSpotRight to 2.0,
                 Constants.turnSignalLeft to 1.0,
-                Constants.isSunUp to 1.0
+                Constants.isSunUp to 1.0,
+                Constants.autopilotState to 1
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.8,
@@ -89,7 +92,8 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 0.0,
                 Constants.blindSpotRight to 1.0,
                 Constants.turnSignalLeft to 0.0,
-                Constants.isSunUp to 1.0
+                Constants.isSunUp to 1.0,
+                Constants.autopilotState to 3
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.7,
@@ -102,6 +106,7 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 2.0,
                 Constants.blindSpotRight to 0.0,
                 Constants.turnSignalLeft to 1.0,
-                Constants.isSunUp to 1.0
+                Constants.isSunUp to 1.0,
+                Constants.autopilotState to 2
             )))
 }

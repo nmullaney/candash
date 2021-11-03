@@ -53,7 +53,14 @@ class DashFragment : Fragment() {
                     binding.unit.setTextColor(Color.DKGRAY)
                 }
             }
+
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
+            it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
+                binding.autopilotInactive.visibility =
+                    if (autopilotStateVal.toInt() == 2) View.VISIBLE else View.GONE
+                binding.autopilot.visibility =
+                    if (autopilotStateVal.toInt() == 3) View.VISIBLE else View.GONE
+            }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =
                     if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE
@@ -105,32 +112,6 @@ class DashFragment : Fragment() {
             } else {
                 binding.blindSpotRight2.visibility = View.GONE
             }
-            /*
-            it.getValue(Constants.rearLeftVehicle)?.let { rearLeftVehDetected ->
-                binding.blindSpotLeft1.visibility = if (( rearLeftVehDetected.toInt() < 200) and (rearLeftVehDetected.toInt() > 100))View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rearRightVehicle)?.let { rearRightVehDetected ->
-                binding.blindSpotRight1.visibility = if ((rearRightVehDetected.toInt() < 200) and (rearRightVehDetected.toInt() > 100)) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rearLeftVehicle)?.let { rearLeftVehDetected ->
-                binding.blindSpotLeft2.visibility = if (rearLeftVehDetected.toInt() <= 100)View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rearRightVehicle)?.let { rearRightVehDetected ->
-                binding.blindSpotRight2.visibility = if (rearRightVehDetected.toInt() <= 100)View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.leftVehicle)?.let { leftVehDetected ->
-                binding.blindSpotLeft1.visibility = if (( leftVehDetected.toInt() < 200) and (leftVehDetected.toInt() > 100))View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rightVehicle)?.let { rightVehDetected ->
-                binding.blindSpotRight1.visibility = if ((rightVehDetected.toInt() < 200) and (rightVehDetected.toInt() > 100)) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.leftVehicle)?.let { leftVehDetected ->
-                binding.blindSpotLeft2.visibility = if (leftVehDetected.toInt() <= 100)View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rearRightVehicle)?.let { rearRightVehDetected ->
-                binding.blindSpotRight2.visibility = if (rearRightVehDetected.toInt() <= 100)View.VISIBLE else View.GONE
-            }
-*/
 
         }
     }

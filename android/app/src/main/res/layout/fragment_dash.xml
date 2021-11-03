@@ -43,7 +43,32 @@
         app:layout_constraintStart_toEndOf="@id/modely"
         app:layout_constraintTop_toBottomOf="@+id/speed"
         app:layout_constraintVertical_bias="10" />
+    <ImageView
+        android:id="@+id/autopilot"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:src="@drawable/ic_autopilot"
+        android:visibility="gone"
+        app:layout_constraintCircle="@id/speed"
+        app:layout_constraintCircleAngle="200"
+        app:layout_constraintCircleRadius="130dp"
 
+
+        />
+    <ImageView
+        android:id="@+id/autopilot_inactive"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:src="@drawable/ic_autopilot_inactive"
+        android:visibility="gone"
+        app:layout_constraintCircle="@id/speed"
+        app:layout_constraintCircleAngle="200"
+        app:layout_constraintCircleRadius="130dp"
+
+
+        />
     <ImageView
         android:id="@+id/left_turn_signal_light"
         android:layout_width="75dp"
@@ -68,6 +93,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <ImageView
         android:id="@+id/left_turn_signal_dark"
         android:layout_width="75dp"
@@ -82,8 +109,8 @@
 
     <ImageView
         android:id="@+id/right_turn_signal_dark"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:src="@drawable/ic_turnrightdark"
         android:paddingTop="20dp"
         android:paddingRight="20dp"
@@ -113,7 +140,7 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
-        app:layout_constraintCircleRadius="135dp" />
+        app:layout_constraintCircleRadius="125dp" />
 
     <ImageView
         android:id="@+id/blind_spot_right_1"
@@ -124,7 +151,7 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
-        app:layout_constraintCircleRadius="135dp" />
+        app:layout_constraintCircleRadius="125dp" />
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
@@ -135,7 +162,7 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
-        app:layout_constraintCircleRadius="135dp" />
+        app:layout_constraintCircleRadius="125dp" />
 
     <ImageView
         android:id="@+id/blind_spot_right_2"
@@ -146,6 +173,6 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
-        app:layout_constraintCircleRadius="135dp" />
+        app:layout_constraintCircleRadius="125dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
