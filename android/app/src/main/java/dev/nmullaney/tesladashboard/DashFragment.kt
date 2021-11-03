@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 
-class DashFragment : Fragment() {
+class teDashFragment : Fragment() {
 
     private lateinit var binding : FragmentDashBinding
 
