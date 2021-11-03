@@ -183,5 +183,4 @@
         app:layout_constraintHorizontal_bias=".25"
         app:layout_constraintWidth_percent=".05"
         />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

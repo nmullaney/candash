@@ -1,6 +1,56 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+t<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/modely"
+        android:layout_width="160dp"
+        android:layout_height="250dp"
+        android:src="@drawable/ic_modely"
+        android:gravity="center"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
 
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <Space
+        android:id="@+id/bottom_spacer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        />
+
+    <Space
+        android:id="@+id/middle_spacer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        />
+
+    <ImageView
+        android:id="@+id/blind_spot_left_1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_bsl1"
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="200"
+        app:layout_constraintCircleRadius="100dp"
+        />
+
+    <ImageView
+        android:id="@+id/blind_spot_right_1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_bsr1"
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="160"
+        app:layout_constraintCircleRadius="100dp"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
