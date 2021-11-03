@@ -47,8 +47,8 @@
 
     <ImageView
         android:id="@+id/left_turn_signal_light"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:src="@drawable/ic_turnleftbright"
         android:paddingTop="20dp"
         android:paddingLeft="20dp"
@@ -60,8 +60,8 @@
 
     <ImageView
         android:id="@+id/right_turn_signal_light"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:src="@drawable/ic_turnrightbright"
         android:paddingTop="20dp"
         android:paddingRight="20dp"
@@ -72,8 +72,8 @@
         />
     <ImageView
         android:id="@+id/left_turn_signal_dark"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:src="@drawable/ic_turnleftdark"
         android:paddingTop="20dp"
         android:paddingLeft="20dp"
@@ -108,79 +108,52 @@
         app:layout_constraintWidth_percent=".5"
          />
 
-    <Space
-        android:id="@+id/bottom_spacer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/modely"
-        app:layout_constraintEnd_toEndOf="@id/modely"
-        app:layout_constraintStart_toStartOf="@id/modely"
-        />
 
-    <Space
-        android:id="@+id/middle_spacer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/modely"
-        app:layout_constraintEnd_toEndOf="@id/modely"
-        app:layout_constraintStart_toStartOf="@id/modely"
-        app:layout_constraintTop_toTopOf="@id/modely"
-        app:layout_constraintWidth_percent=".2"
-        />
+
+
 
     <ImageView
         android:id="@+id/blind_spot_left_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl1"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintHorizontal_bias=".75"
-        app:layout_constraintStart_toStartOf="@id/middle_spacer"
-        app:layout_constraintWidth_percent=".05"
-        />
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="205"
+        app:layout_constraintCircleRadius="135dp"
 
     <ImageView
         android:id="@+id/blind_spot_right_1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsr1"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@id/middle_spacer"
-        app:layout_constraintHorizontal_bias=".25"
-        app:layout_constraintWidth_percent=".05"
-         />
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="155"
+        app:layout_constraintCircleRadius="135dp"
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl2"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintHorizontal_bias=".75"
-        app:layout_constraintStart_toStartOf="@id/middle_spacer"
-        app:layout_constraintWidth_percent=".05"
-        />
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="205"
+        app:layout_constraintCircleRadius="135dp"
 
     <ImageView
         android:id="@+id/blind_spot_right_2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsr2"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/bottom_spacer"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@id/middle_spacer"
-        app:layout_constraintHorizontal_bias=".25"
-        app:layout_constraintWidth_percent=".05"
-        />
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="155"
+        app:layout_constraintCircleRadius="135dp"
+
 </androidx.constraintlayout.widget.ConstraintLayout>
