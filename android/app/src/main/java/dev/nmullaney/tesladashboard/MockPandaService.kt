@@ -44,7 +44,7 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 3.0,
                 Constants.blindSpotRight to 3.0,
                 Constants.displayBrightnessLev to 11.5,
-                Constants.stateOfCharge to 80.0,
+                Constants.stateOfCharge to 100.0,
                 Constants.uiRange to 273.0,
                 Constants.uiSpeed to 0.0,
                 Constants.blindSpotLeft to 0.0,

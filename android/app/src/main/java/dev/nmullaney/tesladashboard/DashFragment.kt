@@ -48,13 +48,19 @@ class DashFragment : Fragment() {
                     view.setBackgroundColor(Color.BLACK)
                     binding.speed.setTextColor(Color.WHITE)
                     binding.unit.setTextColor(Color.LTGRAY)
+                    binding.batterypercent.setTextColor(Color.LTGRAY)
                 } else {
                     view.setBackgroundColor(Color.WHITE)
                     binding.speed.setTextColor(Color.BLACK)
                     binding.unit.setTextColor(Color.DKGRAY)
+                    binding.batterypercent.setTextColor(Color.DKGRAY)
                 }
             }
-
+            it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                binding.batterypercent.text = stateOfChargeVal.toInt().toString() + "%"
+                // 46 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
+                binding.fullbattery.scrollX = (46 - ((stateOfChargeVal.toLong() * 46) /100).toInt())
+            }
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 binding.autopilotInactive.visibility =
