@@ -62,6 +62,8 @@ class CANSignalHelper {
         insertCANSignal(Constants.leftVehicle, 1, Hex(0x22E), 45, 9, 1f, 0)
         insertCANSignal(Constants.rightVehicle, 1, Hex(0x22E), 0, 9, 1f, 0)
         insertCANSignal(Constants.autopilotState, 1, Hex(0x399), 0, 4, 1f, 0)
+        insertCANSignal(Constants.liftgateState, 0, Hex(0x142), 3, 4, 1f, 0)
+
 
 
 

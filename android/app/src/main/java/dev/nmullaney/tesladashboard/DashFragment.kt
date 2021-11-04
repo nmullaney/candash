@@ -61,6 +61,10 @@ class DashFragment : Fragment() {
                 binding.autopilot.visibility =
                     if (autopilotStateVal.toInt() == 3) View.VISIBLE else View.GONE
             }
+            it.getValue(Constants.liftgateState)?.let { liftgateStateVal ->
+                binding.hatch.visibility =
+                    if (liftgateStateVal.toInt() == 5) View.GONE else View.VISIBLE
+            }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =
                     if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE
@@ -106,7 +110,7 @@ class DashFragment : Fragment() {
             } else {
                 binding.blindSpotLeft2.visibility = View.GONE
             }
-            if ((rearRightVehDetected < 200) or (rightVehDetected < 200)) {
+            if ((rearRightVehDetected < 100) or (rightVehDetected < 100)) {
                 binding.blindSpotRight1.visibility = View.GONE
                 binding.blindSpotRight2.visibility = View.VISIBLE
             } else {

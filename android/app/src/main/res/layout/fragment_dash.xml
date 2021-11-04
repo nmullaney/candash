@@ -51,8 +51,8 @@
         android:src="@drawable/ic_autopilot"
         android:visibility="gone"
         app:layout_constraintCircle="@id/speed"
-        app:layout_constraintCircleAngle="200"
-        app:layout_constraintCircleRadius="130dp"
+        app:layout_constraintCircleAngle="270"
+        app:layout_constraintCircleRadius="180dp"
 
 
         />
@@ -64,8 +64,8 @@
         android:src="@drawable/ic_autopilot_inactive"
         android:visibility="gone"
         app:layout_constraintCircle="@id/speed"
-        app:layout_constraintCircleAngle="200"
-        app:layout_constraintCircleRadius="130dp"
+        app:layout_constraintCircleAngle="270"
+        app:layout_constraintCircleRadius="180dp"
 
 
         />
@@ -129,6 +129,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
+    <ImageView
+        android:id="@+id/hatch"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_hatch"
+        android:visibility="gone"
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="180"
+        app:layout_constraintCircleRadius="90dp" />
 
 
     <ImageView
