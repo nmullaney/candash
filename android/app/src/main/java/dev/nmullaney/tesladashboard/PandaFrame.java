@@ -2,7 +2,7 @@ package dev.nmullaney.tesladashboard;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
+import android.util.Log;
 public class PandaFrame {
     private static final String TAG = PandaFrame.class.getSimpleName();
     private static final Integer INT_BYTES = 8;
@@ -45,31 +45,24 @@ public class PandaFrame {
         return sb.toString();
     }
 
-    private String swapEnds(String binaryString) {
-        String result = "";
-        int zeroCount = 8 - (binaryString.length() % 8);
-        zeroCount = zeroCount % 8;
-        binaryString = StringUtils.prepadNZeroes(binaryString, zeroCount);
-        for (int i = binaryString.length() - 1; i >= 7; i -= 8)
-        {
-            String str = binaryString.substring(i - 7, i + 1);
-
-            result += str;
-            //Log.d(TAG, "swapResult: " + result);
-        }
-
-        //result = result.substring(zeros_added, result.length());
-        return result;
-    }
 
     /**
      * Returns the value for this startBit and bitLength as a long.
      * Assumes the payload is littleEndian.
      */
-    public long getPayloadValue(int startBit, int bitLength) {
+    public String getPayloadValue(int startBit, int bitLength) {
         String fullPayloadBinaryString = getPayloadBinaryString();
-        String valueString = getValueString(fullPayloadBinaryString, startBit, bitLength);
-        return Long.parseLong(valueString, 2);
+        return getValueString(fullPayloadBinaryString, startBit, bitLength);
+        //return Long.parseLong(valueString, 2);
+    }
+    /**
+     * Returns the value for this startBit and bitLength as a long.
+     * Assumes the payload is littleEndian. Adds filtering for multiplexed data
+     */
+    public String getPayloadValue(int startBit, int bitLength, int serviceIndex, int muxIndex) {
+        String fullPayloadBinaryString = getPayloadBinaryString();
+        return getValueString(fullPayloadBinaryString, startBit, bitLength, serviceIndex, muxIndex);
+        //return Long.parseLong(valueString, 2);
     }
 
     /**
@@ -92,7 +85,30 @@ public class PandaFrame {
         }
         return result.toString();
     }
+    /**
+     * Overloaded method for getValueString to add optional serviceIndex and muxIndex parameters
+     */
+    private String getValueString(String fullPayload, int startBit, int bitLength, int serviceIndex, int muxIndex) {
+        StringBuilder result = new StringBuilder();
+        /*
+        Log.d(TAG, "muxIndex: " + muxIndex);
+        Log.d(TAG, "GVSMUXPayload: " + fullPayload);
+        Log.d(TAG, "muxIndex: " + muxIndex);
+        Log.d(TAG, "serviceIndex: " + serviceIndex);
+ */
 
+        long muxValue = Long.parseLong(getValueString(fullPayload,0,3),2);
+
+        if (muxValue == muxIndex) {
+            //Log.d(TAG, "muxValue: " + muxValue+ " GVSMUXPayload: " + fullPayload + " unparsedMux" + fullPayload.substring(0,serviceIndex) + "result " + Long.parseLong(result.toString(),2));
+
+            return getValueString(fullPayload,startBit,bitLength);
+
+
+        } else {
+            return "";
+        }
+    }
     public long getFrameId() {
         return mFrameId;
     }

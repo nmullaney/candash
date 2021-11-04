@@ -41,8 +41,8 @@ class CANSignalHelper {
     fun getSignalsForFrame(frame: Hex) : List<CANSignal> {
         return mFrameSignalMap[frame] ?: listOf()
     }
-    fun insertCANSignal(name:String, busId:Int, frameId:Hex, startBit:Int, bitLength:Int, factor:Float, offset:Int, signed:Boolean? = false){
-        val CANSignal = CANSignal(name, busId, frameId, startBit, bitLength, factor, offset, signed)
+    fun insertCANSignal(name:String, busId:Int, frameId:Hex, startBit:Int, bitLength:Int, factor:Float, offset:Int,serviceIndex:Int = 0, muxIndex:Int = 0, signed:Boolean? = false){
+        val CANSignal = CANSignal(name, busId, frameId, startBit, bitLength, factor, offset, serviceIndex, muxIndex, signed)
         mNameSignalMap.put(CANSignal.name, CANSignal)
         addToMapList(mFrameSignalMap, CANSignal.frameId, CANSignal)
     }
@@ -63,7 +63,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.rightVehicle, 1, Hex(0x22E), 0, 9, 1f, 0)
         insertCANSignal(Constants.autopilotState, 1, Hex(0x399), 0, 4, 1f, 0)
         insertCANSignal(Constants.liftgateState, 0, Hex(0x103), 56, 4, 1f, 0)
-        insertCANSignal(Constants.frunkState, 0, Hex(0x2E1), 3, 4, 1f, 0)
+        insertCANSignal(Constants.frunkState, 0, Hex(0x2E1), 3, 4, 1f, 0, 3, 0)
 
 
 

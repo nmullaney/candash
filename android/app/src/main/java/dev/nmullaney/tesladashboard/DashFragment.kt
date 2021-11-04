@@ -67,6 +67,10 @@ class DashFragment : Fragment() {
                 binding.hatch.visibility =
                     if (liftgateVal.toInt() == 1)  View.VISIBLE else View.GONE
             }
+            it.getValue(Constants.frunkState)?.let { frunkVal ->
+                binding.hood.visibility =
+                    if (frunkVal.toInt() == 1)  View.VISIBLE else View.GONE
+            }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =
                     if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE

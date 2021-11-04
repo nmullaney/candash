@@ -54,13 +54,13 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                 while (!shutdown) {
 
                     if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
-                        Log.d(TAG, "Sending heartbeat")
+                        //Log.d(TAG, "Sending heartbeat")
                         sendHello(getSocket())
                     }
 
                     val buf = ByteArray(16)
                     val packet = DatagramPacket(buf, buf.size, serverAddress())
-                    Log.d(TAG, "C: Waiting to receive...")
+                    //Log.d(TAG, "C: Waiting to receive...")
 
                     try {
                         getSocket().receive(packet)
@@ -70,12 +70,14 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                         continue
                     }
 
-                    Log.d(TAG, "Packet from: " + packet.address + ":" + packet.port)
+                    //Log.d(TAG, "Packet from: " + packet.address + ":" + packet.port)
 
                     val pandaFrame = PandaFrame(buf)
-                    Log.d(TAG, "FrameId = " + pandaFrame.frameIdHex.hexString)
+                    /*Log.d(TAG, "FrameId = " + pandaFrame.frameIdHex.hexString)
                     Log.d(TAG, "BusId = " + pandaFrame.busId)
                     Log.d(TAG, "FrameLength = " + pandaFrame.frameLength())
+
+                     */
 
                     if (pandaFrame.frameId == 6L && pandaFrame.busId == 15L) {
                         // It's an ack
@@ -102,14 +104,35 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
     }
 
     private fun handleFrame(frame: PandaFrame) {
+        var binaryPayloadString = ""
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
-            val value = frame.getPayloadValue(
-                channel.startBit,
-                channel.bitLength
-            ) * channel.factor + channel.offset
-            Log.d(TAG, channel.name + " = " + value)
-            carState.updateValue(channel.name, value)
-            carStateFlow.value = CarState(HashMap(carState.carData))
+            if (channel.serviceIndex == 0) {
+                //Log.d(TAG, channel.name + "no mux")
+
+                binaryPayloadString = frame.getPayloadValue(
+                    channel.startBit,
+                    channel.bitLength
+                )
+            } else {
+                Log.d(TAG, channel.name + " mux startbit:" + channel.startBit + " bitlength:" + channel.bitLength + " serviceIndex:" + channel.serviceIndex )
+
+                binaryPayloadString = frame.getPayloadValue(
+
+                    channel.startBit,
+                    channel.bitLength,
+                    channel.serviceIndex,
+                    channel.muxIndex
+                )
+            }
+            if (!binaryPayloadString.equals("")){
+                val value = binaryPayloadString.toLong(2) * channel.factor + channel.offset
+                // Log.d(TAG, channel.name + " = " + value)
+                carState.updateValue(channel.name, value)
+                carStateFlow.value = CarState(HashMap(carState.carData))
+            }else{
+                Log.d(TAG, "skipping payload")
+
+            }
         }
     }
 

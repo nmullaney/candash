@@ -54,7 +54,7 @@ class InfoFragment() : Fragment() {
         }
 
         viewModel.carState().observe(viewLifecycleOwner, { carState ->
-            logCarState(carState)
+            //logCarState(carState)
             binding.infoText.text = buildSpannedString {
                 carState.carData.forEach { entry ->
                     bold {

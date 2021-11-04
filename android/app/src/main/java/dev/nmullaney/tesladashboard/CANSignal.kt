@@ -7,4 +7,8 @@ data class CANSignal (val name : String,
                       val bitLength: Int,
                       val factor: Float,
                       val offset: Int,
-                      val signed: Boolean? = false)
+                      val serviceIndex: Int=0,
+                      val muxIndex: Int=0,
+                      val signed: Boolean? = false,
+
+)

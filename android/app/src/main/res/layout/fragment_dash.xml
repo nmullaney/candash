@@ -53,9 +53,16 @@
         app:layout_constraintCircle="@id/speed"
         app:layout_constraintCircleAngle="270"
         app:layout_constraintCircleRadius="180dp"
-
-
         />
+
+    <ProgressBar
+        android:id="@+id/determinateBar"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        style="@and"
+
+        android:progress="25"/>
     <ImageView
         android:id="@+id/autopilot_inactive"
         android:layout_width="60dp"
@@ -134,6 +141,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_hatch"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/speed"
         app:layout_constraintHeight_percent=".6"
@@ -145,6 +153,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_hood"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/speed"
         app:layout_constraintHeight_percent=".6"
