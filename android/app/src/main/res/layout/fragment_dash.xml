@@ -125,22 +125,32 @@
         android:src="@drawable/ic_modely"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/speed"
-        app:layout_constraintHeight_percent=".7"
+        app:layout_constraintHeight_percent=".6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
     <ImageView
         android:id="@+id/hatch"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:src="@drawable/ic_hatch"
-        android:visibility="gone"
-        app:layout_constraintCircle="@id/modely"
-        app:layout_constraintCircleAngle="180"
-        app:layout_constraintCircleRadius="90dp" />
-
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+    <ImageView
+        android:id="@+id/hood"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_hood"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
     <ImageView
         android:id="@+id/blind_spot_left_1"
         android:layout_width="50dp"

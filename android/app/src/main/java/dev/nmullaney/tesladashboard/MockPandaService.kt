@@ -52,6 +52,7 @@ class MockPandaService : PandaService {
                 Constants.turnSignalLeft to 1.0,
                 Constants.isSunUp to 1.0,
                 Constants.autopilotState to 2
+
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 390.0,

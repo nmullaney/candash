@@ -19,6 +19,7 @@ class DashFragment : Fragment() {
     private var rearRightVehDetected:Int = 500
     private var leftVehDetected:Int = 500
     private var rightVehDetected:Int = 500
+    private var liftgateStatus:Int = 5
 
 
     override fun onCreateView(
@@ -61,9 +62,10 @@ class DashFragment : Fragment() {
                 binding.autopilot.visibility =
                     if (autopilotStateVal.toInt() == 3) View.VISIBLE else View.GONE
             }
-            it.getValue(Constants.liftgateState)?.let { liftgateStateVal ->
+
+            it.getValue(Constants.liftgateState)?.let { liftgateVal ->
                 binding.hatch.visibility =
-                    if (liftgateStateVal.toInt() == 5) View.GONE else View.VISIBLE
+                    if (liftgateVal.toInt() == 1)  View.VISIBLE else View.GONE
             }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =
