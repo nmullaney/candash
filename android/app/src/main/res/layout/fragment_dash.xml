@@ -14,21 +14,22 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:letterSpacing="-.1"
+        android:paddingBottom="20dp"
         app:autoSizeMaxTextSize="800sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@id/unit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.7"
         app:layout_constraintStart_toEndOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="50" />
 
     <TextView
         android:id="@+id/unit"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/montserratbold"
         android:gravity="center_horizontal|top"
         android:text="@string/mph"
@@ -37,12 +38,9 @@
         app:autoSizeMinTextSize="20sp"
         app:autoSizeStepGranularity="10sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.2"
-        app:layout_constraintStart_toEndOf="@id/modely"
-        app:layout_constraintTop_toBottomOf="@+id/speed"
-        app:layout_constraintVertical_bias="10" />
+        app:layout_constraintCircle="@id/speed"
+        app:layout_constraintCircleAngle="180"
+        app:layout_constraintCircleRadius="100dp" />
 
     <ImageView
         android:id="@+id/autopilot"
@@ -72,37 +70,35 @@
 
     <ImageView
         android:id="@+id/left_turn_signal_light"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:src="@drawable/ic_turnleftbright"
-        android:paddingTop="25dp"
-        android:paddingLeft="20dp"
+        android:paddingTop="40dp"
+        android:paddingLeft="10dp"
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 
     <ImageView
         android:id="@+id/left_turn_signal_dark"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:src="@drawable/ic_turnleftdark"
-        android:paddingTop="25dp"
-        android:paddingLeft="20dp"
-        android:visibility="gone"
+        android:paddingTop="40dp"
+        android:paddingLeft="10dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/right_turn_signal_light"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:src="@drawable/ic_turnrightbright"
-        android:paddingTop="25dp"
-        android:paddingRight="20dp"
+        android:paddingTop="40dp"
+        android:paddingRight="10dp"
         android:gravity="center"
         android:visibility="gone"
 
@@ -111,25 +107,30 @@
 
     <ImageView
         android:id="@+id/right_turn_signal_dark"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:src="@drawable/ic_turnrightdark"
-        android:paddingTop="25dp"
-        android:paddingRight="20dp"
+        android:paddingTop="40dp"
+        android:paddingRight="10dp"
         android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <TextView
         android:id="@+id/batterypercent"
-        android:layout_width="50dp"
+        android:layout_width="60dp"
         android:layout_height="30dp"
         android:fontFamily="@font/montserratbold"
         android:gravity="center|center_vertical"
-        android:text="50%"
+        android:text="50 %"
         android:textAlignment="center"
+        app:autoSizeMaxTextSize="550sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeStepGranularity="10sp"
+        app:autoSizeTextType="uniform"
 
-        app:layout_constraintRight_toLeftOf="@id/deadbattery"/>
+        app:layout_constraintRight_toLeftOf="@id/deadbattery" />
+
     <ImageView
         android:id="@+id/deadbattery"
         android:layout_width="70dp"
@@ -140,6 +141,7 @@
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/fullbattery"
         android:layout_width="70dp"
@@ -147,7 +149,18 @@
         android:src="@drawable/ic_fullbattery"
         android:paddingRight="20dp"
         android:paddingTop="5dp"
-        android:scrollX="46dp"
+        android:scrollX="30dp"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/deadbatterymask"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_deadbatterymask"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
         android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

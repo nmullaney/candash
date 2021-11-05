@@ -24,6 +24,7 @@ object Constants {
     const val autopilotState = "AutopilotState"
     const val liftgateState = "liftgateState"
     const val frunkState = "frunkState"
+    const val uiSpeedUnits = "UISpeedUnits"
 
 
 }

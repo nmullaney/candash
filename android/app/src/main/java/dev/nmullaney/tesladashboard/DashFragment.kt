@@ -46,22 +46,35 @@ class DashFragment : Fragment() {
                 // Not using dark-mode for compatibility with older version of Android (pre-29)
                 if (isSunUpVal.toInt() == 0) {
                     view.setBackgroundColor(Color.BLACK)
+
                     binding.speed.setTextColor(Color.WHITE)
                     binding.unit.setTextColor(Color.LTGRAY)
                     binding.batterypercent.setTextColor(Color.LTGRAY)
+                    binding.deadbattery.setColorFilter(Color.DKGRAY)
+                    binding.deadbatterymask.setColorFilter(Color.DKGRAY)
+                    binding.fullbattery.setColorFilter(Color.LTGRAY)
+
+
                 } else {
-                    view.setBackgroundColor(Color.WHITE)
+                    view.setBackground(null)
                     binding.speed.setTextColor(Color.BLACK)
                     binding.unit.setTextColor(Color.DKGRAY)
                     binding.batterypercent.setTextColor(Color.DKGRAY)
+                    binding.deadbattery.clearColorFilter()
+                    binding.deadbatterymask.clearColorFilter()
+                    binding.fullbattery.clearColorFilter()
+
                 }
             }
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                binding.batterypercent.text = stateOfChargeVal.toInt().toString() + "%"
+                binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
                 // 46 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
                 binding.fullbattery.scrollX = (46 - ((stateOfChargeVal.toLong() * 46) /100).toInt())
             }
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
+            it.getValue(Constants.uiSpeedUnits)?.let {uiSpeedUnitsVal ->
+                if (uiSpeedUnitsVal.toInt() == 0) binding.unit.text = "MPH" else binding.unit.text = "KPH"
+            }
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 binding.autopilotInactive.visibility =
                     if (autopilotStateVal.toInt() == 2) View.VISIBLE else View.GONE
