@@ -75,57 +75,14 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnleftbright"
-        android:paddingTop="20dp"
+        android:paddingTop="25dp"
         android:paddingLeft="20dp"
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/right_turn_signal_light"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_turnrightbright"
-        android:paddingTop="20dp"
-        android:paddingRight="20dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/batterypercent"
-        android:layout_width="40dp"
-        android:layout_height="20dp"
-        android:fontFamily="@font/montserratbold"
-        android:gravity="center|top"
-        android:text="50%"
-        app:autoSizeMaxTextSize="100sp"
-        app:autoSizeMinTextSize="5sp"
-        app:autoSizeStepGranularity="5sp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintRight_toLeftOf="@id/deadbattery"/>
-
-    <ImageView
-        android:id="@+id/deadbattery"
-        android:layout_width="70dp"
-        android:layout_height="15dp"
-        android:src="@drawable/ic_deadbattery"
-        android:paddingRight="20dp"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ImageView
-        android:id="@+id/fullbattery"
-        android:layout_width="70dp"
-        android:layout_height="15dp"
-        android:src="@drawable/ic_fullbattery"
-        android:paddingRight="20dp"
-
-        android:scrollX="46dp"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
@@ -133,11 +90,23 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnleftdark"
-        android:paddingTop="20dp"
-        android:paddingLeft="0dp"
+        android:paddingTop="25dp"
+        android:paddingLeft="20dp"
         android:visibility="gone"
 
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/right_turn_signal_light"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_turnrightbright"
+        android:paddingTop="25dp"
+        android:paddingRight="20dp"
+        android:gravity="center"
+        android:visibility="gone"
+
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -145,9 +114,41 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_turnrightdark"
-        android:paddingTop="20dp"
+        android:paddingTop="25dp"
         android:paddingRight="20dp"
+        android:gravity="center"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/batterypercent"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/montserratbold"
+        android:gravity="center|center_vertical"
+        android:text="50%"
+        android:textAlignment="center"
+
+        app:layout_constraintRight_toLeftOf="@id/deadbattery"/>
+    <ImageView
+        android:id="@+id/deadbattery"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_deadbattery"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:gravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/fullbattery"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_fullbattery"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:scrollX="46dp"
+        android:gravity="center_vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
