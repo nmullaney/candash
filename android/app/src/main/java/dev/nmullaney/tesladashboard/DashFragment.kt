@@ -22,6 +22,8 @@ class DashFragment : Fragment() {
     private var rearRightVehDetected: Int = 500
     private var leftVehDetected: Int = 500
     private var rightVehDetected: Int = 500
+    private var gearColor: Int = Color.LTGRAY
+    private var gearColorSelected: Int = Color.DKGRAY
 
 
     override fun onCreateView(
@@ -55,6 +57,9 @@ class DashFragment : Fragment() {
                     binding.deadbattery.setColorFilter(Color.DKGRAY)
                     binding.deadbatterymask.setColorFilter(Color.DKGRAY)
                     binding.fullbattery.setColorFilter(Color.LTGRAY)
+                    gearColorSelected = Color.LTGRAY
+                    gearColor = Color.DKGRAY
+                    binding.PRND.setTextColor(Color.GRAY)
                     //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
 
@@ -66,6 +71,10 @@ class DashFragment : Fragment() {
                     binding.deadbattery.clearColorFilter()
                     binding.deadbatterymask.clearColorFilter()
                     binding.fullbattery.clearColorFilter()
+                    gearColorSelected = Color.DKGRAY
+                    gearColor = Color.LTGRAY
+                    binding.PRND.setTextColor(Color.LTGRAY)
+
                     //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
                 }
@@ -73,75 +82,32 @@ class DashFragment : Fragment() {
             it.getValue(Constants.gearSelected)?.let { gearStateVal ->
                 val gear:String = binding.PRND.text.toString()
                 var ss:SpannableString = SpannableString(gear)
+                var gearStartIndex = 0
+                var gearEndIndex = 1
                 if(gearStateVal.toInt() == Constants.gearPark) {
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.GRAY),
-                        0,
-                        1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
-                } else{
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.LTGRAY),
-                        0,
-                        1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
+                    gearStartIndex = 0
+                    gearEndIndex = 1
 
                 }
                 if (gearStateVal.toInt() == Constants.gearReverse) {
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.GRAY),
-                        3,
-                        4,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
-                } else{
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.LTGRAY),
-                        3,
-                        4,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
+                    gearStartIndex = 3
+                    gearEndIndex = 4
                 }
                 if (gearStateVal.toInt() == Constants.gearNeutral) {
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.GRAY),
-                        6,
-                        7,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
-                } else{
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.LTGRAY),
-                        6,
-                        7,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
+                    gearStartIndex = 6
+                    gearEndIndex = 7
                 }
                 if (gearStateVal.toInt() == Constants.gearDrive) {
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.GRAY),
-                        9,
-                        10,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
-                } else{
-                    ss.setSpan(
-                        ForegroundColorSpan(Color.LTGRAY),
-                        9,
-                        10,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    binding.PRND.text = (ss)
+                    gearStartIndex = 9
+                    gearEndIndex = 10
                 }
+                ss.setSpan(
+                    ForegroundColorSpan(gearColorSelected),
+                    gearStartIndex,
+                    gearEndIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                binding.PRND.text = (ss)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 // make background blue if driver needs to put hands on wheel
