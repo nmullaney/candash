@@ -11,15 +11,14 @@ import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 
 class DashFragment : Fragment() {
 
-    private lateinit var binding : FragmentDashBinding
+    private lateinit var binding: FragmentDashBinding
 
     private lateinit var viewModel: DashViewModel
 
-    private var rearLeftVehDetected:Int = 500
-    private var rearRightVehDetected:Int = 500
-    private var leftVehDetected:Int = 500
-    private var rightVehDetected:Int = 500
-    private var liftgateStatus:Int = 5
+    private var rearLeftVehDetected: Int = 500
+    private var rearRightVehDetected: Int = 500
+    private var leftVehDetected: Int = 500
+    private var rightVehDetected: Int = 500
 
 
     override fun onCreateView(
@@ -53,6 +52,7 @@ class DashFragment : Fragment() {
                     binding.deadbattery.setColorFilter(Color.DKGRAY)
                     binding.deadbatterymask.setColorFilter(Color.DKGRAY)
                     binding.fullbattery.setColorFilter(Color.LTGRAY)
+                    //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
 
                 } else {
@@ -63,32 +63,79 @@ class DashFragment : Fragment() {
                     binding.deadbattery.clearColorFilter()
                     binding.deadbatterymask.clearColorFilter()
                     binding.fullbattery.clearColorFilter()
+                    //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
                 }
+            }
+            it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
+                // make background blue if driver needs to put hands on wheel
+                if (autopilotHandsVal.toInt() > 2) {
+                    view.setBackgroundColor(Color.parseColor("#FF3366FF"))
+                } else {
+                    it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
+                        if (isSunUpVal.toInt() == 0)
+                            view.setBackgroundColor(Color.BLACK)
+                        else
+                            view.setBackground(null)
+                    }
+                }
+
             }
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
                 // 46 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
-                binding.fullbattery.scrollX = (46 - ((stateOfChargeVal.toLong() * 46) /100).toInt())
+                //binding.fullbattery.scrollX = 8
+                binding.fullbattery.scrollX = (83 - ((stateOfChargeVal.toLong() * 83) / 100).toInt())
+
             }
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
-            it.getValue(Constants.uiSpeedUnits)?.let {uiSpeedUnitsVal ->
-                if (uiSpeedUnitsVal.toInt() == 0) binding.unit.text = "MPH" else binding.unit.text = "KPH"
+            it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
+                if (uiSpeedUnitsVal.toInt() == 0) binding.unit.text = "MPH" else binding.unit.text =
+                    "KPH"
             }
+            /*
+            it.getValue(Constants.maxSpeedAP)?.let { cruiseControlSpeedVal ->
+                if ((cruiseControlSpeedVal.toInt() > 130) or (cruiseControlSpeedVal.toInt() == 0)) {
+                    binding.displaymaxspeed.visibility = View.INVISIBLE
+                } else {
+                    binding.displaymaxspeed.visibility = View.VISIBLE
+                    binding.autopilotMaxSpeedInactive.visibility = View.VISIBLE
+                    binding.displaymaxspeed.text = cruiseControlSpeedVal.toInt().toString()
+
+
+                }
+            }
+            */
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
-                binding.autopilotInactive.visibility =
-                    if (autopilotStateVal.toInt() == 2) View.VISIBLE else View.GONE
+                if (autopilotStateVal.toInt() == 2) {
+                    binding.autopilotInactive.visibility = View.VISIBLE
+
+
+                } else {
+                    binding.autopilotInactive.visibility = View.GONE
+                }
                 binding.autopilot.visibility =
                     if (autopilotStateVal.toInt() == 3) View.VISIBLE else View.GONE
+
+                if (autopilotStateVal.toInt() == 3) {
+                    //binding.autopilotMaxSpeedInactive.visibility = View.INVISIBLE
+                    //binding.autopilotMaxSpeed.visibility = View.VISIBLE
+                    // binding.displaymaxspeed.setTextColor(R.color.autopilot_blue)
+                    binding.autopilot.visibility = View.VISIBLE
+                } else {
+                    //binding.autopilotMaxSpeed.visibility = View.INVISIBLE
+                    binding.autopilot.visibility = View.GONE
+                    // binding.displaymaxspeed.setTextColor(Color.LTGRAY)
+                }
             }
 
             it.getValue(Constants.liftgateState)?.let { liftgateVal ->
                 binding.hatch.visibility =
-                    if (liftgateVal.toInt() == 1)  View.VISIBLE else View.GONE
+                    if (liftgateVal.toInt() == 1) View.VISIBLE else View.GONE
             }
             it.getValue(Constants.frunkState)?.let { frunkVal ->
                 binding.hood.visibility =
-                    if (frunkVal.toInt() == 1)  View.VISIBLE else View.GONE
+                    if (frunkVal.toInt() == 1) View.VISIBLE else View.GONE
             }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =

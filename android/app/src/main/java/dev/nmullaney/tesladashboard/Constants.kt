@@ -25,6 +25,13 @@ object Constants {
     const val liftgateState = "liftgateState"
     const val frunkState = "frunkState"
     const val uiSpeedUnits = "UISpeedUnits"
-
+    const val autopilotHands = "AutopilotHands"
+    const val maxSpeedAP = "AutopilotMaxSpeed"
+    const val cruiseControlSpeed = "CruiseControlSpeed"
+    const val uiSpeedHighSpeed = "UISpeedHighSpeed"
+    const val visionSpeedLimit = "VisionSpeedLimit"
+    const val solarAngle = "SolarAngle"
+    const val cruiseTest1 = "CruiseTest1"
+    const val cruiseTest2 = "CruiseTest2"
 
 }

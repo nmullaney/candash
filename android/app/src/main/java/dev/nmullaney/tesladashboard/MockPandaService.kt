@@ -44,7 +44,7 @@ class MockPandaService : PandaService {
                 Constants.blindSpotLeft to 3.0,
                 Constants.blindSpotRight to 3.0,
                 Constants.displayBrightnessLev to 11.5,
-                Constants.stateOfCharge to 100.0,
+                Constants.stateOfCharge to 1.0,
                 Constants.uiRange to 273.0,
                 Constants.uiSpeed to 0.0,
                 Constants.blindSpotLeft to 0.0,
@@ -52,6 +52,7 @@ class MockPandaService : PandaService {
                 Constants.turnSignalLeft to 1.0,
                 Constants.isSunUp to 1.0,
                 Constants.autopilotState to 2
+
 
             )),
             CarState(mutableMapOf(
@@ -66,35 +67,42 @@ class MockPandaService : PandaService {
                 Constants.blindSpotRight to 0.0,
                 Constants.turnSignalLeft to 2.0,
                 Constants.isSunUp to 1.0,
-                Constants.autopilotState to 3
+                Constants.autopilotState to 3,
+                Constants.autopilotHands to 1,
+                Constants.cruiseControlSpeed to 45.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.9,
                 Constants.blindSpotLeft to 1.0,
                 Constants.blindSpotRight to 1.0,
                 Constants.displayBrightnessLev to 9.5,
-                Constants.stateOfCharge to 78.0,
+                Constants.stateOfCharge to 50.0,
                 Constants.uiRange to 268.0,
                 Constants.uiSpeed to 21.0,
                 Constants.blindSpotLeft to 0.0,
                 Constants.blindSpotRight to 2.0,
                 Constants.turnSignalLeft to 1.0,
                 Constants.isSunUp to 1.0,
-                Constants.autopilotState to 1
+                Constants.autopilotState to 1,
+                Constants.autopilotHands to 0,
+                Constants.maxSpeedAP to 45.0,
+                Constants.cruiseControlSpeed to 45.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.8,
                 Constants.blindSpotLeft to 0.0,
                 Constants.blindSpotRight to 0.0,
                 Constants.displayBrightnessLev to 8.5,
-                Constants.stateOfCharge to 77.0,
+                Constants.stateOfCharge to 25.0,
                 Constants.uiRange to 265.0,
                 Constants.uiSpeed to 25.0,
                 Constants.blindSpotLeft to 0.0,
                 Constants.blindSpotRight to 1.0,
                 Constants.turnSignalLeft to 0.0,
-                Constants.isSunUp to 1.0,
-                Constants.autopilotState to 3
+                Constants.isSunUp to 0.0,
+                Constants.autopilotState to 3,
+                Constants.maxSpeedAP to 45.0,
+                Constants.cruiseControlSpeed to 45.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.7,
@@ -108,6 +116,8 @@ class MockPandaService : PandaService {
                 Constants.blindSpotRight to 0.0,
                 Constants.turnSignalLeft to 1.0,
                 Constants.isSunUp to 1.0,
-                Constants.autopilotState to 2
+                Constants.autopilotState to 2,
+                Constants.maxSpeedAP to 25.0,
+                Constants.cruiseControlSpeed to 23.0
             )))
 }
