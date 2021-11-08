@@ -165,6 +165,21 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:id="@+id/PRND"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/montserratbold"
+        android:gravity="center|center_vertical"
+        android:text="P  R  N  D"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:paddingLeft="20dp"
+
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/batterypercent"
         android:layout_width="60dp"
         android:layout_height="30dp"

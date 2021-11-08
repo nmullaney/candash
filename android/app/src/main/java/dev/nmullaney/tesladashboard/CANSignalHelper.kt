@@ -72,7 +72,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.frunkState, 0, Hex(0x2E1), 3, 4, 1f, 0, 3, 0)
         insertCANSignal(Constants.visionSpeedLimit, 1, Hex(0x399), 8, 5, 1f, 0)
         insertCANSignal(Constants.solarAngle, 0, Hex(0x2D3), 32, 8, 1f, 0, signed = true)
-        //insertCANSignal(Constants.cruiseTest1, 1, Hex(0x3D9), 48, 5, 5f, 0)
+        insertCANSignal(Constants.gearSelected, 0, Hex(0x118), 21, 3, 1f, 0)
 
 
 

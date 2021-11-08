@@ -33,5 +33,10 @@ object Constants {
     const val solarAngle = "SolarAngle"
     const val cruiseTest1 = "CruiseTest1"
     const val cruiseTest2 = "CruiseTest2"
+    const val gearSelected = "GearSelected"
 
+    const val gearPark  = 1
+    const val gearReverse = 2
+    const val gearNeutral = 3
+    const val gearDrive = 4
 }

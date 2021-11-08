@@ -2,6 +2,9 @@ package dev.nmullaney.tesladashboard
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +68,79 @@ class DashFragment : Fragment() {
                     binding.fullbattery.clearColorFilter()
                     //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
+                }
+            }
+            it.getValue(Constants.gearSelected)?.let { gearStateVal ->
+                val gear:String = binding.PRND.text.toString()
+                var ss:SpannableString = SpannableString(gear)
+                if(gearStateVal.toInt() == Constants.gearPark) {
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.GRAY),
+                        0,
+                        1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+                } else{
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.LTGRAY),
+                        0,
+                        1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+
+                }
+                if (gearStateVal.toInt() == Constants.gearReverse) {
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.GRAY),
+                        3,
+                        4,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+                } else{
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.LTGRAY),
+                        3,
+                        4,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+                }
+                if (gearStateVal.toInt() == Constants.gearNeutral) {
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.GRAY),
+                        6,
+                        7,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+                } else{
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.LTGRAY),
+                        6,
+                        7,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+                }
+                if (gearStateVal.toInt() == Constants.gearDrive) {
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.GRAY),
+                        9,
+                        10,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
+                } else{
+                    ss.setSpan(
+                        ForegroundColorSpan(Color.LTGRAY),
+                        9,
+                        10,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    binding.PRND.text = (ss)
                 }
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
