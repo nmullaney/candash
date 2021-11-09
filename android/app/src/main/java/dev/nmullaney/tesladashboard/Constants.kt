@@ -34,9 +34,15 @@ object Constants {
     const val cruiseTest1 = "CruiseTest1"
     const val cruiseTest2 = "CruiseTest2"
     const val gearSelected = "GearSelected"
-
+    const val frontLeftDoorState = "FrontLeftDoor"
+    const val frontRightDoorState = "FrontRightDoor"
+    const val rearLeftDoorState = "RearLeftDoor"
+    const val rearRightDoorState = "RearRightDoor"
+    const val battAmps = "BattAmps"
     const val gearPark  = 1
     const val gearReverse = 2
     const val gearNeutral = 3
     const val gearDrive = 4
+    const val doorOpen = 1
+    const val doorClosed = 2
 }

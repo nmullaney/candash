@@ -59,7 +59,7 @@ class DashFragment : Fragment() {
                     binding.fullbattery.setColorFilter(Color.LTGRAY)
                     gearColorSelected = Color.LTGRAY
                     gearColor = Color.DKGRAY
-                    binding.PRND.setTextColor(Color.GRAY)
+                    binding.PRND.setTextColor(Color.DKGRAY)
                     //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
 
@@ -111,8 +111,8 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 // make background blue if driver needs to put hands on wheel
-                if (autopilotHandsVal.toInt() > 2) {
-                    view.setBackgroundColor(Color.parseColor("#FF3366FF"))
+                if (autopilotHandsVal.toInt() > 3) {
+                    view.setBackgroundColor(Color.parseColor("#FF7791F7"))
                 } else {
                     it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
                         if (isSunUpVal.toInt() == 0)
@@ -178,6 +178,22 @@ class DashFragment : Fragment() {
             it.getValue(Constants.frunkState)?.let { frunkVal ->
                 binding.hood.visibility =
                     if (frunkVal.toInt() == 1) View.VISIBLE else View.GONE
+            }
+            it.getValue(Constants.frontLeftDoorState)?.let { doorVal ->
+                binding.frontleftdoor.visibility =
+                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
+            }
+            it.getValue(Constants.frontRightDoorState)?.let { doorVal ->
+                binding.frontrightdoor.visibility =
+                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
+            }
+            it.getValue(Constants.rearLeftDoorState)?.let { doorVal ->
+                binding.rearleftdoor.visibility =
+                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
+            }
+            it.getValue(Constants.rearRightDoorState)?.let { doorVal ->
+                binding.rearrightdoor.visibility =
+                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
             }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =

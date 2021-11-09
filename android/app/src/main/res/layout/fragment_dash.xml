@@ -238,6 +238,55 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
+    <ImageView
+        android:id="@+id/frontleftdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_frontleftdoor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+    <ImageView
+        android:id="@+id/frontrightdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_frontrightdoor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+    <ImageView
+        android:id="@+id/rearleftdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_rearleftdoor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+    <ImageView
+        android:id="@+id/rearrightdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_rearrightdoor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintHeight_percent=".6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
 
     <ImageView
         android:id="@+id/hatch"

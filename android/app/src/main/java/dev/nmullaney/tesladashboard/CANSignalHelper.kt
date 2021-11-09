@@ -49,6 +49,8 @@ class CANSignalHelper {
     fun createCANSignals() {
         insertCANSignal(Constants.stateOfCharge, 0, Hex(0x33A), 48, 7, 1f, 0)
         insertCANSignal(Constants.battVolts, 0, Hex(0x132), 0, 16, 0.01f, 0)
+        insertCANSignal(Constants.battAmps, 0, Hex(0x132), 16, 16, -.1f, 0, signed=true)
+
         insertCANSignal(Constants.uiSpeed, 0, Hex(0x257), 24, 9, 1f, 0)
         insertCANSignal(Constants.uiSpeedHighSpeed, 0, Hex(0x257), 34, 9, 1f, 0)
 
@@ -73,6 +75,10 @@ class CANSignalHelper {
         insertCANSignal(Constants.visionSpeedLimit, 1, Hex(0x399), 8, 5, 1f, 0)
         insertCANSignal(Constants.solarAngle, 0, Hex(0x2D3), 32, 8, 1f, 0, signed = true)
         insertCANSignal(Constants.gearSelected, 0, Hex(0x118), 21, 3, 1f, 0)
+        insertCANSignal(Constants.frontLeftDoorState, 0, Hex(0x102), 0, 4, 1f, 0)
+        insertCANSignal(Constants.frontRightDoorState, 0, Hex(0x103), 0, 4, 1f, 0)
+        insertCANSignal(Constants.rearLeftDoorState, 0, Hex(0x102), 4, 4, 1f, 0)
+        insertCANSignal(Constants.rearRightDoorState, 0, Hex(0x103), 4, 4, 1f, 0)
 
 
 

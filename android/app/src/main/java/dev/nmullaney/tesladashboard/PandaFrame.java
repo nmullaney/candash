@@ -2,6 +2,8 @@ package dev.nmullaney.tesladashboard;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+
 import android.util.Log;
 public class PandaFrame {
     private static final String TAG = PandaFrame.class.getSimpleName();
@@ -30,6 +32,16 @@ public class PandaFrame {
         frameBuffer.put(EMPTY, 0, INT_BYTES - length);
         frameBuffer.rewind();
         return frameBuffer.getLong();
+    }
+
+
+    private static String signExtend(String str){
+        //TODO add bounds checking
+        int n=32-str.length();
+        char[] sign_ext = new char[n];
+        Arrays.fill(sign_ext, str.charAt(0));
+
+        return new String(sign_ext)+str;
     }
 
     /**

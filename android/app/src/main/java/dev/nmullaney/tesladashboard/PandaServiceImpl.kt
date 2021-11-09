@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.net.*
+import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.HashMap
+import kotlin.math.sign
 
 @ExperimentalCoroutinesApi
 class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService {
@@ -40,7 +43,26 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
         }
         return socket
     }
-
+    private fun twosComplement(s:String) : Long{
+        if (s[0].equals('0'))
+            return s.toLong(radix = 2)
+        var seenOne:Boolean = false
+        val chars = s.toCharArray()
+        for (i in s.length-1 downTo 0){
+            if (seenOne == false){
+                if (chars[i].equals('1')){
+                    seenOne = true;
+                }
+            } else {
+                if (chars[i].equals('1')){
+                    chars[i] = '0'
+                } else {
+                    chars[i] = '1'
+                }
+            }
+        }
+        return (String(chars).toLong(radix = 2)) * -1
+    }
     @ExperimentalCoroutinesApi
     override suspend fun startRequests() {
         Log.d(TAG, "Starting requests")
@@ -125,7 +147,15 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                 )
             }
             if (!binaryPayloadString.equals("")){
-                val value = binaryPayloadString.toLong(2) * channel.factor + channel.offset
+                var value : Float = 0.0f
+                if (channel.signed != true) {
+                    binaryPayloadString = "0" + binaryPayloadString
+                    Log.d(TAG, channel.name + "is unsigned" + binaryPayloadString)
+                    value = binaryPayloadString.toLong(2) * channel.factor + channel.offset
+                } else {
+                    Log.d(TAG, channel.name + "is signed" + binaryPayloadString)
+                    value = twosComplement(binaryPayloadString) * channel.factor + channel.offset
+                }
                 // Log.d(TAG, channel.name + " = " + value)
                 carState.updateValue(channel.name, value)
                 carStateFlow.value = CarState(HashMap(carState.carData))
