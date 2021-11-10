@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
@@ -111,7 +112,7 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 // make background blue if driver needs to put hands on wheel
-                if (autopilotHandsVal.toInt() > 3) {
+                if ((autopilotHandsVal.toInt() > 3) and (autopilotHandsVal.toInt() != 15)) {
                     view.setBackgroundColor(Color.parseColor("#FF7791F7"))
                 } else {
                     it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
@@ -135,19 +136,19 @@ class DashFragment : Fragment() {
                 if (uiSpeedUnitsVal.toInt() == 0) binding.unit.text = "MPH" else binding.unit.text =
                     "KPH"
             }
-            /*
-            it.getValue(Constants.maxSpeedAP)?.let { cruiseControlSpeedVal ->
-                if ((cruiseControlSpeedVal.toInt() > 130) or (cruiseControlSpeedVal.toInt() == 0)) {
+/*
+            it.getValue(Constants.cruiseControlSpeed)?.let { cruiseControlSpeedVal ->
+                if (cruiseControlSpeedVal.toInt() == 0) {
                     binding.displaymaxspeed.visibility = View.INVISIBLE
                 } else {
                     binding.displaymaxspeed.visibility = View.VISIBLE
                     binding.autopilotMaxSpeedInactive.visibility = View.VISIBLE
-                    binding.displaymaxspeed.text = cruiseControlSpeedVal.toInt().toString()
-
-
+                    if (cruiseControlSpeedVal.toInt() < 200){
+                        binding.displaymaxspeed.text = cruiseControlSpeedVal.toInt().toString()
+                    }
                 }
             }
-            */
+*/
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() == 2) {
                     binding.autopilotInactive.visibility = View.VISIBLE
@@ -164,6 +165,13 @@ class DashFragment : Fragment() {
                     //binding.autopilotMaxSpeed.visibility = View.VISIBLE
                     // binding.displaymaxspeed.setTextColor(R.color.autopilot_blue)
                     binding.autopilot.visibility = View.VISIBLE
+                    it.getValue(Constants.steeringAngle)?.let {steeringAngleVal ->
+                        // set pivot to center of image
+                        binding.autopilot.pivotX = (binding.autopilot.width/2).toFloat()
+                        binding.autopilot.pivotY = (binding.autopilot.height/2).toFloat()
+                        binding.autopilot.rotation = steeringAngleVal.toFloat()
+                    }
+
                 } else {
                     //binding.autopilotMaxSpeed.visibility = View.INVISIBLE
                     binding.autopilot.visibility = View.GONE
