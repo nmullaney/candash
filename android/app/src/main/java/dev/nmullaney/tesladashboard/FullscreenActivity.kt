@@ -38,7 +38,7 @@ class FullscreenActivity : AppCompatActivity() {
 
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.fragment_container, InfoFragment())
+            .add(R.id.fragment_container, DashFragment())
             .commit()
 
         viewModel = ViewModelProvider(this).get(DashViewModel::class.java)

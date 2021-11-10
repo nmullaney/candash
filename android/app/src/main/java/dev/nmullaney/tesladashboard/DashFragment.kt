@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -25,7 +29,7 @@ class DashFragment : Fragment() {
     private var rightVehDetected: Int = 500
     private var gearColor: Int = Color.LTGRAY
     private var gearColorSelected: Int = Color.DKGRAY
-
+    private var lastAutopilotState: Int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -150,33 +154,7 @@ class DashFragment : Fragment() {
             }
 */
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
-                if (autopilotStateVal.toInt() == 2) {
-                    binding.autopilotInactive.visibility = View.VISIBLE
-
-
-                } else {
-                    binding.autopilotInactive.visibility = View.GONE
-                }
-                binding.autopilot.visibility =
-                    if (autopilotStateVal.toInt() == 3) View.VISIBLE else View.GONE
-
-                if (autopilotStateVal.toInt() == 3) {
-                    //binding.autopilotMaxSpeedInactive.visibility = View.INVISIBLE
-                    //binding.autopilotMaxSpeed.visibility = View.VISIBLE
-                    // binding.displaymaxspeed.setTextColor(R.color.autopilot_blue)
-                    binding.autopilot.visibility = View.VISIBLE
-                    it.getValue(Constants.steeringAngle)?.let {steeringAngleVal ->
-                        // set pivot to center of image
-                        binding.autopilot.pivotX = (binding.autopilot.width/2).toFloat()
-                        binding.autopilot.pivotY = (binding.autopilot.height/2).toFloat()
-                        binding.autopilot.rotation = steeringAngleVal.toFloat()
-                    }
-
-                } else {
-                    //binding.autopilotMaxSpeed.visibility = View.INVISIBLE
-                    binding.autopilot.visibility = View.GONE
-                    // binding.displaymaxspeed.setTextColor(Color.LTGRAY)
-                }
+                updateAutopilotUI(autopilotStateVal as Int, it.getValue(Constants.steeringAngle) as Int?)
             }
 
             it.getValue(Constants.liftgateState)?.let { liftgateVal ->
@@ -263,6 +241,33 @@ class DashFragment : Fragment() {
         viewModel.startUp()
     }
 
+    fun updateAutopilotUI(autopilotStateVal:Int, steeringAngleVal:Int?){
+        if (lastAutopilotState != autopilotStateVal) {
+            val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+            val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+            when (lastAutopilotState) {
+                1 -> fadeOut.cancel()
+                2 -> fadeIn.cancel()
+                3 -> binding.autopilot.visibility = View.INVISIBLE
+            }
+            binding.autopilotInactive.clearAnimation()
+            binding.autopilotInactive.visibility = if (autopilotStateVal == 3) View.INVISIBLE else View.VISIBLE
+            when (autopilotStateVal) {
+                1 -> binding.autopilotInactive.startAnimation(fadeOut)
+                2 -> binding.autopilotInactive.startAnimation(fadeIn)
+                3 -> binding.autopilot.visibility = View.VISIBLE
+            }
+        }
+        if (autopilotStateVal == 3) {
+            steeringAngleVal?.let {steeringAngle ->
+                // set pivot to center of image
+                binding.autopilot.pivotX = (binding.autopilot.width/2).toFloat()
+                binding.autopilot.pivotY = (binding.autopilot.height/2).toFloat()
+                binding.autopilot.rotation = steeringAngle.toFloat()
+            }
+        }
+        lastAutopilotState = autopilotStateVal
+    }
     override fun onStop() {
         super.onStop()
         viewModel.shutdown()
