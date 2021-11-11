@@ -1,6 +1,10 @@
 package dev.nmullaney.tesladashboard
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -30,6 +34,8 @@ class DashFragment : Fragment() {
     private var gearColor: Int = Color.LTGRAY
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 1
+    private var lastAutopilotHandsState: Int = 1
+//    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +48,6 @@ class DashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
         binding.root.setOnLongClickListener {
@@ -65,11 +70,15 @@ class DashFragment : Fragment() {
                     gearColorSelected = Color.LTGRAY
                     gearColor = Color.DKGRAY
                     binding.PRND.setTextColor(Color.DKGRAY)
+                    binding.modely.setColorFilter(Color.parseColor("#FF222222"))
+
                     //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
 
                 } else {
-                    view.setBackground(null)
+                    //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
+                    view.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
+
                     binding.speed.setTextColor(Color.BLACK)
                     binding.unit.setTextColor(Color.DKGRAY)
                     binding.batterypercent.setTextColor(Color.DKGRAY)
@@ -79,9 +88,14 @@ class DashFragment : Fragment() {
                     gearColorSelected = Color.DKGRAY
                     gearColor = Color.LTGRAY
                     binding.PRND.setTextColor(Color.LTGRAY)
-
+                    binding.modely.setColorFilter(Color.LTGRAY)
                     //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
+                }
+            }
+            it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
+                if (autopilotStateVal.toInt() > 2){
+                    gearColorSelected = Color.parseColor("#FF0048FF")
                 }
             }
             it.getValue(Constants.gearSelected)?.let { gearStateVal ->
@@ -115,18 +129,30 @@ class DashFragment : Fragment() {
                 binding.PRND.text = (ss)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-                // make background blue if driver needs to put hands on wheel
-                if ((autopilotHandsVal.toInt() > 3) and (autopilotHandsVal.toInt() != 15)) {
-                    view.setBackgroundColor(Color.parseColor("#FF7791F7"))
-                } else {
-                    it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
-                        if (isSunUpVal.toInt() == 0)
-                            view.setBackgroundColor(Color.BLACK)
-                        else
-                            view.setBackground(null)
+                if (lastAutopilotHandsState.toInt() != autopilotHandsVal) {
+                    // make background blue if driver needs to put hands on wheel
+                    if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() != 15)) {
+                        var colorDrawables = arrayOf(
+                            view.background as ColorDrawable,
+                            ColorDrawable(Color.parseColor("#FF7791F7"))
+                        )
+                        var transitionDrawable: TransitionDrawable =
+                            TransitionDrawable(colorDrawables)
+                        view.background = transitionDrawable
+
+                        transitionDrawable.startTransition(500)
+                        //view.setBackgroundColor(Color.parseColor("#FF7791F7"))
+
+                    } else {
+                        it.getValue(Constants.isSunUp)?.let { isSunUpVal ->
+                            if (isSunUpVal.toInt() == 0)
+                                view.setBackgroundColor(Color.BLACK)
+                            else
+                                view.setBackground(null)
+                        }
                     }
                 }
-
+                lastAutopilotHandsState = autopilotHandsVal.toInt()
             }
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
@@ -154,7 +180,7 @@ class DashFragment : Fragment() {
             }
 */
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
-                updateAutopilotUI(autopilotStateVal as Int, it.getValue(Constants.steeringAngle) as Int?)
+                updateAutopilotUI(autopilotStateVal.toInt(), it.getValue(Constants.steeringAngle)?.toInt())
             }
 
             it.getValue(Constants.liftgateState)?.let { liftgateVal ->
@@ -183,15 +209,15 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =
-                    if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE
+                    if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.INVISIBLE
                 binding.leftTurnSignalLight.visibility =
-                    if (leftTurnSignalVal.toInt() == 2) View.VISIBLE else View.GONE
+                    if (leftTurnSignalVal.toInt() == 2) View.VISIBLE else View.INVISIBLE
             }
             it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
                 binding.rightTurnSignalDark.visibility =
-                    if (rightTurnSignalVal.toInt() == 1) View.VISIBLE else View.GONE
+                    if (rightTurnSignalVal.toInt() == 1) View.VISIBLE else View.INVISIBLE
                 binding.rightTurnSignalLight.visibility =
-                    if (rightTurnSignalVal.toInt() == 2) View.VISIBLE else View.GONE
+                    if (rightTurnSignalVal.toInt() == 2) View.VISIBLE else View.INVISIBLE
             }
             it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
                 binding.blindSpotLeft1.visibility =

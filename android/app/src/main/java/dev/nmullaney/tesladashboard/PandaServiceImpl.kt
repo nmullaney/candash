@@ -20,7 +20,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
 
     @ExperimentalCoroutinesApi
     private val carStateFlow = MutableStateFlow(CarState())
-    private val carState : CarState = CarState()
+    private val carState: CarState = CarState()
     private val port = 1338
     private var shutdown = false
     private val heartbeat = "ehllo"
@@ -28,14 +28,14 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
     private val heartBeatIntervalMs = 5_000
     private val signalHelper = CANSignalHelper()
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    private lateinit var socket : DatagramSocket
+    private lateinit var socket: DatagramSocket
 
     @ExperimentalCoroutinesApi
-    override fun carState() : Flow<CarState> {
+    override fun carState(): Flow<CarState> {
         return carStateFlow
     }
 
-    private fun getSocket() : DatagramSocket {
+    private fun getSocket(): DatagramSocket {
         if (!this::socket.isInitialized) {
             socket = DatagramSocket(null)
             socket.soTimeout = heartBeatIntervalMs
@@ -43,18 +43,19 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
         }
         return socket
     }
-    private fun twosComplement(s:String) : Long{
+
+    private fun twosComplement(s: String): Long {
         if (s[0].equals('0'))
             return s.toLong(radix = 2)
-        var seenOne:Boolean = false
+        var seenOne: Boolean = false
         val chars = s.toCharArray()
-        for (i in s.length-1 downTo 0){
-            if (seenOne == false){
-                if (chars[i].equals('1')){
+        for (i in s.length - 1 downTo 0) {
+            if (seenOne == false) {
+                if (chars[i].equals('1')) {
                     seenOne = true;
                 }
             } else {
-                if (chars[i].equals('1')){
+                if (chars[i].equals('1')) {
                     chars[i] = '0'
                 } else {
                     chars[i] = '1'
@@ -63,6 +64,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
         }
         return (String(chars).toLong(radix = 2)) * -1
     }
+
     @ExperimentalCoroutinesApi
     override suspend fun startRequests() {
         Log.d(TAG, "Starting requests")
@@ -86,7 +88,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
 
                     try {
                         getSocket().receive(packet)
-                    } catch (socketTimeoutException : SocketTimeoutException) {
+                    } catch (socketTimeoutException: SocketTimeoutException) {
                         Log.w(TAG, "Socket timed out without receiving a packet")
                         yield()
                         continue
@@ -104,8 +106,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                     if (pandaFrame.frameId == 6L && pandaFrame.busId == 15L) {
                         // It's an ack
                         sendFilter(getSocket())
-                    }
-                    else {
+                    } else {
                         handleFrame(pandaFrame)
                     }
                     yield()
@@ -136,7 +137,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                     channel.bitLength
                 )
             } else {
-                Log.d(TAG, channel.name + " mux startbit:" + channel.startBit + " bitlength:" + channel.bitLength + " serviceIndex:" + channel.serviceIndex )
+                Log.d(
+                    TAG,
+                    channel.name + " mux startbit:" + channel.startBit + " bitlength:" + channel.bitLength + " serviceIndex:" + channel.serviceIndex
+                )
 
                 binaryPayloadString = frame.getPayloadValue(
 
@@ -146,8 +150,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                     channel.muxIndex
                 )
             }
-            if (!binaryPayloadString.equals("")){
-                var value : Float = 0.0f
+            if (!binaryPayloadString.equals("")) {
+                var value: Float = 0.0f
                 if (channel.signed != true) {
                     binaryPayloadString = "0" + binaryPayloadString
                     Log.d(TAG, channel.name + "is unsigned" + binaryPayloadString)
@@ -159,7 +163,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                 // Log.d(TAG, channel.name + " = " + value)
                 carState.updateValue(channel.name, value)
                 carStateFlow.value = CarState(HashMap(carState.carData))
-            }else{
+
+            } else {
                 Log.d(TAG, "skipping payload")
 
             }
@@ -199,8 +204,9 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
         socket.send(packet)
     }
 
-    private fun serverAddress() : InetSocketAddress =
+    private fun serverAddress(): InetSocketAddress =
         InetSocketAddress(InetAddress.getByName(ipAddress()), port)
 
-    private fun ipAddress() = sharedPreferences.getString(Constants.ipAddressPrefKey, Constants.ipAddressLocalNetwork)
+    private fun ipAddress() =
+        sharedPreferences.getString(Constants.ipAddressPrefKey, Constants.ipAddressLocalNetwork)
 }
