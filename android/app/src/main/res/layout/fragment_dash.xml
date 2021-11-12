@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/day_background">
 
     <TextView
         android:id="@+id/speed"
@@ -44,7 +45,6 @@
         app:layout_constraintCircleRadius="65dp" />
 
 
-
     <ImageView
         android:id="@+id/autopilot"
         android:layout_width="60dp"
@@ -68,53 +68,51 @@
         android:visibility="invisible"
         app:layout_constraintCircle="@id/speed"
         app:layout_constraintCircleAngle="280"
-        app:layout_constraintCircleRadius="180dp"
-        />
+        app:layout_constraintCircleRadius="180dp" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/autopilot_max_speed"-->
-<!--        android:layout_width="60dp"-->
-<!--        android:layout_height="80dp"-->
-<!--        android:gravity="center"-->
-<!--        android:src="@drawable/ic_maxspeed"-->
-<!--        android:visibility="invisible"-->
-<!--        app:layout_constraintCircle="@id/speed"-->
-<!--        app:layout_constraintCircleAngle="280"-->
-<!--        app:layout_constraintCircleRadius="180dp" />-->
-<!--    <ImageView-->
-<!--        android:id="@+id/autopilot_max_speed_inactive"-->
-<!--        android:layout_width="60dp"-->
-<!--        android:layout_height="80dp"-->
-<!--        android:gravity="center"-->
-<!--        android:src="@drawable/ic_maxspeedinactive"-->
-<!--        android:visibility="invisible"-->
-<!--        app:layout_constraintCircle="@id/speed"-->
-<!--        app:layout_constraintCircleAngle="280"-->
-<!--        app:layout_constraintCircleRadius="180dp" />-->
-
-
-<!--    <TextView-->
-<!--        android:id="@+id/displaymaxspeed"-->
-
-<!--        android:layout_width="60dp"-->
-<!--        android:layout_height="80dp"-->
-<!--        android:fontFamily="@font/montserratbold"-->
-<!--        android:gravity="center|center_vertical"-->
-<!--        android:text="25"-->
-<!--        android:textAlignment="center"-->
-<!--        android:paddingTop="20dp"-->
-<!--        android:paddingBottom="22dp"-->
-<!--        app:autoSizeMaxTextSize="550sp"-->
-<!--        app:autoSizeMinTextSize="10sp"-->
-<!--        app:autoSizeStepGranularity="5sp"-->
-<!--        app:autoSizeTextType="uniform"-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/autopilot_max_speed"-->
+    <!--        android:layout_width="60dp"-->
+    <!--        android:layout_height="80dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:src="@drawable/ic_maxspeed"-->
+    <!--        android:visibility="invisible"-->
+    <!--        app:layout_constraintCircle="@id/speed"-->
+    <!--        app:layout_constraintCircleAngle="280"-->
+    <!--        app:layout_constraintCircleRadius="180dp" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/autopilot_max_speed_inactive"-->
+    <!--        android:layout_width="60dp"-->
+    <!--        android:layout_height="80dp"-->
+    <!--        android:gravity="center"-->
+    <!--        android:src="@drawable/ic_maxspeedinactive"-->
+    <!--        android:visibility="invisible"-->
+    <!--        app:layout_constraintCircle="@id/speed"-->
+    <!--        app:layout_constraintCircleAngle="280"-->
+    <!--        app:layout_constraintCircleRadius="180dp" />-->
 
 
+    <!--    <TextView-->
+    <!--        android:id="@+id/displaymaxspeed"-->
 
-<!--        app:layout_constraintCircle="@id/speed"-->
-<!--        app:layout_constraintCircleAngle="280"-->
-<!--        app:layout_constraintCircleRadius="180dp" />-->
-<!--    />-->
+    <!--        android:layout_width="60dp"-->
+    <!--        android:layout_height="80dp"-->
+    <!--        android:fontFamily="@font/montserratbold"-->
+    <!--        android:gravity="center|center_vertical"-->
+    <!--        android:text="25"-->
+    <!--        android:textAlignment="center"-->
+    <!--        android:paddingTop="20dp"-->
+    <!--        android:paddingBottom="22dp"-->
+    <!--        app:autoSizeMaxTextSize="550sp"-->
+    <!--        app:autoSizeMinTextSize="10sp"-->
+    <!--        app:autoSizeStepGranularity="5sp"-->
+    <!--        app:autoSizeTextType="uniform"-->
+
+
+    <!--        app:layout_constraintCircle="@id/speed"-->
+    <!--        app:layout_constraintCircleAngle="280"-->
+    <!--        app:layout_constraintCircleRadius="180dp" />-->
+    <!--    />-->
 
     <ImageView
         android:id="@+id/left_turn_signal_light"
@@ -240,6 +238,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
+
     <ImageView
         android:id="@+id/frontleftdoor"
         android:layout_width="0dp"
@@ -252,6 +251,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
+
     <ImageView
         android:id="@+id/frontrightdoor"
         android:layout_width="0dp"
@@ -264,6 +264,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
+
     <ImageView
         android:id="@+id/rearleftdoor"
         android:layout_width="0dp"
@@ -276,6 +277,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5" />
+
     <ImageView
         android:id="@+id/rearrightdoor"
         android:layout_width="0dp"
