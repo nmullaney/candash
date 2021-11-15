@@ -14,12 +14,16 @@ class PowerConnectionReceiver : BroadcastReceiver() {
             context?.registerReceiver(null, ifilter)
         }
 
-        var status : Int? = intent?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-        val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
-                || status == BatteryManager.BATTERY_STATUS_FULL
 
+// How are we charging?
+        val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
+        val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+        val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+        val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+                || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+                || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
 
-        if (isCharging) {
+        if (isPlugged) {
             var pm : PackageManager? = context?.packageManager
 
             var i : Intent? = context?.let { pm?.getLaunchIntentForPackage(it.packageName) }

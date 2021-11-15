@@ -55,7 +55,7 @@ class DashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-
+        viewModel.serverIpAddress()?.let { viewModel.saveSettings(viewModel.useMockServer(), it) }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
@@ -156,8 +156,8 @@ class DashFragment : Fragment() {
 
 
             }
-            it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
+            it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " mi"
                 // 83 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
                 //binding.fullbattery.scrollX = 8
                 binding.fullbattery.scrollX =

@@ -16,7 +16,7 @@ import javax.inject.Inject
 class DashViewModel @Inject constructor(private val dashRepository: DashRepository, private val sharedPreferences: SharedPreferences) : ViewModel() {
     private val TAG = DashViewModel::class.java.simpleName
 
-    private lateinit var careStateData: MutableLiveData<CarState>
+    private var carStateData: MutableLiveData<CarState> = MutableLiveData()
     private var viewToShowData: MutableLiveData<String> = MutableLiveData()
     private lateinit var carStateJob: Job
 
@@ -54,19 +54,20 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     fun carState() : LiveData<CarState> {
-        careStateData = MutableLiveData()
         startCarStateJob()
-        return careStateData
+        return carStateData
     }
 
     fun cancelCarStateJob() {
-        carStateJob.cancel()
+        if (::carStateJob.isInitialized) {
+            carStateJob.cancel()
+        }
     }
 
     fun startCarStateJob() {
         carStateJob = viewModelScope.launch {
             dashRepository.carState().collect {
-                careStateData.postValue(it)
+                carStateData.postValue(it)
             }
         }
     }

@@ -35,6 +35,7 @@ class InfoFragment() : Fragment() {
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
 
+
         binding.toggleServerGroup.check(if (viewModel.useMockServer()) R.id.mock_server_button else R.id.real_server_button)
 
         binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
