@@ -9,18 +9,14 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
+
 
 class DashFragment : Fragment() {
 
@@ -35,7 +31,7 @@ class DashFragment : Fragment() {
     private var gearColor: Int = Color.LTGRAY
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 1
-    private var lastAutopilotHandsState: Int = 1
+    private var autopilotHandsToggle: Boolean = false
     private var lastSunUp: Int = 1
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
@@ -56,7 +52,6 @@ class DashFragment : Fragment() {
     }
 
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
@@ -73,11 +68,9 @@ class DashFragment : Fragment() {
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
-                }
-                else if (lastSunUp == 1){
+                } else if (lastSunUp == 1) {
                     gearColorSelected = Color.DKGRAY
-                }
-                else {
+                } else {
                     gearColorSelected = Color.LTGRAY
                 }
             }
@@ -112,6 +105,7 @@ class DashFragment : Fragment() {
                 binding.PRND.text = (ss)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
+                /*
                 var colorDrawables = arrayOf(
                     ColorDrawable(getBackgroundColor(lastSunUp)),
                     ColorDrawable(Color.parseColor("#FF7791F7"))
@@ -119,47 +113,52 @@ class DashFragment : Fragment() {
 
                 var transitionDrawable: TransitionDrawable =
                     TransitionDrawable(colorDrawables)
-                Log.d(
+                 Log.d(
                     "dashFragment",
                     "lasthands $lastAutopilotHandsState handsval$autopilotHandsVal"
-                )
-                if (lastAutopilotHandsState.toInt() != autopilotHandsVal) {
-                    // make background blue if driver needs to put hands on wheel
-                    if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
+                )*/
 
-                        view.background = transitionDrawable
+                // make background blue if driver needs to put hands on wheel
+                if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
 
-                        transitionDrawable.startTransition(500)
-                        view.postDelayed({
-                            transitionDrawable.reverseTransition(500)
-                        }, 500)
+                   // view.background = transitionDrawable
 
+                   // transitionDrawable.startTransition(500)
+                    /*
+                    view.postDelayed({
+                        transitionDrawable.reverseTransition(500)
+                    }, 500)
+                    //use as semaphore to let system know it can blink again if it receives another message
+                    lastAutopilotHandsState = 15
+*/                  if (autopilotHandsToggle == false) {
+                        val colorFrom = getBackgroundColor(lastSunUp)
+                        val colorTo = Color.parseColor("#FF7791F7")
+                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                        colorAnimation.duration = 2000
+                        // milliseconds
 
-                    } else {
-                            if (lastSunUp == 0) {
-                                colorDrawables = arrayOf(
-
-                                    ColorDrawable(Color.parseColor("#FF7791F7")),
-                                    ColorDrawable(Color.BLACK)
-                                )
-                            } else {
-                                colorDrawables = arrayOf(
-
-                                    ColorDrawable(Color.parseColor("#FF7791F7")),
-                                    ColorDrawable(Color.parseColor("#FFEEEEEE"))
-                                )
-                            }
-
-
-                        transitionDrawable = TransitionDrawable(colorDrawables)
-                        transitionDrawable.startTransition(500)
+                        colorAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        colorAnimation.start()
+                        autopilotHandsToggle = true
                     }
+                    else {
+                        binding.root.setBackgroundColor(Color.parseColor("#FF7791F7"))
+
+                    }
+                } else {
+                    binding.root.setBackgroundColor(getBackgroundColor(lastSunUp))
+                    autopilotHandsToggle = false
                 }
-                lastAutopilotHandsState = autopilotHandsVal.toInt()
+
+
             }
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
-                // 46 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
+                // 83 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
                 //binding.fullbattery.scrollX = 8
                 binding.fullbattery.scrollX =
                     (83 - ((stateOfChargeVal.toLong() * 83) / 100).toInt())
@@ -273,6 +272,7 @@ class DashFragment : Fragment() {
         super.onStart()
         viewModel.startUp()
     }
+
     fun setColors(sunUpVal: Int) {
 
         if (lastSunUp.toInt() != sunUpVal) {
@@ -306,7 +306,7 @@ class DashFragment : Fragment() {
                 binding.fullbattery.clearColorFilter()
                 gearColorSelected = Color.DKGRAY
                 gearColor = Color.LTGRAY
-                binding.PRND.setTextColor(Color.LTGRAY)
+                binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
                 binding.modely.setColorFilter(Color.LTGRAY)
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
@@ -314,8 +314,17 @@ class DashFragment : Fragment() {
         }
         lastSunUp = sunUpVal
     }
+
     fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
+        var steeringAngle: Int
+
+        if (steeringAngleVal == null) {
+            steeringAngle = 0
+        } else {
+            steeringAngle = steeringAngleVal
+        }
         if (lastAutopilotState != autopilotStateVal) {
+
             val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
             val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
             when (lastAutopilotState) {
@@ -333,12 +342,12 @@ class DashFragment : Fragment() {
             }
         }
         if (autopilotStateVal == 3) {
-            steeringAngleVal?.let { steeringAngle ->
-                // set pivot to center of image
-                binding.autopilot.pivotX = (binding.autopilot.width / 2).toFloat()
-                binding.autopilot.pivotY = (binding.autopilot.height / 2).toFloat()
-                binding.autopilot.rotation = steeringAngle.toFloat()
-            }
+
+            // set pivot to center of image
+            binding.autopilot.pivotX = (binding.autopilot.width / 2).toFloat()
+            binding.autopilot.pivotY = (binding.autopilot.height / 2).toFloat()
+            binding.autopilot.rotation = steeringAngle.toFloat()
+
         }
         lastAutopilotState = autopilotStateVal
     }

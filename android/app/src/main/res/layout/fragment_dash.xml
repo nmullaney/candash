@@ -42,7 +42,7 @@
         app:autoSizeTextType="uniform"
         app:layout_constraintCircle="@id/speed"
         app:layout_constraintCircleAngle="180"
-        app:layout_constraintCircleRadius="65dp" />
+        app:layout_constraintCircleRadius="80dp" />
 
 
     <ImageView
@@ -307,16 +307,14 @@
 
     <ImageView
         android:id="@+id/hood"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:src="@drawable/ic_hood"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/speed"
-        app:layout_constraintHeight_percent=".6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent=".5" />
+        android:visibility="invisible"
+        app:layout_constraintCircle="@id/modely"
+        app:layout_constraintCircleAngle="180"
+        app:layout_constraintCircleRadius="5dp"
+  />
 
     <ImageView
         android:id="@+id/blind_spot_left_1"
@@ -324,10 +322,10 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl1"
-        android:visibility="gone"
+
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
-        app:layout_constraintCircleRadius="125dp" />
+        app:layout_constraintCircleRadius="130dp" />
 
     <ImageView
         android:id="@+id/blind_spot_right_1"
@@ -336,9 +334,10 @@
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsr1"
         android:visibility="gone"
+
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
-        app:layout_constraintCircleRadius="125dp" />
+        app:layout_constraintCircleRadius="130dp" />
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
@@ -346,10 +345,10 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl2"
-        android:visibility="gone"
+
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
-        app:layout_constraintCircleRadius="125dp" />
+        app:layout_constraintCircleRadius="130dp" />
 
     <ImageView
         android:id="@+id/blind_spot_right_2"
@@ -360,6 +359,6 @@
         android:visibility="gone"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
-        app:layout_constraintCircleRadius="125dp" />
+        app:layout_constraintCircleRadius="130dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

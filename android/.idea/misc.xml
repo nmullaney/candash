@@ -5,6 +5,10 @@
       <map>
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_autopilot.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_autopilot_inactive.xml" value="0.211" />
+        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsl1.xml" value="0.315" />
+        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsl2.xml" value="0.315" />
+        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsr1.xml" value="0.315" />
+        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsr2.xml" value="0.315" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_deadbattery.xml" value="0.32" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_deadbatterymask.xml" value="0.317" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_fullbattery.xml" value="0.32" />
@@ -14,7 +18,7 @@
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_turnleftdark.xml" value="0.2735" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/activity_fullscreen.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_bs_warning.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_dash.xml" value="0.4466666666666667" />
+        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_dash.xml" value="0.3333333333333333" />
       </map>
     </option>
   </component>
