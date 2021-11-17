@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,10 @@ class FullscreenActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_fullscreen)
 
+
+        // This is a known unsafe cast, but is safe in the only correct use case:
+        // TeslaDashboardApplication extends Hilt_TeslaDashboardApplication
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         } else {

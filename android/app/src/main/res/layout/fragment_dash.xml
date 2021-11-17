@@ -181,11 +181,11 @@
 
     <TextView
         android:id="@+id/batterypercent"
-        android:layout_width="60dp"
+        android:layout_width="100dp"
         android:layout_height="30dp"
         android:fontFamily="@font/montserratbold"
         android:gravity="center|center_vertical"
-        android:text="50 %"
+        android:text="235 mi"
         android:textAlignment="center"
         app:autoSizeMaxTextSize="550sp"
         app:autoSizeMinTextSize="20sp"

@@ -1,21 +1,22 @@
 package dev.nmullaney.tesladashboard
 
+import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.util.Log
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.asCoroutineDispatcher
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import java.net.*
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.collections.HashMap
+import kotlin.invoke
 import kotlin.math.sign
 
 @ExperimentalCoroutinesApi
-class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService {
+class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Context) : PandaService {
     private val TAG = PandaServiceImpl::class.java.simpleName
 
     @ExperimentalCoroutinesApi
@@ -78,13 +79,13 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
                 while (!shutdown) {
 
                     if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
-                        //Log.d(TAG, "Sending heartbeat")
+                        Log.d(TAG, "Sending heartbeat")
                         sendHello(getSocket())
                     }
 
                     val buf = ByteArray(16)
                     val packet = DatagramPacket(buf, buf.size, serverAddress())
-                    //Log.d(TAG, "C: Waiting to receive...")
+                    Log.d(TAG, "C: Waiting to receive...")
 
                     try {
                         getSocket().receive(packet)
@@ -200,8 +201,35 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences) : PandaService 
         Log.d(TAG, "C: Sending: '" + String(buf) + "'")
 
         // send the UDP packet
+        try {
+            socket.send(packet)
+        } catch (socketException: SocketException) {
+            Log.e(TAG, "SocketException while sending data.", socketException)
+            checkNetwork()
+        }
+    }
 
-        socket.send(packet)
+    private fun checkNetwork() {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivityManager.activeNetwork != null) {
+            Log.d(TAG, "Network is good")
+        } else {
+            runBlocking {
+                restartLater()
+            }
+        }
+    }
+
+    private suspend fun restartLater() {
+        withContext(pandaContext) {
+            shutdown()
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.addDefaultNetworkActiveListener {
+                async {
+                    startRequests()
+                }
+            }
+        }
     }
 
     private fun serverAddress(): InetSocketAddress =

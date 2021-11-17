@@ -17,8 +17,8 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun providePandaServiceImpl(sharedPreferences: SharedPreferences) : PandaServiceImpl {
-        return PandaServiceImpl(sharedPreferences)
+    fun providePandaServiceImpl(sharedPreferences: SharedPreferences, @ApplicationContext context: Context) : PandaServiceImpl {
+        return PandaServiceImpl(sharedPreferences, context)
     }
 
     @Singleton

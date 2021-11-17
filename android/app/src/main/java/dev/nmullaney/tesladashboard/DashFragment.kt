@@ -51,6 +51,11 @@ class DashFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
+        viewModel.serverIpAddress()?.let { viewModel.saveSettings(viewModel.useMockServer(), it) }
+        super.onResume()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,6 +124,8 @@ class DashFragment : Fragment() {
                 )*/
 
                 // make background blue if driver needs to put hands on wheel
+
+                //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
 
                    // view.background = transitionDrawable
@@ -156,18 +163,26 @@ class DashFragment : Fragment() {
 
 
             }
-            it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " mi"
-                // 83 is the scrollx value where the battery meter is empty, if you change width of the drawable you will have to update this.
-                //binding.fullbattery.scrollX = 8
-                binding.fullbattery.scrollX =
-                    (83 - ((stateOfChargeVal.toLong() * 83) / 100).toInt())
 
-            }
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
-                if (uiSpeedUnitsVal.toInt() == 0) binding.unit.text = "MPH" else binding.unit.text =
-                    "KPH"
+                if (uiSpeedUnitsVal.toInt() == 0) {
+                    binding.unit.text = "MPH"
+                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                        binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " mi"
+
+                    }
+                } else {
+                    binding.unit.text =
+                        "KPH"
+                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                        binding.batterypercent.text = ((stateOfChargeVal.toInt())/.62).toString() + " km"
+                    }
+                }
+            }
+            it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                binding.fullbattery.scrollX =
+                    (83 - ((stateOfChargeVal.toLong() * 83) / 100).toInt())
             }
 /*
             it.getValue(Constants.cruiseControlSpeed)?.let { cruiseControlSpeedVal ->
@@ -305,7 +320,7 @@ class DashFragment : Fragment() {
                 binding.deadbatterymask.clearColorFilter()
                 binding.fullbattery.clearColorFilter()
                 gearColorSelected = Color.DKGRAY
-                gearColor = Color.LTGRAY
+                gearColor = Color.parseColor("#FFDDDDDD")
                 binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
                 binding.modely.setColorFilter(Color.LTGRAY)
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
