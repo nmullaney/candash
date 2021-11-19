@@ -173,8 +173,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
     override suspend fun shutdown() {
+        Log.d(TAG, "in shutdown")
         withContext(pandaContext) {
             shutdown = true
+            Log.d(TAG, "shutdown true")
         }
     }
 
@@ -221,6 +223,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
     private suspend fun restartLater() {
+        Log.d(TAG, "in restartLater")
         withContext(pandaContext) {
             shutdown()
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

@@ -28,7 +28,7 @@ class DashFragment : Fragment() {
     private var rearRightVehDetected: Int = 500
     private var leftVehDetected: Int = 500
     private var rightVehDetected: Int = 500
-    private var gearColor: Int = Color.LTGRAY
+    private var gearColor: Int = Color.parseColor("#FFEEEEEE")
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 1
     private var autopilotHandsToggle: Boolean = false
@@ -51,16 +51,12 @@ class DashFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        viewModel.serverIpAddress()?.let { viewModel.saveSettings(viewModel.useMockServer(), it) }
-        super.onResume()
-    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        viewModel.serverIpAddress()?.let { viewModel.saveSettings(viewModel.useMockServer(), it) }
+        // viewModel.serverIpAddress()?.let { viewModel.saveSettings(viewModel.useMockServer(), it) }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
@@ -320,7 +316,7 @@ class DashFragment : Fragment() {
                 binding.deadbatterymask.clearColorFilter()
                 binding.fullbattery.clearColorFilter()
                 gearColorSelected = Color.DKGRAY
-                gearColor = Color.parseColor("#FFDDDDDD")
+                gearColor = Color.parseColor("#FFEEEEEE")
                 binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
                 binding.modely.setColorFilter(Color.LTGRAY)
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
