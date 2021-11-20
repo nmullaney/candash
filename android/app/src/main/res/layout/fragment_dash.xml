@@ -185,8 +185,9 @@
         android:layout_height="30dp"
         android:fontFamily="@font/montserratbold"
         android:gravity="center|center_vertical"
-        android:text="235 mi"
-        android:textAlignment="center"
+        android:paddingRight="10dp"
+        android:text="50 %"
+        android:textAlignment="viewEnd"
         app:autoSizeMaxTextSize="550sp"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeStepGranularity="10sp"
@@ -313,8 +314,7 @@
         android:visibility="invisible"
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="180"
-        app:layout_constraintCircleRadius="5dp"
-  />
+        app:layout_constraintCircleRadius="5dp" />
 
     <ImageView
         android:id="@+id/blind_spot_left_1"

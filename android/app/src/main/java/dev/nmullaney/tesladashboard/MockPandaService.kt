@@ -54,7 +54,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotState to 2,
                 Constants.rearLeftVehicle to 100,
                 Constants.autopilotHands to 1,
-
+                Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearPark
 
             )),
@@ -74,6 +74,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotHands to 1,
                 Constants.cruiseControlSpeed to 45.0,
                 Constants.rearLeftVehicle to 100,
+                Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearPark
             )),
             CarState(mutableMapOf(
@@ -92,6 +93,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotHands to 4,
                 Constants.maxSpeedAP to 45.0,
                 Constants.cruiseControlSpeed to 45.0,
+                Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearDrive
             )),
             CarState(mutableMapOf(
@@ -107,6 +109,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotState to 3,
                 Constants.autopilotHands to 1,
                 Constants.maxSpeedAP to 45.0,
+                Constants.uiSpeedUnits to 0,
                 Constants.cruiseControlSpeed to 45.0
             )),
             CarState(mutableMapOf(
@@ -123,7 +126,7 @@ class MockPandaService : PandaService {
                 Constants.isSunUp to 0.0,
                 Constants.autopilotState to 3,
                 Constants.autopilotHands to 1,
-
+                Constants.uiSpeedUnits to 0,
                 Constants.maxSpeedAP to 25.0,
                 Constants.cruiseControlSpeed to 23.0
             )))

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,9 @@ import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 
 
 class DashFragment : Fragment() {
+
+    private val TAG = DashViewModel::class.java.simpleName
+
 
     private lateinit var binding: FragmentDashBinding
 
@@ -33,6 +37,7 @@ class DashFragment : Fragment() {
     private var lastAutopilotState: Int = 1
     private var autopilotHandsToggle: Boolean = false
     private var lastSunUp: Int = 1
+    private var showSOC: Boolean = true
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
     override fun onCreateView(
@@ -60,6 +65,10 @@ class DashFragment : Fragment() {
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
+        }
+        binding.batterypercent.setOnClickListener {
+            showSOC = !showSOC
+            return@setOnClickListener
         }
         viewModel.carState().observe(viewLifecycleOwner) {
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
@@ -106,34 +115,10 @@ class DashFragment : Fragment() {
                 binding.PRND.text = (ss)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-                /*
-                var colorDrawables = arrayOf(
-                    ColorDrawable(getBackgroundColor(lastSunUp)),
-                    ColorDrawable(Color.parseColor("#FF7791F7"))
-                )
-
-                var transitionDrawable: TransitionDrawable =
-                    TransitionDrawable(colorDrawables)
-                 Log.d(
-                    "dashFragment",
-                    "lasthands $lastAutopilotHandsState handsval$autopilotHandsVal"
-                )*/
-
-                // make background blue if driver needs to put hands on wheel
 
                 //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
-
-                   // view.background = transitionDrawable
-
-                   // transitionDrawable.startTransition(500)
-                    /*
-                    view.postDelayed({
-                        transitionDrawable.reverseTransition(500)
-                    }, 500)
-                    //use as semaphore to let system know it can blink again if it receives another message
-                    lastAutopilotHandsState = 15
-*/                  if (autopilotHandsToggle == false) {
+                    if (autopilotHandsToggle == false) {
                         val colorFrom = getBackgroundColor(lastSunUp)
                         val colorTo = Color.parseColor("#FF7791F7")
                         val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
@@ -162,17 +147,29 @@ class DashFragment : Fragment() {
 
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
-                if (uiSpeedUnitsVal.toInt() == 0) {
-                    binding.unit.text = "MPH"
-                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                        binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " mi"
-
+                if (showSOC == true) {
+                    it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                        binding.batterypercent.text =
+                            stateOfChargeVal.toInt().toString() + " %"
                     }
                 } else {
-                    binding.unit.text =
-                        "KPH"
-                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                        binding.batterypercent.text = ((stateOfChargeVal.toInt())/.62).toString() + " km"
+                    if (uiSpeedUnitsVal.toInt() == 0) {
+                        binding.unit.text = "MPH"
+                        Log.d(TAG, showSOC.toString())
+
+                            it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                                binding.batterypercent.text =
+                                    stateOfChargeVal.toInt().toString() + " mi"
+
+                            }
+                        }
+                     else {
+                        binding.unit.text =
+                            "KPH"
+                        it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                            binding.batterypercent.text =
+                                ((stateOfChargeVal.toInt()) / .62).toString() + " km"
+                        }
                     }
                 }
             }
@@ -317,7 +314,7 @@ class DashFragment : Fragment() {
                 binding.fullbattery.clearColorFilter()
                 gearColorSelected = Color.DKGRAY
                 gearColor = Color.parseColor("#FFEEEEEE")
-                binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
+                binding.PRND.setTextColor(Color.parseColor("#FFEEEEEE"))
                 binding.modely.setColorFilter(Color.LTGRAY)
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
@@ -362,9 +359,15 @@ class DashFragment : Fragment() {
         }
         lastAutopilotState = autopilotStateVal
     }
-
+/*
     override fun onStop() {
         super.onStop()
         viewModel.shutdown()
+    }
+
+ */
+    override fun onResume() {
+        super.onResume()
+        viewModel.startUp()
     }
 }

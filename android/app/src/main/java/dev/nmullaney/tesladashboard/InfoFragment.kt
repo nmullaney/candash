@@ -85,9 +85,4 @@ class InfoFragment() : Fragment() {
         super.onStart()
         viewModel.startUp()
     }
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.shutdown()
-    }
 }
