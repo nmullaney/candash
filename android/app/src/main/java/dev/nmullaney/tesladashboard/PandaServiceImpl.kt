@@ -3,17 +3,16 @@ package dev.nmullaney.tesladashboard
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.util.Log
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.net.*
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.HashMap
-import kotlin.invoke
-import kotlin.math.sign
 
 @ExperimentalCoroutinesApi
 class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Context) : PandaService {
@@ -68,29 +67,29 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
     @ExperimentalCoroutinesApi
     override suspend fun startRequests() {
-        Log.d(TAG, "Starting requests")
         withContext(pandaContext) {
+            Log.d(TAG, "Starting requests on thread: ${Thread.currentThread().name}")
             shutdown = false
             try {
 
-                Log.d(TAG, "Sending heartbeat")
+                Log.d(TAG, "Sending heartbeat on thread: ${Thread.currentThread().name}")
                 sendHello(getSocket())
 
                 while (!shutdown) {
 
                     if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
-                        Log.d(TAG, "Sending heartbeat")
+                        Log.d(TAG, "Sending heartbeat on thread: ${Thread.currentThread().name}")
                         sendHello(getSocket())
                     }
 
                     val buf = ByteArray(16)
                     val packet = DatagramPacket(buf, buf.size, serverAddress())
-                    Log.d(TAG, "C: Waiting to receive...")
+                    Log.d(TAG, "C: Waiting to receive... on thread: ${Thread.currentThread().name}")
 
                     try {
                         getSocket().receive(packet)
                     } catch (socketTimeoutException: SocketTimeoutException) {
-                        Log.w(TAG, "Socket timed out without receiving a packet")
+                        Log.w(TAG, "Socket timed out without receiving a packet on thread: ${Thread.currentThread().name}")
                         yield()
                         continue
                     }
@@ -112,7 +111,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     }
                     yield()
                 }
-                Log.d(TAG, "End while loop: shutdown requests received")
+                Log.d(TAG, "End while loop: shutdown requests received on thread: ${Thread.currentThread().name}")
 
                 getSocket().disconnect()
                 Log.d(TAG, "Socket disconnected")
@@ -124,7 +123,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                 Log.e(TAG, "Exception while sending or receiving data", exception)
             }
         }
-        Log.d(TAG, "Stopping requests")
+        Log.d(TAG, "Stopping requests on thread: ${Thread.currentThread().name}")
     }
 
     private fun handleFrame(frame: PandaFrame) {
@@ -173,10 +172,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
     override suspend fun shutdown() {
-        Log.d(TAG, "in shutdown")
+        Log.d(TAG, "in shutdownon thread: ${Thread.currentThread().name}")
         withContext(pandaContext) {
             shutdown = true
-            Log.d(TAG, "shutdown true")
+            Log.d(TAG, "shutdown true on thread: ${Thread.currentThread().name}")
         }
     }
 
@@ -216,22 +215,43 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         if (connectivityManager.activeNetwork != null) {
             Log.d(TAG, "Network is good")
         } else {
-            runBlocking {
+            CoroutineScope(pandaContext).launch {
                 restartLater()
             }
         }
     }
 
     private suspend fun restartLater() {
-        Log.d(TAG, "in restartLater")
+        Log.d(TAG, "in restartLater on thread: ${Thread.currentThread().name}")
         withContext(pandaContext) {
             shutdown()
+            Log.d(TAG, "in restartLater after shutdown on thread: ${Thread.currentThread().name}")
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            connectivityManager.addDefaultNetworkActiveListener {
-                async {
-                    startRequests()
+            val networkRequest = NetworkRequest.Builder()
+                .build()
+            connectivityManager.registerNetworkCallback(networkRequest, object:
+                ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    Log.d(TAG, "in network callback, on available")
+                    doRestart()
                 }
-            }
+
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities
+                ) {
+                    super.onCapabilitiesChanged(network, networkCapabilities)
+                    Log.d(TAG, "in network callback, capabilities changed")
+                }
+            })
+        }
+    }
+
+    private fun doRestart() {
+        CoroutineScope(pandaContext).launch {
+            Log.d(TAG, "in restartLater, restarting requests on thread: ${Thread.currentThread().name}")
+            startRequests()
         }
     }
 
