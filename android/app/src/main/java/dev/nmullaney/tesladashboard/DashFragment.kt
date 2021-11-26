@@ -276,11 +276,6 @@ class DashFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.startUp()
-    }
-
     fun setColors(sunUpVal: Int) {
 
         if (lastSunUp.toInt() != sunUpVal) {
@@ -358,16 +353,5 @@ class DashFragment : Fragment() {
 
         }
         lastAutopilotState = autopilotStateVal
-    }
-/*
-    override fun onStop() {
-        super.onStop()
-        viewModel.shutdown()
-    }
-
- */
-    override fun onResume() {
-        super.onResume()
-        viewModel.startUp()
     }
 }

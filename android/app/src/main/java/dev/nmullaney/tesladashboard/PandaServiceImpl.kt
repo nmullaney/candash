@@ -23,7 +23,9 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     private val carState: CarState = CarState()
     private val port = 1338
     private var shutdown = false
+    private var inShutdown = false
     private val heartbeat = "ehllo"
+    private val goodbye = "bye"
     private var lastHeartbeatTimestamp = 0L
     private val heartBeatIntervalMs = 5_000
     private val signalHelper = CANSignalHelper()
@@ -41,6 +43,13 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
             socket.soTimeout = heartBeatIntervalMs
             socket.reuseAddress = true
         }
+        return socket
+    }
+
+    private fun createSocket(): DatagramSocket {
+        socket = DatagramSocket(null)
+        socket.soTimeout = heartBeatIntervalMs
+        socket.reuseAddress = true
         return socket
     }
 
@@ -69,11 +78,14 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     override suspend fun startRequests() {
         withContext(pandaContext) {
             Log.d(TAG, "Starting requests on thread: ${Thread.currentThread().name}")
+            while (inShutdown) {
+                yield()
+            }
             shutdown = false
             try {
 
                 Log.d(TAG, "Sending heartbeat on thread: ${Thread.currentThread().name}")
-                sendHello(getSocket())
+                sendHello(createSocket())
 
                 while (!shutdown) {
 
@@ -111,15 +123,15 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     }
                     yield()
                 }
+                sendBye(getSocket())
                 Log.d(TAG, "End while loop: shutdown requests received on thread: ${Thread.currentThread().name}")
-
                 getSocket().disconnect()
                 Log.d(TAG, "Socket disconnected")
-                // For some reason, closing the socket doesn't allow for reconnecting later, so for now
-                // we're just never closing it
-                //getSocket().close()
-                //Log.d(TAG, "Socket closed")
+                getSocket().close()
+                Log.d(TAG, "Socket closed")
+                inShutdown = false
             } catch (exception: Exception) {
+                inShutdown = false
                 Log.e(TAG, "Exception while sending or receiving data", exception)
             }
         }
@@ -172,8 +184,9 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
     override suspend fun shutdown() {
-        Log.d(TAG, "in shutdownon thread: ${Thread.currentThread().name}")
+        Log.d(TAG, "in shutdown on thread: ${Thread.currentThread().name}")
         withContext(pandaContext) {
+            inShutdown = true
             shutdown = true
             Log.d(TAG, "shutdown true on thread: ${Thread.currentThread().name}")
         }
@@ -189,6 +202,17 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         sendData(socket, buf)
         lastHeartbeatTimestamp = System.currentTimeMillis()
     }
+
+    private fun sendBye(socket: DatagramSocket) {
+        // prepare data to be sent
+        val udpOutputData = goodbye
+
+        // prepare data to be sent
+        val buf: ByteArray = udpOutputData.toByteArray()
+
+        sendData(socket, buf)
+    }
+
 
     private fun sendFilter(socket: DatagramSocket) {
         sendData(socket, signalHelper.socketFilterToInclude())

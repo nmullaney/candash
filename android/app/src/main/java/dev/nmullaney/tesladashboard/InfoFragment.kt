@@ -1,7 +1,6 @@
 package dev.nmullaney.tesladashboard
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,6 +43,14 @@ class InfoFragment() : Fragment() {
             viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
         }
 
+        binding.startButton.setOnClickListener {
+            viewModel.startUp()
+        }
+
+        binding.stopButton.setOnClickListener {
+            viewModel.shutdown()
+        }
+
         binding.root.setOnLongClickListener {
             switchToDash()
         }
@@ -54,7 +61,7 @@ class InfoFragment() : Fragment() {
             switchToDash()
         }
 
-        viewModel.carState().observe(viewLifecycleOwner, { carState ->
+        viewModel.carState().observe(viewLifecycleOwner) { carState ->
             //logCarState(carState)
             binding.infoText.text = buildSpannedString {
                 carState.carData.forEach { entry ->
@@ -66,7 +73,7 @@ class InfoFragment() : Fragment() {
                     append("\n")
                 }
             }
-        })
+        }
     }
 
     fun switchToDash() : Boolean {
@@ -79,10 +86,5 @@ class InfoFragment() : Fragment() {
         carState.carData.forEach {
             Log.d(TAG, "Name: " + it.key + ", Value: " + it.value)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.startUp()
     }
 }

@@ -47,12 +47,13 @@ class FullscreenActivity : AppCompatActivity() {
             .commit()
 
         viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
-        viewModel.fragmentNameToShow().observe(this, {
-            when(it) {
+        viewModel.fragmentNameToShow().observe(this) {
+            when (it) {
                 "dash" -> switchToFragment(DashFragment())
                 "info" -> switchToFragment(InfoFragment())
                 else -> throw IllegalStateException("Attempting to switch to unknown fragment: $it")
-        }})
+            }
+        }
     }
 
     private fun switchToFragment(fragment: Fragment) {
@@ -62,4 +63,13 @@ class FullscreenActivity : AppCompatActivity() {
             .commit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.startUp()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.shutdown()
+    }
 }

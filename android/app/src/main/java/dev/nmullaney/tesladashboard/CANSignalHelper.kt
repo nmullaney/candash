@@ -15,7 +15,7 @@ class CANSignalHelper {
         signalsToUse().forEach { canSignal ->
             filters.add(canSignal.busId.toByte())
             filters.addAll(canSignal.frameId.byteArray.asList())
-            Log.d(TAG, "frame id in socket filter:" + canSignal.frameId.hexString)
+            Log.v(TAG, "frame id in socket filter:" + canSignal.frameId.hexString)
         }
         return filters.toByteArray()
     }

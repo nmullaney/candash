@@ -9,4 +9,6 @@
     <string name="mock_server">Mock Server</string>
     <string name="ip_address">IP Address</string>
     <string name="save">Save</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 </resources>
