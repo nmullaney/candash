@@ -222,7 +222,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         // prepare data to be sent
         val buf: ByteArray = udpOutputData.toByteArray()
 
-        sendData(socket, buf)
+        sendData(socket, buf, true)
     }
 
 
@@ -232,7 +232,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         //sendData(socket, byteArrayOf(0x0C))
     }
 
-    private fun sendData(socket: DatagramSocket, buf: ByteArray) {
+    private fun sendData(socket: DatagramSocket, buf: ByteArray, isBye: Boolean = false) {
         // create a UDP packet with data and its destination ip & port
         val packet = DatagramPacket(buf, buf.size, serverAddress())
         Log.d(TAG, "C: Sending: '" + String(buf) + "'")
@@ -242,25 +242,21 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
             socket.send(packet)
         } catch (ioException: IOException) {
             Log.e(TAG, "IOException while sending data.", ioException)
-            checkNetwork()
+            if (!isBye) checkNetwork()
         } catch (socketException: SocketException) {
             Log.e(TAG, "SocketException while sending data.", socketException)
-            checkNetwork()
+            if (!isBye) checkNetwork()
         }
     }
 
     private fun checkNetwork() {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (connectivityManager.activeNetwork != null) {
-            Log.d(TAG, "Network is good")
-        } else {
-            CoroutineScope(pandaContext).launch {
-                restartLater()
-            }
+        //val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        CoroutineScope(pandaContext).launch {
+            restartLater()
+
         }
     }
-
 
 
     private suspend fun restartLater() {
@@ -295,7 +291,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         CoroutineScope(pandaContext).launch {
             Log.d(
                 TAG,
-                "in restartLater, restarting requests on thread: ${Thread.currentThread().name}"
+                "in doRestart, restarting requests on thread: ${Thread.currentThread().name}"
             )
             startRequests()
         }
