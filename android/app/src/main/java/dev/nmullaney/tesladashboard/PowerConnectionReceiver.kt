@@ -6,10 +6,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.BatteryManager
+import android.util.Log
 
 class PowerConnectionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        val TAG = DashViewModel::class.java.simpleName
+
         val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
             context?.registerReceiver(null, ifilter)
         }
@@ -30,6 +33,8 @@ class PowerConnectionReceiver : BroadcastReceiver() {
             //i.setClassName("dev.nmullaney", "android.intent.action.MAIN");
             //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             if (context != null) {
+                Log.d(TAG, "starting activity")
+
                 context.startActivity(i)
             }
         }

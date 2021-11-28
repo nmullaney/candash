@@ -38,6 +38,7 @@ class DashFragment : Fragment() {
     private var autopilotHandsToggle: Boolean = false
     private var lastSunUp: Int = 1
     private var showSOC: Boolean = true
+    private var uiSpeedUnitsMPH: Boolean = true
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
     override fun onCreateView(
@@ -147,32 +148,33 @@ class DashFragment : Fragment() {
 
             binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
-                if (showSOC == true) {
-                    it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                uiSpeedUnitsMPH = uiSpeedUnitsVal.toInt() == 0
+            }
+            if (showSOC == true) {
+                it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                    binding.batterypercent.text =
+                        stateOfChargeVal.toInt().toString() + " %"
+                }
+            } else {
+                if (uiSpeedUnitsMPH == true) {
+                    binding.unit.text = "MPH"
+
+                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
-                            stateOfChargeVal.toInt().toString() + " %"
+                            stateOfChargeVal.toInt().toString() + " mi"
+
                     }
-                } else {
-                    if (uiSpeedUnitsVal.toInt() == 0) {
-                        binding.unit.text = "MPH"
-                        Log.d(TAG, showSOC.toString())
-
-                            it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                                binding.batterypercent.text =
-                                    stateOfChargeVal.toInt().toString() + " mi"
-
-                            }
-                        }
-                     else {
-                        binding.unit.text =
-                            "KPH"
-                        it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                            binding.batterypercent.text =
-                                ((stateOfChargeVal.toInt()) / .62).toString() + " km"
-                        }
+                }
+                else {
+                    binding.unit.text =
+                        "KPH"
+                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                        binding.batterypercent.text =
+                            ((stateOfChargeVal.toInt()) / .62).toString() + " km"
                     }
                 }
             }
+
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.fullbattery.scrollX =
                     (83 - ((stateOfChargeVal.toLong() * 83) / 100).toInt())

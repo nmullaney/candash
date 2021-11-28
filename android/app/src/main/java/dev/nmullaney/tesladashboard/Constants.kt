@@ -12,7 +12,7 @@ object Constants {
 
     const val ipAddressPrefKey = "ip_address_pref_key"
     // For PIWIS-WLAN
-    const val ipAddressLocalNetwork = "192.168.2.4"
+    const val ipAddressLocalNetwork = "192.168.4.1"
     const val ipAddressCANServer = "192.168.4.1"
     const val useMockServerPrefKey = "use_mock_server"
     const val turnSignalLeft = "VCFRONT_indicatorLef"

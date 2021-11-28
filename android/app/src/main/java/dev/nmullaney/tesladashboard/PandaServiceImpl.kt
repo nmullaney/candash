@@ -6,16 +6,22 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.util.Log
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.IOException
 import java.net.*
 import java.util.*
 import java.util.concurrent.Executors
 
+
 @ExperimentalCoroutinesApi
-class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Context) : PandaService {
+class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Context) :
+    PandaService {
     private val TAG = PandaServiceImpl::class.java.simpleName
 
     @ExperimentalCoroutinesApi
@@ -101,7 +107,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     try {
                         getSocket().receive(packet)
                     } catch (socketTimeoutException: SocketTimeoutException) {
-                        Log.w(TAG, "Socket timed out without receiving a packet on thread: ${Thread.currentThread().name}")
+                        Log.w(
+                            TAG,
+                            "Socket timed out without receiving a packet on thread: ${Thread.currentThread().name}"
+                        )
                         yield()
                         continue
                     }
@@ -124,7 +133,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     yield()
                 }
                 sendBye(getSocket())
-                Log.d(TAG, "End while loop: shutdown requests received on thread: ${Thread.currentThread().name}")
+                Log.d(
+                    TAG,
+                    "End while loop: shutdown requests received on thread: ${Thread.currentThread().name}"
+                )
                 getSocket().disconnect()
                 Log.d(TAG, "Socket disconnected")
                 getSocket().close()
@@ -228,6 +240,9 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         // send the UDP packet
         try {
             socket.send(packet)
+        } catch (ioException: IOException) {
+            Log.e(TAG, "IOException while sending data.", ioException)
+            checkNetwork()
         } catch (socketException: SocketException) {
             Log.e(TAG, "SocketException while sending data.", socketException)
             checkNetwork()
@@ -235,7 +250,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
     private fun checkNetwork() {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (connectivityManager.activeNetwork != null) {
             Log.d(TAG, "Network is good")
         } else {
@@ -245,15 +261,18 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         }
     }
 
+
+
     private suspend fun restartLater() {
         Log.d(TAG, "in restartLater on thread: ${Thread.currentThread().name}")
         withContext(pandaContext) {
             shutdown()
             Log.d(TAG, "in restartLater after shutdown on thread: ${Thread.currentThread().name}")
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkRequest = NetworkRequest.Builder()
                 .build()
-            connectivityManager.registerNetworkCallback(networkRequest, object:
+            connectivityManager.registerNetworkCallback(networkRequest, object :
                 ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
@@ -274,7 +293,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
     private fun doRestart() {
         CoroutineScope(pandaContext).launch {
-            Log.d(TAG, "in restartLater, restarting requests on thread: ${Thread.currentThread().name}")
+            Log.d(
+                TAG,
+                "in restartLater, restarting requests on thread: ${Thread.currentThread().name}"
+            )
             startRequests()
         }
     }
