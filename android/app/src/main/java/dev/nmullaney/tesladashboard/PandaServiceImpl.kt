@@ -34,6 +34,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     private val goodbye = "bye"
     private var lastHeartbeatTimestamp = 0L
     private val heartBeatIntervalMs = 5_000
+    private val socketTimeoutMs = 1_000
     private val signalHelper = CANSignalHelper()
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private lateinit var socket: DatagramSocket
@@ -111,6 +112,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                             TAG,
                             "Socket timed out without receiving a packet on thread: ${Thread.currentThread().name}"
                         )
+                        sendBye(getSocket())
                         yield()
                         continue
                     }
