@@ -48,8 +48,8 @@ class CANSignalHelper {
     }
     fun createCANSignals() {
         insertCANSignal(Constants.stateOfCharge, 0, Hex(0x33A), 48, 7, 1f, 0f)
-        //insertCANSignal(Constants.battVolts, 0, Hex(0x132), 0, 16, 0.01f, 0f)
-        //insertCANSignal(Constants.battAmps, 0, Hex(0x132), 16, 16, -.1f, 0f, signed=true)
+        insertCANSignal(Constants.battVolts, 0, Hex(0x132), 0, 16, 0.01f, 0f)
+        insertCANSignal(Constants.battAmps, 0, Hex(0x132), 16, 16, -.1f, 0f, signed=true)
 
         insertCANSignal(Constants.uiSpeed, 0, Hex(0x257), 24, 9, 1f, 0f)
         // insertCANSignal(Constants.uiSpeedHighSpeed, 0, Hex(0x257), 34, 9, 1f, 0)

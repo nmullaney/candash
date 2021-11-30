@@ -2,9 +2,12 @@ package dev.nmullaney.tesladashboard
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.TransitionDrawable
+import android.os.BatteryManager
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -13,6 +16,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +43,12 @@ class DashFragment : Fragment() {
     private var lastSunUp: Int = 1
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
+    private var power: Float = 0f
+    private var battAmps:Float = 0f
+    private var battVolts:Float = 0f
+    private var minPower: Float = 0f
+    private var maxPower: Float = 0f
+
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
     override fun onCreateView(
@@ -62,7 +72,8 @@ class DashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        // viewModel.serverIpAddress()?.let { viewModel.saveSettings(viewModel.useMockServer(), it) }
+
+
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
@@ -71,11 +82,47 @@ class DashFragment : Fragment() {
             showSOC = !showSOC
             return@setOnClickListener
         }
+        binding.power.setOnClickListener {
+            maxPower = 0f
+            minPower = 0f
+        }
         viewModel.carState().observe(viewLifecycleOwner) {
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
             }
+            // get battery status to decide whether or not to disable screen dimming
+            var batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                context?.registerReceiver(null, ifilter)
+            }
+            // How are we charging?
+            val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
+            val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+                    || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+                    || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
+            Log.d(TAG, "keep_screen_on" + isPlugged.toString())
 
+            if (isPlugged){
+                activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                Log.d(TAG, "keep_screen_on")
+            } else {
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                Log.d(TAG, "do not keep screen on")
+            }
+            it.getValue(Constants.battAmps)?.let { battAmpsStateVal ->
+                battAmps = battAmpsStateVal.toFloat()
+            }
+            it.getValue(Constants.battVolts)?.let { battVoltsStateVal ->
+                battVolts = battVoltsStateVal.toFloat()
+            }
+            power = (battAmps * battVolts)
+            if (power > maxPower) maxPower = power
+            if (power < minPower) minPower = power
+            //binding.power.text = "%.2f".format(power)
+
+            binding.power.text = "Min: "+ minPower.toInt().toString() +" W Cur: "+ power.toInt().toString()+ " W Max: " + maxPower.toInt().toString() + " W"
+
+            val percent = power/300000f
+            binding.powerBar.measuredWidth
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
@@ -295,6 +342,7 @@ class DashFragment : Fragment() {
                 gearColor = Color.DKGRAY
                 binding.PRND.setTextColor(Color.DKGRAY)
                 binding.modely.setColorFilter(Color.parseColor("#FF333333"))
+                binding.power.setTextColor(Color.WHITE)
 
                 //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
@@ -313,6 +361,8 @@ class DashFragment : Fragment() {
                 gearColor = Color.parseColor("#FFEEEEEE")
                 binding.PRND.setTextColor(Color.parseColor("#FFEEEEEE"))
                 binding.modely.setColorFilter(Color.LTGRAY)
+                binding.power.setTextColor(Color.DKGRAY)
+
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
             }

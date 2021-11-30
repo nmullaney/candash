@@ -25,12 +25,12 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: DashViewModel
-    private var pcr : PowerConnectionReceiver = PowerConnectionReceiver()
+    //private var pcr : PowerConnectionReceiver = PowerConnectionReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen)
-        this.registerReceiver(pcr, IntentFilter(Intent.ACTION_POWER_CONNECTED))
+        //this.registerReceiver(pcr, IntentFilter(Intent.ACTION_POWER_CONNECTED))
 
 
 
@@ -47,7 +47,7 @@ class FullscreenActivity : AppCompatActivity() {
         }
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        window.addFlags(View.KEEP_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         supportFragmentManager
             .beginTransaction()
@@ -83,7 +83,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        this.unregisterReceiver(pcr)
+        //this.unregisterReceiver(pcr)
         super.onDestroy()
     }
 }

@@ -26,7 +26,7 @@
         app:layout_constraintStart_toEndOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="50" />
+        tools:text="0" />
 
     <TextView
         android:id="@+id/unit"
@@ -48,27 +48,27 @@
     <ImageView
         android:id="@+id/autopilot"
         android:layout_width="60dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:src="@drawable/ic_autopilot"
-        android:paddingTop="20dp"
         android:visibility="invisible"
-        app:layout_constraintCircle="@id/speed"
-        app:layout_constraintCircleAngle="280"
-        app:layout_constraintCircleRadius="180dp" />
-    />
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/autopilot_inactive"
         android:layout_width="60dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:src="@drawable/ic_autopilot_inactive"
-        android:paddingTop="20dp"
         android:visibility="invisible"
-        app:layout_constraintCircle="@id/speed"
-        app:layout_constraintCircleAngle="280"
-        app:layout_constraintCircleRadius="180dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
@@ -169,6 +169,7 @@
         android:layout_width="120dp"
         android:layout_height="30dp"
         android:fontFamily="@font/montserratbold"
+        android:textColor="@color/prnd_not_selected"
         android:gravity="center|center_vertical"
         android:text="P  R  N  D"
         android:textAlignment="center"
@@ -322,6 +323,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl1"
+        android:visibility="gone"
 
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
@@ -345,6 +347,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_bsl2"
+        android:visibility="gone"
 
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="205"
@@ -360,5 +363,38 @@
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
         app:layout_constraintCircleRadius="130dp" />
+    <View
+        android:id="@+id/power_bar"
+        android:layout_height="1dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="20dp"
+
+        android:background="@android:color/darker_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent=".9"
+
+
+        />
+    <TextView
+        android:id="@+id/power"
+        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratbold"
+
+        app:autoSizeMaxTextSize="550sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeStepGranularity="10sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent=".9"
+        tools:text="0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
