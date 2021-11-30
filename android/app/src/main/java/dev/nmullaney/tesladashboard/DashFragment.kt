@@ -48,6 +48,7 @@ class DashFragment : Fragment() {
     private var battVolts:Float = 0f
     private var minPower: Float = 0f
     private var maxPower: Float = 0f
+    private var HRSPRS: Boolean = false
 
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
@@ -82,9 +83,14 @@ class DashFragment : Fragment() {
             showSOC = !showSOC
             return@setOnClickListener
         }
-        binding.power.setOnClickListener {
+        binding.power.setOnLongClickListener {
             maxPower = 0f
             minPower = 0f
+            return@setOnLongClickListener true
+        }
+        binding.power.setOnClickListener {
+            HRSPRS = !HRSPRS
+            return@setOnClickListener
         }
         viewModel.carState().observe(viewLifecycleOwner) {
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
@@ -118,8 +124,15 @@ class DashFragment : Fragment() {
             if (power > maxPower) maxPower = power
             if (power < minPower) minPower = power
             //binding.power.text = "%.2f".format(power)
-
-            binding.power.text = "Min: "+ minPower.toInt().toString() +" W Cur: "+ power.toInt().toString()+ " W Max: " + maxPower.toInt().toString() + " W"
+            if (!HRSPRS) {
+                binding.power.text =
+                    "Min: " + minPower.toInt().toString() + " W Cur: " + power.toInt()
+                        .toString() + " W Max: " + maxPower.toInt().toString() + " W"
+            }else {
+                binding.power.text =
+                    "Min: " + (minPower * 0.00134102).toInt().toString() + " hp Cur: " + (power * 0.00134102).toInt()
+                        .toString() + " hp Max: " + (maxPower * 0.00134102).toInt().toString() + " hp"
+            }
 
             val percent = power/300000f
             binding.powerBar.measuredWidth
