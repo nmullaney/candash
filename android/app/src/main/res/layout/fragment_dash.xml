@@ -363,17 +363,16 @@
         app:layout_constraintCircle="@id/modely"
         app:layout_constraintCircleAngle="155"
         app:layout_constraintCircleRadius="130dp" />
-    <View
+
+    <dev.nmullaney.tesladashboard.LinearGauge
         android:id="@+id/power_bar"
-        android:layout_height="1dp"
-        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:layout_width="match_parent"
         android:layout_marginBottom="20dp"
 
-        android:background="@android:color/darker_gray"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintWidth_percent=".9"
 
 
         />

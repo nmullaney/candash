@@ -93,6 +93,7 @@ class DashFragment : Fragment() {
             return@setOnClickListener
         }
         viewModel.carState().observe(viewLifecycleOwner) {
+
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
             }
@@ -124,18 +125,22 @@ class DashFragment : Fragment() {
             if (power > maxPower) maxPower = power
             if (power < minPower) minPower = power
             //binding.power.text = "%.2f".format(power)
+
             if (!HRSPRS) {
                 binding.power.text =
                     "Min: " + minPower.toInt().toString() + " W Cur: " + power.toInt()
                         .toString() + " W Max: " + maxPower.toInt().toString() + " W"
+                binding.powerBar.setGauge(power/300000f)
+                binding.powerBar.invalidate()
             }else {
                 binding.power.text =
                     "Min: " + (minPower * 0.00134102).toInt().toString() + " hp Cur: " + (power * 0.00134102).toInt()
                         .toString() + " hp Max: " + (maxPower * 0.00134102).toInt().toString() + " hp"
+                binding.powerBar.setGauge(power/300000f)
+                binding.powerBar.invalidate()
             }
 
             val percent = power/300000f
-            binding.powerBar.measuredWidth
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
@@ -339,6 +344,7 @@ class DashFragment : Fragment() {
     }
 
     fun setColors(sunUpVal: Int) {
+        binding.powerBar.setDayValue(sunUpVal)
 
         if (lastSunUp.toInt() != sunUpVal) {
             // Not using dark-mode for compatibility with older version of Android (pre-29)
@@ -375,7 +381,6 @@ class DashFragment : Fragment() {
                 binding.PRND.setTextColor(Color.parseColor("#FFEEEEEE"))
                 binding.modely.setColorFilter(Color.LTGRAY)
                 binding.power.setTextColor(Color.DKGRAY)
-
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
             }

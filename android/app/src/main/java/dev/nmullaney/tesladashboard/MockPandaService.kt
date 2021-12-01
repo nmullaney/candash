@@ -55,7 +55,8 @@ class MockPandaService : PandaService {
                 Constants.rearLeftVehicle to 100,
                 Constants.autopilotHands to 1,
                 Constants.uiSpeedUnits to 0,
-                Constants.gearSelected to Constants.gearPark
+                Constants.gearSelected to Constants.gearPark,
+                Constants.battAmps to 20.0
 
             )),
             CarState(mutableMapOf(
@@ -75,7 +76,8 @@ class MockPandaService : PandaService {
                 Constants.cruiseControlSpeed to 45.0,
                 Constants.rearLeftVehicle to 100,
                 Constants.uiSpeedUnits to 0,
-                Constants.gearSelected to Constants.gearPark
+                Constants.gearSelected to Constants.gearPark,
+                Constants.battAmps to 40.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.9,
@@ -94,7 +96,8 @@ class MockPandaService : PandaService {
                 Constants.maxSpeedAP to 45.0,
                 Constants.cruiseControlSpeed to 45.0,
                 Constants.uiSpeedUnits to 0,
-                Constants.gearSelected to Constants.gearDrive
+                Constants.gearSelected to Constants.gearDrive,
+                Constants.battAmps to 1.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.8,
@@ -110,7 +113,8 @@ class MockPandaService : PandaService {
                 Constants.autopilotHands to 1,
                 Constants.maxSpeedAP to 45.0,
                 Constants.uiSpeedUnits to 0,
-                Constants.cruiseControlSpeed to 45.0
+                Constants.cruiseControlSpeed to 45.0,
+                Constants.battAmps to 100.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.7,
@@ -128,6 +132,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotHands to 1,
                 Constants.uiSpeedUnits to 0,
                 Constants.maxSpeedAP to 25.0,
-                Constants.cruiseControlSpeed to 23.0
+                Constants.cruiseControlSpeed to 23.0,
+                Constants.battAmps to -20.0
             )))
 }
