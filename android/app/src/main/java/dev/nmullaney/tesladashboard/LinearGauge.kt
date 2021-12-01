@@ -20,7 +20,7 @@ class LinearGauge @JvmOverloads constructor(
     private var percentWidth : Float = 0f
     private var isSunUp : Int = 0
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAYgit, PorterDuff.Mode.SRC_ATOP)
+    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
 
     private var renderWidth : Float = 100f
 

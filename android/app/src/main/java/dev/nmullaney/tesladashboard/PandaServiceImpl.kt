@@ -156,7 +156,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         var binaryPayloadString = ""
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
             if (channel.serviceIndex == 0) {
-                //Log.d(TAG, channel.name + "no mux")
+                Log.d(TAG, channel.name + "no mux startBit:" + channel.startBit.toString() + "bitLength:" + channel.bitLength)
 
                 binaryPayloadString = frame.getPayloadValue(
                     channel.startBit,

@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import android.util.Log;
+
 public class PandaFrame {
     private static final String TAG = PandaFrame.class.getSimpleName();
     private static final Integer INT_BYTES = 8;
@@ -35,13 +36,13 @@ public class PandaFrame {
     }
 
 
-    private static String signExtend(String str){
+    private static String signExtend(String str) {
         //TODO add bounds checking
-        int n=32-str.length();
+        int n = 32 - str.length();
         char[] sign_ext = new char[n];
         Arrays.fill(sign_ext, str.charAt(0));
 
-        return new String(sign_ext)+str;
+        return new String(sign_ext) + str;
     }
 
     /**
@@ -64,15 +65,20 @@ public class PandaFrame {
      */
     public String getPayloadValue(int startBit, int bitLength) {
         String fullPayloadBinaryString = getPayloadBinaryString();
+        if (startBit == 12 && bitLength == 12) {
+            Log.d(TAG, "vehicleSpeedFrame " + fullPayloadBinaryString);
+        }
         return getValueString(fullPayloadBinaryString, startBit, bitLength);
         //return Long.parseLong(valueString, 2);
     }
+
     /**
      * Returns the value for this startBit and bitLength as a long.
      * Assumes the payload is littleEndian. Adds filtering for multiplexed data
      */
     public String getPayloadValue(int startBit, int bitLength, int serviceIndex, int muxIndex) {
         String fullPayloadBinaryString = getPayloadBinaryString();
+
         return getValueString(fullPayloadBinaryString, startBit, bitLength, serviceIndex, muxIndex);
         //return Long.parseLong(valueString, 2);
     }
@@ -87,16 +93,69 @@ public class PandaFrame {
      */
     private String getValueString(String fullPayload, int startBit, int bitLength) {
         StringBuilder result = new StringBuilder();
-        while (bitLength > 0) {
-            int length = Math.min(bitLength, 8);
-            int next8 = startBit + 8 - (startBit % 8);
-            int start = next8 - length - startBit % 8;
-            result.insert(0, fullPayload.substring(start, start + length));
-            startBit += length;
-            bitLength -= 8;
+        int initialStartBit = startBit;
+        int initialBitLength = bitLength;
+        /*
+        if (startBit % 8 != 0) {
+            int tempLength = bitLength;
+            int tempStartBit = startBit;
+            int cursor = 0;
+            while (cursor < startBit) {
+                if (startBit - cursor > 8) {
+                    cursor = cursor + 8;
+                } else {
+                    tempStartBit = tempStartBit - cursor;
+                }
+                    Log.d(TAG, "In cursor " + cursor);
+
+            }
+            while (tempLength > 0){
+                String tempByte = fullPayload.substring(cursor + 1, cursor + 8);
+                // grab the byte and reverse it
+                tempByte = new StringBuilder(tempByte).reverse().toString();
+                // figure out where to start consuming this byte
+                tempStartBit = tempStartBit - cursor;
+                // figure out how much of the data is in ths byte
+                int maxLength = (8 - tempStartBit);
+
+                int segmentLength = Math.min(maxLength, tempLength - tempStartBit);
+
+                String portion = tempByte.substring(tempStartBit+1, tempStartBit + segmentLength);
+                portion = new StringBuilder(portion).reverse().toString();
+
+
+                result.insert(0, portion);
+                tempLength = tempLength - segmentLength;
+                tempStartBit = tempStartBit + segmentLength;
+                cursor = cursor + 8;
+
+            }
+                Log.d(TAG, "Result ! % 8 " + result.toString() + "full payload: " + fullPayload);
+
+        } else {*/
+            while (bitLength > 0) {
+                int length = Math.min(bitLength, 8);
+                // length = 8
+                int next8 = startBit + 8 - (startBit % 8);
+                // 20 - (12 % 8 = 4) = 16
+                int start = next8 - length - startBit % 8;
+                result.insert(0, fullPayload.substring(start, start + length));
+                //substring (4, 12)
+                startBit += length;
+                bitLength -= 8;
+                if (initialBitLength == 12 && initialStartBit == 12){
+                    Log.d(TAG, "Result " + result.toString() + "full payload: " + fullPayload);
+
+                }
+            }
+       // }
+        if (initialBitLength == 12 && initialStartBit == 12){
+            Log.d(TAG, "Final Result " + result.toString() + "full payload: " + fullPayload);
+
         }
         return result.toString();
     }
+
     /**
      * Overloaded method for getValueString to add optional serviceIndex and muxIndex parameters
      */
@@ -109,18 +168,19 @@ public class PandaFrame {
         Log.d(TAG, "serviceIndex: " + serviceIndex);
  */
 
-        long muxValue = Long.parseLong(getValueString(fullPayload,0,3),2);
+        long muxValue = Long.parseLong(getValueString(fullPayload, 0, 3), 2);
 
         if (muxValue == muxIndex) {
             //Log.d(TAG, "muxValue: " + muxValue+ " GVSMUXPayload: " + fullPayload + " unparsedMux" + fullPayload.substring(0,serviceIndex) + "result " + Long.parseLong(result.toString(),2));
 
-            return getValueString(fullPayload,startBit,bitLength);
+            return getValueString(fullPayload, startBit, bitLength);
 
 
         } else {
             return "";
         }
     }
+
     public long getFrameId() {
         return mFrameId;
     }
