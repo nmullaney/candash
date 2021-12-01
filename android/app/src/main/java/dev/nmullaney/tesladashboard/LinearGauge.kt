@@ -20,6 +20,8 @@ class LinearGauge @JvmOverloads constructor(
     private var percentWidth : Float = 0f
     private var isSunUp : Int = 0
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAYgit, PorterDuff.Mode.SRC_ATOP)
+
     private var renderWidth : Float = 100f
 
     fun getScreenWidth(): Int {
@@ -33,7 +35,7 @@ class LinearGauge @JvmOverloads constructor(
         var startX : Float = 0f
         var stopX: Float = 0f
         paint.strokeWidth = 10f
-        paint.setColorFilter(PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP))
+        paint.setColorFilter(backgroundLineColor)
         canvas?.drawLine(50f, 0f, screenWidth.toFloat() - 50f, 0f, paint)
 
         if (percentWidth < 0f){
@@ -62,8 +64,11 @@ class LinearGauge @JvmOverloads constructor(
         isSunUp = isSunUpVal
         if (isSunUp == 1){
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+            backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
         } else {
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
+            backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+
 
         }
     }
