@@ -95,32 +95,33 @@ public class PandaFrame {
         StringBuilder result = new StringBuilder();
         int initialStartBit = startBit;
         int initialBitLength = bitLength;
-        /*
-        if (startBit % 8 != 0) {
+
+        if (startBit == 12 && bitLength == 12) {
             int tempLength = bitLength;
             int tempStartBit = startBit;
             int cursor = 0;
-            while (cursor < startBit) {
+            boolean doLoop = true;
+            while (doLoop) {
                 if (startBit - cursor > 8) {
                     cursor = cursor + 8;
                 } else {
                     tempStartBit = tempStartBit - cursor;
+                    doLoop = false;
                 }
                     Log.d(TAG, "In cursor " + cursor);
 
             }
             while (tempLength > 0){
-                String tempByte = fullPayload.substring(cursor + 1, cursor + 8);
+                String tempByte = fullPayload.substring(cursor, cursor + 8);
                 // grab the byte and reverse it
                 tempByte = new StringBuilder(tempByte).reverse().toString();
                 // figure out where to start consuming this byte
-                tempStartBit = tempStartBit - cursor;
                 // figure out how much of the data is in ths byte
                 int maxLength = (8 - tempStartBit);
 
                 int segmentLength = Math.min(maxLength, tempLength - tempStartBit);
 
-                String portion = tempByte.substring(tempStartBit+1, tempStartBit + segmentLength);
+                String portion = tempByte.substring(tempStartBit, tempStartBit + segmentLength);
                 portion = new StringBuilder(portion).reverse().toString();
 
 
@@ -132,7 +133,7 @@ public class PandaFrame {
             }
                 Log.d(TAG, "Result ! % 8 " + result.toString() + "full payload: " + fullPayload);
 
-        } else {*/
+        } else {
             while (bitLength > 0) {
                 int length = Math.min(bitLength, 8);
                 // length = 8
@@ -148,7 +149,7 @@ public class PandaFrame {
 
                 }
             }
-       // }
+        }
         if (initialBitLength == 12 && initialStartBit == 12){
             Log.d(TAG, "Final Result " + result.toString() + "full payload: " + fullPayload);
 
