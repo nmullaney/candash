@@ -49,6 +49,7 @@ class DashFragment : Fragment() {
     private var minPower: Float = 0f
     private var maxPower: Float = 0f
     private var HRSPRS: Boolean = false
+    private var maxVehiclePower: Int = 300000
 
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
@@ -83,19 +84,26 @@ class DashFragment : Fragment() {
             showSOC = !showSOC
             return@setOnClickListener
         }
-        binding.power.setOnLongClickListener {
-            maxPower = 0f
-            minPower = 0f
-            return@setOnLongClickListener true
-        }
+
         binding.power.setOnClickListener {
+            Log.d(TAG, "HRSPRS: " + HRSPRS.toString())
+
             HRSPRS = !HRSPRS
-            return@setOnClickListener
+        }
+        binding.minpower.setOnClickListener {
+            minPower = 0f
+        }
+        binding.maxpower.setOnClickListener {
+            maxPower = 0f
         }
         viewModel.carState().observe(viewLifecycleOwner) {
 
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
+            }
+            // get reported max HP from car
+            it.getValue(Constants.maxVehiclePower)?.let{ maxVehiclePowerVal ->
+                maxVehiclePower = maxVehiclePowerVal.toInt() * 1000
             }
             // get battery status to decide whether or not to disable screen dimming
             var batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
@@ -127,16 +135,17 @@ class DashFragment : Fragment() {
             //binding.power.text = "%.2f".format(power)
 
             if (!HRSPRS) {
-                binding.power.text =
-                    "Min: " + minPower.toInt().toString() + " W Cur: " + power.toInt()
-                        .toString() + " W Max: " + maxPower.toInt().toString() + " W"
-                binding.powerBar.setGauge(power/300000f)
+                binding.power.text = power.toInt().toString() + " W"
+                binding.minpower.text = minPower.toInt().toString() + " W"
+                binding.maxpower.text = maxPower.toInt().toString() + " W"
+
+                binding.powerBar.setGauge(power/maxVehiclePower.toFloat())
                 binding.powerBar.invalidate()
             }else {
-                binding.power.text =
-                    "Min: " + (minPower * 0.00134102).toInt().toString() + " hp Cur: " + (power * 0.00134102).toInt()
-                        .toString() + " hp Max: " + (maxPower * 0.00134102).toInt().toString() + " hp"
-                binding.powerBar.setGauge(power/300000f)
+                binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
+                binding.minpower.text = (minPower * 0.00134102).toInt().toString() + " hp"
+                binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
+                binding.powerBar.setGauge(power/maxVehiclePower.toFloat())
                 binding.powerBar.invalidate()
             }
 
@@ -362,6 +371,8 @@ class DashFragment : Fragment() {
                 binding.PRND.setTextColor(Color.DKGRAY)
                 binding.modely.setColorFilter(Color.parseColor("#FF333333"))
                 binding.power.setTextColor(Color.WHITE)
+                binding.minpower.setTextColor(Color.WHITE)
+                binding.maxpower.setTextColor(Color.WHITE)
 
                 //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
@@ -381,6 +392,8 @@ class DashFragment : Fragment() {
                 binding.PRND.setTextColor(Color.parseColor("#FFEEEEEE"))
                 binding.modely.setColorFilter(Color.LTGRAY)
                 binding.power.setTextColor(Color.DKGRAY)
+                binding.minpower.setTextColor(Color.DKGRAY)
+                binding.maxpower.setTextColor(Color.DKGRAY)
                 //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
             }

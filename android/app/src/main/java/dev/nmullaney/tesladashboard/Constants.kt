@@ -47,4 +47,5 @@ object Constants {
     const val gearDrive = 4
     const val doorOpen = 1
     const val doorClosed = 2
+    const val maxVehiclePower = "MaxVehiclePower"
 }

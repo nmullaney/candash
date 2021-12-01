@@ -133,6 +133,6 @@ class MockPandaService : PandaService {
                 Constants.uiSpeedUnits to 0,
                 Constants.maxSpeedAP to 25.0,
                 Constants.cruiseControlSpeed to 23.0,
-                Constants.battAmps to -20.0
+                Constants.battAmps to -200.0
             )))
 }
