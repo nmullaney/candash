@@ -140,9 +140,9 @@ class DashFragment : Fragment() {
             //binding.power.text = "%.2f".format(power)
 
             if (!HRSPRS) {
-                binding.power.text = power.toInt().toString() + " W"
-                binding.minpower.text = minPower.toInt().toString() + " W"
-                binding.maxpower.text = maxPower.toInt().toString() + " W"
+                binding.power.text = formatWatts(power)
+                binding.minpower.text = formatWatts(minPower)
+                binding.maxpower.text = formatWatts(maxPower)
 
             }else {
                 binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
@@ -150,14 +150,8 @@ class DashFragment : Fragment() {
                 binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
 
             }
-            if (power < -1000){
-                binding.powerBar.setGauge(((power/maxVehiclePower).pow(0.7f)))
-            }else if(power > 1000) {
-                binding.powerBar.setGauge(((power/maxVehiclePower).pow(0.7f)))
-            }
-            else{
-                binding.powerBar.setGauge(0f)
-            }
+            binding.powerBar.setGauge(((power/maxVehiclePower).pow(0.7f)))
+
             binding.powerBar.invalidate()
 
 
@@ -369,6 +363,7 @@ class DashFragment : Fragment() {
         }
     }
 
+
     fun setColors(sunUpVal: Int) {
         binding.powerBar.setDayValue(sunUpVal)
 
@@ -416,6 +411,19 @@ class DashFragment : Fragment() {
             }
         }
         lastSunUp = sunUpVal
+    }
+
+    fun formatWatts(power: Float) : String {
+        if (abs(power) < 1000) {
+            return "$power W"
+        }
+        else if ((abs(power) >= 1000) and (abs(power) < 10000)) {
+            "%.2f".format(power/1000f)
+            return "%.2f".format(power/1000f) + " kW"
+        }
+        else {
+            return (power/1000f).toInt().toString() + " kW"
+        }
     }
 
     fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
