@@ -49,7 +49,8 @@ class DashFragment : Fragment() {
     private var minPower: Float = 0f
     private var maxPower: Float = 0f
     private var HRSPRS: Boolean = false
-    private var maxVehiclePower: Int = 300000
+    private var maxVehiclePower: Int = 350000
+    private var maxRegenPower: Int = 150000
 
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
@@ -102,7 +103,7 @@ class DashFragment : Fragment() {
                 setColors(sunUpVal.toInt())
             }
             // get reported max HP from car
-            it.getValue(Constants.maxVehiclePower)?.let{ maxVehiclePowerVal ->
+            it.getValue(Constants.maxDischargePower)?.let{ maxVehiclePowerVal ->
                 maxVehiclePower = maxVehiclePowerVal.toInt() * 1000
             }
             // get battery status to decide whether or not to disable screen dimming
@@ -139,17 +140,19 @@ class DashFragment : Fragment() {
                 binding.minpower.text = minPower.toInt().toString() + " W"
                 binding.maxpower.text = maxPower.toInt().toString() + " W"
 
-                binding.powerBar.setGauge(power/maxVehiclePower.toFloat())
-                binding.powerBar.invalidate()
             }else {
                 binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
                 binding.minpower.text = (minPower * 0.00134102).toInt().toString() + " hp"
                 binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
-                binding.powerBar.setGauge(power/maxVehiclePower.toFloat())
+
+            }
+            if (power < 0){
+                binding.powerBar.setGauge(power/maxRegenPower.toFloat())
+            }else {
+                binding.powerBar.setGauge(power / maxVehiclePower.toFloat())
                 binding.powerBar.invalidate()
             }
 
-            val percent = power/300000f
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)

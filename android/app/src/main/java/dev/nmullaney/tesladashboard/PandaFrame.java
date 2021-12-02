@@ -6,6 +6,8 @@ import java.util.Arrays;
 
 import android.util.Log;
 
+import androidx.annotation.VisibleForTesting;
+
 public class PandaFrame {
     private static final String TAG = PandaFrame.class.getSimpleName();
     private static final Integer INT_BYTES = 8;
@@ -91,18 +93,15 @@ public class PandaFrame {
      * Also, this assumes the payload is in littleEndian, and returns a value that is
      * parsable in bigEndian (i.e. Java).
      */
-    private String getValueString(String fullPayload, int startBit, int bitLength) {
+    @VisibleForTesting static String getValueString(String fullPayload, int startBit, int bitLength) {
         StringBuilder result = new StringBuilder();
-        int initialStartBit = startBit;
-        int initialBitLength = bitLength;
 
-        if (startBit == 12 && bitLength == 12) {
             int tempLength = bitLength;
             int tempStartBit = startBit;
             int cursor = 0;
             boolean doLoop = true;
             while (doLoop) {
-                if (startBit - cursor > 8) {
+                if (startBit - cursor >= 8) {
                     cursor = cursor + 8;
                 } else {
                     tempStartBit = tempStartBit - cursor;
@@ -119,7 +118,7 @@ public class PandaFrame {
                 // figure out how much of the data is in ths byte
                 int maxLength = (8 - tempStartBit);
 
-                int segmentLength = Math.min(maxLength, tempLength - tempStartBit);
+                int segmentLength = Math.min(maxLength, tempLength + tempStartBit);
 
                 String portion = tempByte.substring(tempStartBit, tempStartBit + segmentLength);
                 portion = new StringBuilder(portion).reverse().toString();
@@ -127,13 +126,13 @@ public class PandaFrame {
 
                 result.insert(0, portion);
                 tempLength = tempLength - segmentLength;
-                tempStartBit = tempStartBit + segmentLength;
+                tempStartBit = tempStartBit + segmentLength - 8 ;
                 cursor = cursor + 8;
 
             }
                 Log.d(TAG, "Result ! % 8 " + result.toString() + "full payload: " + fullPayload);
 
-        } else {
+       /* } else {
             while (bitLength > 0) {
                 int length = Math.min(bitLength, 8);
                 // length = 8
@@ -149,11 +148,8 @@ public class PandaFrame {
 
                 }
             }
-        }
-        if (initialBitLength == 12 && initialStartBit == 12){
-            Log.d(TAG, "Final Result " + result.toString() + "full payload: " + fullPayload);
+        }*/
 
-        }
         return result.toString();
     }
 

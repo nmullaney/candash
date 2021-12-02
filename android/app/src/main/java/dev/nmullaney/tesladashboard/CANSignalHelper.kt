@@ -68,11 +68,11 @@ class CANSignalHelper {
         insertCANSignal(Constants.rightVehicle, 1, Hex(0x22E), 0, 9, 1f, 0f)
         insertCANSignal(Constants.autopilotState, 1, Hex(0x399), 0, 4, 1f, 0f)
         insertCANSignal(Constants.autopilotHands, 1, Hex(0x399), 42, 4, 1f, 0f)
-        //insertCANSignal(Constants.cruiseControlSpeed, 1, Hex(0x389), 0, 10, .2f, 0)
-        //insertCANSignal(Constants.maxSpeedAP, 1, Hex(0x2B9), 0, 12, .062f, 0)
+        insertCANSignal(Constants.cruiseControlSpeed, 1, Hex(0x389), 0, 10, .2f, 0f)
+        insertCANSignal(Constants.maxSpeedAP, 1, Hex(0x2B9), 0, 12, .062f, 0f)
         insertCANSignal(Constants.liftgateState, 0, Hex(0x103), 56, 4, 1f, 0f)
         insertCANSignal(Constants.frunkState, 0, Hex(0x2E1), 3, 4, 1f, 0f, 3, 0)
-        //insertCANSignal(Constants.visionSpeedLimit, 1, Hex(0x399), 8, 5, 1f, 0)
+        insertCANSignal(Constants.visionSpeedLimit, 1, Hex(0x399), 8, 5, 1f, 0f)
         //insertCANSignal(Constants.solarAngle, 0, Hex(0x2D3), 32, 8, 1f, 0, signed = true)
         insertCANSignal(Constants.gearSelected, 0, Hex(0x118), 21, 3, 1f, 0f)
         insertCANSignal(Constants.frontLeftDoorState, 0, Hex(0x102), 0, 4, 1f, 0f)
@@ -82,8 +82,9 @@ class CANSignalHelper {
         insertCANSignal(Constants.steeringAngle, 0, Hex(0x129), 16, 14, .1f, -819.2f)
         insertCANSignal(Constants.vehicleSpeed, 0, Hex(0x257), 12, 12, .08f, -40f)
 
-        insertCANSignal(Constants.maxVehiclePower, 0, Hex(0x336), 0, 10, 1f, 0f)
-
+        insertCANSignal(Constants.maxDischargePower, 0, Hex(0x252), 16, 16, .013f, 0f)
+        insertCANSignal(Constants.maxRegenPower, 0, Hex(0x252), 0, 16, .013f, 0f)
+        insertCANSignal(Constants.maxHeatPower, 0, Hex(0x252), 32, 10, .01f, 0f)
 
 
 
