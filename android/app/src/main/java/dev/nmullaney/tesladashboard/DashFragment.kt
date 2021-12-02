@@ -150,7 +150,11 @@ class DashFragment : Fragment() {
                 binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
 
             }
-            binding.powerBar.setGauge(((power/maxVehiclePower).pow(0.7f)))
+            if (power >= 0) {
+                binding.powerBar.setGauge(((power / maxVehiclePower).pow(0.7f)))
+            } else {
+                binding.powerBar.setGauge(-((abs(power) / maxVehiclePower).pow(0.7f)))
+            }
 
             binding.powerBar.invalidate()
 
@@ -225,7 +229,7 @@ class DashFragment : Fragment() {
 
             }
             it.getValue(Constants.vehicleSpeed)?.let { vehicleSpeedVal ->
-                vehicleSpeed = vehicleSpeedVal.toFloat()
+                vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat()).toFloat())
 
             }
 
@@ -415,7 +419,7 @@ class DashFragment : Fragment() {
 
     fun formatWatts(power: Float) : String {
         if (abs(power) < 1000) {
-            return "$power W"
+            return "${power.toInt()} W"
         }
         else if ((abs(power) >= 1000) and (abs(power) < 10000)) {
             "%.2f".format(power/1000f)
