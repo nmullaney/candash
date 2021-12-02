@@ -21,6 +21,9 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
+import kotlin.math.abs
+import kotlin.math.log
+import kotlin.math.pow
 
 
 class DashFragment : Fragment() {
@@ -51,6 +54,7 @@ class DashFragment : Fragment() {
     private var HRSPRS: Boolean = false
     private var maxVehiclePower: Int = 350000
     private var maxRegenPower: Int = 150000
+    private var vehicleSpeed : Float = 0f;
 
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
@@ -146,12 +150,16 @@ class DashFragment : Fragment() {
                 binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
 
             }
-            if (power < 0){
-                binding.powerBar.setGauge(power/maxRegenPower.toFloat())
-            }else {
-                binding.powerBar.setGauge(power / maxVehiclePower.toFloat())
-                binding.powerBar.invalidate()
+            if (power < -1000){
+                binding.powerBar.setGauge(((power/maxVehiclePower).pow(0.7f)))
+            }else if(power > 1000) {
+                binding.powerBar.setGauge(((power/maxVehiclePower).pow(0.7f)))
             }
+            else{
+                binding.powerBar.setGauge(0f)
+            }
+            binding.powerBar.invalidate()
+
 
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
@@ -222,8 +230,11 @@ class DashFragment : Fragment() {
 
 
             }
+            it.getValue(Constants.vehicleSpeed)?.let { vehicleSpeedVal ->
+                vehicleSpeed = vehicleSpeedVal.toFloat()
 
-            binding.speed.text = (it.getValue(Constants.uiSpeed)?.toInt() ?: "").toString()
+            }
+
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
                 uiSpeedUnitsMPH = uiSpeedUnitsVal.toInt() == 0
             }
@@ -235,6 +246,7 @@ class DashFragment : Fragment() {
             } else {
                 if (uiSpeedUnitsMPH == true) {
                     binding.unit.text = "MPH"
+                    binding.speed.text = (vehicleSpeed * .62f).toInt().toString()
 
                     it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
@@ -245,6 +257,8 @@ class DashFragment : Fragment() {
                 else {
                     binding.unit.text =
                         "KPH"
+                    binding.speed.text = vehicleSpeed.toInt().toString()
+
                     it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
                             ((stateOfChargeVal.toInt()) / .62).toString() + " km"

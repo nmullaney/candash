@@ -77,7 +77,7 @@ class MockPandaService : PandaService {
                 Constants.rearLeftVehicle to 100,
                 Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearPark,
-                Constants.battAmps to 40.0
+                Constants.battAmps to 140.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.9,
@@ -97,7 +97,7 @@ class MockPandaService : PandaService {
                 Constants.cruiseControlSpeed to 45.0,
                 Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearDrive,
-                Constants.battAmps to 1.0
+                Constants.battAmps to 3.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.8,
@@ -114,7 +114,7 @@ class MockPandaService : PandaService {
                 Constants.maxSpeedAP to 45.0,
                 Constants.uiSpeedUnits to 0,
                 Constants.cruiseControlSpeed to 45.0,
-                Constants.battAmps to 100.0
+                Constants.battAmps to 750.0
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.7,
