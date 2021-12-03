@@ -51,8 +51,8 @@
 
     <ImageView
         android:id="@+id/autopilot"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:visibility="invisible"
         android:gravity="center"
         android:src="@drawable/ic_autopilot"
@@ -63,8 +63,8 @@
 
     <ImageView
         android:id="@+id/autopilot_inactive"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:gravity="center"
         android:visibility="invisible"
 

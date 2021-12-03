@@ -230,8 +230,13 @@ class DashFragment : Fragment() {
 
             }
             it.getValue(Constants.vehicleSpeed)?.let { vehicleSpeedVal ->
-                vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat()).toFloat())
-
+                if (uiSpeedUnitsMPH){
+                    vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat() * .62).toFloat())
+                    binding.speed.text = vehicleSpeed.toInt().toString()
+                } else {
+                    vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat()).toFloat())
+                    binding.speed.text = vehicleSpeed.toInt().toString()
+                }
             }
 
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
