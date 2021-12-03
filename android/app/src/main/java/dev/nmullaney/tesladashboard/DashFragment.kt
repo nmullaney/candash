@@ -42,6 +42,7 @@ class DashFragment : Fragment() {
     private var gearColor: Int = Color.parseColor("#FFEEEEEE")
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 1
+    private var lastDoorOpen: Boolean = false
     private var autopilotHandsToggle: Boolean = false
     private var lastSunUp: Int = 1
     private var showSOC: Boolean = true
@@ -263,6 +264,7 @@ class DashFragment : Fragment() {
                     }
                 }
             }
+            processDoors(it)
 
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.fullbattery.scrollX =
@@ -288,30 +290,7 @@ class DashFragment : Fragment() {
                 )
             }
 
-            it.getValue(Constants.liftgateState)?.let { liftgateVal ->
-                binding.hatch.visibility =
-                    if (liftgateVal.toInt() == 1) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.frunkState)?.let { frunkVal ->
-                binding.hood.visibility =
-                    if (frunkVal.toInt() == 1) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.frontLeftDoorState)?.let { doorVal ->
-                binding.frontleftdoor.visibility =
-                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.frontRightDoorState)?.let { doorVal ->
-                binding.frontrightdoor.visibility =
-                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rearLeftDoorState)?.let { doorVal ->
-                binding.rearleftdoor.visibility =
-                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
-            }
-            it.getValue(Constants.rearRightDoorState)?.let { doorVal ->
-                binding.rearrightdoor.visibility =
-                    if (doorVal.toInt() == 1) View.VISIBLE else View.GONE
-            }
+
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignalDark.visibility =
                     if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.INVISIBLE
@@ -367,7 +346,72 @@ class DashFragment : Fragment() {
         }
     }
 
+    fun processDoors(it: CarState){
+        var doorOpen = false
+        it.getValue(Constants.liftgateState)?.let { liftgateVal ->
 
+                if (liftgateVal.toInt() == 1) {
+                    binding.hatch.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.hatch.visibility = View.GONE
+                }
+
+        }
+        it.getValue(Constants.frunkState)?.let { frunkVal ->
+
+                if (frunkVal.toInt() == 1) {
+                    binding.hood.visibility = View.VISIBLE
+                    doorOpen = true
+                }
+                else {
+                    binding.hood.visibility = View.GONE
+                }
+
+        }
+
+        it.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
+
+            if (frontLeftDoorVal.toInt() == 1) {
+                binding.frontleftdoor.visibility = View.VISIBLE
+                doorOpen = true
+            } else {
+                binding.frontleftdoor.visibility = View.GONE
+            }
+
+        }
+        it.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+
+            if (frontRightDoorVal.toInt() == 1) {
+                binding.frontrightdoor.visibility = View.VISIBLE
+                doorOpen = true
+            } else {
+                binding.frontrightdoor.visibility = View.GONE
+            }
+
+        }
+        it.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+
+            if (rearLeftDoorVal.toInt() == 1) {
+                binding.rearleftdoor.visibility = View.VISIBLE
+                doorOpen = true
+            } else {
+                binding.rearleftdoor.visibility = View.GONE
+            }
+
+        }
+        it.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+
+            if (rearRightDoorVal.toInt() == 1) {
+                binding.rearrightdoor.visibility = View.VISIBLE
+                doorOpen = true
+            } else {
+                binding.rearrightdoor.visibility = View.GONE
+            }
+
+        }
+      updateCarStateUI(doorOpen)
+    }
     fun setColors(sunUpVal: Int) {
         binding.powerBar.setDayValue(sunUpVal)
 
@@ -430,6 +474,18 @@ class DashFragment : Fragment() {
         }
     }
 
+    fun updateCarStateUI(doorOpen: Boolean){
+        if (lastDoorOpen != doorOpen) {
+            val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+            val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+            if (doorOpen) {
+                binding.modely.startAnimation(fadeIn)
+            } else {
+                binding.modely.startAnimation(fadeOut)
+            }
+        }
+        lastDoorOpen = doorOpen
+    }
     fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
         var steeringAngle: Int
 
