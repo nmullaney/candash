@@ -55,11 +55,9 @@ class DashFragment : Fragment() {
     private var maxPower: Float = 0f
     private var HRSPRS: Boolean = false
     private var maxVehiclePower: Int = 350000
-    private var maxRegenPower: Int = 150000
-    private var vehicleSpeed: Float = 0f;
+    private var vehicleSpeed: Int = 0;
     private var forceNightMode: Boolean = false
 
-//    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -243,6 +241,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
 
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
+                vehicleSpeed = vehicleSpeedVal.toInt()
                 /*
                 if (uiSpeedUnitsMPH) {
                     vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat() * .62).toFloat())
@@ -331,42 +330,66 @@ class DashFragment : Fragment() {
                 binding.blindSpotRight1.visibility =
                     if ((blindSpotRightVal.toInt() > 0) and (blindSpotRightVal.toInt() < 3)) View.VISIBLE else View.GONE
             }
-            if (it.getValue(Constants.rearLeftVehicle) != null) rearLeftVehDetected =
-                it.getValue(Constants.rearLeftVehicle)!!.toInt() else rearLeftVehDetected = 500
-            if (it.getValue(Constants.rearRightVehicle) != null) rearRightVehDetected =
-                it.getValue(Constants.rearRightVehicle)!!.toInt() else rearRightVehDetected = 500
-            if (it.getValue(Constants.leftVehicle) != null) leftVehDetected =
-                it.getValue(Constants.leftVehicle)!!.toInt() else leftVehDetected = 500
-            if (it.getValue(Constants.rightVehicle) != null) rightVehDetected =
-                it.getValue(Constants.rightVehicle)!!.toInt() else rightVehDetected = 500
-
-            if ((rearLeftVehDetected < 300) or (leftVehDetected < 300)) {
-                binding.blindSpotLeft1.visibility = View.VISIBLE
-            } else {
-                binding.blindSpotLeft1.visibility = View.GONE
-            }
-            if ((rearRightVehDetected < 300) or (rightVehDetected < 300)) {
-                binding.blindSpotRight1.visibility = View.VISIBLE
-            } else {
-                binding.blindSpotRight1.visibility = View.GONE
-            }
-            if ((rearLeftVehDetected <= 100) or (leftVehDetected <= 100)) {
-                binding.blindSpotLeft1.visibility = View.GONE
-                binding.blindSpotLeft2.visibility = View.VISIBLE
-            } else {
-                binding.blindSpotLeft2.visibility = View.GONE
-            }
-            if ((rearRightVehDetected < 100) or (rightVehDetected < 100)) {
-                binding.blindSpotRight1.visibility = View.GONE
-                binding.blindSpotRight2.visibility = View.VISIBLE
-            } else {
-                binding.blindSpotRight2.visibility = View.GONE
-            }
-
+            if (it.getValue(Constants.rearLeftVehicle) != null){
+                rearLeftVehDetected =
+                    it.getValue(Constants.rearLeftVehicle)!!.toInt()
+                processObstacles()
+            } else rearLeftVehDetected = 500
+            if (it.getValue(Constants.rearRightVehicle) != null) {
+                rearRightVehDetected =
+                    it.getValue(Constants.rearRightVehicle)!!.toInt()
+                processObstacles()
+            } else rearRightVehDetected = 500
+            if (it.getValue(Constants.leftVehicle) != null) {
+                leftVehDetected =
+                    it.getValue(Constants.leftVehicle)!!.toInt()
+                processObstacles()
+            } else leftVehDetected = 500
+            if (it.getValue(Constants.rightVehicle) != null) {
+                rightVehDetected =
+                    it.getValue(Constants.rightVehicle)!!.toInt()
+                processObstacles()
+            } else rightVehDetected = 500
         }
     }
-
+    fun processObstacles(){
+        var speed : Float = 35f
+        // l2 distance = highest warning with two lines
+        // l1 distance = low level warning for farther distance
+        var l2Distance : Int = 100
+        var l1Distance : Int = 300
+        if (!uiSpeedUnitsMPH){
+            // convert kph to mph
+            speed = speed/.62f
+        }
+        if (vehicleSpeed >= speed){
+            l1Distance = 200
+        }
+        if ((rearLeftVehDetected < l1Distance) or (leftVehDetected < l1Distance)) {
+            binding.blindSpotLeft1.visibility = View.VISIBLE
+        } else {
+            binding.blindSpotLeft1.visibility = View.GONE
+        }
+        if ((rearRightVehDetected < l1Distance) or (rightVehDetected < l1Distance)) {
+            binding.blindSpotRight1.visibility = View.VISIBLE
+        } else {
+            binding.blindSpotRight1.visibility = View.GONE
+        }
+        if ((rearLeftVehDetected <= l2Distance) or (leftVehDetected <= l2Distance)) {
+            binding.blindSpotLeft1.visibility = View.GONE
+            binding.blindSpotLeft2.visibility = View.VISIBLE
+        } else {
+            binding.blindSpotLeft2.visibility = View.GONE
+        }
+        if ((rearRightVehDetected < l2Distance) or (rightVehDetected < l2Distance)) {
+            binding.blindSpotRight1.visibility = View.GONE
+            binding.blindSpotRight2.visibility = View.VISIBLE
+        } else {
+            binding.blindSpotRight2.visibility = View.GONE
+        }
+    }
     fun processDoors(it: CarState) {
+
         var doorOpen = false
         it.getValue(Constants.liftgateState)?.let { liftgateVal ->
 
