@@ -16,18 +16,17 @@
         android:letterSpacing="-.1"
         android:paddingBottom="40dp"
         android:textColor="@color/black"
-
+        app:fontWeight="300"
         app:autoSizeMaxTextSize="220sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="1"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.869"
+        app:layout_constraintWidth_percent=".5"
+
         tools:text="0" />
 
 
@@ -395,7 +394,7 @@
 
     <dev.nmullaney.tesladashboard.LinearGauge
         android:id="@+id/power_bar"
-        android:layout_height="3dp"
+        android:layout_height="5dp"
         android:layout_width="match_parent"
         android:layout_marginBottom="25dp"
         android:layout_marginTop="20dp"

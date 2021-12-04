@@ -34,7 +34,7 @@ class LinearGauge @JvmOverloads constructor(
         val paint = Paint()
         var startX : Float = 0f
         var stopX: Float = 0f
-        paint.strokeWidth = 10f
+        paint.strokeWidth = 20f
         paint.setColorFilter(backgroundLineColor)
         canvas?.drawLine(50f, 0f, screenWidth.toFloat() - 50f, 0f, paint)
 

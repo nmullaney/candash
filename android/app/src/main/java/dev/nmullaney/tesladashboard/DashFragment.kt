@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.BatteryManager
@@ -48,14 +49,15 @@ class DashFragment : Fragment() {
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
-    private var battAmps:Float = 0f
-    private var battVolts:Float = 0f
+    private var battAmps: Float = 0f
+    private var battVolts: Float = 0f
     private var minPower: Float = 0f
     private var maxPower: Float = 0f
     private var HRSPRS: Boolean = false
     private var maxVehiclePower: Int = 350000
     private var maxRegenPower: Int = 150000
-    private var vehicleSpeed : Float = 0f;
+    private var vehicleSpeed: Float = 0f;
+    private var forceNightMode: Boolean = false
 
 //    private var argbEvaluator:ArgbEvaluator = ArgbEvaluator()
 
@@ -74,7 +76,6 @@ class DashFragment : Fragment() {
             else -> requireContext().getColor(R.color.night_background)
         }
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,19 +103,23 @@ class DashFragment : Fragment() {
         binding.maxpower.setOnClickListener {
             maxPower = 0f
         }
+        binding.speed.setOnClickListener {
+            forceNightMode = !forceNightMode
+        }
         viewModel.carState().observe(viewLifecycleOwner) {
 
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
             }
             // get reported max HP from car
-            it.getValue(Constants.maxDischargePower)?.let{ maxVehiclePowerVal ->
+            it.getValue(Constants.maxDischargePower)?.let { maxVehiclePowerVal ->
                 maxVehiclePower = maxVehiclePowerVal.toInt() * 1000
             }
             // get battery status to decide whether or not to disable screen dimming
-            var batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
-                context?.registerReceiver(null, ifilter)
-            }
+            var batteryStatus: Intent? =
+                IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                    context?.registerReceiver(null, ifilter)
+                }
             // How are we charging?
             val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
             val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
@@ -122,7 +127,7 @@ class DashFragment : Fragment() {
                     || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
             Log.d(TAG, "keep_screen_on" + isPlugged.toString())
 
-            if (isPlugged){
+            if (isPlugged) {
                 activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 Log.d(TAG, "keep_screen_on")
             } else {
@@ -145,7 +150,7 @@ class DashFragment : Fragment() {
                 binding.minpower.text = formatWatts(minPower)
                 binding.maxpower.text = formatWatts(maxPower)
 
-            }else {
+            } else {
                 binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
                 binding.minpower.text = (minPower * 0.00134102).toInt().toString() + " hp"
                 binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
@@ -200,13 +205,20 @@ class DashFragment : Fragment() {
                 binding.PRND.text = (ss)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-
+                val colorFrom : Int
+                if (forceNightMode){
+                    colorFrom = getBackgroundColor(0)
+                } else {
+                    colorFrom = getBackgroundColor(lastSunUp)
+                }
                 //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
+
                     if (autopilotHandsToggle == false) {
-                        val colorFrom = getBackgroundColor(lastSunUp)
+
                         val colorTo = Color.parseColor("#FF7791F7")
-                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                        val colorAnimation =
+                            ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
                         colorAnimation.duration = 2000
                         // milliseconds
 
@@ -217,26 +229,30 @@ class DashFragment : Fragment() {
                         }
                         colorAnimation.start()
                         autopilotHandsToggle = true
-                    }
-                    else {
+                    } else {
                         binding.root.setBackgroundColor(Color.parseColor("#FF7791F7"))
 
                     }
                 } else {
-                    binding.root.setBackgroundColor(getBackgroundColor(lastSunUp))
+                    binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
                 }
 
 
             }
-            it.getValue(Constants.vehicleSpeed)?.let { vehicleSpeedVal ->
-                if (uiSpeedUnitsMPH){
+            it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
+
+                binding.speed.text = vehicleSpeedVal.toInt().toString()
+                /*
+                if (uiSpeedUnitsMPH) {
                     vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat() * .62).toFloat())
                     binding.speed.text = vehicleSpeed.toInt().toString()
                 } else {
                     vehicleSpeed = abs(Math.round(vehicleSpeedVal.toFloat()).toFloat())
                     binding.speed.text = vehicleSpeed.toInt().toString()
                 }
+                */
+
             }
 
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
@@ -250,18 +266,17 @@ class DashFragment : Fragment() {
             } else {
                 if (uiSpeedUnitsMPH == true) {
                     binding.unit.text = "MPH"
-                    binding.speed.text = (vehicleSpeed * .62f).toInt().toString()
+                    //binding.speed.text = (vehicleSpeed * .62f).toInt().toString()
 
                     it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
                             stateOfChargeVal.toInt().toString() + " mi"
 
                     }
-                }
-                else {
+                } else {
                     binding.unit.text =
                         "KPH"
-                    binding.speed.text = vehicleSpeed.toInt().toString()
+                    //binding.speed.text = vehicleSpeed.toInt().toString()
 
                     it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
@@ -325,12 +340,12 @@ class DashFragment : Fragment() {
             if (it.getValue(Constants.rightVehicle) != null) rightVehDetected =
                 it.getValue(Constants.rightVehicle)!!.toInt() else rightVehDetected = 500
 
-            if ((rearLeftVehDetected < 200) or (leftVehDetected < 200)) {
+            if ((rearLeftVehDetected < 300) or (leftVehDetected < 300)) {
                 binding.blindSpotLeft1.visibility = View.VISIBLE
             } else {
                 binding.blindSpotLeft1.visibility = View.GONE
             }
-            if ((rearRightVehDetected < 200) or (rightVehDetected < 200)) {
+            if ((rearRightVehDetected < 300) or (rightVehDetected < 300)) {
                 binding.blindSpotRight1.visibility = View.VISIBLE
             } else {
                 binding.blindSpotRight1.visibility = View.GONE
@@ -351,27 +366,26 @@ class DashFragment : Fragment() {
         }
     }
 
-    fun processDoors(it: CarState){
+    fun processDoors(it: CarState) {
         var doorOpen = false
         it.getValue(Constants.liftgateState)?.let { liftgateVal ->
 
-                if (liftgateVal.toInt() == 1) {
-                    binding.hatch.visibility = View.VISIBLE
-                    doorOpen = true
-                } else {
-                    binding.hatch.visibility = View.GONE
-                }
+            if (liftgateVal.toInt() == 1) {
+                binding.hatch.visibility = View.VISIBLE
+                doorOpen = true
+            } else {
+                binding.hatch.visibility = View.GONE
+            }
 
         }
         it.getValue(Constants.frunkState)?.let { frunkVal ->
 
-                if (frunkVal.toInt() == 1) {
-                    binding.hood.visibility = View.VISIBLE
-                    doorOpen = true
-                }
-                else {
-                    binding.hood.visibility = View.GONE
-                }
+            if (frunkVal.toInt() == 1) {
+                binding.hood.visibility = View.VISIBLE
+                doorOpen = true
+            } else {
+                binding.hood.visibility = View.GONE
+            }
 
         }
 
@@ -415,71 +429,72 @@ class DashFragment : Fragment() {
             }
 
         }
-      updateCarStateUI(doorOpen)
+        updateCarStateUI(doorOpen)
     }
+
     fun setColors(sunUpVal: Int) {
-        binding.powerBar.setDayValue(sunUpVal)
 
-        if (lastSunUp.toInt() != sunUpVal) {
-            // Not using dark-mode for compatibility with older version of Android (pre-29)
-            if (sunUpVal == 0) {
-                binding.root.setBackgroundColor(Color.BLACK)
+        // Not using dark-mode for compatibility with older version of Android (pre-29)
+        if (sunUpVal == 0 || forceNightMode) {
+            binding.powerBar.setDayValue(0)
 
-                binding.speed.setTextColor(Color.WHITE)
-                binding.unit.setTextColor(Color.LTGRAY)
-                binding.batterypercent.setTextColor(Color.LTGRAY)
-                binding.deadbattery.setColorFilter(Color.DKGRAY)
-                binding.deadbatterymask.setColorFilter(Color.DKGRAY)
-                binding.fullbattery.setColorFilter(Color.LTGRAY)
-                gearColorSelected = Color.LTGRAY
-                gearColor = Color.DKGRAY
-                binding.PRND.setTextColor(Color.DKGRAY)
-                binding.modely.setColorFilter(Color.parseColor("#FF333333"))
-                binding.power.setTextColor(Color.WHITE)
-                binding.minpower.setTextColor(Color.WHITE)
-                binding.maxpower.setTextColor(Color.WHITE)
+            binding.root.setBackgroundColor(Color.BLACK)
+            //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
+            binding.speed.setTextColor(Color.WHITE)
+            binding.unit.setTextColor(Color.LTGRAY)
+            binding.batterypercent.setTextColor(Color.LTGRAY)
+            binding.deadbattery.setColorFilter(Color.DKGRAY)
+            binding.deadbatterymask.setColorFilter(Color.DKGRAY)
+            binding.fullbattery.setColorFilter(Color.LTGRAY)
+            gearColorSelected = Color.LTGRAY
+            gearColor = Color.DKGRAY
+            binding.PRND.setTextColor(Color.DKGRAY)
+            binding.modely.setColorFilter(Color.LTGRAY)
+            binding.power.setTextColor(Color.WHITE)
+            binding.minpower.setTextColor(Color.WHITE)
+            binding.maxpower.setTextColor(Color.WHITE)
 
-                //binding.displaymaxspeed.setTextColor(Color.WHITE)
+            //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
 
-            } else {
-                //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
-                binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
+        } else {
+            binding.powerBar.setDayValue(1)
 
-                binding.speed.setTextColor(Color.BLACK)
-                binding.unit.setTextColor(Color.DKGRAY)
-                binding.batterypercent.setTextColor(Color.DKGRAY)
-                binding.deadbattery.clearColorFilter()
-                binding.deadbatterymask.clearColorFilter()
-                binding.fullbattery.clearColorFilter()
-                gearColorSelected = Color.DKGRAY
-                gearColor = Color.parseColor("#FFEEEEEE")
-                binding.PRND.setTextColor(Color.parseColor("#FFEEEEEE"))
-                binding.modely.setColorFilter(Color.LTGRAY)
-                binding.power.setTextColor(Color.DKGRAY)
-                binding.minpower.setTextColor(Color.DKGRAY)
-                binding.maxpower.setTextColor(Color.DKGRAY)
-                //binding.displaymaxspeed.setTextColor(Color.BLACK)
+            //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
+            binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
 
-            }
+            binding.speed.setTextColor(Color.BLACK)
+            binding.unit.setTextColor(Color.DKGRAY)
+            binding.batterypercent.setTextColor(Color.DKGRAY)
+            binding.deadbattery.clearColorFilter()
+            binding.deadbatterymask.clearColorFilter()
+            binding.fullbattery.clearColorFilter()
+            gearColorSelected = Color.DKGRAY
+            gearColor = Color.parseColor("#FFDDDDDD")
+            binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
+            binding.modely.setColorFilter(Color.LTGRAY)
+            binding.power.setTextColor(Color.DKGRAY)
+            binding.minpower.setTextColor(Color.DKGRAY)
+            binding.maxpower.setTextColor(Color.DKGRAY)
+            //binding.displaymaxspeed.setTextColor(Color.BLACK)
+
         }
+
         lastSunUp = sunUpVal
     }
 
-    fun formatWatts(power: Float) : String {
+    fun formatWatts(power: Float): String {
         if (abs(power) < 1000) {
             return "${power.toInt()} W"
-        }
-        else if ((abs(power) >= 1000) and (abs(power) < 10000)) {
-            "%.2f".format(power/1000f)
-            return "%.2f".format(power/1000f) + " kW"
-        }
-        else {
-            return (power/1000f).toInt().toString() + " kW"
+        } else if ((abs(power) >= 1000) and (abs(power) < 10000)) {
+            "%.2f".format(power / 1000f)
+            return "%.2f".format(power / 1000f) + " kW"
+        } else {
+            return (power / 1000f).toInt().toString() + " kW"
         }
     }
 
-    fun updateCarStateUI(doorOpen: Boolean){
+    fun updateCarStateUI(doorOpen: Boolean) {
         if (lastDoorOpen != doorOpen) {
             val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
             val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
@@ -491,6 +506,7 @@ class DashFragment : Fragment() {
         }
         lastDoorOpen = doorOpen
     }
+
     fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
         var steeringAngle: Int
 
