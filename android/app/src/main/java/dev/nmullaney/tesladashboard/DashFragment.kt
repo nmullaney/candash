@@ -45,6 +45,7 @@ class DashFragment : Fragment() {
     private var lastAutopilotState: Int = 1
     private var lastDoorOpen: Boolean = false
     private var autopilotHandsToggle: Boolean = false
+    private var blindSpotAlertToggle: Boolean = false
     private var lastSunUp: Int = 1
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
@@ -109,10 +110,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
             }
-            // get reported max HP from car
-            it.getValue(Constants.maxDischargePower)?.let { maxVehiclePowerVal ->
-                maxVehiclePower = maxVehiclePowerVal.toInt() * 1000
-            }
+
             // get battery status to decide whether or not to disable screen dimming
             var batteryStatus: Intent? =
                 IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
@@ -311,25 +309,146 @@ class DashFragment : Fragment() {
 
 
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
-                binding.leftTurnSignalDark.visibility =
-                    if (leftTurnSignalVal.toInt() == 1) View.VISIBLE else View.INVISIBLE
-                binding.leftTurnSignalLight.visibility =
-                    if (leftTurnSignalVal.toInt() == 2) View.VISIBLE else View.INVISIBLE
+                if (leftTurnSignalVal.toInt() > 0) {
+                    binding.leftTurnSignalDark.visibility = View.VISIBLE
+                } else {
+                    binding.leftTurnSignalDark.visibility = View.INVISIBLE
+                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                }
+                if (leftTurnSignalVal.toInt() > 1) {
+                    binding.leftTurnSignalLight.visibility = View.VISIBLE
+                } else {
+                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                }
             }
             it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
-                binding.rightTurnSignalDark.visibility =
-                    if (rightTurnSignalVal.toInt() == 1) View.VISIBLE else View.INVISIBLE
-                binding.rightTurnSignalLight.visibility =
-                    if (rightTurnSignalVal.toInt() == 2) View.VISIBLE else View.INVISIBLE
+                if (rightTurnSignalVal.toInt() > 0) {
+                    binding.rightTurnSignalDark.visibility = View.VISIBLE
+                } else {
+                    binding.rightTurnSignalDark.visibility = View.INVISIBLE
+                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                }
+
+                if (rightTurnSignalVal.toInt() > 1) {
+                    binding.rightTurnSignalLight.visibility = View.VISIBLE
+                } else {
+                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                }
             }
             it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
-                binding.blindSpotLeft1.visibility =
-                    if ((blindSpotLeftVal.toInt() > 0) and (blindSpotLeftVal.toInt() < 3)) View.VISIBLE else View.GONE
+                val colorFrom: Int
+                if (forceNightMode) {
+                    colorFrom = getBackgroundColor(0)
+                } else {
+                    colorFrom = getBackgroundColor(lastSunUp)
+                }
+                //TODO: change colors to autopilot_blue constant
+                if ((blindSpotLeftVal.toInt() > 2) and (blindSpotLeftVal.toInt() < 15)) {
+
+                    if (blindSpotAlertToggle == false) {
+
+                        val colorTo = Color.parseColor("#FFEE0000")
+                        val colorAnimation =
+                            ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                        colorAnimation.duration = 250
+                        // milliseconds
+
+                        colorAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        colorAnimation.start()
+                        blindSpotAlertToggle = true
+                    } else {
+                        binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
+
+                    }
+                } else {
+                    binding.root.setBackgroundColor(colorFrom)
+                    blindSpotAlertToggle = false
+                }
             }
             it.getValue(Constants.blindSpotRight)?.let { blindSpotRightVal ->
-                binding.blindSpotRight1.visibility =
-                    if ((blindSpotRightVal.toInt() > 0) and (blindSpotRightVal.toInt() < 3)) View.VISIBLE else View.GONE
+                val colorFrom: Int
+                if (forceNightMode) {
+                    colorFrom = getBackgroundColor(0)
+                } else {
+                    colorFrom = getBackgroundColor(lastSunUp)
+                }
+                //TODO: change colors to autopilot_blue constant
+                if ((blindSpotRightVal.toInt() > 2) and (blindSpotRightVal.toInt() < 15)) {
+
+                    if (blindSpotAlertToggle == false) {
+
+                        val colorTo = Color.parseColor("#FFEE0000")
+                        val colorAnimation =
+                            ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                        colorAnimation.duration = 250
+                        // milliseconds
+
+                        colorAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        colorAnimation.start()
+                        blindSpotAlertToggle = true
+                    } else {
+                        binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
+
+                    }
+                } else {
+                    binding.root.setBackgroundColor(colorFrom)
+                    blindSpotAlertToggle = false
+                }
             }
+
+            it.getValue(Constants.rearLeftVehicle)?.let { sensorVal ->
+                if (sensorVal.toInt() < 300){
+                    binding.blindSpotLeft1.visibility = View.VISIBLE
+                }
+                else if (sensorVal.toInt() < 200){
+                    binding.blindSpotLeft2.visibility = View.VISIBLE
+                } else {
+                    binding.blindSpotLeft1.visibility = View.INVISIBLE
+                    binding.blindSpotLeft2.visibility = View.INVISIBLE
+                }
+            }
+            it.getValue(Constants.leftVehicle)?.let { sensorVal ->
+                if (sensorVal.toInt() < 300){
+                    binding.blindSpotLeft1a.visibility = View.VISIBLE
+                }
+                else if (sensorVal.toInt() < 200){
+                    binding.blindSpotLeft2a.visibility = View.VISIBLE
+                } else {
+                    binding.blindSpotLeft1a.visibility = View.INVISIBLE
+                    binding.blindSpotLeft2a.visibility = View.INVISIBLE
+                }
+            }
+            it.getValue(Constants.rearRightVehicle)?.let { sensorVal ->
+                if (sensorVal.toInt() < 300){
+                    binding.blindSpotRight1.visibility = View.VISIBLE
+                }
+                else if (sensorVal.toInt() < 200){
+                    binding.blindSpotRight2.visibility = View.VISIBLE
+                } else {
+                    binding.blindSpotRight1.visibility = View.INVISIBLE
+                    binding.blindSpotRight2.visibility = View.INVISIBLE
+                }
+            }
+            it.getValue(Constants.rightVehicle)?.let { sensorVal ->
+                if (sensorVal.toInt() < 300){
+                    binding.blindSpotRight1a.visibility = View.VISIBLE
+                }
+                else if (sensorVal.toInt() < 200){
+                    binding.blindSpotRight2a.visibility = View.VISIBLE
+                } else {
+                    binding.blindSpotRight1a.visibility = View.INVISIBLE
+                    binding.blindSpotRight2a.visibility = View.INVISIBLE
+                }
+            }
+            /*
             if (it.getValue(Constants.rearLeftVehicle) != null){
                 rearLeftVehDetected =
                     it.getValue(Constants.rearLeftVehicle)!!.toInt()
@@ -350,6 +469,8 @@ class DashFragment : Fragment() {
                     it.getValue(Constants.rightVehicle)!!.toInt()
                 processObstacles()
             } else rightVehDetected = 500
+
+             */
         }
     }
     fun processObstacles(){
