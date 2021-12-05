@@ -335,6 +335,7 @@ class DashFragment : Fragment() {
                     binding.rightTurnSignalLight.visibility = View.INVISIBLE
                 }
             }
+            /*
             it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
                 val colorFrom: Int
                 if (forceNightMode) {
@@ -342,7 +343,7 @@ class DashFragment : Fragment() {
                 } else {
                     colorFrom = getBackgroundColor(lastSunUp)
                 }
-                //TODO: change colors to autopilot_blue constant
+
                 if ((blindSpotLeftVal.toInt() > 2) and (blindSpotLeftVal.toInt() < 15)) {
 
                     if (blindSpotAlertToggle == false) {
@@ -403,7 +404,7 @@ class DashFragment : Fragment() {
                     blindSpotAlertToggle = false
                 }
             }
-
+*/
             it.getValue(Constants.rearLeftVehicle)?.let { sensorVal ->
                 if (sensorVal.toInt() < 300){
                     binding.blindSpotLeft1.visibility = View.VISIBLE
