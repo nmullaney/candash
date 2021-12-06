@@ -120,53 +120,27 @@
 
 
     <ImageView
-        android:id="@+id/left_turn_signal_dark"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnleftdark"
-        android:paddingTop="40dp"
-        android:paddingLeft="10dp"
-        android:visibility="gone"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <ImageView
-        android:id="@+id/left_turn_signal_light"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnleftbright"
-        android:paddingTop="40dp"
-        android:paddingLeft="10dp"
-        android:visibility="gone"
+        android:id="@+id/left_turn_signal"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
-        android:id="@+id/right_turn_signal_dark"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnrightdark"
-        android:paddingTop="40dp"
-        android:paddingRight="10dp"
-        android:gravity="center"
-        android:visibility="gone"
-
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/right_turn_signal_light"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnrightbright"
-        android:paddingTop="40dp"
-        android:paddingRight="10dp"
-        android:gravity="center"
-        android:visibility="gone"
+        android:id="@+id/right_turn_signal"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="10dp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
     <TextView
         android:id="@+id/PRND"
         android:layout_width="120dp"

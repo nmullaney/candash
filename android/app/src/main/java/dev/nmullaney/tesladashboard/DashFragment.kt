@@ -5,9 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.TransitionDrawable
+import android.graphics.drawable.AnimationDrawable
 import android.os.BatteryManager
 import android.os.Bundle
 import android.text.Spannable
@@ -23,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 import kotlin.math.abs
-import kotlin.math.log
 import kotlin.math.pow
 
 
@@ -164,7 +161,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
-                } else if (lastSunUp == 1) {
+                } else if (lastSunUp == 1 && !forceNightMode) {
                     gearColorSelected = Color.DKGRAY
                 } else {
                     gearColorSelected = Color.LTGRAY
@@ -307,32 +304,30 @@ class DashFragment : Fragment() {
                 )
             }
 
-
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
+                binding.leftTurnSignal.setBackgroundResource(R.drawable.left_turn_anim)
+                var turnSignalAnimation =
+                    binding.leftTurnSignal.background as AnimationDrawable
                 if (leftTurnSignalVal.toInt() > 0) {
-                    binding.leftTurnSignalDark.visibility = View.VISIBLE
-                } else {
-                    binding.leftTurnSignalDark.visibility = View.GONE
-                    binding.leftTurnSignalLight.visibility = View.GONE
+                    binding.leftTurnSignal.visibility = View.VISIBLE
+                    turnSignalAnimation.start()
                 }
-                if (leftTurnSignalVal.toInt() > 1) {
-                    binding.leftTurnSignalLight.visibility = View.VISIBLE
-                } else {
-                    binding.leftTurnSignalLight.visibility = View.GONE
+                else {
+                    turnSignalAnimation.stop()
+                    binding.leftTurnSignal.visibility = View.INVISIBLE
                 }
             }
             it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
+                binding.rightTurnSignal.setBackgroundResource(R.drawable.right_turn_anim)
+                var turnSignalAnimation =
+                    binding.rightTurnSignal.background as AnimationDrawable
                 if (rightTurnSignalVal.toInt() > 0) {
-                    binding.rightTurnSignalDark.visibility = View.VISIBLE
-                } else {
-                    binding.rightTurnSignalDark.visibility = View.GONE
-                    binding.rightTurnSignalLight.visibility = View.GONE
+                    binding.rightTurnSignal.visibility = View.VISIBLE
+                    turnSignalAnimation.start()
                 }
-
-                if (rightTurnSignalVal.toInt() > 1) {
-                    binding.rightTurnSignalLight.visibility = View.VISIBLE
-                } else {
-                    binding.rightTurnSignalLight.visibility = View.GONE
+                else {
+                    turnSignalAnimation.stop()
+                    binding.rightTurnSignal.visibility = View.INVISIBLE
                 }
             }
 
