@@ -212,7 +212,7 @@ class DashFragment : Fragment() {
 
                     if (autopilotHandsToggle == false) {
 
-                        val colorTo = Color.parseColor("#FF7791F7")
+                        val colorTo = requireContext().getColor(R.color.autopilot_blue)
                         val colorAnimation =
                             ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
                         colorAnimation.duration = 2000
@@ -226,7 +226,7 @@ class DashFragment : Fragment() {
                         colorAnimation.start()
                         autopilotHandsToggle = true
                     } else {
-                        binding.root.setBackgroundColor(Color.parseColor("#FF7791F7"))
+                        binding.root.setBackgroundColor(requireContext().getColor(R.color.autopilot_blue))
 
                     }
                 } else {
@@ -312,30 +312,30 @@ class DashFragment : Fragment() {
                 if (leftTurnSignalVal.toInt() > 0) {
                     binding.leftTurnSignalDark.visibility = View.VISIBLE
                 } else {
-                    binding.leftTurnSignalDark.visibility = View.INVISIBLE
-                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                    binding.leftTurnSignalDark.visibility = View.GONE
+                    binding.leftTurnSignalLight.visibility = View.GONE
                 }
                 if (leftTurnSignalVal.toInt() > 1) {
                     binding.leftTurnSignalLight.visibility = View.VISIBLE
                 } else {
-                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                    binding.leftTurnSignalLight.visibility = View.GONE
                 }
             }
             it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
                 if (rightTurnSignalVal.toInt() > 0) {
                     binding.rightTurnSignalDark.visibility = View.VISIBLE
                 } else {
-                    binding.rightTurnSignalDark.visibility = View.INVISIBLE
-                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                    binding.rightTurnSignalDark.visibility = View.GONE
+                    binding.rightTurnSignalLight.visibility = View.GONE
                 }
 
                 if (rightTurnSignalVal.toInt() > 1) {
                     binding.rightTurnSignalLight.visibility = View.VISIBLE
                 } else {
-                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                    binding.rightTurnSignalLight.visibility = View.GONE
                 }
             }
-            /*
+
             it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
                 val colorFrom: Int
                 if (forceNightMode) {
@@ -344,7 +344,7 @@ class DashFragment : Fragment() {
                     colorFrom = getBackgroundColor(lastSunUp)
                 }
 
-                if ((blindSpotLeftVal.toInt() > 2) and (blindSpotLeftVal.toInt() < 15)) {
+                if ((blindSpotLeftVal.toInt() >= 1) and (blindSpotLeftVal.toInt() <= 2)) {
 
                     if (blindSpotAlertToggle == false) {
 
@@ -377,8 +377,7 @@ class DashFragment : Fragment() {
                 } else {
                     colorFrom = getBackgroundColor(lastSunUp)
                 }
-                //TODO: change colors to autopilot_blue constant
-                if ((blindSpotRightVal.toInt() > 2) and (blindSpotRightVal.toInt() < 15)) {
+                if ((blindSpotRightVal.toInt() >= 1) and (blindSpotRightVal.toInt() <= 2)) {
 
                     if (blindSpotAlertToggle == false) {
 
@@ -404,7 +403,7 @@ class DashFragment : Fragment() {
                     blindSpotAlertToggle = false
                 }
             }
-*/
+
             it.getValue(Constants.rearLeftVehicle)?.let { sensorVal ->
                 if (sensorVal.toInt() < 300){
                     binding.blindSpotLeft1.visibility = View.VISIBLE
