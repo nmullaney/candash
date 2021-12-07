@@ -23,55 +23,7 @@ class InfoFragment() : Fragment() {
     private lateinit var pandaInfo: NsdServiceInfo
     private lateinit var viewModel: DashViewModel
     private var zeroconfHost : String = ""
-    private val resolveListener = object : NsdManager.ResolveListener {
-        override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-            // Called when the resolve fails. Use the error code to debug.
-            Log.e(TAG, "Resolve failed: $errorCode")
-        }
 
-        override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-            Log.e(TAG, "Resolve Succeeded. $serviceInfo")
-            val host: InetAddress = serviceInfo.host
-            zeroconfHost = host.hostAddress
-            Log.e(TAG, "IP Succeeded. $zeroconfHost")
-
-        }
-    }
-    private val discoveryListener = object : NsdManager.DiscoveryListener {
-
-        // Called as soon as service discovery begins.
-        override fun onDiscoveryStarted(regType: String) {
-            Log.d(TAG, "Service discovery started")
-        }
-
-        override fun onServiceFound(service: NsdServiceInfo) {
-            // A service was found! Do something with it.
-            Log.d(TAG, "Service discovery success$service")
-            Log.d(TAG, "Service Type: ${service.serviceType} Service Name: ${service.serviceName}")
-            nsdManager.resolveService(service, resolveListener)
-        }
-
-        override fun onServiceLost(service: NsdServiceInfo) {
-            // When the network service is no longer available.
-            // Internal bookkeeping code goes here.
-            Log.e(TAG, "service lost: $service")
-        }
-
-        override fun onDiscoveryStopped(serviceType: String) {
-            Log.i(TAG, "Discovery stopped: $serviceType")
-        }
-
-        override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-            Log.e(TAG, "Discovery failed: Error code:$errorCode")
-
-            nsdManager?.stopServiceDiscovery(this)
-        }
-
-        override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-            Log.e(TAG, "Discovery failed: Error code:$errorCode")
-            nsdManager?.stopServiceDiscovery(this)
-        }
-    }
 
 
     override fun onCreateView(
@@ -99,12 +51,12 @@ class InfoFragment() : Fragment() {
             viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
         }
         binding.scanButton.setOnClickListener {
-            nsdManager = (context?.getSystemService(Context.NSD_SERVICE) as NsdManager?)!!
-            nsdManager?.discoverServices("_panda._udp", NsdManager.PROTOCOL_DNS_SD, discoveryListener)
-            if (zeroconfHost != "") {
-                viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, zeroconfHost)
+
+            viewModel.getZeroconfHost().observe(viewLifecycleOwner){
+                viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, it)
                 binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
             }
+
         }
         binding.startButton.setOnClickListener {
             viewModel.startUp()
@@ -137,6 +89,63 @@ class InfoFragment() : Fragment() {
                 }
             }
         }
+    }
+
+    fun getResolveListener() : NsdManager.ResolveListener {
+        val resolveListener = object : NsdManager.ResolveListener {
+            override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+                // Called when the resolve fails. Use the error code to debug.
+                Log.e(TAG, "Resolve failed: $errorCode")
+            }
+
+            override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+                Log.e(TAG, "Resolve Succeeded. $serviceInfo")
+                val host: InetAddress = serviceInfo.host
+                zeroconfHost = host.hostAddress
+                Log.e(TAG, "IP Succeeded. $zeroconfHost")
+
+            }
+        }
+        return resolveListener
+    }
+    fun getDiscoveryListener() : NsdManager.DiscoveryListener {
+        val discoveryListener = object : NsdManager.DiscoveryListener {
+
+            // Called as soon as service discovery begins.
+            override fun onDiscoveryStarted(regType: String) {
+                Log.d(TAG, "Service discovery started")
+            }
+
+            override fun onServiceFound(service: NsdServiceInfo) {
+                // A service was found! Do something with it.
+                Log.d(TAG, "Service discovery success$service")
+                Log.d(TAG, "Service Type: ${service.serviceType} Service Name: ${service.serviceName}")
+
+                nsdManager.resolveService(service, getResolveListener())
+            }
+
+            override fun onServiceLost(service: NsdServiceInfo) {
+                // When the network service is no longer available.
+                // Internal bookkeeping code goes here.
+                Log.e(TAG, "service lost: $service")
+            }
+
+            override fun onDiscoveryStopped(serviceType: String) {
+                Log.i(TAG, "Discovery stopped: $serviceType")
+            }
+
+            override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+                Log.e(TAG, "Discovery failed: Error code:$errorCode")
+
+                nsdManager?.stopServiceDiscovery(this)
+            }
+
+            override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+                Log.e(TAG, "Discovery failed: Error code:$errorCode")
+                nsdManager?.stopServiceDiscovery(this)
+            }
+        }
+        return discoveryListener
     }
 
     fun switchToDash() : Boolean {
