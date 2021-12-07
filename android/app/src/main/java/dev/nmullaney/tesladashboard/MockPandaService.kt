@@ -52,7 +52,7 @@ class MockPandaService : PandaService {
                 Constants.turnSignalLeft to 1.0,
                 Constants.isSunUp to 1.0,
                 Constants.autopilotState to 2,
-                Constants.rearLeftVehicle to 500,
+                Constants.rearLeftVehicle to 100,
                 Constants.autopilotHands to 1,
                 Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearPark,
@@ -75,7 +75,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotState to 1,
                 Constants.autopilotHands to 1,
                 Constants.cruiseControlSpeed to 45.0,
-                Constants.rearLeftVehicle to 500,
+                Constants.rearLeftVehicle to 100,
                 Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearPark,
                 Constants.battAmps to 140.0
@@ -97,6 +97,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotHands to 4,
                 Constants.maxSpeedAP to 45.0,
                 Constants.cruiseControlSpeed to 45.0,
+                Constants.rearLeftVehicle to 100,
                 Constants.uiSpeedUnits to 0,
                 Constants.gearSelected to Constants.gearDrive,
                 Constants.battAmps to 3.0
@@ -136,7 +137,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotState to 3,
                 Constants.autopilotHands to 1,
                 Constants.uiSpeedUnits to 0,
-                Constants.rearLeftVehicle to 500,
+                Constants.rearLeftVehicle to 100,
                 Constants.maxSpeedAP to 25.0,
                 Constants.cruiseControlSpeed to 23.0,
                 Constants.battAmps to -200.0

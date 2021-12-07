@@ -400,7 +400,7 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.rearLeftVehicle)?.let { sensorVal ->
-                if (sensorVal.toInt() < 300){
+                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
                     binding.blindSpotLeft1.visibility = View.VISIBLE
                 }
                 else if (sensorVal.toInt() < 200){
@@ -411,7 +411,7 @@ class DashFragment : Fragment() {
                 }
             }
             it.getValue(Constants.leftVehicle)?.let { sensorVal ->
-                if (sensorVal.toInt() < 300){
+                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
                     binding.blindSpotLeft1a.visibility = View.VISIBLE
                 }
                 else if (sensorVal.toInt() < 200){
@@ -422,7 +422,7 @@ class DashFragment : Fragment() {
                 }
             }
             it.getValue(Constants.rearRightVehicle)?.let { sensorVal ->
-                if (sensorVal.toInt() < 300){
+                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
                     binding.blindSpotRight1.visibility = View.VISIBLE
                 }
                 else if (sensorVal.toInt() < 200){
@@ -433,7 +433,7 @@ class DashFragment : Fragment() {
                 }
             }
             it.getValue(Constants.rightVehicle)?.let { sensorVal ->
-                if (sensorVal.toInt() < 300){
+                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
                     binding.blindSpotRight1a.visibility = View.VISIBLE
                 }
                 else if (sensorVal.toInt() < 200){
