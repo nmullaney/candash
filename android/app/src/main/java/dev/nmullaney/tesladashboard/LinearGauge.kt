@@ -4,9 +4,13 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Display
 import android.view.View
 import android.view.WindowManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import kotlin.math.absoluteValue
 
 class LinearGauge @JvmOverloads constructor(
@@ -14,23 +18,61 @@ class LinearGauge @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private val TAG = DashViewModel::class.java.simpleName
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private var realDisplay = windowManager.defaultDisplay
-    private var displayDimensions : Point = Point()
     private var screenWidth : Int = 100
     private var percentWidth : Float = 0f
     private var isSunUp : Int = 0
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
+    private var isSplitScreen = MutableLiveData<Boolean>()
 
     private var renderWidth : Float = 100f
 
     fun getScreenWidth(): Int {
-        return Resources.getSystem().displayMetrics.widthPixels
+        var displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.widthPixels
     }
+
+    fun getRealScreenWidth(): Int {
+        var displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getRealMetrics(displayMetrics)
+        return displayMetrics.widthPixels
+    }
+
+    fun isSplitScreen(): Boolean {
+        var currentSplitScreen = isSplitScreen.value
+        if (getRealScreenWidth() > getScreenWidth() * 2){
+            if (currentSplitScreen != null){
+                if (currentSplitScreen == false){
+                    with(isSplitScreen) { postValue(true) }
+                }
+            } else {
+                with(isSplitScreen) { postValue(true) }
+            }
+            return true
+        } else {
+            if (currentSplitScreen != null){
+                if (currentSplitScreen == true){
+                    with(isSplitScreen) { postValue(false) }
+                }
+            }else {
+                with(isSplitScreen) { postValue(false) }
+            }
+            return false
+        }
+    }
+
+    fun getSplitScreen(): LiveData<Boolean>{
+        return isSplitScreen
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        realDisplay.getRealSize(displayDimensions)
-        screenWidth = displayDimensions.x
+        screenWidth = getRealScreenWidth()
+        // check if split screen
+        if (isSplitScreen()){
+            screenWidth = getScreenWidth()
+        }
         val paint = Paint()
         var startX : Float = 0f
         var stopX: Float = 0f

@@ -69,7 +69,7 @@ class InfoFragment() : Fragment() {
         binding.root.setOnLongClickListener {
             switchToDash()
         }
-        binding.infoText.setOnLongClickListener{
+        binding.startDashButton.setOnClickListener(){
             switchToDash()
         }
         binding.scrollView.setOnLongClickListener{
@@ -91,62 +91,7 @@ class InfoFragment() : Fragment() {
         }
     }
 
-    fun getResolveListener() : NsdManager.ResolveListener {
-        val resolveListener = object : NsdManager.ResolveListener {
-            override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                // Called when the resolve fails. Use the error code to debug.
-                Log.e(TAG, "Resolve failed: $errorCode")
-            }
 
-            override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                Log.e(TAG, "Resolve Succeeded. $serviceInfo")
-                val host: InetAddress = serviceInfo.host
-                zeroconfHost = host.hostAddress
-                Log.e(TAG, "IP Succeeded. $zeroconfHost")
-
-            }
-        }
-        return resolveListener
-    }
-    fun getDiscoveryListener() : NsdManager.DiscoveryListener {
-        val discoveryListener = object : NsdManager.DiscoveryListener {
-
-            // Called as soon as service discovery begins.
-            override fun onDiscoveryStarted(regType: String) {
-                Log.d(TAG, "Service discovery started")
-            }
-
-            override fun onServiceFound(service: NsdServiceInfo) {
-                // A service was found! Do something with it.
-                Log.d(TAG, "Service discovery success$service")
-                Log.d(TAG, "Service Type: ${service.serviceType} Service Name: ${service.serviceName}")
-
-                nsdManager.resolveService(service, getResolveListener())
-            }
-
-            override fun onServiceLost(service: NsdServiceInfo) {
-                // When the network service is no longer available.
-                // Internal bookkeeping code goes here.
-                Log.e(TAG, "service lost: $service")
-            }
-
-            override fun onDiscoveryStopped(serviceType: String) {
-                Log.i(TAG, "Discovery stopped: $serviceType")
-            }
-
-            override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-                Log.e(TAG, "Discovery failed: Error code:$errorCode")
-
-                nsdManager?.stopServiceDiscovery(this)
-            }
-
-            override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-                Log.e(TAG, "Discovery failed: Error code:$errorCode")
-                nsdManager?.stopServiceDiscovery(this)
-            }
-        }
-        return discoveryListener
-    }
 
     fun switchToDash() : Boolean {
         viewModel.switchToDashFragment()

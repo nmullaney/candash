@@ -12,10 +12,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -55,6 +52,8 @@ class DashFragment : Fragment() {
     private var maxVehiclePower: Int = 350000
     private var vehicleSpeed: Int = 0;
     private var forceNightMode: Boolean = false
+    private var l2Distance: Int = 200
+    private var l1Distance: Int = 300
 
 
     override fun onCreateView(
@@ -101,6 +100,23 @@ class DashFragment : Fragment() {
         }
         binding.speed.setOnClickListener {
             forceNightMode = !forceNightMode
+        }
+        binding.powerBar.getSplitScreen().observe(viewLifecycleOwner){
+            val window: Window? = activity?.window
+
+
+            if (it){
+                window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window?.decorView?.systemUiVisibility = View.VISIBLE
+
+            }  else {
+                window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+            }
+            val wm = activity?.windowManager
+            wm?.removeViewImmediate(window?.getDecorView());
+            wm?.addView(window?.getDecorView(), window?.getAttributes());
         }
         viewModel.carState().observe(viewLifecycleOwner) {
 
@@ -169,7 +185,7 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.gearSelected)?.let { gearStateVal ->
                 val gear: String = binding.PRND.text.toString()
-                var ss: SpannableString = SpannableString(gear)
+                var ss = SpannableString(gear)
                 var gearStartIndex = 0
                 var gearEndIndex = 1
                 if (gearStateVal.toInt() == Constants.gearPark) {
@@ -236,6 +252,17 @@ class DashFragment : Fragment() {
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
 
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
+                var sensingSpeedLimit : Int = 35
+                if (!uiSpeedUnitsMPH){
+                    sensingSpeedLimit = 56
+                }
+                if (vehicleSpeedVal.toInt() > sensingSpeedLimit){
+                    l1Distance = 300
+                    l2Distance = 200
+                } else {
+                    l1Distance = 400
+                    l2Distance = 250
+                }
                 vehicleSpeed = vehicleSpeedVal.toInt()
                 /*
                 if (uiSpeedUnitsMPH) {
@@ -400,10 +427,10 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.rearLeftVehicle)?.let { sensorVal ->
-                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
+                if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)){
                     binding.blindSpotLeft1.visibility = View.VISIBLE
                 }
-                else if (sensorVal.toInt() < 200){
+                else if (sensorVal.toInt() < l2Distance){
                     binding.blindSpotLeft2.visibility = View.VISIBLE
                 } else {
                     binding.blindSpotLeft1.visibility = View.INVISIBLE
@@ -411,10 +438,10 @@ class DashFragment : Fragment() {
                 }
             }
             it.getValue(Constants.leftVehicle)?.let { sensorVal ->
-                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
+                if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)){
                     binding.blindSpotLeft1a.visibility = View.VISIBLE
                 }
-                else if (sensorVal.toInt() < 200){
+                else if (sensorVal.toInt() < l2Distance){
                     binding.blindSpotLeft2a.visibility = View.VISIBLE
                 } else {
                     binding.blindSpotLeft1a.visibility = View.INVISIBLE
@@ -422,10 +449,10 @@ class DashFragment : Fragment() {
                 }
             }
             it.getValue(Constants.rearRightVehicle)?.let { sensorVal ->
-                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
+                if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)){
                     binding.blindSpotRight1.visibility = View.VISIBLE
                 }
-                else if (sensorVal.toInt() < 200){
+                else if (sensorVal.toInt() < l2Distance){
                     binding.blindSpotRight2.visibility = View.VISIBLE
                 } else {
                     binding.blindSpotRight1.visibility = View.INVISIBLE
@@ -433,10 +460,10 @@ class DashFragment : Fragment() {
                 }
             }
             it.getValue(Constants.rightVehicle)?.let { sensorVal ->
-                if ((sensorVal.toInt() < 300) and (sensorVal.toInt() >= 200)){
+                if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)){
                     binding.blindSpotRight1a.visibility = View.VISIBLE
                 }
-                else if (sensorVal.toInt() < 200){
+                else if (sensorVal.toInt() < l2Distance){
                     binding.blindSpotRight2a.visibility = View.VISIBLE
                 } else {
                     binding.blindSpotRight1a.visibility = View.INVISIBLE
@@ -572,11 +599,13 @@ class DashFragment : Fragment() {
     }
 
     fun setColors(sunUpVal: Int) {
+        val window: Window? = activity?.window
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
         if (sunUpVal == 0 || forceNightMode) {
-            binding.powerBar.setDayValue(0)
 
+            binding.powerBar.setDayValue(0)
+            window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
             binding.speed.setTextColor(Color.WHITE)
@@ -601,6 +630,7 @@ class DashFragment : Fragment() {
 
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
+            window?.statusBarColor = Color.parseColor("#FFEEEEEE")
 
             binding.speed.setTextColor(Color.BLACK)
             binding.unit.setTextColor(Color.DKGRAY)
@@ -618,6 +648,7 @@ class DashFragment : Fragment() {
             //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
         }
+        val wm = activity?.windowManager
 
         lastSunUp = sunUpVal
     }
