@@ -14,6 +14,10 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
@@ -106,13 +110,65 @@ class DashFragment : Fragment() {
 
 
             if (it){
-                window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                window?.decorView?.systemUiVisibility = View.VISIBLE
 
+
+                var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
+                // shift down by 24dp
+                params.setMargins(0, convertDPtoPixels(24), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.PRND.layoutParams = params
+                
+                params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(24), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.batterypercent.layoutParams = params
+
+                params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(24), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.deadbattery.layoutParams = params
+
+                params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(24), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.deadbatterymask.layoutParams = params
+
+                params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(24), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.fullbattery.layoutParams = params
+
+                params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(convertDPtoPixels(10), convertDPtoPixels(64), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.leftTurnSignal.layoutParams = params
+
+                params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(64), convertDPtoPixels(10), 0) //substitute parameters for left, top, right, bottom
+                binding.rightTurnSignal.layoutParams = params
             }  else {
-                window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+               var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
+                // shift down by 24dp
+                params.setMargins(0, 0, 0, 0) //substitute parameters for left, top, right, bottom
+                binding.PRND.layoutParams = params
 
+                params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(0), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.batterypercent.layoutParams = params
+
+                params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(0), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.deadbattery.layoutParams = params
+
+                params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(0), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.deadbatterymask.layoutParams = params
+
+                params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(0), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.fullbattery.layoutParams = params
+
+                params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(convertDPtoPixels(10), convertDPtoPixels(40), 0, 0) //substitute parameters for left, top, right, bottom
+                binding.leftTurnSignal.layoutParams = params
+
+                params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                params.setMargins(0, convertDPtoPixels(40), convertDPtoPixels(10), 0) //substitute parameters for left, top, right, bottom
+                binding.rightTurnSignal.layoutParams = params
             }
             val wm = activity?.windowManager
             wm?.removeViewImmediate(window?.getDecorView());
@@ -605,7 +661,7 @@ class DashFragment : Fragment() {
         if (sunUpVal == 0 || forceNightMode) {
 
             binding.powerBar.setDayValue(0)
-            window?.statusBarColor = Color.BLACK
+            //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
             binding.speed.setTextColor(Color.WHITE)
@@ -630,7 +686,7 @@ class DashFragment : Fragment() {
 
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
-            window?.statusBarColor = Color.parseColor("#FFEEEEEE")
+            //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
 
             binding.speed.setTextColor(Color.BLACK)
             binding.unit.setTextColor(Color.DKGRAY)
@@ -712,5 +768,10 @@ class DashFragment : Fragment() {
 
         }
         lastAutopilotState = autopilotStateVal
+    }
+    fun convertDPtoPixels(dp:Int): Int {
+        val d = requireContext().resources.displayMetrics.density
+        val margin = (dp * d).toInt() // margin in pixels
+        return margin
     }
 }

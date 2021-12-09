@@ -77,9 +77,18 @@ class FullscreenActivity : AppCompatActivity() {
         viewModel.startUp()
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.startUp()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.shutdown()
+    }
     override fun onPause() {
         super.onPause()
-        viewModel.shutdown()
+        // viewModel.shutdown()
     }
 
     override fun onDestroy() {

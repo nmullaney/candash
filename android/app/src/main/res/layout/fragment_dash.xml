@@ -164,19 +164,21 @@
         android:fontFamily="@font/montserratbold"
         android:paddingRight="10dp"
         android:text="50 %"
+        app:layout_constraintTop_toTopOf="parent"
         android:textAlignment="viewEnd"
         app:autoSizeMaxTextSize="550sp"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeStepGranularity="10sp"
         app:autoSizeTextType="uniform"
 
-        app:layout_constraintRight_toLeftOf="@id/deadbattery" />
+        app:layout_constraintEnd_toStartOf="@id/deadbattery" />
 
     <ImageView
         android:id="@+id/deadbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
         android:src="@drawable/ic_deadbattery"
+
         android:paddingRight="20dp"
         android:paddingTop="5dp"
         android:gravity="center_vertical"
