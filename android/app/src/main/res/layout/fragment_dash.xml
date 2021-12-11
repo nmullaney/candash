@@ -158,6 +158,31 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/APWarning"
+        android:drawableLeft="@drawable/ic_autopilot"
+        android:drawablePadding="5dp"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/montserratbold"
+        android:textColor="#cccccc"
+        android:visibility="invisible"
+        android:background="@drawable/rounded_corner"
+        android:gravity="center|center_vertical"
+        android:text="Apply slight turning force to steering wheel"
+        android:textAlignment="center"
+        android:textSize="15sp"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="30dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
         android:id="@+id/batterypercent"
         android:layout_width="100dp"
         android:layout_height="30dp"
