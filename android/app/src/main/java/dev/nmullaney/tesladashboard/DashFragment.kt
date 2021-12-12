@@ -370,8 +370,8 @@ class DashFragment : Fragment() {
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
                     if (autopilotHandsToggle == false) {
-                        binding.APWarning.startAnimation(fadeInWarning)
-                        //binding.APWarning.visibility = View.VISIBLE
+                        //binding.APWarning.startAnimation(fadeInWarning)
+                        binding.APWarning.visibility = View.VISIBLE
 
                         val colorTo = requireContext().getColor(R.color.autopilot_blue)
                         val colorAnimation =
@@ -392,7 +392,7 @@ class DashFragment : Fragment() {
                 } else {
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
-                    binding.APWarning.startAnimation(fadeOutWarning)
+                    // git binding.APWarning.startAnimation(fadeOutWarning)
                     binding.APWarning.visibility = View.GONE
 
                 }
