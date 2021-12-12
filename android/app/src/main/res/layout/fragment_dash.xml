@@ -165,7 +165,7 @@
         android:layout_height="0dp"
         android:fontFamily="@font/montserratbold"
         android:textColor="#cccccc"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
         android:text="Apply slight turning force to steering wheel"

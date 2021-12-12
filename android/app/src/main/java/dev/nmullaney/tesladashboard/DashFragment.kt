@@ -367,7 +367,7 @@ class DashFragment : Fragment() {
                     colorFrom = getBackgroundColor(lastSunUp)
                 }
                 //TODO: change colors to autopilot_blue constant
-                if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {g
+                if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
                     if (autopilotHandsToggle == false) {
                         binding.APWarning.startAnimation(fadeInWarning)
@@ -393,7 +393,7 @@ class DashFragment : Fragment() {
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
                     binding.APWarning.startAnimation(fadeOutWarning)
-                    binding.APWarning.visibility = View.INVISIBLE
+                    binding.APWarning.visibility = View.GONE
 
                 }
 
