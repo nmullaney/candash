@@ -359,8 +359,8 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 val colorFrom: Int
-                val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.warn_fade_in)
+                val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.warn_fade_out)
                 if (forceNightMode) {
                     colorFrom = getBackgroundColor(0)
                 } else {
@@ -370,7 +370,7 @@ class DashFragment : Fragment() {
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
                     if (autopilotHandsToggle == false) {
-                        //binding.APWarning.startAnimation(fadeInWarning)
+                        binding.APWarning.startAnimation(fadeInWarning)
                         binding.APWarning.visibility = View.VISIBLE
 
                         val colorTo = requireContext().getColor(R.color.autopilot_blue)
@@ -392,7 +392,7 @@ class DashFragment : Fragment() {
                 } else {
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
-                    // git binding.APWarning.startAnimation(fadeOutWarning)
+                    binding.APWarning.startAnimation(fadeOutWarning)
                     binding.APWarning.visibility = View.GONE
 
                 }
@@ -585,6 +585,8 @@ class DashFragment : Fragment() {
             } else {
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE
                 binding.blindSpotLeft2a.visibility = View.INVISIBLE
+                binding.blindSpotRight1a.visibility = View.INVISIBLE
+                binding.blindSpotRight2a.visibility = View.INVISIBLE
             }
 
 

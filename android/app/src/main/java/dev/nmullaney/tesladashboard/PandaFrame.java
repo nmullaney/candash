@@ -107,7 +107,7 @@ public class PandaFrame {
                     tempStartBit = tempStartBit - cursor;
                     doLoop = false;
                 }
-                    Log.d(TAG, "In cursor " + cursor);
+//                    Log.d(TAG, "In cursor " + cursor);
 
             }
             while (tempLength > 0){
@@ -118,7 +118,7 @@ public class PandaFrame {
                 // figure out how much of the data is in ths byte
                 int maxLength = (8 - tempStartBit);
 
-                int segmentLength = Math.min(maxLength, tempLength + tempStartBit);
+                int segmentLength = Math.min(maxLength, tempLength);
 
                 String portion = tempByte.substring(tempStartBit, tempStartBit + segmentLength);
                 portion = new StringBuilder(portion).reverse().toString();
@@ -130,7 +130,7 @@ public class PandaFrame {
                 cursor = cursor + 8;
 
             }
-                Log.d(TAG, "Result ! % 8 " + result.toString() + "full payload: " + fullPayload);
+ //               Log.d(TAG, "Result ! % 8 " + result.toString() + "full payload: " + fullPayload);
 
        /* } else {
             while (bitLength > 0) {
