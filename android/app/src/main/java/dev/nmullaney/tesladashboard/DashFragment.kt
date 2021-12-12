@@ -45,7 +45,7 @@ class DashFragment : Fragment() {
     private var rightVehDetected: Int = 500
     private var gearColor: Int = Color.parseColor("#FFEEEEEE")
     private var gearColorSelected: Int = Color.DKGRAY
-    private var lastAutopilotState: Int = 1
+    private var lastAutopilotState: Int = 0
     private var lastDoorOpen: Boolean = false
     private var autopilotHandsToggle: Boolean = false
     private var blindSpotAlertToggle: Boolean = false
@@ -359,17 +359,19 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 val colorFrom: Int
-                val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 if (forceNightMode) {
                     colorFrom = getBackgroundColor(0)
                 } else {
                     colorFrom = getBackgroundColor(lastSunUp)
                 }
                 //TODO: change colors to autopilot_blue constant
-                if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) { binding.APWarning.startAnimation(fadeIn)
-
+                if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {g
+                    binding.APWarning.clearAnimation()
                     if (autopilotHandsToggle == false) {
+                        binding.APWarning.startAnimation(fadeInWarning)
+                        //binding.APWarning.visibility = View.VISIBLE
 
                         val colorTo = requireContext().getColor(R.color.autopilot_blue)
                         val colorAnimation =
@@ -390,7 +392,7 @@ class DashFragment : Fragment() {
                 } else {
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
-                    binding.APWarning.startAnimation(fadeOut)
+                    binding.APWarning.startAnimation(fadeOutWarning)
                     binding.APWarning.visibility = View.INVISIBLE
 
                 }
@@ -727,6 +729,7 @@ class DashFragment : Fragment() {
         if (lastDoorOpen != doorOpen) {
             val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
             val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+            binding.modely.clearAnimation()
             if (doorOpen) {
                 binding.modely.startAnimation(fadeIn)
             } else {

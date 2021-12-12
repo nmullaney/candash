@@ -41,7 +41,7 @@ class MockPandaService : PandaService {
         listOf(
             CarState(mutableMapOf(
                 Constants.battVolts to 390.1,
-
+                Constants.frontLeftDoorState to 1.0,
                 Constants.displayBrightnessLev to 11.5,
                 Constants.stateOfCharge to 1.0,
                 Constants.uiRange to 273.0,
@@ -60,6 +60,7 @@ class MockPandaService : PandaService {
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 390.0,
+                Constants.frontLeftDoorState to 1.0,
 
                 Constants.displayBrightnessLev to 10.5,
                 Constants.stateOfCharge to 79.0,
