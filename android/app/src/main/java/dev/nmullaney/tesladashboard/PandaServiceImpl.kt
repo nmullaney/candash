@@ -187,8 +187,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     value = twosComplement(binaryPayloadString) * channel.factor + channel.offset
                 }
                 // Log.d(TAG, channel.name + " = " + value)
-                carState.updateValue(channel.name, value)
-                carStateFlow.value = CarState(HashMap(carState.carData))
+                if (carState.getValue(channel.name) != value) {
+                    carState.updateValue(channel.name, value)
+                    carStateFlow.value = CarState(HashMap(carState.carData))
+                }
 
             } else {
                 Log.d(TAG, "skipping payload")

@@ -59,11 +59,11 @@ class DashFragment : Fragment() {
     private var maxPower: Float = 0f
     private var HRSPRS: Boolean = false
     private var maxVehiclePower: Int = 350000
-    private var vehicleSpeed: Int = 0;
     private var forceNightMode: Boolean = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
+    private var vehicleSpeed: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -359,8 +359,8 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 val colorFrom: Int
-                val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.warn_fade_in)
-                val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.warn_fade_out)
+                val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 if (forceNightMode) {
                     colorFrom = getBackgroundColor(0)
                 } else {
@@ -377,6 +377,7 @@ class DashFragment : Fragment() {
                         val colorAnimation =
                             ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
                         colorAnimation.duration = 2000
+                        // milliseconds
 
                         colorAnimation.addUpdateListener { animator ->
                             binding.root.setBackgroundColor(
@@ -386,10 +387,13 @@ class DashFragment : Fragment() {
                         colorAnimation.start()
                         autopilotHandsToggle = true
                     } else {
+                        binding.APWarning.clearAnimation()
                         binding.APWarning.visibility = View.VISIBLE
                         binding.root.setBackgroundColor(requireContext().getColor(R.color.autopilot_blue))
+
                     }
                 } else {
+                    binding.APWarning.clearAnimation()
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
                     binding.APWarning.startAnimation(fadeOutWarning)
@@ -404,22 +408,21 @@ class DashFragment : Fragment() {
                 it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
                     binding.unit.visibility = View.VISIBLE
                     binding.speed.visibility = View.VISIBLE
-
-                    binding.speed.text = vehicleSpeedVal.toInt().toString()
-                    var sensingSpeedLimit: Int = 35
-                    if (!uiSpeedUnitsMPH) {
-                        sensingSpeedLimit = 56
+                    if (vehicleSpeed != vehicleSpeedVal.toInt()) {
+                        binding.speed.text = vehicleSpeedVal.toInt().toString()
+                        var sensingSpeedLimit: Int = 35
+                        if (!uiSpeedUnitsMPH) {
+                            sensingSpeedLimit = 56
+                        }
+                        if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
+                            l1Distance = 400
+                            l2Distance = 250
+                        } else {
+                            l1Distance = 300
+                            l2Distance = 200
+                        }
+                        vehicleSpeed = vehicleSpeedVal.toInt()
                     }
-                    if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
-                        l1Distance = 300
-                        l2Distance = 200
-                    } else {
-                        l1Distance = 400
-                        l2Distance = 250
-                    }
-                    vehicleSpeed = vehicleSpeedVal.toInt()
-
-
                 }
             } else {
                 binding.unit.visibility = View.GONE
@@ -491,74 +494,76 @@ class DashFragment : Fragment() {
                     binding.rightTurnSignal.visibility = View.INVISIBLE
                 }
             }
+            // check if AP is not engaged, otherwise blind spot supersedes the AP
+            if (gearColorSelected != requireContext().getColor(R.color.autopilot_blue)) {
 
-            it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
-                val colorFrom: Int
-                if (forceNightMode) {
-                    colorFrom = getBackgroundColor(0)
-                } else {
-                    colorFrom = getBackgroundColor(lastSunUp)
-                }
-
-                if ((blindSpotLeftVal.toInt() >= 1) and (blindSpotLeftVal.toInt() <= 2)) {
-
-                    if (blindSpotAlertToggle == false) {
-
-                        val colorTo = Color.parseColor("#FFEE0000")
-                        val colorAnimation =
-                            ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                        colorAnimation.duration = 250
-                        // milliseconds
-
-                        colorAnimation.addUpdateListener { animator ->
-                            binding.root.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
-                        }
-                        colorAnimation.start()
-                        blindSpotAlertToggle = true
+                it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
+                    val colorFrom: Int
+                    if (forceNightMode) {
+                        colorFrom = getBackgroundColor(0)
                     } else {
-                        binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
-
+                        colorFrom = getBackgroundColor(lastSunUp)
                     }
-                } else {
-                    binding.root.setBackgroundColor(colorFrom)
-                    blindSpotAlertToggle = false
+
+                    if ((blindSpotLeftVal.toInt() >= 1) and (blindSpotLeftVal.toInt() <= 2)) {
+
+                        if (blindSpotAlertToggle == false) {
+
+                            val colorTo = Color.parseColor("#FFEE0000")
+                            val colorAnimation =
+                                ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                            colorAnimation.duration = 250
+                            // milliseconds
+
+                            colorAnimation.addUpdateListener { animator ->
+                                binding.root.setBackgroundColor(
+                                    animator.animatedValue as Int
+                                )
+                            }
+                            colorAnimation.start()
+                            blindSpotAlertToggle = true
+                        } else {
+                            binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
+
+                        }
+                    } else {
+                        binding.root.setBackgroundColor(colorFrom)
+                        blindSpotAlertToggle = false
+                    }
+                }
+                it.getValue(Constants.blindSpotRight)?.let { blindSpotRightVal ->
+                    val colorFrom: Int
+                    if (forceNightMode) {
+                        colorFrom = getBackgroundColor(0)
+                    } else {
+                        colorFrom = getBackgroundColor(lastSunUp)
+                    }
+                    if ((blindSpotRightVal.toInt() >= 1) and (blindSpotRightVal.toInt() <= 2)) {
+                        if (blindSpotAlertToggle == false) {
+
+                            val colorTo = Color.parseColor("#FFEE0000")
+                            val colorAnimation =
+                                ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                            colorAnimation.duration = 250
+                            // milliseconds
+
+                            colorAnimation.addUpdateListener { animator ->
+                                binding.root.setBackgroundColor(
+                                    animator.animatedValue as Int
+                                )
+                            }
+                            colorAnimation.start()
+                            blindSpotAlertToggle = true
+                        } else {
+                            binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
+
+                        }
+                    } else {
+                        binding.root.setBackgroundColor(colorFrom)
+                        blindSpotAlertToggle = false
+                    }
                 }
             }
-            it.getValue(Constants.blindSpotRight)?.let { blindSpotRightVal ->
-                val colorFrom: Int
-                if (forceNightMode) {
-                    colorFrom = getBackgroundColor(0)
-                } else {
-                    colorFrom = getBackgroundColor(lastSunUp)
-                }
-                if ((blindSpotRightVal.toInt() >= 1) and (blindSpotRightVal.toInt() <= 2)) {
-                    if (blindSpotAlertToggle == false) {
-
-                        val colorTo = Color.parseColor("#FFEE0000")
-                        val colorAnimation =
-                            ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                        colorAnimation.duration = 250
-                        // milliseconds
-
-                        colorAnimation.addUpdateListener { animator ->
-                            binding.root.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
-                        }
-                        colorAnimation.start()
-                        blindSpotAlertToggle = true
-                    } else {
-                        binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
-
-                    }
-                } else {
-                    binding.root.setBackgroundColor(colorFrom)
-                    blindSpotAlertToggle = false
-                }
-            }
-
             if (gearState != Constants.gearPark) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
                     if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)) {

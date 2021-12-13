@@ -8,6 +8,14 @@ apply plugin: 'dagger.hilt.android.plugin'
 
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\osuni\\Documents\\osunick.jks')
+            storePassword 'iwg2gedaw'
+            keyAlias 'key1'
+            keyPassword 'iwg2gedaw'
+        }
+    }
     compileSdk 30
     buildToolsVersion "30.0.2"
 
@@ -25,6 +33,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
