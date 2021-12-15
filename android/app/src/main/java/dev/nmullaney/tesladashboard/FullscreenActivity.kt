@@ -3,12 +3,14 @@ package dev.nmullaney.tesladashboard
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
@@ -30,6 +32,19 @@ class FullscreenActivity : AppCompatActivity() {
     private lateinit var viewModel: DashViewModel
     //private var pcr : PowerConnectionReceiver = PowerConnectionReceiver()
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Checks the orientation of the screen
+        if (isInMultiWindowMode){
+            viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
+            viewModel.setSplitScreen(true)
+        }else {
+            viewModel.setSplitScreen(false)
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +75,7 @@ class FullscreenActivity : AppCompatActivity() {
             .commit()
 
         viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
+        viewModel.isSplitScreen()
         viewModel.fragmentNameToShow().observe(this) {
             when (it) {
                 "dash" -> switchToFragment(DashFragment())

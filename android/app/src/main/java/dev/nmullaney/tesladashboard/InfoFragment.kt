@@ -78,13 +78,16 @@ class InfoFragment() : Fragment() {
 
         viewModel.carState().observe(viewLifecycleOwner) { carState ->
             //logCarState(carState)
+
+
             binding.infoText.text = buildSpannedString {
-                carState.carData.forEach { entry ->
+                val sortedMap = viewModel.carStateHistory().toSortedMap()
+                sortedMap.forEach() { entry ->
                     bold {
                         append(entry.key)
                         append(": ")
                     }
-                    append(entry.value.toString())
+                    append(entry.value.value.toString())
                     append("\n")
                 }
             }

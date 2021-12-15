@@ -24,6 +24,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 import kotlin.math.abs
@@ -71,6 +72,7 @@ class DashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -95,7 +97,16 @@ class DashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
-
+        // set initial speedometer value
+        viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
+            binding.speed.text = vehicleSpeedVal.toInt().toString()
+        }
+        viewModel.getValue(Constants.stateOfCharge)?.let {
+            binding.batterypercent.text = it.toInt().toString() + " %"
+        }
+        viewModel.getValue(Constants.isSunUp)?.let { sunUpVal ->
+            setColors(sunUpVal.toInt())
+        }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
@@ -119,150 +130,156 @@ class DashFragment : Fragment() {
         binding.speed.setOnClickListener {
             forceNightMode = !forceNightMode
         }
-        binding.powerBar.getSplitScreen().observe(viewLifecycleOwner) {
+
+        viewModel.getSplitScreen().observe(viewLifecycleOwner) {
             val window: Window? = activity?.window
 
 
             if (it) {
+                if (view.windowToken != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        window?.insetsController?.hide(WindowInsets.Type.statusBars())
+                        window?.insetsController?.systemBarsBehavior =
+                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        val wm = activity?.windowManager
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    window?.insetsController?.hide(WindowInsets.Type.statusBars())
-                    window?.insetsController?.systemBarsBehavior =
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                    val wm = activity?.windowManager
+                        wm?.removeViewImmediate(window?.getDecorView());
+                        wm?.addView(window?.getDecorView(), window?.getAttributes());
+                    }
+                    var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
+                    // shift down by 24dp
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(24),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.PRND.layoutParams = params
 
-                    wm?.removeViewImmediate(window?.getDecorView());
-                    wm?.addView(window?.getDecorView(), window?.getAttributes());
+                    params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(24),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.batterypercent.layoutParams = params
+
+                    params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(24),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.deadbattery.layoutParams = params
+
+                    params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(24),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.deadbatterymask.layoutParams = params
+
+                    params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(24),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.fullbattery.layoutParams = params
+
+                    params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        convertDPtoPixels(10),
+                        convertDPtoPixels(64),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.leftTurnSignal.layoutParams = params
+
+                    params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(64),
+                        convertDPtoPixels(10),
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.rightTurnSignal.layoutParams = params
+                } else {
+                    var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
+                    // shift down by 24dp
+                    params.setMargins(
+                        0,
+                        0,
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.PRND.layoutParams = params
+
+                    params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(0),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.batterypercent.layoutParams = params
+
+                    params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(0),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.deadbattery.layoutParams = params
+
+                    params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(0),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.deadbatterymask.layoutParams = params
+
+                    params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(0),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.fullbattery.layoutParams = params
+
+                    params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        convertDPtoPixels(10),
+                        convertDPtoPixels(40),
+                        0,
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.leftTurnSignal.layoutParams = params
+
+                    params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
+                    params.setMargins(
+                        0,
+                        convertDPtoPixels(40),
+                        convertDPtoPixels(10),
+                        0
+                    ) //substitute parameters for left, top, right, bottom
+                    binding.rightTurnSignal.layoutParams = params
                 }
-                var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
-                // shift down by 24dp
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(24),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.PRND.layoutParams = params
-
-                params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(24),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.batterypercent.layoutParams = params
-
-                params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(24),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.deadbattery.layoutParams = params
-
-                params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(24),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.deadbatterymask.layoutParams = params
-
-                params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(24),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.fullbattery.layoutParams = params
-
-                params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    convertDPtoPixels(10),
-                    convertDPtoPixels(64),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.leftTurnSignal.layoutParams = params
-
-                params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(64),
-                    convertDPtoPixels(10),
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.rightTurnSignal.layoutParams = params
-            } else {
-                var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
-                // shift down by 24dp
-                params.setMargins(0, 0, 0, 0) //substitute parameters for left, top, right, bottom
-                binding.PRND.layoutParams = params
-
-                params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(0),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.batterypercent.layoutParams = params
-
-                params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(0),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.deadbattery.layoutParams = params
-
-                params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(0),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.deadbatterymask.layoutParams = params
-
-                params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(0),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.fullbattery.layoutParams = params
-
-                params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    convertDPtoPixels(10),
-                    convertDPtoPixels(40),
-                    0,
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.leftTurnSignal.layoutParams = params
-
-                params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                params.setMargins(
-                    0,
-                    convertDPtoPixels(40),
-                    convertDPtoPixels(10),
-                    0
-                ) //substitute parameters for left, top, right, bottom
-                binding.rightTurnSignal.layoutParams = params
+                val wm = activity?.windowManager
+                wm?.removeViewImmediate(window?.getDecorView());
+                wm?.addView(window?.getDecorView(), window?.getAttributes());
             }
-            val wm = activity?.windowManager
-            wm?.removeViewImmediate(window?.getDecorView());
-            wm?.addView(window?.getDecorView(), window?.getAttributes());
         }
         viewModel.carState().observe(viewLifecycleOwner) {
-
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
             }
@@ -286,12 +303,15 @@ class DashFragment : Fragment() {
                 activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 Log.d(TAG, "do not keep screen on")
             }
-            it.getValue(Constants.battAmps)?.let { battAmpsStateVal ->
-                battAmps = battAmpsStateVal.toFloat()
+            if (viewModel.carStateHistory().containsKey(Constants.battAmps) and viewModel.carStateHistory().containsKey(Constants.battVolts)){
+                viewModel.carStateHistory().getValue(Constants.battAmps)?.let { battAmpsStateVal ->
+                    battAmps = battAmpsStateVal.value
+                }
+                viewModel.carStateHistory().getValue(Constants.battVolts)?.let { battVoltsStateVal ->
+                    battVolts = battVoltsStateVal.value
+                }
             }
-            it.getValue(Constants.battVolts)?.let { battVoltsStateVal ->
-                battVolts = battVoltsStateVal.toFloat()
-            }
+
             power = (battAmps * battVolts)
             if (power > maxPower) maxPower = power
             if (power < minPower) minPower = power
@@ -317,7 +337,7 @@ class DashFragment : Fragment() {
             binding.powerBar.invalidate()
 
 
-            it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
+            viewModel.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
                 } else if (lastSunUp == 1 && !forceNightMode) {
@@ -326,7 +346,7 @@ class DashFragment : Fragment() {
                     gearColorSelected = Color.LTGRAY
                 }
             }
-            it.getValue(Constants.gearSelected)?.let { gearStateVal ->
+            viewModel.getValue(Constants.gearSelected)?.let { gearStateVal ->
                 val gear: String = binding.PRND.text.toString()
                 var ss = SpannableString(gear)
                 var gearStartIndex = 0
@@ -370,7 +390,7 @@ class DashFragment : Fragment() {
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
                     if (autopilotHandsToggle == false) {
-                        binding.APWarning.startAnimation(fadeInWarning)
+                        //binding.APWarning.startAnimation(fadeInWarning)
                         binding.APWarning.visibility = View.VISIBLE
 
                         val colorTo = requireContext().getColor(R.color.autopilot_blue)
@@ -396,52 +416,50 @@ class DashFragment : Fragment() {
                     binding.APWarning.clearAnimation()
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
-                    binding.APWarning.startAnimation(fadeOutWarning)
+                    //binding.APWarning.startAnimation(fadeOutWarning)
                     binding.APWarning.visibility = View.GONE
 
                 }
 
 
             }
-            if (gearState != Constants.gearPark) {
 
-                it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
-                    binding.unit.visibility = View.VISIBLE
-                    binding.speed.visibility = View.VISIBLE
-                    if (vehicleSpeed != vehicleSpeedVal.toInt()) {
+            it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
+                binding.unit.visibility = View.VISIBLE
+                binding.speed.visibility = View.VISIBLE
+                    if(binding.speed.text != vehicleSpeedVal.toString()){
                         binding.speed.text = vehicleSpeedVal.toInt().toString()
-                        var sensingSpeedLimit: Int = 35
-                        if (!uiSpeedUnitsMPH) {
-                            sensingSpeedLimit = 56
-                        }
-                        if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
-                            l1Distance = 400
-                            l2Distance = 250
-                        } else {
-                            l1Distance = 300
-                            l2Distance = 200
-                        }
-                        vehicleSpeed = vehicleSpeedVal.toInt()
                     }
-                }
-            } else {
-                binding.unit.visibility = View.GONE
-                binding.speed.visibility = View.GONE
+                    var sensingSpeedLimit: Int = 35
+                    if (!uiSpeedUnitsMPH) {
+                        sensingSpeedLimit = 56
+                    }
+                    if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
+                        l1Distance = 400
+                        l2Distance = 250
+                    } else {
+                        l1Distance = 300
+                        l2Distance = 200
+                    }
             }
+
 
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
                 uiSpeedUnitsMPH = uiSpeedUnitsVal.toInt() == 0
             }
             if (showSOC == true) {
-                it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                    binding.batterypercent.text =
-                        stateOfChargeVal.toInt().toString() + " %"
+                viewModel.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                    if (binding.batterypercent.text != stateOfChargeVal.toInt().toString()){
+                        binding.batterypercent.text =
+                            stateOfChargeVal.toInt().toString() + " %"
+                    }
+
                 }
             } else {
                 if (uiSpeedUnitsMPH == true) {
                     binding.unit.text = "MPH"
 
-                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                    viewModel.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
                             stateOfChargeVal.toInt().toString() + " mi"
 
@@ -450,13 +468,13 @@ class DashFragment : Fragment() {
                     binding.unit.text =
                         "KPH"
 
-                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                    viewModel.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
                             ((stateOfChargeVal.toInt()) / .62).toString() + " km"
                     }
                 }
             }
-            processDoors(it)
+            processDoors()
 
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.fullbattery.scrollX =
@@ -469,7 +487,35 @@ class DashFragment : Fragment() {
                     it.getValue(Constants.steeringAngle)?.toInt()
                 )
             }
+            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
+                if (leftTurnSignalVal.toInt() > 0) {
+                    binding.leftTurnSignalDark.visibility = View.VISIBLE
+                } else {
+                    binding.leftTurnSignalDark.visibility = View.INVISIBLE
+                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                }
+                if (leftTurnSignalVal.toInt() > 1) {
+                    binding.leftTurnSignalLight.visibility = View.VISIBLE
+                } else {
+                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                }
+            }
+            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
+                if (rightTurnSignalVal.toInt() > 0) {
+                    binding.rightTurnSignalDark.visibility = View.VISIBLE
+                } else {
+                    binding.rightTurnSignalDark.visibility = View.INVISIBLE
+                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                }
 
+                if (rightTurnSignalVal.toInt() > 1) {
+                    binding.rightTurnSignalLight.visibility = View.VISIBLE
+                } else {
+                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                }
+            }
+
+            /*
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignal.setBackgroundResource(R.drawable.left_turn_anim)
                 var turnSignalAnimation =
@@ -494,6 +540,8 @@ class DashFragment : Fragment() {
                     binding.rightTurnSignal.visibility = View.INVISIBLE
                 }
             }
+
+             */
             // check if AP is not engaged, otherwise blind spot supersedes the AP
             if (gearColorSelected != requireContext().getColor(R.color.autopilot_blue)) {
 
@@ -599,10 +647,10 @@ class DashFragment : Fragment() {
     }
 
 
-    fun processDoors(it: CarState) {
+    fun processDoors() {
 
         var doorOpen = false
-        it.getValue(Constants.liftgateState)?.let { liftgateVal ->
+        viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
 
             if (liftgateVal.toInt() == 1) {
                 binding.hatch.visibility = View.VISIBLE
@@ -612,7 +660,7 @@ class DashFragment : Fragment() {
             }
 
         }
-        it.getValue(Constants.frunkState)?.let { frunkVal ->
+        viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
 
             if (frunkVal.toInt() == 1) {
                 binding.hood.visibility = View.VISIBLE
@@ -623,7 +671,7 @@ class DashFragment : Fragment() {
 
         }
 
-        it.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
+        viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
 
             if (frontLeftDoorVal.toInt() == 1) {
                 binding.frontleftdoor.visibility = View.VISIBLE
@@ -633,7 +681,7 @@ class DashFragment : Fragment() {
             }
 
         }
-        it.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+        viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
 
             if (frontRightDoorVal.toInt() == 1) {
                 binding.frontrightdoor.visibility = View.VISIBLE
@@ -643,7 +691,7 @@ class DashFragment : Fragment() {
             }
 
         }
-        it.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+        viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
 
             if (rearLeftDoorVal.toInt() == 1) {
                 binding.rearleftdoor.visibility = View.VISIBLE
@@ -653,7 +701,7 @@ class DashFragment : Fragment() {
             }
 
         }
-        it.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+        viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
 
             if (rearRightDoorVal.toInt() == 1) {
                 binding.rearrightdoor.visibility = View.VISIBLE
@@ -737,10 +785,20 @@ class DashFragment : Fragment() {
             val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
             val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
             binding.modely.clearAnimation()
-            if (doorOpen) {
+            if (doorOpen && !fadeIn.hasStarted()) {
                 binding.modely.startAnimation(fadeIn)
+
             } else {
-                binding.modely.startAnimation(fadeOut)
+                if (doorOpen){
+                    binding.modely.visibility = View.VISIBLE
+                }
+                if (!doorOpen && !fadeOut.hasStarted()){
+                    binding.modely.startAnimation(fadeOut)
+                } else {
+                    if (!doorOpen){
+                        binding.modely.visibility = View.INVISIBLE
+                    }
+                }
             }
         }
         lastDoorOpen = doorOpen

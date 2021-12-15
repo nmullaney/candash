@@ -7,6 +7,10 @@ class CarState(var carData: MutableMap<String, Number> = mutableMapOf()) {
     }
 
     fun getValue(name: String) : Number? {
-        return carData[name]
+        val value = carData[name]
+        return value
+    }
+    fun containsKey(key: String) : Boolean {
+        return carData.containsKey(key)
     }
 }
