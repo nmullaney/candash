@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.IOException
 import java.net.*
+import java.sql.Timestamp
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -43,6 +44,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     override fun carState(): Flow<CarState> {
         return carStateFlow
     }
+
+
 
     private fun getSocket(): DatagramSocket {
         if (!this::socket.isInitialized) {
@@ -154,6 +157,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
     private fun handleFrame(frame: PandaFrame) {
         var binaryPayloadString = ""
+        val updateState = CarState(HashMap())
+
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
             if (channel.serviceIndex == 0) {
                 Log.d(TAG, channel.name + "no mux startBit:" + channel.startBit.toString() + "bitLength:" + channel.bitLength)
@@ -187,10 +192,21 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     value = twosComplement(binaryPayloadString) * channel.factor + channel.offset
                 }
                 // Log.d(TAG, channel.name + " = " + value)
-                if (carState.getValue(channel.name) != value) {
+                if ((!carState.containsKey(channel.name))){
                     carState.updateValue(channel.name, value)
-                    carStateFlow.value = CarState(HashMap(carState.carData))
+                    updateState.updateValue(channel.name, value)
+                    carStateFlow.value = CarState(HashMap(updateState.carData))
+
                 }
+                else {
+                    if (carState.getValue(channel.name) != value) {
+                        carState.updateValue(channel.name, value)
+                        updateState.updateValue(channel.name, value)
+                        carStateFlow.value = CarState(HashMap(updateState.carData))
+                    }
+                }
+
+
 
             } else {
                 Log.d(TAG, "skipping payload")

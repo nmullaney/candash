@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.util.DisplayMetrics
 import android.util.Log
+import android.view.WindowManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.net.InetAddress
+import java.sql.Timestamp
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +29,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private var viewToShowData: MutableLiveData<String> = MutableLiveData()
     private var zeroconfHost = MutableLiveData<String>()
     private var nsdManager = (context?.getSystemService(Context.NSD_SERVICE) as NsdManager?)!!
+    private var carStateHistory: ConcurrentHashMap<String, TimestampedValue> = ConcurrentHashMap()
+    private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private var isSplitScreen = MutableLiveData<Boolean>()
+    private var renderWidth : Float = 100f
 
     private lateinit var carStateJob: Job
 
@@ -66,6 +74,27 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         return carStateData
     }
 
+    fun getValue(key: String): Float? {
+        if (carStateHistory[key] != null){
+            return carStateHistory[key]?.value
+        }else {
+            return null
+        }
+    }
+
+    fun getTimestamp(key: String): Timestamp? {
+        if (carStateHistory[key] != null){
+            return carStateHistory[key]?.timestamp
+        }else {
+            return null
+        }
+    }
+
+
+
+
+
+
     fun cancelCarStateJob() {
         if (::carStateJob.isInitialized) {
             carStateJob.cancel()
@@ -75,11 +104,60 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun startCarStateJob() {
         carStateJob = viewModelScope.launch {
             dashRepository.carState().collect {
+                for ((k, v) in it.carData){
+                    var ts = TimestampedValue(k, v.toFloat(), Timestamp(System.currentTimeMillis()) )
+                    carStateHistory()[k] = ts
+                    Log.d(TAG, "Appending to history:"+k + v.toString())
+                }
                 carStateData.postValue(it)
+
             }
         }
     }
+    fun getScreenWidth(): Int {
+        var displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.widthPixels
+    }
 
+    fun getRealScreenWidth(): Int {
+        var displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getRealMetrics(displayMetrics)
+        return displayMetrics.widthPixels
+    }
+    fun setSplitScreen(ss: Boolean){
+        with(isSplitScreen) { postValue(true)}
+    }
+    fun isSplitScreen(): Boolean {
+        var currentSplitScreen = isSplitScreen.value
+        if (getRealScreenWidth() > getScreenWidth() * 2){
+            if (currentSplitScreen != null){
+                if (currentSplitScreen == false){
+                    with(isSplitScreen) { postValue(true) }
+                }
+            } else {
+                with(isSplitScreen) { postValue(true) }
+            }
+            return true
+        } else {
+            if (currentSplitScreen != null){
+                if (currentSplitScreen == true){
+                    with(isSplitScreen) { postValue(false) }
+                }
+            }else {
+                with(isSplitScreen) { postValue(false) }
+            }
+            return false
+        }
+    }
+
+    fun getSplitScreen(): LiveData<Boolean>{
+        return isSplitScreen
+    }
+
+    fun carStateHistory() : ConcurrentHashMap<String, TimestampedValue> {
+        return carStateHistory
+    }
     fun fragmentNameToShow() : LiveData<String> = viewToShowData
 
     fun switchToDashFragment() {
