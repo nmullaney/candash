@@ -191,21 +191,22 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     Log.d(TAG, channel.name + "is signed" + binaryPayloadString)
                     value = twosComplement(binaryPayloadString) * channel.factor + channel.offset
                 }
+                carState.updateValue(channel.name, value)
+                carStateFlow.value = CarState(HashMap(carState.carData))
+                /*
                 // Log.d(TAG, channel.name + " = " + value)
                 if ((!carState.containsKey(channel.name))){
-                    carState.updateValue(channel.name, value)
                     updateState.updateValue(channel.name, value)
                     carStateFlow.value = CarState(HashMap(updateState.carData))
 
                 }
                 else {
                     if (carState.getValue(channel.name) != value) {
-                        carState.updateValue(channel.name, value)
                         updateState.updateValue(channel.name, value)
                         carStateFlow.value = CarState(HashMap(updateState.carData))
                     }
                 }
-
+                */
 
 
             } else {

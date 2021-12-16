@@ -13,11 +13,11 @@
         android:fontFamily="@font/montserratlight"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
-        android:letterSpacing="-0.05"
+        android:letterSpacing="-0.1"
         android:paddingBottom="40dp"
         android:textColor="@color/black"
         app:fontWeight="300"
-        android:textSize="220sp"
+        android:textSize="200sp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

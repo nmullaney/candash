@@ -126,7 +126,7 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         return displayMetrics.widthPixels
     }
     fun setSplitScreen(ss: Boolean){
-        with(isSplitScreen) { postValue(true)}
+        with(isSplitScreen) { postValue(ss)}
     }
     fun isSplitScreen(): Boolean {
         var currentSplitScreen = isSplitScreen.value

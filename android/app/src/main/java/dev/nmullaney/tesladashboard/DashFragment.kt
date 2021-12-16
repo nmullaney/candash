@@ -103,6 +103,8 @@ class DashFragment : Fragment() {
         }
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
+            binding.fullbattery.scrollX =
+                (83 - ((it.toLong() * 83) / 100).toInt())
         }
         viewModel.getValue(Constants.isSunUp)?.let { sunUpVal ->
             setColors(sunUpVal.toInt())
@@ -135,8 +137,8 @@ class DashFragment : Fragment() {
             val window: Window? = activity?.window
 
 
-            if (it) {
-                if (view.windowToken != null) {
+            if (view.windowToken != null) {
+                if (it) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         window?.insetsController?.hide(WindowInsets.Type.statusBars())
                         window?.insetsController?.systemBarsBehavior =
@@ -284,25 +286,7 @@ class DashFragment : Fragment() {
                 setColors(sunUpVal.toInt())
             }
 
-            // get battery status to decide whether or not to disable screen dimming
-            var batteryStatus: Intent? =
-                IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
-                    context?.registerReceiver(null, ifilter)
-                }
-            // How are we charging?
-            val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
-            val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
-                    || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
-                    || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
-            Log.d(TAG, "keep_screen_on" + isPlugged.toString())
 
-            if (isPlugged) {
-                activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Log.d(TAG, "keep_screen_on")
-            } else {
-                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Log.d(TAG, "do not keep screen on")
-            }
             if (viewModel.carStateHistory().containsKey(Constants.battAmps) and viewModel.carStateHistory().containsKey(Constants.battVolts)){
                 viewModel.carStateHistory().getValue(Constants.battAmps)?.let { battAmpsStateVal ->
                     battAmps = battAmpsStateVal.value
