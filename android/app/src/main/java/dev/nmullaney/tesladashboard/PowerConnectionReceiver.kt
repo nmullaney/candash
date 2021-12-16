@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.BatteryManager
 import android.util.Log
+import android.view.WindowManager
 
 class PowerConnectionReceiver : BroadcastReceiver() {
 
@@ -32,11 +33,7 @@ class PowerConnectionReceiver : BroadcastReceiver() {
             var i : Intent? = context?.let { pm?.getLaunchIntentForPackage(it.packageName) }
             //i.setClassName("dev.nmullaney", "android.intent.action.MAIN");
             //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            if (context != null) {
-                Log.d(TAG, "starting activity")
 
-                context.startActivity(i)
-            }
         }
 
     }

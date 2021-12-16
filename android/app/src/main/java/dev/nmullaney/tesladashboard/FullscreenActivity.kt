@@ -1,11 +1,15 @@
 package dev.nmullaney.tesladashboard
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -30,8 +34,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: DashViewModel
-    //private var pcr : PowerConnectionReceiver = PowerConnectionReceiver()
-
+    private lateinit var pcr: BroadcastReceiver
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -47,9 +50,29 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        pcr = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+
+                val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+                    context?.registerReceiver(null, ifilter)
+                }
+// How are we charging?
+                val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
+
+                val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+                        || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+                        || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
+
+                if (isPlugged) {
+                    this@FullscreenActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    this@FullscreenActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen)
-        //this.registerReceiver(pcr, IntentFilter(Intent.ACTION_POWER_CONNECTED))
+        this.registerReceiver(pcr, IntentFilter(Intent.ACTION_POWER_CONNECTED))
 
 
 
@@ -113,7 +136,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        //this.unregisterReceiver(pcr)
+        this.unregisterReceiver(pcr)
         super.onDestroy()
     }
 }
