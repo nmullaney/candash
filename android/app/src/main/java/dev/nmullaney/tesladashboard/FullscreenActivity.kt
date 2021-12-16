@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.WindowInsets
@@ -29,6 +30,9 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class FullscreenActivity : AppCompatActivity() {
+    private var handler: Handler = Handler()
+    private var runnable: Runnable? = null
+    private var delay = 1000
     override fun getApplicationContext(): Context {
         return super.getApplicationContext()
     }
@@ -50,32 +54,34 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        pcr = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
+        super.onCreate(savedInstanceState)
+        // check every second if battery is connected
+        var context = applicationContext
 
-                val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
+        handler.postDelayed(Runnable {
+            handler.postDelayed(runnable!!, delay.toLong())
+            // get battery status to decide whether or not to disable screen dimming
+            var batteryStatus: Intent? =
+                IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { ifilter ->
                     context?.registerReceiver(null, ifilter)
                 }
-// How are we charging?
-                val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
+            // How are we charging?
+            val chargePlug: Int = batteryStatus?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
+            val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+                    || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+                    || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
+            //Log.d(TAG, "keep_screen_on" + isPlugged.toString())
 
-                val isPlugged: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
-                        || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
-                        || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
-
-                if (isPlugged) {
-                    this@FullscreenActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } else {
-                    this@FullscreenActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                }
+            if (isPlugged) {
+                this@FullscreenActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                //Log.d(TAG, "keep_screen_on")
+            } else {
+                this@FullscreenActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                //Log.d(TAG, "do not keep screen on")
             }
-        }
-        super.onCreate(savedInstanceState)
+        }.also { runnable = it }, delay.toLong())
+
         setContentView(R.layout.activity_fullscreen)
-        this.registerReceiver(pcr, IntentFilter(Intent.ACTION_POWER_CONNECTED))
-
-
-
         // This is a known unsafe cast, but is safe in the only correct use case:
         // TeslaDashboardApplication extends Hilt_TeslaDashboardApplication
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -136,7 +142,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        this.unregisterReceiver(pcr)
+        handler.removeCallbacks(runnable!!)
         super.onDestroy()
     }
 }
