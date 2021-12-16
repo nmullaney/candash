@@ -9,6 +9,7 @@ import android.graphics.drawable.AnimationDrawable
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -65,7 +66,10 @@ class DashFragment : Fragment() {
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
     private var vehicleSpeed: Int = 0
-
+    val Float.kmh: Float
+        get() = (this/.621371).toFloat()
+    val Float.mph: Float
+        get() = (this * .621371).toFloat()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -92,14 +96,28 @@ class DashFragment : Fragment() {
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
-
+    private fun getSpeed(speed: Float) : Float {
+        var units = 0f
+        viewModel.getValue(Constants.uiSpeedUnits)?.let {
+            units = it.toFloat()
+        }
+        if (units == 0f){
+            // mph
+            return speed.mph
+        } else {
+            // vehicle speed is in kph
+            return speed
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
-            binding.speed.text = vehicleSpeedVal.toInt().toString()
+            binding.speed.text = vehicleSpeedVal.toString()
         }
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
@@ -409,15 +427,15 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
+                var sensingSpeedLimit = 35
                 binding.unit.visibility = View.VISIBLE
                 binding.speed.visibility = View.VISIBLE
                     if(binding.speed.text != vehicleSpeedVal.toString()){
-                        binding.speed.text = vehicleSpeedVal.toInt().toString()
+                        binding.speed.text = vehicleSpeedVal.toString()
                     }
-                    var sensingSpeedLimit: Int = 35
-                    if (!uiSpeedUnitsMPH) {
-                        sensingSpeedLimit = 56
-                    }
+                if (viewModel.getValue(Constants.uiSpeedUnits) != 0f){
+                    sensingSpeedLimit = 35f.kmh.toInt()
+                }
                     if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
                         l1Distance = 400
                         l2Distance = 250
@@ -471,35 +489,8 @@ class DashFragment : Fragment() {
                     it.getValue(Constants.steeringAngle)?.toInt()
                 )
             }
-            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
-                if (leftTurnSignalVal.toInt() > 0) {
-                    binding.leftTurnSignalDark.visibility = View.VISIBLE
-                } else {
-                    binding.leftTurnSignalDark.visibility = View.INVISIBLE
-                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
-                }
-                if (leftTurnSignalVal.toInt() > 1) {
-                    binding.leftTurnSignalLight.visibility = View.VISIBLE
-                } else {
-                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
-                }
-            }
-            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
-                if (rightTurnSignalVal.toInt() > 0) {
-                    binding.rightTurnSignalDark.visibility = View.VISIBLE
-                } else {
-                    binding.rightTurnSignalDark.visibility = View.INVISIBLE
-                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
-                }
 
-                if (rightTurnSignalVal.toInt() > 1) {
-                    binding.rightTurnSignalLight.visibility = View.VISIBLE
-                } else {
-                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
-                }
-            }
 
-            /*
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignal.setBackgroundResource(R.drawable.left_turn_anim)
                 var turnSignalAnimation =
@@ -525,7 +516,7 @@ class DashFragment : Fragment() {
                 }
             }
 
-             */
+
             // check if AP is not engaged, otherwise blind spot supersedes the AP
             if (gearColorSelected != requireContext().getColor(R.color.autopilot_blue)) {
 
