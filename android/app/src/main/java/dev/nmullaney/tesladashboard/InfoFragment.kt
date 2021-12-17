@@ -41,7 +41,6 @@ class InfoFragment() : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
-        //nsdManager?.resolveService(resolveListener)
 
         binding.toggleServerGroup.check(if (viewModel.useMockServer()) R.id.mock_server_button else R.id.real_server_button)
 
@@ -81,13 +80,13 @@ class InfoFragment() : Fragment() {
 
 
             binding.infoText.text = buildSpannedString {
-                val sortedMap = viewModel.carStateHistory().toSortedMap()
+                val sortedMap = carState.carData.toSortedMap()
                 sortedMap.forEach() { entry ->
                     bold {
                         append(entry.key)
                         append(": ")
                     }
-                    append(entry.value.value.toString())
+                    append(entry.value.toString())
                     append("\n")
                 }
             }

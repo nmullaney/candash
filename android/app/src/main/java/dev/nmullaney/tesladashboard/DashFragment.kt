@@ -117,7 +117,7 @@ class DashFragment : Fragment() {
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
-            binding.speed.text = vehicleSpeedVal.toString()
+            binding.speed.text = vehicleSpeedVal.toInt().toString()
         }
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
@@ -430,9 +430,8 @@ class DashFragment : Fragment() {
                 var sensingSpeedLimit = 35
                 binding.unit.visibility = View.VISIBLE
                 binding.speed.visibility = View.VISIBLE
-                    if(binding.speed.text != vehicleSpeedVal.toString()){
-                        binding.speed.text = vehicleSpeedVal.toString()
-                    }
+                binding.speed.text = vehicleSpeedVal.toInt().toString()
+
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f){
                     sensingSpeedLimit = 35f.kmh.toInt()
                 }

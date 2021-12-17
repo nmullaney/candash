@@ -34,7 +34,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     private val heartbeat = "ehllo"
     private val goodbye = "bye"
     private var lastHeartbeatTimestamp = 0L
-    private val heartBeatIntervalMs = 5_000
+    private val heartBeatIntervalMs = 4_000
     private val socketTimeoutMs = 1_000
     private val signalHelper = CANSignalHelper()
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
