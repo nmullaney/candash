@@ -1,18 +1,24 @@
 package dev.nmullaney.tesladashboard
 
-import kotlin.experimental.and
-
 class NewPandaFrame(wholeByteArray: ByteArray) {
 
     private val headerByteArray = wholeByteArray.sliceArray(0 until 8)
     private val payloadByteArray = wholeByteArray.sliceArray(8 until 16)
-    public val frameId: Long = headerByteArray[0].toLong() shr 21
-    public val frameIdHex
+    private val firstHeaderValue = getHeaderValue(0, 4)
+    private val secondHeaderValue = getHeaderValue(4, 4)
+    val frameId = firstHeaderValue shr 21
+    val frameIdHex
         get() = Hex(frameId)
-    private val frameLength = headerByteArray[1] and 0x0F
-    public val busId = headerByteArray[1].toLong() shr 4
+    val frameLength = secondHeaderValue and 0x0F
+    val busId = secondHeaderValue shr 4
 
-    public fun getCANValue(canSignal: CANSignal): Float? {
+    private fun getHeaderValue(start: Int, length: Int) : Long {
+        return headerByteArray.sliceArray(start until (start + length)).foldIndexed(0L) { index, value, byte ->
+            value + (byte.toUByte().toLong() shl (index * 8))
+        }
+    }
+
+    fun getCANValue(canSignal: CANSignal): Float? {
         if (!isCorrectMux(canSignal)) {
             return null
         }
@@ -67,18 +73,4 @@ fun ByteArray.getPayloadBinaryString(): String {
         sb.append(binaryString)
     }
     return sb.toString()
-}
-
-fun getFrameId(): Long {
-    return getFrameId()
-}
-
-
-
-fun getBusId(): Long {
-    return getBusId()
-}
-
-fun frameLength(): Long {
-    return frameLength()
 }

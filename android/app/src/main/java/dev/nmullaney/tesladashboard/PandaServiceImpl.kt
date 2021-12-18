@@ -122,18 +122,19 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
                     //Log.d(TAG, "Packet from: " + packet.address + ":" + packet.port)
 
-                    val NewPandaFrame = NewPandaFrame(buf)
-                    /*Log.d(TAG, "FrameId = " + NewPandaFrame.frameIdHex.hexString)
-                    Log.d(TAG, "BusId = " + NewPandaFrame.busId)
-                    Log.d(TAG, "FrameLength = " + NewPandaFrame.frameLength())
-
+                    val newPandaFrame = NewPandaFrame(buf)
+                    /*
+                    Log.d(TAG, "Binary = " + buf.getPayloadBinaryString())
+                    Log.d(TAG, "FrameId = " + newPandaFrame.frameIdHex.hexString)
+                    Log.d(TAG, "BusId = " + newPandaFrame.busId)
+                    Log.d(TAG, "FrameLength = " + newPandaFrame.frameLength)
                      */
 
-                    if (NewPandaFrame.frameId == 6L && NewPandaFrame.busId == 15L) {
+                    if (newPandaFrame.frameId == 6L && newPandaFrame.busId == 15L) {
                         // It's an ack
                         sendFilter(getSocket())
                     } else {
-                        handleFrame(NewPandaFrame)
+                        handleFrame(newPandaFrame)
                     }
                     yield()
                 }
