@@ -122,18 +122,18 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
                     //Log.d(TAG, "Packet from: " + packet.address + ":" + packet.port)
 
-                    val pandaFrame = PandaFrame(buf)
-                    /*Log.d(TAG, "FrameId = " + pandaFrame.frameIdHex.hexString)
-                    Log.d(TAG, "BusId = " + pandaFrame.busId)
-                    Log.d(TAG, "FrameLength = " + pandaFrame.frameLength())
+                    val NewPandaFrame = NewPandaFrame(buf)
+                    /*Log.d(TAG, "FrameId = " + NewPandaFrame.frameIdHex.hexString)
+                    Log.d(TAG, "BusId = " + NewPandaFrame.busId)
+                    Log.d(TAG, "FrameLength = " + NewPandaFrame.frameLength())
 
                      */
 
-                    if (pandaFrame.frameId == 6L && pandaFrame.busId == 15L) {
+                    if (NewPandaFrame.frameId == 6L && NewPandaFrame.busId == 15L) {
                         // It's an ack
                         sendFilter(getSocket())
                     } else {
-                        handleFrame(pandaFrame)
+                        handleFrame(NewPandaFrame)
                     }
                     yield()
                 }
@@ -155,63 +155,14 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         Log.d(TAG, "Stopping requests on thread: ${Thread.currentThread().name}")
     }
 
-    private fun handleFrame(frame: PandaFrame) {
+    private fun handleFrame(frame: NewPandaFrame) {
         var binaryPayloadString = ""
         val updateState = CarState(HashMap())
 
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
-            if (channel.serviceIndex == 0) {
-                Log.d(TAG, channel.name + "no mux startBit:" + channel.startBit.toString() + "bitLength:" + channel.bitLength)
-
-                binaryPayloadString = frame.getPayloadValue(
-                    channel.startBit,
-                    channel.bitLength
-                )
-            } else {
-                Log.d(
-                    TAG,
-                    channel.name + " mux startbit:" + channel.startBit + " bitlength:" + channel.bitLength + " serviceIndex:" + channel.serviceIndex
-                )
-
-                binaryPayloadString = frame.getPayloadValue(
-
-                    channel.startBit,
-                    channel.bitLength,
-                    channel.serviceIndex,
-                    channel.muxIndex
-                )
-            }
-            if (!binaryPayloadString.equals("")) {
-                var value: Float = 0.0f
-                if (channel.signed != true) {
-                    binaryPayloadString = "0" + binaryPayloadString
-                    Log.d(TAG, channel.name + "is unsigned" + binaryPayloadString)
-                    value = binaryPayloadString.toLong(2) * channel.factor + channel.offset
-                } else {
-                    Log.d(TAG, channel.name + "is signed" + binaryPayloadString)
-                    value = twosComplement(binaryPayloadString) * channel.factor + channel.offset
-                }
-                carState.updateValue(channel.name, value)
+            if (frame.getCANValue(channel) != null){
+                carState.updateValue(channel.name, frame.getCANValue(channel)!!)
                 carStateFlow.value = CarState(HashMap(carState.carData))
-                /*
-                // Log.d(TAG, channel.name + " = " + value)
-                if ((!carState.containsKey(channel.name))){
-                    updateState.updateValue(channel.name, value)
-                    carStateFlow.value = CarState(HashMap(updateState.carData))
-
-                }
-                else {
-                    if (carState.getValue(channel.name) != value) {
-                        updateState.updateValue(channel.name, value)
-                        carStateFlow.value = CarState(HashMap(updateState.carData))
-                    }
-                }
-                */
-
-
-            } else {
-                Log.d(TAG, "skipping payload")
-
             }
         }
     }
