@@ -28,7 +28,7 @@ public class PandaFrame {
         mFrameLength = secondUnsignedInt & 0x0F;
     }
 
-    public long getUnsignedInt(int offset, int length) {
+    private long getUnsignedInt(int offset, int length) {
         ByteBuffer frameBuffer = ByteBuffer.allocate(INT_BYTES);
         frameBuffer.order(ByteOrder.LITTLE_ENDIAN);
         frameBuffer.put(mBuf, offset, length);
@@ -50,7 +50,7 @@ public class PandaFrame {
     /**
      * Returns the payload as a binary string.
      */
-    public String getPayloadBinaryString() {
+    private String getPayloadBinaryString() {
         StringBuilder sb = new StringBuilder();
         for (int i = PAYLOAD_OFFSET; i < mBuf.length; i++) {
             // AND-ing the byte converts it to an unsigned byte
