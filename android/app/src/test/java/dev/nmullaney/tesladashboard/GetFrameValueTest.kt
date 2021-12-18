@@ -8,6 +8,15 @@ class GetFrameValueTest {
     private val fakeHeaderBS = StringUtils.repeat(StringUtils.repeat("0", 8), 8)
 
     @Test
+    fun testAckFrame() {
+        val payloadBinaryString = "00000000000000001100000000000000111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        val byteArray = byteArray(payloadBinaryString)
+        val pandaFrame = NewPandaFrame(byteArray)
+        assertEquals(6L, pandaFrame.frameId)
+        assertEquals(15L, pandaFrame.busId)
+    }
+
+    @Test
     fun testBinaryStringConversion() {
         val payloadBinaryString = "0110111001000110000111110000000000000000101000000000111100000001"
         val byteArray = byteArray(payloadBinaryString)
