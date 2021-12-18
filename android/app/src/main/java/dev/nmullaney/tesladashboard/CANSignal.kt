@@ -9,6 +9,6 @@ data class CANSignal (val name : String,
                       val offset: Float,
                       val serviceIndex: Int=0,
                       val muxIndex: Int=0,
-                      val signed: Boolean? = false,
+                      val signed: Boolean = false,
 
 )
