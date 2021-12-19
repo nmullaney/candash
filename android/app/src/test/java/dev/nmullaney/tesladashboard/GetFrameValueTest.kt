@@ -45,7 +45,7 @@ class GetFrameValueTest {
     @Test
     fun testFrunkStateWrongMultiplex() {
         val frunkCanSignal = CANSignal(Constants.frunkState, 0, Hex(0x2E1), 3, 4, 1f, 0f, 3, 0)
-        val payloadBinaryString = "0011000000100001000001000010000010100010100011110010000000001000"
+        val payloadBinaryString = "0001001000100001000001000010000010100010100011110010000000001000"
         val byteArray = byteArray(fakeHeaderBS + payloadBinaryString)
         val pandaFrame = NewPandaFrame(byteArray)
         assertEquals(null, pandaFrame.getCANValue(frunkCanSignal))

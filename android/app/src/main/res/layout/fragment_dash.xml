@@ -260,7 +260,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <dev.nmullaney.tesladashboard.BatteryGauge
         android:id="@+id/fullbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
@@ -271,16 +271,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/deadbatterymask"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
-        android:src="@drawable/ic_deadbatterymask"
-        android:paddingRight="20dp"
-        android:paddingTop="5dp"
-        android:gravity="center_vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
         android:id="@+id/modely"

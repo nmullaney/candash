@@ -60,6 +60,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         socket = DatagramSocket(null)
         socket.soTimeout = heartBeatIntervalMs
         socket.reuseAddress = true
+        socket.receiveBufferSize = 3145728
+        Log.d(TAG, "socketsize: ${socket.receiveBufferSize}")
         return socket
     }
 
