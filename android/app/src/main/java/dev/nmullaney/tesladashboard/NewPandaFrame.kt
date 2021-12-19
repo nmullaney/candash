@@ -56,7 +56,7 @@ class NewPandaFrame(wholeByteArray: ByteArray) {
         return if (canSignal.serviceIndex == 0) {
             true
         } else {
-            payloadByteArray[0].toInt() shr (8 - canSignal.serviceIndex) == canSignal.muxIndex
+            payloadByteArray[0].toInt() and rightMask(8 - canSignal.serviceIndex) == canSignal.muxIndex
         }
     }
 

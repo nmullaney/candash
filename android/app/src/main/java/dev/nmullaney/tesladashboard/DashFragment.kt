@@ -2,8 +2,10 @@ package dev.nmullaney.tesladashboard
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.app.ActionBar
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.BatteryManager
@@ -66,6 +68,16 @@ class DashFragment : Fragment() {
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
     private var vehicleSpeed: Int = 0
+    private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
+    val Int.dp: Int
+        get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+    val Int.px: Int
+        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
+
+    val Float.dp: Float
+        get() = (this / Resources.getSystem().displayMetrics.density)
+    val Float.px: Float
+        get() = (this * Resources.getSystem().displayMetrics.density)
     val Float.kmh: Float
         get() = (this/.621371).toFloat()
     val Float.mph: Float
@@ -79,6 +91,16 @@ class DashFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun topUIViews() : List<View> =
+        listOf(
+            binding.PRND,
+            binding.batterypercent,
+            binding.deadbattery,
+            binding.fullbattery,
+            binding.leftTurnSignal,
+            binding.rightTurnSignal
+        )
 
     fun getBackgroundColor(sunUpVal: Int): Int {
         return when (sunUpVal) {
@@ -114,15 +136,21 @@ class DashFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-
+        if (!viewModel.isSplitScreen()) {
+            for (topUIView in topUIViews()) {
+                savedLayoutParams[topUIView] =
+                   ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
+            }
+        }
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
             binding.speed.text = vehicleSpeedVal.toInt().toString()
         }
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
-            binding.fullbattery.scrollX =
-                (83 - ((it.toLong() * 83) / 100).toInt())
+            binding.fullbattery.setGauge(it)
+            binding.fullbattery.invalidate()
+
         }
         viewModel.getValue(Constants.isSunUp)?.let { sunUpVal ->
             setColors(sunUpVal.toInt())
@@ -166,137 +194,39 @@ class DashFragment : Fragment() {
                         wm?.removeViewImmediate(window?.getDecorView());
                         wm?.addView(window?.getDecorView(), window?.getAttributes());
                     }
-                    var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
-                    // shift down by 24dp
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(24),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.PRND.layoutParams = params
-
-                    params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(24),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.batterypercent.layoutParams = params
-
-                    params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(24),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.deadbattery.layoutParams = params
-
-                    params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(24),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.deadbatterymask.layoutParams = params
-
-                    params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(24),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.fullbattery.layoutParams = params
-
-                    params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        convertDPtoPixels(10),
-                        convertDPtoPixels(64),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.leftTurnSignal.layoutParams = params
-
-                    params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(64),
-                        convertDPtoPixels(10),
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.rightTurnSignal.layoutParams = params
+                    for (topUIView in topUIViews()) {
+                        var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                        var savedParams = savedLayoutParams[topUIView]
+                        params.setMargins(
+                            savedParams!!.leftMargin,
+                            savedParams.topMargin + 24.px,
+                            savedParams.rightMargin,
+                            savedParams.bottomMargin
+                        )
+                        topUIView.layoutParams = params
+                    }
                 } else {
-                    var params = binding.PRND.layoutParams as ConstraintLayout.LayoutParams
-                    // shift down by 24dp
-                    params.setMargins(
-                        0,
-                        0,
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.PRND.layoutParams = params
-
-                    params = binding.batterypercent.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(0),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.batterypercent.layoutParams = params
-
-                    params = binding.deadbattery.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(0),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.deadbattery.layoutParams = params
-
-                    params = binding.deadbatterymask.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(0),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.deadbatterymask.layoutParams = params
-
-                    params = binding.fullbattery.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(0),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.fullbattery.layoutParams = params
-
-                    params = binding.leftTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        convertDPtoPixels(10),
-                        convertDPtoPixels(40),
-                        0,
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.leftTurnSignal.layoutParams = params
-
-                    params = binding.rightTurnSignal.layoutParams as ConstraintLayout.LayoutParams
-                    params.setMargins(
-                        0,
-                        convertDPtoPixels(40),
-                        convertDPtoPixels(10),
-                        0
-                    ) //substitute parameters for left, top, right, bottom
-                    binding.rightTurnSignal.layoutParams = params
+                    for (topUIView in topUIViews()) {
+                        var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                        var savedParams = savedLayoutParams[topUIView]
+                        params.setMargins(
+                            savedParams!!.leftMargin,
+                            savedParams.topMargin,
+                            savedParams.rightMargin,
+                            savedParams.bottomMargin
+                        )
+                        topUIView.layoutParams = params
+                    }
                 }
-                val wm = activity?.windowManager
-                wm?.removeViewImmediate(window?.getDecorView());
-                wm?.addView(window?.getDecorView(), window?.getAttributes());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    window?.insetsController?.hide(WindowInsets.Type.statusBars())
+                    window?.insetsController?.systemBarsBehavior =
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    val wm = activity?.windowManager
+
+                    wm?.removeViewImmediate(window?.getDecorView());
+                    wm?.addView(window?.getDecorView(), window?.getAttributes());
+                }
             }
         }
         viewModel.carState().observe(viewLifecycleOwner) {
@@ -435,13 +365,13 @@ class DashFragment : Fragment() {
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f){
                     sensingSpeedLimit = 35f.kmh.toInt()
                 }
-                    if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
-                        l1Distance = 400
-                        l2Distance = 250
-                    } else {
-                        l1Distance = 300
-                        l2Distance = 200
-                    }
+                if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
+                    l1Distance = 400
+                    l2Distance = 250
+                } else {
+                    l1Distance = 300
+                    l2Distance = 200
+                }
             }
 
 
@@ -478,9 +408,11 @@ class DashFragment : Fragment() {
             processDoors()
 
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                binding.fullbattery.scrollX =
-                    (83 - ((stateOfChargeVal.toLong() * 83) / 100).toInt())
+                binding.fullbattery.setGauge(stateOfChargeVal.toFloat())
+                binding.fullbattery.invalidate()
             }
+
+
 
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 updateAutopilotUI(
@@ -695,6 +627,7 @@ class DashFragment : Fragment() {
         if (sunUpVal == 0 || forceNightMode) {
 
             binding.powerBar.setDayValue(0)
+            binding.fullbattery.setDayValue(0)
             //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
@@ -702,8 +635,6 @@ class DashFragment : Fragment() {
             binding.unit.setTextColor(Color.LTGRAY)
             binding.batterypercent.setTextColor(Color.LTGRAY)
             binding.deadbattery.setColorFilter(Color.DKGRAY)
-            binding.deadbatterymask.setColorFilter(Color.DKGRAY)
-            binding.fullbattery.setColorFilter(Color.LTGRAY)
             gearColorSelected = Color.LTGRAY
             gearColor = Color.DKGRAY
             binding.PRND.setTextColor(Color.DKGRAY)
@@ -717,6 +648,7 @@ class DashFragment : Fragment() {
 
         } else {
             binding.powerBar.setDayValue(1)
+            binding.fullbattery.setDayValue(1)
 
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
@@ -726,8 +658,6 @@ class DashFragment : Fragment() {
             binding.unit.setTextColor(Color.DKGRAY)
             binding.batterypercent.setTextColor(Color.DKGRAY)
             binding.deadbattery.clearColorFilter()
-            binding.deadbatterymask.clearColorFilter()
-            binding.fullbattery.clearColorFilter()
             gearColorSelected = Color.DKGRAY
             gearColor = Color.parseColor("#FFDDDDDD")
             binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
