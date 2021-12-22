@@ -15,6 +15,7 @@ import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.animation.Animation
@@ -68,6 +69,7 @@ class DashFragment : Fragment() {
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
     private var vehicleSpeed: Int = 0
+
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
     val Int.dp: Int
         get() = (this / Resources.getSystem().displayMetrics.density).toInt()
@@ -79,9 +81,10 @@ class DashFragment : Fragment() {
     val Float.px: Float
         get() = (this * Resources.getSystem().displayMetrics.density)
     val Float.kmh: Float
-        get() = (this/.621371).toFloat()
+        get() = (this / .621371).toFloat()
     val Float.mph: Float
         get() = (this * .621371).toFloat()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -92,7 +95,7 @@ class DashFragment : Fragment() {
         return binding.root
     }
 
-    private fun topUIViews() : List<View> =
+    private fun topUIViews(): List<View> =
         listOf(
             binding.PRND,
             binding.batterypercent,
@@ -108,6 +111,7 @@ class DashFragment : Fragment() {
             else -> requireContext().getColor(R.color.night_background)
         }
     }
+
     private fun hideSystemBars(window: Window) {
         val windowInsetsController =
             ViewCompat.getWindowInsetsController(window?.decorView) ?: return
@@ -118,12 +122,12 @@ class DashFragment : Fragment() {
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
-    private fun getSpeed(speed: Float) : Float {
+    private fun getSpeed(speed: Float): Float {
         var units = 0f
         viewModel.getValue(Constants.uiSpeedUnits)?.let {
             units = it.toFloat()
         }
-        if (units == 0f){
+        if (units == 0f) {
             // mph
             return speed.mph
         } else {
@@ -131,17 +135,47 @@ class DashFragment : Fragment() {
             return speed
         }
     }
+    private fun getScreenWidth(): Int {
+        var displayMetrics = DisplayMetrics()
+        activity?.windowManager
+            ?.defaultDisplay?.getMetrics(displayMetrics)
+        return displayMetrics.widthPixels
+    }
+
+    private fun getRealScreenWidth(): Int {
+        var displayMetrics = DisplayMetrics()
+        activity?.windowManager
+            ?.defaultDisplay?.getRealMetrics(displayMetrics)
+        return displayMetrics.widthPixels
+    }
+
+    private fun isSplitScreen(): Boolean {
+
+        return getRealScreenWidth() > getScreenWidth() * 2
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        if (!viewModel.isSplitScreen()) {
+        var colorFrom: Int
+        if (forceNightMode) {
+            colorFrom = getBackgroundColor(0)
+        } else {
+            colorFrom = getBackgroundColor(lastSunUp)
+        }
+        val colorTo = requireContext().getColor(R.color.autopilot_blue)
+        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        // milliseconds
+        if (!isSplitScreen()) {
             for (topUIView in topUIViews()) {
                 savedLayoutParams[topUIView] =
-                   ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
+                    ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
             }
         }
+        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+        val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
             binding.speed.text = vehicleSpeedVal.toInt().toString()
@@ -235,13 +269,17 @@ class DashFragment : Fragment() {
             }
 
 
-            if (viewModel.carStateHistory().containsKey(Constants.battAmps) and viewModel.carStateHistory().containsKey(Constants.battVolts)){
+            if (viewModel.carStateHistory()
+                    .containsKey(Constants.battAmps) and viewModel.carStateHistory()
+                    .containsKey(Constants.battVolts)
+            ) {
                 viewModel.carStateHistory().getValue(Constants.battAmps)?.let { battAmpsStateVal ->
                     battAmps = battAmpsStateVal.value
                 }
-                viewModel.carStateHistory().getValue(Constants.battVolts)?.let { battVoltsStateVal ->
-                    battVolts = battVoltsStateVal.value
-                }
+                viewModel.carStateHistory().getValue(Constants.battVolts)
+                    ?.let { battVoltsStateVal ->
+                        battVolts = battVoltsStateVal.value
+                    }
             }
 
             power = (battAmps * battVolts)
@@ -309,33 +347,33 @@ class DashFragment : Fragment() {
                 )
                 binding.PRND.text = (ss)
             }
+
+
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-                val colorFrom: Int
-                val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-                if (forceNightMode) {
-                    colorFrom = getBackgroundColor(0)
-                } else {
-                    colorFrom = getBackgroundColor(lastSunUp)
-                }
+
                 //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
+                    if (forceNightMode) {
+                        colorFrom = getBackgroundColor(0)
+                    } else {
+                        colorFrom = getBackgroundColor(lastSunUp)
+                    }
+                    colorAnimation.setObjectValues( colorFrom, colorTo)
+                    colorAnimation.duration = 1000
+
+                    colorAnimation.addUpdateListener { animator ->
+                        binding.root.setBackgroundColor(
+                            animator.animatedValue as Int
+                        )
+                    }
+                    colorAnimation.repeatCount = ValueAnimator.INFINITE
+                    colorAnimation.repeatMode = ValueAnimator.REVERSE
                     if (autopilotHandsToggle == false) {
-                        //binding.APWarning.startAnimation(fadeInWarning)
+                        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                        binding.APWarning.startAnimation(fadeInWarning)
                         binding.APWarning.visibility = View.VISIBLE
 
-                        val colorTo = requireContext().getColor(R.color.autopilot_blue)
-                        val colorAnimation =
-                            ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                        colorAnimation.duration = 2000
-                        // milliseconds
-
-                        colorAnimation.addUpdateListener { animator ->
-                            binding.root.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
-                        }
                         colorAnimation.start()
                         autopilotHandsToggle = true
                     } else {
@@ -345,11 +383,20 @@ class DashFragment : Fragment() {
 
                     }
                 } else {
+                    if (autopilotHandsToggle == true) {
+                    }
+                    colorAnimation.cancel()
+
                     binding.APWarning.clearAnimation()
+                    binding.root.clearAnimation()
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
-                    //binding.APWarning.startAnimation(fadeOutWarning)
-                    binding.APWarning.visibility = View.GONE
+                    val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                    if (binding.APWarning.visibility != View.GONE){
+                        binding.APWarning.startAnimation(fadeOutWarning)
+                        binding.APWarning.visibility = View.GONE
+
+                    }
 
                 }
 
@@ -362,7 +409,7 @@ class DashFragment : Fragment() {
                 binding.speed.visibility = View.VISIBLE
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
 
-                if (viewModel.getValue(Constants.uiSpeedUnits) != 0f){
+                if (viewModel.getValue(Constants.uiSpeedUnits) != 0f) {
                     sensingSpeedLimit = 35f.kmh.toInt()
                 }
                 if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
@@ -380,7 +427,7 @@ class DashFragment : Fragment() {
             }
             if (showSOC == true) {
                 viewModel.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                    if (binding.batterypercent.text != stateOfChargeVal.toInt().toString()){
+                    if (binding.batterypercent.text != stateOfChargeVal.toInt().toString()) {
                         binding.batterypercent.text =
                             stateOfChargeVal.toInt().toString() + " %"
                     }
@@ -556,66 +603,142 @@ class DashFragment : Fragment() {
     fun processDoors() {
 
         var doorOpen = false
-        viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
-
-            if (liftgateVal.toInt() == 1) {
-                binding.hatch.visibility = View.VISIBLE
-                doorOpen = true
-            } else {
-                binding.hatch.visibility = View.GONE
-            }
-
+        if ((viewModel.getValue(Constants.liftgateState) == 1f) or
+            (viewModel.getValue(Constants.frunkState) == 1f) or
+            (viewModel.getValue(Constants.frontLeftDoorState) == 1f) or
+            (viewModel.getValue(Constants.frontRightDoorState) == 1f) or
+            (viewModel.getValue(Constants.rearLeftDoorState) == 1f) or
+            (viewModel.getValue(Constants.rearRightDoorState) == 1f)){
+            updateCarStateUI(true)
+            Thread.sleep(500)
         }
-        viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
-
-            if (frunkVal.toInt() == 1) {
-                binding.hood.visibility = View.VISIBLE
-                doorOpen = true
-            } else {
-                binding.hood.visibility = View.GONE
-            }
-
+        else {
+            updateCarStateUI(false)
         }
+        if (!isSplitScreen()) {
+            viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
+                if (liftgateVal.toInt() == 1) {
+                    binding.hatch.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.hatch.visibility = View.GONE
+                }
 
-        viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
-
-            if (frontLeftDoorVal.toInt() == 1) {
-                binding.frontleftdoor.visibility = View.VISIBLE
-                doorOpen = true
-            } else {
-                binding.frontleftdoor.visibility = View.GONE
             }
 
-        }
-        viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+            viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
 
-            if (frontRightDoorVal.toInt() == 1) {
-                binding.frontrightdoor.visibility = View.VISIBLE
-                doorOpen = true
-            } else {
-                binding.frontrightdoor.visibility = View.GONE
+                if (frunkVal.toInt() == 1) {
+                    binding.hood.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.hood.visibility = View.GONE
+                }
+
             }
 
-        }
-        viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+            viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
 
-            if (rearLeftDoorVal.toInt() == 1) {
-                binding.rearleftdoor.visibility = View.VISIBLE
-                doorOpen = true
-            } else {
-                binding.rearleftdoor.visibility = View.GONE
+                if (frontLeftDoorVal.toInt() == 1) {
+                    binding.frontleftdoor.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.frontleftdoor.visibility = View.GONE
+                }
+
+            }
+            viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+
+                if (frontRightDoorVal.toInt() == 1) {
+                    binding.frontrightdoor.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.frontrightdoor.visibility = View.GONE
+                }
+
+            }
+            viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+
+                if (rearLeftDoorVal.toInt() == 1) {
+                    binding.rearleftdoor.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.rearleftdoor.visibility = View.GONE
+                }
+
+            }
+            viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+
+                if (rearRightDoorVal.toInt() == 1) {
+                    binding.rearrightdoor.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.rearrightdoor.visibility = View.GONE
+                }
+
+            }
+        } else {
+            viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
+                if (liftgateVal.toInt() == 1) {
+                    binding.hatchCenter.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.hatchCenter.visibility = View.GONE
+                }
+
             }
 
-        }
-        viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+            viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
 
-            if (rearRightDoorVal.toInt() == 1) {
-                binding.rearrightdoor.visibility = View.VISIBLE
-                doorOpen = true
-            } else {
-                binding.rearrightdoor.visibility = View.GONE
+                if (frunkVal.toInt() == 1) {
+                    binding.hoodCenter.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.hoodCenter.visibility = View.GONE
+                }
+
             }
 
+            viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
+
+                if (frontLeftDoorVal.toInt() == 1) {
+                    binding.frontleftdoorCenter.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.frontleftdoorCenter.visibility = View.GONE
+                }
+
+            }
+            viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+
+                if (frontRightDoorVal.toInt() == 1) {
+                    binding.frontrightdoorCenter.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.frontrightdoorCenter.visibility = View.GONE
+                }
+
+            }
+            viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+
+                if (rearLeftDoorVal.toInt() == 1) {
+                    binding.rearleftdoorCenter.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.rearleftdoorCenter.visibility = View.GONE
+                }
+
+            }
+            viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+
+                if (rearRightDoorVal.toInt() == 1) {
+                    binding.rearrightdoorCenter.visibility = View.VISIBLE
+                    doorOpen = true
+                } else {
+                    binding.rearrightdoorCenter.visibility = View.GONE
+                }
+
+            }
         }
         updateCarStateUI(doorOpen)
     }
@@ -639,6 +762,8 @@ class DashFragment : Fragment() {
             gearColor = Color.DKGRAY
             binding.PRND.setTextColor(Color.DKGRAY)
             binding.modely.setColorFilter(Color.LTGRAY)
+            binding.modelyCenter.setColorFilter(Color.LTGRAY)
+
             binding.power.setTextColor(Color.WHITE)
             binding.minpower.setTextColor(Color.WHITE)
             binding.maxpower.setTextColor(Color.WHITE)
@@ -661,7 +786,9 @@ class DashFragment : Fragment() {
             gearColorSelected = Color.DKGRAY
             gearColor = Color.parseColor("#FFDDDDDD")
             binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
-            binding.modely.setColorFilter(Color.LTGRAY)
+            binding.modely.setColorFilter(Color.GRAY)
+            binding.modelyCenter.setColorFilter(Color.GRAY)
+
             binding.power.setTextColor(Color.DKGRAY)
             binding.minpower.setTextColor(Color.DKGRAY)
             binding.maxpower.setTextColor(Color.DKGRAY)
@@ -685,22 +812,57 @@ class DashFragment : Fragment() {
     }
 
     fun updateCarStateUI(doorOpen: Boolean) {
-        if (lastDoorOpen != doorOpen) {
-            val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-            val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-            binding.modely.clearAnimation()
-            if (doorOpen && !fadeIn.hasStarted()) {
-                binding.modely.startAnimation(fadeIn)
+        val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+        val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+        if (!isSplitScreen()){
+            if (lastDoorOpen != doorOpen) {
 
-            } else {
-                if (doorOpen){
-                    binding.modely.visibility = View.VISIBLE
-                }
-                if (!doorOpen && !fadeOut.hasStarted()){
-                    binding.modely.startAnimation(fadeOut)
+                binding.modely.clearAnimation()
+                if (doorOpen && !fadeIn.hasStarted()) {
+
+                    binding.modely.startAnimation(fadeIn)
+
                 } else {
-                    if (!doorOpen){
-                        binding.modely.visibility = View.INVISIBLE
+                    if (doorOpen) {
+                        binding.modely.visibility = View.VISIBLE
+                    }
+                    if (!doorOpen && !fadeOut.hasStarted()) {
+                        binding.modely.startAnimation(fadeOut)
+                    } else {
+                        if (!doorOpen) {
+                            binding.modely.visibility = View.INVISIBLE
+                            binding.modelyCenter.visibility = View.INVISIBLE
+
+                        }
+                    }
+                }
+            }
+        } else {
+            if (lastDoorOpen != doorOpen) {
+
+                binding.modelyCenter.clearAnimation()
+                if (doorOpen && !fadeIn.hasStarted()) {
+                    binding.speed.visibility = View.INVISIBLE
+                    binding.unit.visibility = View.INVISIBLE
+                    // binding.modelyCenter.startAnimation(fadeIn)
+                    binding.modelyCenter.visibility = View.VISIBLE
+
+                } else {
+                    if (doorOpen) {
+                        binding.modelyCenter.visibility = View.VISIBLE
+                    }
+                    if (!doorOpen && !fadeOut.hasStarted()) {
+                        binding.modelyCenter.startAnimation(fadeOut)
+                        Thread.sleep(500)
+                        binding.unit.visibility = View.VISIBLE
+                    } else {
+                        if (!doorOpen) {
+                            binding.modely.visibility = View.INVISIBLE
+                            binding.modelyCenter.visibility = View.INVISIBLE
+                            binding.speed.visibility = View.VISIBLE
+                            binding.unit.visibility = View.VISIBLE
+
+                        }
                     }
                 }
             }

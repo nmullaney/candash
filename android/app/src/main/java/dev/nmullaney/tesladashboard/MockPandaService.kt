@@ -10,11 +10,11 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 class MockPandaService : PandaService {
-    private val MS_BETWEEN_REQUESTS = 2_000L
+    private val MS_BETWEEN_REQUESTS = 5_000L
     private val carStateFlow = MutableStateFlow(CarState())
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var shutdown = false
-    private var count : AtomicInteger = AtomicInteger(0)
+    private var count: AtomicInteger = AtomicInteger(0)
 
     override suspend fun startRequests() {
         withContext(pandaContext) {
@@ -34,11 +34,25 @@ class MockPandaService : PandaService {
     }
 
 
-
     override fun carState(): Flow<CarState> {
         return carStateFlow
     }
-
+    private fun mockCarStates() : List<CarState> =
+        listOf(
+            CarState(mutableMapOf(
+                Constants.autopilotHands to 4f,
+            )),
+            CarState(mutableMapOf(
+                Constants.autopilotHands to 4f,
+            )),
+            CarState(mutableMapOf(
+                Constants.autopilotHands to 1f,
+            )),
+            CarState(mutableMapOf(
+                Constants.autopilotHands to 1f,
+            )))
+}
+/*
     private fun mockCarStates() : List<CarState> =
         listOf(
             CarState(mutableMapOf(
@@ -141,3 +155,5 @@ class MockPandaService : PandaService {
                 Constants.battAmps to -200.0f
             )))
 }
+
+ */
