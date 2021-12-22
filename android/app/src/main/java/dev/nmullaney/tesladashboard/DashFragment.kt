@@ -502,36 +502,56 @@ class DashFragment : Fragment() {
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
+                val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                var bsBinding = binding.BSWarningLeft
+                if (it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)){
+                    bsBinding = binding.BSWarningLeft
+                } else if(it.getValue(Constants.blindSpotRight) in setOf(1f, 2f)){
+                    bsBinding = binding.BSWarningRight
+                }
+                if (binding.BSWarningLeft.visibility == View.VISIBLE) {
+                    bsBinding = binding.BSWarningLeft
+                } else if (binding.BSWarningRight.visibility == View.VISIBLE){
+                    bsBinding = binding.BSWarningRight
+                }
+
                 if ((it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)) or (it.getValue(
                         Constants.blindSpotRight
                     ) in setOf(1f, 2f))
                 ) {
                     var colorFrom: Int
 
-                    if (blindSpotAlertToggle == false) {
 
-                        if (forceNightMode) {
-                            colorFrom = getBackgroundColor(0)
-                        } else {
-                            colorFrom = getBackgroundColor(lastSunUp)
-                        }
-                        blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
-                        blindspotAnimation.duration = 250
-                        // milliseconds
-
-                        blindspotAnimation.addUpdateListener { animator ->
-                            binding.root.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
-                        }
-                        blindspotAnimation.repeatCount = ValueAnimator.INFINITE
-                        blindspotAnimation.repeatMode = ValueAnimator.REVERSE
-                        blindspotAnimation.start()
-
-                        blindSpotAlertToggle = true
+                    if (forceNightMode) {
+                        colorFrom = getBackgroundColor(0)
+                    } else {
+                        colorFrom = getBackgroundColor(lastSunUp)
                     }
+                    blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
+                    blindspotAnimation.duration = 250
+                    // milliseconds
+
+                    blindspotAnimation.addUpdateListener { animator ->
+                        binding.root.setBackgroundColor(
+                            animator.animatedValue as Int
+                        )
+                    }
+                    blindspotAnimation.repeatCount = ValueAnimator.INFINITE
+                    blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                    blindspotAnimation.start()
+
+
+                    bsBinding.startAnimation(bsFadeIn)
+                    bsBinding.visibility = View.VISIBLE
+
 
                 } else {
+                    if (bsBinding.visibility != View.GONE) {
+                        bsBinding.startAnimation(bsFadeOut)
+                        bsBinding.visibility = View.GONE
+
+                    }
                     blindspotAnimation.cancel()
                 }
 
