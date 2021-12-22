@@ -135,6 +135,7 @@ class DashFragment : Fragment() {
             return speed
         }
     }
+
     private fun getScreenWidth(): Int {
         var displayMetrics = DisplayMetrics()
         activity?.windowManager
@@ -153,6 +154,7 @@ class DashFragment : Fragment() {
 
         return getRealScreenWidth() > getScreenWidth() * 2
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 
@@ -165,7 +167,10 @@ class DashFragment : Fragment() {
             colorFrom = getBackgroundColor(lastSunUp)
         }
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
-        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        val bsColorTo = Color.parseColor("#FFEE0000")
+        val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+        val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
+
         // milliseconds
         if (!isSplitScreen()) {
             for (topUIView in topUIViews()) {
@@ -359,22 +364,22 @@ class DashFragment : Fragment() {
                     } else {
                         colorFrom = getBackgroundColor(lastSunUp)
                     }
-                    colorAnimation.setObjectValues( colorFrom, colorTo)
-                    colorAnimation.duration = 1000
+                    autopilotAnimation.setObjectValues(colorFrom, colorTo)
+                    autopilotAnimation.duration = 1000
 
-                    colorAnimation.addUpdateListener { animator ->
+                    autopilotAnimation.addUpdateListener { animator ->
                         binding.root.setBackgroundColor(
                             animator.animatedValue as Int
                         )
                     }
-                    colorAnimation.repeatCount = ValueAnimator.INFINITE
-                    colorAnimation.repeatMode = ValueAnimator.REVERSE
+                    autopilotAnimation.repeatCount = ValueAnimator.INFINITE
+                    autopilotAnimation.repeatMode = ValueAnimator.REVERSE
                     if (autopilotHandsToggle == false) {
                         val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
                         binding.APWarning.startAnimation(fadeInWarning)
                         binding.APWarning.visibility = View.VISIBLE
 
-                        colorAnimation.start()
+                        autopilotAnimation.start()
                         autopilotHandsToggle = true
                     } else {
                         binding.APWarning.clearAnimation()
@@ -385,14 +390,14 @@ class DashFragment : Fragment() {
                 } else {
                     if (autopilotHandsToggle == true) {
                     }
-                    colorAnimation.cancel()
+                    autopilotAnimation.cancel()
 
                     binding.APWarning.clearAnimation()
                     binding.root.clearAnimation()
                     binding.root.setBackgroundColor(colorFrom)
                     autopilotHandsToggle = false
                     val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-                    if (binding.APWarning.visibility != View.GONE){
+                    if (binding.APWarning.visibility != View.GONE) {
                         binding.APWarning.startAnimation(fadeOutWarning)
                         binding.APWarning.visibility = View.GONE
 
@@ -496,74 +501,40 @@ class DashFragment : Fragment() {
 
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
-            if (gearColorSelected != requireContext().getColor(R.color.autopilot_blue)) {
+            if (viewModel.getValue(Constants.autopilotState) != 3f) {
+                if ((it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)) or (it.getValue(
+                        Constants.blindSpotRight
+                    ) in setOf(1f, 2f))
+                ) {
+                    var colorFrom: Int
 
-                it.getValue(Constants.blindSpotLeft)?.let { blindSpotLeftVal ->
-                    val colorFrom: Int
-                    if (forceNightMode) {
-                        colorFrom = getBackgroundColor(0)
-                    } else {
-                        colorFrom = getBackgroundColor(lastSunUp)
-                    }
+                    if (blindSpotAlertToggle == false) {
 
-                    if ((blindSpotLeftVal.toInt() >= 1) and (blindSpotLeftVal.toInt() <= 2)) {
-
-                        if (blindSpotAlertToggle == false) {
-
-                            val colorTo = Color.parseColor("#FFEE0000")
-                            val colorAnimation =
-                                ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                            colorAnimation.duration = 250
-                            // milliseconds
-
-                            colorAnimation.addUpdateListener { animator ->
-                                binding.root.setBackgroundColor(
-                                    animator.animatedValue as Int
-                                )
-                            }
-                            colorAnimation.start()
-                            blindSpotAlertToggle = true
+                        if (forceNightMode) {
+                            colorFrom = getBackgroundColor(0)
                         } else {
-                            binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
-
+                            colorFrom = getBackgroundColor(lastSunUp)
                         }
-                    } else {
-                        binding.root.setBackgroundColor(colorFrom)
-                        blindSpotAlertToggle = false
-                    }
-                }
-                it.getValue(Constants.blindSpotRight)?.let { blindSpotRightVal ->
-                    val colorFrom: Int
-                    if (forceNightMode) {
-                        colorFrom = getBackgroundColor(0)
-                    } else {
-                        colorFrom = getBackgroundColor(lastSunUp)
-                    }
-                    if ((blindSpotRightVal.toInt() >= 1) and (blindSpotRightVal.toInt() <= 2)) {
-                        if (blindSpotAlertToggle == false) {
+                        blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
+                        blindspotAnimation.duration = 250
+                        // milliseconds
 
-                            val colorTo = Color.parseColor("#FFEE0000")
-                            val colorAnimation =
-                                ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                            colorAnimation.duration = 250
-                            // milliseconds
-
-                            colorAnimation.addUpdateListener { animator ->
-                                binding.root.setBackgroundColor(
-                                    animator.animatedValue as Int
-                                )
-                            }
-                            colorAnimation.start()
-                            blindSpotAlertToggle = true
-                        } else {
-                            binding.root.setBackgroundColor(Color.parseColor("#FFEE0000"))
-
+                        blindspotAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
                         }
-                    } else {
-                        binding.root.setBackgroundColor(colorFrom)
-                        blindSpotAlertToggle = false
+                        blindspotAnimation.repeatCount = ValueAnimator.INFINITE
+                        blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                        blindspotAnimation.start()
+
+                        blindSpotAlertToggle = true
                     }
+
+                } else {
+                    blindspotAnimation.cancel()
                 }
+
             }
             if (gearState != Constants.gearPark) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
@@ -608,11 +579,11 @@ class DashFragment : Fragment() {
             (viewModel.getValue(Constants.frontLeftDoorState) == 1f) or
             (viewModel.getValue(Constants.frontRightDoorState) == 1f) or
             (viewModel.getValue(Constants.rearLeftDoorState) == 1f) or
-            (viewModel.getValue(Constants.rearRightDoorState) == 1f)){
+            (viewModel.getValue(Constants.rearRightDoorState) == 1f)
+        ) {
             updateCarStateUI(true)
             Thread.sleep(500)
-        }
-        else {
+        } else {
             updateCarStateUI(false)
         }
         if (!isSplitScreen()) {
@@ -814,7 +785,7 @@ class DashFragment : Fragment() {
     fun updateCarStateUI(doorOpen: Boolean) {
         val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
         val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-        if (!isSplitScreen()){
+        if (!isSplitScreen()) {
             if (lastDoorOpen != doorOpen) {
 
                 binding.modely.clearAnimation()
