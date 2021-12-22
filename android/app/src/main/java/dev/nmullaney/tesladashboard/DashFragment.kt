@@ -44,16 +44,11 @@ class DashFragment : Fragment() {
 
     private lateinit var viewModel: DashViewModel
 
-    private var rearLeftVehDetected: Int = 500
-    private var rearRightVehDetected: Int = 500
-    private var leftVehDetected: Int = 500
-    private var rightVehDetected: Int = 500
+
     private var gearColor: Int = Color.parseColor("#FFEEEEEE")
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 0
-    private var lastDoorOpen: Boolean = false
     private var autopilotHandsToggle: Boolean = false
-    private var blindSpotAlertToggle: Boolean = false
     private var lastSunUp: Int = 1
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
@@ -68,7 +63,6 @@ class DashFragment : Fragment() {
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
-    private var vehicleSpeed: Int = 0
 
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
     val Int.dp: Int
@@ -400,7 +394,6 @@ class DashFragment : Fragment() {
                     if (binding.APWarning.visibility != View.GONE) {
                         binding.APWarning.startAnimation(fadeOutWarning)
                         binding.APWarning.visibility = View.GONE
-
                     }
 
                 }
@@ -410,8 +403,7 @@ class DashFragment : Fragment() {
 
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
                 var sensingSpeedLimit = 35
-                binding.unit.visibility = View.VISIBLE
-                binding.speed.visibility = View.VISIBLE
+
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
 
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f) {
@@ -505,14 +497,21 @@ class DashFragment : Fragment() {
                 val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
                 val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 var bsBinding = binding.BSWarningLeft
-                if (it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)){
+                var colorFrom: Int
+                colorFrom = getBackgroundColor(1)
+                if (forceNightMode) {
+                    colorFrom = getBackgroundColor(0)
+                } else if (viewModel.getValue(Constants.isSunUp) != null) {
+                    colorFrom = getBackgroundColor(viewModel.getValue(Constants.isSunUp)!!.toInt())
+                }
+                if (it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)) {
                     bsBinding = binding.BSWarningLeft
-                } else if(it.getValue(Constants.blindSpotRight) in setOf(1f, 2f)){
+                } else if (it.getValue(Constants.blindSpotRight) in setOf(1f, 2f)) {
                     bsBinding = binding.BSWarningRight
                 }
                 if (binding.BSWarningLeft.visibility == View.VISIBLE) {
                     bsBinding = binding.BSWarningLeft
-                } else if (binding.BSWarningRight.visibility == View.VISIBLE){
+                } else if (binding.BSWarningRight.visibility == View.VISIBLE) {
                     bsBinding = binding.BSWarningRight
                 }
 
@@ -520,14 +519,7 @@ class DashFragment : Fragment() {
                         Constants.blindSpotRight
                     ) in setOf(1f, 2f))
                 ) {
-                    var colorFrom: Int
 
-
-                    if (forceNightMode) {
-                        colorFrom = getBackgroundColor(0)
-                    } else {
-                        colorFrom = getBackgroundColor(lastSunUp)
-                    }
                     blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
                     blindspotAnimation.duration = 250
                     // milliseconds
@@ -553,6 +545,7 @@ class DashFragment : Fragment() {
 
                     }
                     blindspotAnimation.cancel()
+                    binding.root.setBackgroundColor(colorFrom)
                 }
 
             }
@@ -593,24 +586,31 @@ class DashFragment : Fragment() {
 
     fun processDoors() {
 
-        var doorOpen = false
-        if ((viewModel.getValue(Constants.liftgateState) == 1f) or
-            (viewModel.getValue(Constants.frunkState) == 1f) or
-            (viewModel.getValue(Constants.frontLeftDoorState) == 1f) or
-            (viewModel.getValue(Constants.frontRightDoorState) == 1f) or
-            (viewModel.getValue(Constants.rearLeftDoorState) == 1f) or
-            (viewModel.getValue(Constants.rearRightDoorState) == 1f)
+        if ((viewModel.getValue(Constants.liftgateState) in setOf(1f, 4f)) or
+            (viewModel.getValue(Constants.frunkState) in setOf(1f, 4f)) or
+            (viewModel.getValue(Constants.frontLeftDoorState) in setOf(1f, 4f)) or
+            (viewModel.getValue(Constants.frontRightDoorState) in setOf(1f, 4f)) or
+            (viewModel.getValue(Constants.rearLeftDoorState) in setOf(1f, 4f)) or
+            (viewModel.getValue(Constants.rearRightDoorState) in setOf(1f, 4f))
         ) {
             updateCarStateUI(true)
-            Thread.sleep(500)
-        } else {
-            updateCarStateUI(false)
-        }
+        } else if ((viewModel.getValue(Constants.liftgateState) == 2f) and
+            (viewModel.getValue(Constants.frunkState) == 2f) and
+            (viewModel.getValue(Constants.frontLeftDoorState) == 2f) and
+            (viewModel.getValue(Constants.frontRightDoorState) == 2f) and
+            (viewModel.getValue(Constants.rearLeftDoorState) == 2f) and
+            (viewModel.getValue(Constants.rearRightDoorState) == 2f))
+            {
+                updateCarStateUI(false)
+
+            }
+    }
+
+    fun displayOpenDoors() {
         if (!isSplitScreen()) {
             viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
-                if (liftgateVal.toInt() == 1) {
+                if (liftgateVal.toInt() in setOf(1,4)) {
                     binding.hatch.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.hatch.visibility = View.GONE
                 }
@@ -619,9 +619,8 @@ class DashFragment : Fragment() {
 
             viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
 
-                if (frunkVal.toInt() == 1) {
+                if (frunkVal.toInt() in setOf(1,4)) {
                     binding.hood.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.hood.visibility = View.GONE
                 }
@@ -630,9 +629,8 @@ class DashFragment : Fragment() {
 
             viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
 
-                if (frontLeftDoorVal.toInt() == 1) {
+                if (frontLeftDoorVal.toInt() in setOf(1,4)) {
                     binding.frontleftdoor.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.frontleftdoor.visibility = View.GONE
                 }
@@ -640,9 +638,8 @@ class DashFragment : Fragment() {
             }
             viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
 
-                if (frontRightDoorVal.toInt() == 1) {
+                if (frontRightDoorVal.toInt() in setOf(1,4)) {
                     binding.frontrightdoor.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.frontrightdoor.visibility = View.GONE
                 }
@@ -650,9 +647,8 @@ class DashFragment : Fragment() {
             }
             viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
 
-                if (rearLeftDoorVal.toInt() == 1) {
+                if (rearLeftDoorVal.toInt() in setOf(1,4)) {
                     binding.rearleftdoor.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.rearleftdoor.visibility = View.GONE
                 }
@@ -660,9 +656,8 @@ class DashFragment : Fragment() {
             }
             viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
 
-                if (rearRightDoorVal.toInt() == 1) {
+                if (rearRightDoorVal.toInt() in setOf(1,4)) {
                     binding.rearrightdoor.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.rearrightdoor.visibility = View.GONE
                 }
@@ -670,9 +665,8 @@ class DashFragment : Fragment() {
             }
         } else {
             viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
-                if (liftgateVal.toInt() == 1) {
+                if (liftgateVal.toInt() in setOf(1,4)) {
                     binding.hatchCenter.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.hatchCenter.visibility = View.GONE
                 }
@@ -681,9 +675,8 @@ class DashFragment : Fragment() {
 
             viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
 
-                if (frunkVal.toInt() == 1) {
+                if (frunkVal.toInt() in setOf(1,4)) {
                     binding.hoodCenter.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.hoodCenter.visibility = View.GONE
                 }
@@ -692,9 +685,8 @@ class DashFragment : Fragment() {
 
             viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
 
-                if (frontLeftDoorVal.toInt() == 1) {
+                if (frontLeftDoorVal.toInt() in setOf(1,4)) {
                     binding.frontleftdoorCenter.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.frontleftdoorCenter.visibility = View.GONE
                 }
@@ -702,9 +694,8 @@ class DashFragment : Fragment() {
             }
             viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
 
-                if (frontRightDoorVal.toInt() == 1) {
+                if (frontRightDoorVal.toInt() in setOf(1,4)) {
                     binding.frontrightdoorCenter.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.frontrightdoorCenter.visibility = View.GONE
                 }
@@ -712,9 +703,8 @@ class DashFragment : Fragment() {
             }
             viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
 
-                if (rearLeftDoorVal.toInt() == 1) {
+                if (rearLeftDoorVal.toInt() in setOf(1,4)) {
                     binding.rearleftdoorCenter.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.rearleftdoorCenter.visibility = View.GONE
                 }
@@ -722,16 +712,14 @@ class DashFragment : Fragment() {
             }
             viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
 
-                if (rearRightDoorVal.toInt() == 1) {
+                if (rearRightDoorVal.toInt() in setOf(1,4)) {
                     binding.rearrightdoorCenter.visibility = View.VISIBLE
-                    doorOpen = true
                 } else {
                     binding.rearrightdoorCenter.visibility = View.GONE
                 }
 
             }
         }
-        updateCarStateUI(doorOpen)
     }
 
     fun setColors(sunUpVal: Int) {
@@ -805,60 +793,109 @@ class DashFragment : Fragment() {
     fun updateCarStateUI(doorOpen: Boolean) {
         val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
         val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+        val fadeInCenter = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+
+        fadeIn.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                binding.modely.visibility = View.VISIBLE
+
+                displayOpenDoors()
+
+
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+        })
+
+        fadeInCenter.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                binding.modelyCenter.visibility = View.VISIBLE
+
+                displayOpenDoors()
+
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+        })
+
+
+        fadeOut.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                displayOpenDoors()
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+        })
         if (!isSplitScreen()) {
-            if (lastDoorOpen != doorOpen) {
+            binding.modely.clearAnimation()
+            if (doorOpen && !fadeIn.hasStarted() && binding.modely.visibility != View.VISIBLE) {
 
-                binding.modely.clearAnimation()
-                if (doorOpen && !fadeIn.hasStarted()) {
+                binding.modely.startAnimation(fadeIn)
 
-                    binding.modely.startAnimation(fadeIn)
-
-                } else {
-                    if (doorOpen) {
-                        binding.modely.visibility = View.VISIBLE
-                    }
-                    if (!doorOpen && !fadeOut.hasStarted()) {
-                        binding.modely.startAnimation(fadeOut)
-                    } else {
-                        if (!doorOpen) {
-                            binding.modely.visibility = View.INVISIBLE
-                            binding.modelyCenter.visibility = View.INVISIBLE
-
-                        }
-                    }
+            } else {
+                if (doorOpen) {
+                    binding.modely.visibility = View.VISIBLE
                 }
-            }
-        } else {
-            if (lastDoorOpen != doorOpen) {
-
-                binding.modelyCenter.clearAnimation()
-                if (doorOpen && !fadeIn.hasStarted()) {
-                    binding.speed.visibility = View.INVISIBLE
-                    binding.unit.visibility = View.INVISIBLE
-                    // binding.modelyCenter.startAnimation(fadeIn)
-                    binding.modelyCenter.visibility = View.VISIBLE
-
+                if (!doorOpen && !fadeOut.hasStarted() && (binding.modely.visibility == View.VISIBLE)) {
+                    binding.modely.startAnimation(fadeOut)
+                    binding.modely.visibility = View.INVISIBLE
+                    binding.modelyCenter.visibility = View.INVISIBLE
+                    binding.speed.visibility = View.VISIBLE
+                    binding.unit.visibility = View.VISIBLE
                 } else {
-                    if (doorOpen) {
-                        binding.modelyCenter.visibility = View.VISIBLE
-                    }
-                    if (!doorOpen && !fadeOut.hasStarted()) {
-                        binding.modelyCenter.startAnimation(fadeOut)
-                        Thread.sleep(500)
+                    if (!doorOpen) {
+                        binding.modely.visibility = View.INVISIBLE
+                        // in case split screen is turned off while door open
+                        binding.modelyCenter.visibility = View.INVISIBLE
+                        binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
-                    } else {
-                        if (!doorOpen) {
-                            binding.modely.visibility = View.INVISIBLE
-                            binding.modelyCenter.visibility = View.INVISIBLE
-                            binding.speed.visibility = View.VISIBLE
-                            binding.unit.visibility = View.VISIBLE
-
-                        }
                     }
                 }
             }
+
+        } else {
+      binding.modelyCenter.clearAnimation()
+            if (doorOpen && !fadeIn.hasStarted() && binding.modelyCenter.visibility != View.VISIBLE) {
+
+                binding.speed.visibility = View.INVISIBLE
+                binding.unit.visibility = View.INVISIBLE
+                binding.modelyCenter.startAnimation(fadeInCenter)
+
+            } else {
+                if (doorOpen) {
+                    binding.modelyCenter.visibility = View.VISIBLE
+                }
+                if (!doorOpen && !fadeOut.hasStarted() && (binding.modelyCenter.visibility == View.VISIBLE)) {
+                    binding.modelyCenter.startAnimation(fadeOut)
+                    binding.unit.visibility = View.VISIBLE
+                    binding.modely.visibility = View.INVISIBLE
+                    binding.modelyCenter.visibility = View.INVISIBLE
+                    binding.speed.visibility = View.VISIBLE
+                    binding.unit.visibility = View.VISIBLE
+                } else {
+                    if (!doorOpen) {
+                        binding.modely.visibility = View.INVISIBLE
+                        binding.modelyCenter.visibility = View.INVISIBLE
+                        binding.speed.visibility = View.VISIBLE
+                        binding.unit.visibility = View.VISIBLE
+
+                    }
+                }
+            }
+
         }
-        lastDoorOpen = doorOpen
     }
 
     fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
