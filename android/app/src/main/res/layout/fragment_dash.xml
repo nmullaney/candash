@@ -288,6 +288,7 @@
         app:layout_constraintWidth_percent=".4" />
 
 
+
     <ImageView
         android:id="@+id/frontleftdoor"
         android:layout_width="0dp"
@@ -366,6 +367,109 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
+
+    <ImageView
+        android:id="@+id/modely_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_modely"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6"
+        />
+
+
+    <ImageView
+        android:id="@+id/frontleftdoor_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_frontleftdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6" />
+
+    <ImageView
+        android:id="@+id/frontrightdoor_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_frontrightdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6" />
+
+    <ImageView
+        android:id="@+id/rearleftdoor_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_rearleftdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6"
+        />
+
+    <ImageView
+        android:id="@+id/rearrightdoor_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_rearrightdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6"
+        />
+
+    <ImageView
+        android:id="@+id/hatch_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_hatch"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6"
+        />
+    <ImageView
+        android:id="@+id/hood_center"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_hood"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5"
+        app:layout_constraintHeight_percent=".6"
+        /> />
 
     <ImageView
         android:id="@+id/blind_spot_left_1"
