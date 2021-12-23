@@ -3,8 +3,10 @@ package dev.nmullaney.tesladashboard
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.app.ActionBar
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
@@ -63,6 +65,8 @@ class DashFragment : Fragment() {
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
+    private lateinit var prefs : SharedPreferences
+
 
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
     val Int.dp: Int
@@ -85,7 +89,7 @@ class DashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashBinding.inflate(inflater, container, false)
-
+        prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         return binding.root
     }
 
@@ -105,7 +109,24 @@ class DashFragment : Fragment() {
             else -> requireContext().getColor(R.color.night_background)
         }
     }
-
+    private fun setPref(name: String, value:Float){
+        with (prefs.edit()){
+            putFloat(name, value)
+            apply()
+        }
+    }
+    private fun setBooleanPref(name:String, value:Boolean){
+        with (prefs.edit()){
+            putBoolean(name, value)
+            apply()
+        }
+    }
+    private fun getPref(name:String) : Float {
+        return prefs.getFloat(name, 0f)
+    }
+    private fun getBooleanPref(name:String) : Boolean {
+        return prefs.getBoolean(name, false)
+    }
     private fun hideSystemBars(window: Window) {
         val windowInsetsController =
             ViewCompat.getWindowInsetsController(window?.decorView) ?: return
@@ -114,20 +135,6 @@ class DashFragment : Fragment() {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         // Hide both the status bar and the navigation bar
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-    }
-
-    private fun getSpeed(speed: Float): Float {
-        var units = 0f
-        viewModel.getValue(Constants.uiSpeedUnits)?.let {
-            units = it.toFloat()
-        }
-        if (units == 0f) {
-            // mph
-            return speed.mph
-        } else {
-            // vehicle speed is in kph
-            return speed
-        }
     }
 
     private fun getScreenWidth(): Int {
@@ -151,7 +158,7 @@ class DashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
+        prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
         var colorFrom: Int
@@ -172,8 +179,7 @@ class DashFragment : Fragment() {
                     ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
             }
         }
-        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-        val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
@@ -203,13 +209,15 @@ class DashFragment : Fragment() {
             HRSPRS = !HRSPRS
         }
         binding.minpower.setOnClickListener {
-            minPower = 0f
+            setPref("minPower", 0f)
         }
         binding.maxpower.setOnClickListener {
-            maxPower = 0f
+            setPref("maxPower", 0f)
         }
-        binding.speed.setOnClickListener {
-            forceNightMode = !forceNightMode
+        binding.speed.setOnLongClickListener {
+            setBooleanPref("forceNightMode", !forceNightMode)
+            forceNightMode = getBooleanPref("forceNightMode")
+            return@setOnLongClickListener true
         }
 
         viewModel.getSplitScreen().observe(viewLifecycleOwner) {
@@ -282,19 +290,19 @@ class DashFragment : Fragment() {
             }
 
             power = (battAmps * battVolts)
-            if (power > maxPower) maxPower = power
-            if (power < minPower) minPower = power
+            if (power > getPref("maxPower")) setPref("maxPower", power)
+            if (power < getPref("minPower")) setPref("minPower", power)
             //binding.power.text = "%.2f".format(power)
 
             if (!HRSPRS) {
                 binding.power.text = formatWatts(power)
-                binding.minpower.text = formatWatts(minPower)
-                binding.maxpower.text = formatWatts(maxPower)
+                binding.minpower.text = formatWatts(getPref("minPower"))
+                binding.maxpower.text = formatWatts(getPref("maxPower"))
 
             } else {
                 binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
-                binding.minpower.text = (minPower * 0.00134102).toInt().toString() + " hp"
-                binding.maxpower.text = (maxPower * 0.00134102).toInt().toString() + " hp"
+                binding.minpower.text = (getPref("maxPower") * 0.00134102).toInt().toString() + " hp"
+                binding.maxpower.text = (getPref("maxPower") * 0.00134102).toInt().toString() + " hp"
 
             }
             if (power >= 0) {
@@ -594,6 +602,7 @@ class DashFragment : Fragment() {
             (viewModel.getValue(Constants.rearRightDoorState) in setOf(1f, 4f))
         ) {
             updateCarStateUI(true)
+            displayOpenDoors()
         } else if ((viewModel.getValue(Constants.liftgateState) == 2f) and
             (viewModel.getValue(Constants.frunkState) == 2f) and
             (viewModel.getValue(Constants.frontLeftDoorState) == 2f) and
@@ -601,8 +610,8 @@ class DashFragment : Fragment() {
             (viewModel.getValue(Constants.rearLeftDoorState) == 2f) and
             (viewModel.getValue(Constants.rearRightDoorState) == 2f))
             {
+                displayOpenDoors()
                 updateCarStateUI(false)
-
             }
     }
 
@@ -665,7 +674,7 @@ class DashFragment : Fragment() {
             }
         } else {
             viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
-                if (liftgateVal.toInt() in setOf(1,4)) {
+                if (liftgateVal.toInt() in setOf(1,3)) {
                     binding.hatchCenter.visibility = View.VISIBLE
                 } else {
                     binding.hatchCenter.visibility = View.GONE
@@ -802,7 +811,6 @@ class DashFragment : Fragment() {
             override fun onAnimationEnd(animation: Animation?) {
                 binding.modely.visibility = View.VISIBLE
 
-                displayOpenDoors()
 
 
             }
@@ -818,7 +826,6 @@ class DashFragment : Fragment() {
             override fun onAnimationEnd(animation: Animation?) {
                 binding.modelyCenter.visibility = View.VISIBLE
 
-                displayOpenDoors()
 
             }
 
@@ -829,7 +836,6 @@ class DashFragment : Fragment() {
 
         fadeOut.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
-                displayOpenDoors()
             }
 
             override fun onAnimationEnd(animation: Animation?) {
