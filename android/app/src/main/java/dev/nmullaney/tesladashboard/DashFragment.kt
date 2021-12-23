@@ -127,15 +127,6 @@ class DashFragment : Fragment() {
     private fun getBooleanPref(name:String) : Boolean {
         return prefs.getBoolean(name, false)
     }
-    private fun hideSystemBars(window: Window) {
-        val windowInsetsController =
-            ViewCompat.getWindowInsetsController(window?.decorView) ?: return
-        // Configure the behavior of the hidden system bars
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        // Hide both the status bar and the navigation bar
-        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-    }
 
     private fun getScreenWidth(): Int {
         var displayMetrics = DisplayMetrics()
@@ -210,8 +201,14 @@ class DashFragment : Fragment() {
         }
 
         binding.power.setOnLongClickListener {
-            binding.maxpower.visibility = View.GONE
-            binding.minpower.visibility = View.GONE
+            if (getBooleanPref("showMaxMinPower")){
+                binding.maxpower.visibility = View.GONE
+                binding.minpower.visibility = View.GONE
+            } else {
+                binding.maxpower.visibility = View.VISIBLE
+                binding.minpower.visibility = View.VISIBLE
+            }
+            setBooleanPref("showMaxMinPower", !getBooleanPref("showMaxMinPower"))
             return@setOnLongClickListener true
         }
         binding.minpower.setOnClickListener {
@@ -307,7 +304,7 @@ class DashFragment : Fragment() {
 
             } else {
                 binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
-                binding.minpower.text = (getPref("maxPower") * 0.00134102).toInt().toString() + " hp"
+                binding.minpower.text = (getPref("minPower") * 0.00134102).toInt().toString() + " hp"
                 binding.maxpower.text = (getPref("maxPower") * 0.00134102).toInt().toString() + " hp"
 
             }
