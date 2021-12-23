@@ -167,6 +167,7 @@ class DashFragment : Fragment() {
         } else {
             colorFrom = getBackgroundColor(lastSunUp)
         }
+        HRSPRS = getBooleanPref("HRSPRS")
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
         val bsColorTo = Color.parseColor("#FFEE0000")
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
@@ -204,9 +205,14 @@ class DashFragment : Fragment() {
         }
 
         binding.power.setOnClickListener {
-            Log.d(TAG, "HRSPRS: " + HRSPRS.toString())
 
-            HRSPRS = !HRSPRS
+            setBooleanPref("HRSPRS", !getBooleanPref("HRSPRS"))
+        }
+
+        binding.power.setOnLongClickListener {
+            binding.maxpower.visibility = View.GONE
+            binding.minpower.visibility = View.GONE
+            return@setOnLongClickListener true
         }
         binding.minpower.setOnClickListener {
             setPref("minPower", 0f)
@@ -294,7 +300,7 @@ class DashFragment : Fragment() {
             if (power < getPref("minPower")) setPref("minPower", power)
             //binding.power.text = "%.2f".format(power)
 
-            if (!HRSPRS) {
+            if (!getBooleanPref("HRSPRS")) {
                 binding.power.text = formatWatts(power)
                 binding.minpower.text = formatWatts(getPref("minPower"))
                 binding.maxpower.text = formatWatts(getPref("maxPower"))
