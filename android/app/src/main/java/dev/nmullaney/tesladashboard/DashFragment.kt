@@ -2,35 +2,24 @@ package dev.nmullaney.tesladashboard
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.app.ActionBar
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
-import android.os.BatteryManager
+
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import dev.nmullaney.tesladashboard.databinding.FragmentDashBinding
 import kotlin.math.abs
@@ -38,9 +27,6 @@ import kotlin.math.pow
 
 
 class DashFragment : Fragment() {
-
-    private val TAG = DashViewModel::class.java.simpleName
-
 
     private lateinit var binding: FragmentDashBinding
 
@@ -51,14 +37,12 @@ class DashFragment : Fragment() {
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 0
     private var autopilotHandsToggle: Boolean = false
-    private var lastSunUp: Int = 1
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
     private var battAmps: Float = 0f
     private var battVolts: Float = 0f
-    private var minPower: Float = 0f
-    private var maxPower: Float = 0f
+
     private var HRSPRS: Boolean = false
     private var maxVehiclePower: Int = 350000
     private var forceNightMode: Boolean = false
@@ -100,7 +84,11 @@ class DashFragment : Fragment() {
             binding.deadbattery,
             binding.fullbattery,
             binding.leftTurnSignal,
-            binding.rightTurnSignal
+            binding.rightTurnSignal,
+            binding.leftTurnSignalLight,
+            binding.leftTurnSignalDark,
+            binding.rightTurnSignalLight,
+            binding.rightTurnSignalDark
         )
 
     fun getBackgroundColor(sunUpVal: Int): Int {
@@ -129,7 +117,7 @@ class DashFragment : Fragment() {
     }
 
     private fun getScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
+        val displayMetrics = DisplayMetrics()
         activity?.windowManager
             ?.defaultDisplay?.getMetrics(displayMetrics)
         return displayMetrics.widthPixels
@@ -147,6 +135,14 @@ class DashFragment : Fragment() {
         return getRealScreenWidth() > getScreenWidth() * 2
     }
 
+    private fun isSunUp(viewModel: DashViewModel):Int{
+        if(viewModel.getValue(Constants.isSunUp) != null){
+            return viewModel.getValue(Constants.isSunUp)!!.toInt()
+        } else {
+            return 0
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
@@ -156,7 +152,7 @@ class DashFragment : Fragment() {
         if (forceNightMode) {
             colorFrom = getBackgroundColor(0)
         } else {
-            colorFrom = getBackgroundColor(lastSunUp)
+            colorFrom = getBackgroundColor(isSunUp(viewModel))
         }
         HRSPRS = getBooleanPref("HRSPRS")
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
@@ -239,8 +235,8 @@ class DashFragment : Fragment() {
                         wm?.addView(window?.getDecorView(), window?.getAttributes());
                     }
                     for (topUIView in topUIViews()) {
-                        var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
-                        var savedParams = savedLayoutParams[topUIView]
+                        val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                        val savedParams = savedLayoutParams[topUIView]
                         params.setMargins(
                             savedParams!!.leftMargin,
                             savedParams.topMargin + 24.px,
@@ -320,7 +316,7 @@ class DashFragment : Fragment() {
             viewModel.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
-                } else if (lastSunUp == 1 && !forceNightMode) {
+                } else if (isSunUp(viewModel) == 1 && !forceNightMode) {
                     gearColorSelected = Color.DKGRAY
                 } else {
                     gearColorSelected = Color.LTGRAY
@@ -358,7 +354,12 @@ class DashFragment : Fragment() {
                 binding.PRND.text = (ss)
             }
 
-
+            it.getValue(Constants.frontTorque)?.let{
+                binding.fronttorque.text = it.toInt().toString()
+            }
+            it.getValue(Constants.rearTorque)?.let{
+                binding.reartorque.text = it.toInt().toString()
+            }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
 
                 //TODO: change colors to autopilot_blue constant
@@ -367,7 +368,7 @@ class DashFragment : Fragment() {
                     if (forceNightMode) {
                         colorFrom = getBackgroundColor(0)
                     } else {
-                        colorFrom = getBackgroundColor(lastSunUp)
+                        colorFrom = getBackgroundColor(isSunUp(viewModel))
                     }
                     autopilotAnimation.setObjectValues(colorFrom, colorTo)
                     autopilotAnimation.duration = 1000
@@ -393,8 +394,7 @@ class DashFragment : Fragment() {
 
                     }
                 } else {
-                    if (autopilotHandsToggle == true) {
-                    }
+
                     autopilotAnimation.cancel()
 
                     binding.APWarning.clearAnimation()
@@ -502,6 +502,39 @@ class DashFragment : Fragment() {
                 }
             }
 
+
+
+
+/*
+            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
+                if (leftTurnSignalVal.toInt() > 0) {
+                    binding.leftTurnSignalDark.visibility = View.VISIBLE
+                } else {
+                    binding.leftTurnSignalDark.visibility = View.INVISIBLE
+                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                }
+                if (leftTurnSignalVal.toInt() > 1) {
+                    binding.leftTurnSignalLight.visibility = View.VISIBLE
+                } else {
+                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                }
+            }
+            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
+                if (rightTurnSignalVal.toInt() > 0) {
+                    binding.rightTurnSignalDark.visibility = View.VISIBLE
+                } else {
+                    binding.rightTurnSignalDark.visibility = View.INVISIBLE
+                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                }
+
+                if (rightTurnSignalVal.toInt() > 1) {
+                    binding.rightTurnSignalLight.visibility = View.VISIBLE
+                } else {
+                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                }
+            }
+
+ */
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
@@ -758,6 +791,13 @@ class DashFragment : Fragment() {
             binding.power.setTextColor(Color.WHITE)
             binding.minpower.setTextColor(Color.WHITE)
             binding.maxpower.setTextColor(Color.WHITE)
+            binding.fronttorque.setTextColor(Color.WHITE)
+            binding.fronttorquelabel.setTextColor(Color.WHITE)
+            binding.fronttorqueunits.setTextColor(Color.WHITE)
+
+            binding.reartorque.setTextColor(Color.WHITE)
+            binding.reartorquelabel.setTextColor(Color.WHITE)
+            binding.reartorqueunits.setTextColor(Color.WHITE)
 
             //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
@@ -783,12 +823,19 @@ class DashFragment : Fragment() {
             binding.power.setTextColor(Color.DKGRAY)
             binding.minpower.setTextColor(Color.DKGRAY)
             binding.maxpower.setTextColor(Color.DKGRAY)
+            binding.fronttorque.setTextColor(Color.DKGRAY)
+            binding.fronttorquelabel.setTextColor(Color.DKGRAY)
+            binding.fronttorqueunits.setTextColor(Color.DKGRAY)
+
+            binding.reartorque.setTextColor(Color.DKGRAY)
+            binding.reartorquelabel.setTextColor(Color.DKGRAY)
+            binding.reartorqueunits.setTextColor(Color.DKGRAY)
+
             //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
         }
         val wm = activity?.windowManager
 
-        lastSunUp = sunUpVal
     }
 
     fun formatWatts(power: Float): String {

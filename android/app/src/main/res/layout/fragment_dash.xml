@@ -644,7 +644,147 @@
         app:layout_constraintStart_toEndOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
         android:src="@drawable/ic_bsr2_big" />
+    <TextView
+        android:id="@+id/fronttorquelabel"
 
+        android:layout_height="20dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="left|bottom"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratbold"
+        android:fontFeatureSettings="tnum"
+        android:text="Front TQ"
+        android:paddingRight="0dp"
+
+        app:layout_constraintBottom_toTopOf="@id/fronttorque"
+        app:layout_constraintEnd_toEndOf="@id/guideline2" />
+    <TextView
+        android:id="@+id/fronttorque"
+
+        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="0dp"
+
+        android:gravity="left|center"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratregular"
+        android:fontFeatureSettings="tnum"
+
+        android:text="50"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline1"
+        app:layout_constraintStart_toStartOf="@id/fronttorquelabel"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"/>
+    <TextView
+        android:id="@+id/fronttorqueunits"
+
+        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="0dp"
+
+        android:gravity="left|top"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratbold"
+        android:fontFeatureSettings="tnum"
+        android:text="nM"
+        android:textSize="25sp"
+
+        android:paddingLeft="10dp"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintBottom_toBottomOf="@id/guideline1"
+        />
+    <TextView
+        android:id="@+id/reartorquelabel"
+
+        android:layout_height="20dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="0dp"
+
+        android:gravity="left|top"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratbold"
+        android:fontFeatureSettings="tnum"
+        android:text="Rear TQ"
+        android:paddingRight="0dp"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintTop_toBottomOf="@id/guideline1"
+        app:layout_constraintStart_toStartOf="@id/fronttorque"
+/>
+    <TextView
+        android:id="@+id/reartorqueunits"
+
+        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+
+        android:gravity="center"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratbold"
+        android:fontFeatureSettings="tnum"
+        android:text="nM"
+        android:textSize="20sp"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintCircle="@id/reartorquegauge"
+        app:layout_constraintCircleRadius="0dp"
+        />
+
+    <dev.nmullaney.tesladashboard.CircularGauge
+        android:id="@+id/reartorquegauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+
+        android:gravity="center"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratbold"
+        android:fontFeatureSettings="tnum"
+        android:text="nM"
+
+        android:paddingTop="0dp"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/guideline1"
+        />
+    <TextView
+        android:id="@+id/reartorque"
+
+        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="0dp"
+        
+        android:gravity="left|top"
+        android:textStyle="bold"
+        android:fontFamily="@font/montserratregular"
+        android:fontFeatureSettings="tnum"
+        android:text="50"
+        android:textSize="18sp"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/reartorquelabel"
+        app:layout_constraintTop_toBottomOf="@id/reartorquelabel"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline1"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline2"
+        android:orientation="vertical"
+
+        app:layout_constraintGuide_percent=".80"/>
 
     <dev.nmullaney.tesladashboard.LinearGauge
         android:id="@+id/power_bar"
