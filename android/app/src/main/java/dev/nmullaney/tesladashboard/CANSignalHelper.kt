@@ -80,6 +80,9 @@ class CANSignalHelper {
         insertCANSignal(Constants.rearLeftDoorState, 0, Hex(0x102), 4, 4, 1f, 0f)
         insertCANSignal(Constants.rearRightDoorState, 0, Hex(0x103), 4, 4, 1f, 0f)
         insertCANSignal(Constants.steeringAngle, 0, Hex(0x129), 16, 14, .1f, -819.2f)
+        insertCANSignal(Constants.frontTorque, 0, Hex(0x1D5), 8, 13, .222f, 0f, signed = true)
+        insertCANSignal(Constants.rearTorque, 0, Hex(0x1D8), 8, 13, .222f, 0f, signed = true)
+
 
 
 

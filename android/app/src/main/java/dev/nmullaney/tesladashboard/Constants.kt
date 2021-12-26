@@ -50,4 +50,6 @@ object Constants {
     const val maxDischargePower = "maxDischargePower"
     const val maxRegenPower = "maxRegenPower"
     const val maxHeatPower = "maxHeatPower"
+    const val frontTorque = "frontTorque"
+    const val rearTorque = "rearTorque"
 }
