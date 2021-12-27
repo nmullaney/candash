@@ -305,9 +305,9 @@ class DashFragment : Fragment() {
 
             }
             if (power >= 0) {
-                binding.powerBar.setGauge(((power / maxVehiclePower).pow(0.7f)))
+                binding.powerBar.setGauge(((power / getPref("maxPower")).pow(0.7f)))
             } else {
-                binding.powerBar.setGauge(-((abs(power) / maxVehiclePower).pow(0.7f)))
+                binding.powerBar.setGauge(-((abs(power) / getPref("maxPower")).pow(0.7f)))
             }
 
             binding.powerBar.invalidate()
@@ -355,10 +355,29 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.frontTorque)?.let{
-                binding.fronttorque.text = it.toInt().toString()
+                var frontTorqueVal = it.toFloat()
+                if ((viewModel.getValue(Constants.gearSelected)?.toInt() == Constants.gearReverse)){
+                    frontTorqueVal = abs(frontTorqueVal)
+                }
+                    
+                binding.fronttorque.text = frontTorqueVal.toInt().toString()
+                if (abs(getPref("frontTorqueMax")) < frontTorqueVal.toFloat()){
+                    setPref("frontTorqueMax", abs(frontTorqueVal.toFloat()))
+                }
+                binding.fronttorquegauge.setGauge(frontTorqueVal.toFloat()/getPref("frontTorqueMax"))
+                binding.fronttorquegauge.invalidate()
             }
             it.getValue(Constants.rearTorque)?.let{
-                binding.reartorque.text = it.toInt().toString()
+                var rearTorqueVal = it.toFloat()
+                if ((viewModel.getValue(Constants.gearSelected)?.toInt() == Constants.gearReverse)){
+                    rearTorqueVal = abs(rearTorqueVal)
+                }
+                binding.reartorque.text = rearTorqueVal.toInt().toString()
+                if (abs(getPref("rearTorqueMax")) < rearTorqueVal.toFloat()){
+                    setPref("rearTorqueMax", abs(rearTorqueVal.toFloat()))
+                }
+                binding.reartorquegauge.setGauge(rearTorqueVal.toFloat()/getPref("rearTorqueMax"))
+                binding.reartorquegauge.invalidate()
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
 
@@ -775,6 +794,8 @@ class DashFragment : Fragment() {
 
             binding.powerBar.setDayValue(0)
             binding.fullbattery.setDayValue(0)
+            binding.fronttorquegauge.setDayValue(0)
+            binding.reartorquegauge.setDayValue(0)
             //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
@@ -805,13 +826,14 @@ class DashFragment : Fragment() {
         } else {
             binding.powerBar.setDayValue(1)
             binding.fullbattery.setDayValue(1)
-
+            binding.fronttorquegauge.setDayValue(1)
+            binding.reartorquegauge.setDayValue(1)
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
 
             binding.speed.setTextColor(Color.BLACK)
-            binding.unit.setTextColor(Color.DKGRAY)
+            binding.unit.setTextColor(Color.GRAY)
             binding.batterypercent.setTextColor(Color.DKGRAY)
             binding.deadbattery.clearColorFilter()
             gearColorSelected = Color.DKGRAY

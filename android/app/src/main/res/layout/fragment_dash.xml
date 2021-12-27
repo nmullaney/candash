@@ -10,10 +10,10 @@
         android:id="@+id/speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fontFamily="@font/montserratlight"
+        android:fontFamily="sans-serif-thin"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
-        android:letterSpacing="-.1"
+        android:letterSpacing="-.05"
         android:paddingBottom="40dp"
         android:textColor="@color/black"
         app:fontWeight="300"
@@ -34,10 +34,9 @@
         android:id="@+id/unit"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:gravity="center_horizontal|top"
         android:text="@string/mph"
-        android:textStyle="bold"
         app:autoSizeMaxTextSize="550sp"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeStepGranularity="10sp"
@@ -103,7 +102,7 @@
 
     <!--        android:layout_width="60dp"-->
     <!--        android:layout_height="80dp"-->
-    <!--        android:fontFamily="@font/montserratbold"-->
+    <!--        android:fontFamily="sans-serif-black"-->
     <!--        android:gravity="center|center_vertical"-->
     <!--        android:text="25"-->
     <!--        android:textAlignment="center"-->
@@ -197,7 +196,7 @@
         android:id="@+id/PRND"
         android:layout_width="120dp"
         android:layout_height="30dp"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="@font/robotobold"
         android:textColor="@color/prnd_not_selected"
         android:gravity="center|center_vertical"
         android:text="P  R  N  D"
@@ -215,7 +214,7 @@
         android:drawablePadding="5dp"
         android:layout_width="300dp"
         android:layout_height="0dp"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:textColor="#cccccc"
         android:visibility="gone"
         android:background="@drawable/rounded_corner"
@@ -240,7 +239,7 @@
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:visibility="gone"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:textColor="#cccccc"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
@@ -264,7 +263,7 @@
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:visibility="gone"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:textColor="#cccccc"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
@@ -285,7 +284,7 @@
         android:id="@+id/batterypercent"
         android:layout_width="100dp"
         android:layout_height="30dp"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:paddingRight="10dp"
         android:text="50 %"
         app:layout_constraintTop_toTopOf="parent"
@@ -651,10 +650,9 @@
         android:layout_width="0dp"
         android:layout_marginBottom="0dp"
         android:gravity="left|bottom"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-condensed"
         android:fontFeatureSettings="tnum"
-        android:text="Front TQ"
+        android:text="FRONT TQ"
         android:paddingRight="0dp"
 
         app:layout_constraintBottom_toTopOf="@id/fronttorque"
@@ -666,32 +664,46 @@
         android:layout_width="0dp"
         android:layout_marginTop="0dp"
 
-        android:gravity="left|center"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratregular"
+        android:gravity="right|center"
+        android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
-
         android:text="50"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="@id/fronttorquelabel"
-        app:layout_constraintEnd_toEndOf="@id/guideline2"/>
+        app:layout_constraintEnd_toEndOf="@id/fronttorquelabel"/>
     <TextView
         android:id="@+id/fronttorqueunits"
 
         android:layout_height="50dp"
         android:layout_width="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
 
-        android:gravity="left|top"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:gravity="center"
+        android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
-        android:text="nM"
-        android:textSize="25sp"
+        android:text="Nm"
+        android:textSize="20sp"
 
-        android:paddingLeft="10dp"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintCircle="@id/fronttorquegauge"
+        app:layout_constraintCircleRadius="0dp"
+        />
+    <dev.nmullaney.tesladashboard.CircularGauge
+        android:id="@+id/fronttorquegauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+
+        android:gravity="center"
+        android:fontFamily="sans-serif-black"
+        android:fontFeatureSettings="tnum"
+        android:text="Nm"
+
+        android:paddingTop="0dp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toEndOf="@id/guideline2"
         app:layout_constraintBottom_toBottomOf="@id/guideline1"
@@ -704,14 +716,14 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="0dp"
 
-        android:gravity="left|top"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:gravity="right|top"
+        android:fontFamily="sans-serif-condensed"
         android:fontFeatureSettings="tnum"
-        android:text="Rear TQ"
+        android:text="REAR TQ"
         android:paddingRight="0dp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintTop_toBottomOf="@id/guideline1"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toStartOf="@id/fronttorque"
 />
     <TextView
@@ -723,8 +735,7 @@
         android:layout_marginBottom="0dp"
 
         android:gravity="center"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
         android:text="nM"
         android:textSize="20sp"
@@ -743,8 +754,7 @@
         android:layout_marginBottom="0dp"
 
         android:gravity="center"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
         android:text="nM"
 
@@ -760,15 +770,15 @@
         android:layout_width="0dp"
         android:layout_marginTop="0dp"
         
-        android:gravity="left|top"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratregular"
+        android:gravity="right|top"
+        android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
         android:text="50"
         android:textSize="18sp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toStartOf="@id/reartorquelabel"
         app:layout_constraintTop_toBottomOf="@id/reartorquelabel"
+        app:layout_constraintEnd_toEndOf="@id/reartorquelabel"
         />
 
     <androidx.constraintlayout.widget.Guideline
@@ -806,8 +816,7 @@
         android:layout_width="0dp"
         android:layout_marginBottom="0dp"
         android:gravity="center|center_vertical"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
 
 
@@ -829,8 +838,7 @@
         android:layout_marginLeft="20dp"
 
         android:gravity="left|center_vertical"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
 
 
@@ -850,8 +858,7 @@
         android:layout_marginBottom="0dp"
         android:layout_marginRight="10dp"
         android:gravity="right|center_vertical"
-        android:textStyle="bold"
-        android:fontFamily="@font/montserratbold"
+        android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
 
 

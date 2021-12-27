@@ -69,14 +69,22 @@ class CircularGauge @JvmOverloads constructor(
         paint.strokeWidth = 8f
         paint.style = Paint.Style.STROKE
         rect.inset(0f,-paint.strokeWidth/2);
-        paint.setColorFilter(lineColor)
-        canvas?.drawArc(0f+paint.strokeWidth/2,  0f + paint.strokeWidth/2, width.toFloat() - paint.strokeWidth/2, height.toFloat() - paint.strokeWidth/2 , 90f, 45f, false, paint)
+        paint.setColorFilter(backgroundLineColor)
+        canvas?.drawArc(0f+paint.strokeWidth/2,  0f + paint.strokeWidth/2, width.toFloat() - paint.strokeWidth/2, height.toFloat() - paint.strokeWidth/2 , 90f, 360f, false, paint)
+
+        if (percentWidth < 0f) {
+            paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+        } else {
+            paint.colorFilter = lineColor
+        }
+        canvas?.drawArc(0f+paint.strokeWidth/2,  0f + paint.strokeWidth/2, width.toFloat() - paint.strokeWidth/2, height.toFloat() - paint.strokeWidth/2 , 90f, powerWidth, false, paint)
+
         //canvas?.drawArc(rect, 0f, 360f, true, paint)
 
 
     }
     fun setGauge(percent:Float){
-        powerWidth = percent/100 * 41f
+        powerWidth = percent * 360f
 
     }
     fun setDayValue(isSunUpVal: Int = 1){
