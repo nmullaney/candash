@@ -44,8 +44,6 @@ class DashFragment : Fragment() {
     private var battVolts: Float = 0f
 
     private var HRSPRS: Boolean = false
-    private var maxVehiclePower: Int = 350000
-    private var forceNightMode: Boolean = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearPark
@@ -89,6 +87,18 @@ class DashFragment : Fragment() {
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark
+        )
+    
+    private fun sideUIViews(): List<View> =
+        listOf(
+            binding.fronttorque,
+            binding.fronttorquelabel,
+            binding.fronttorqueunits,
+            binding.fronttorquegauge,
+            binding.reartorque,
+            binding.reartorquelabel,
+            binding.reartorqueunits,
+            binding.reartorquegauge
         )
 
     fun getBackgroundColor(sunUpVal: Int): Int {
@@ -149,7 +159,7 @@ class DashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
         var colorFrom: Int
-        if (forceNightMode) {
+        if (getBooleanPref("forceNightMode")) {
             colorFrom = getBackgroundColor(0)
         } else {
             colorFrom = getBackgroundColor(isSunUp(viewModel))
@@ -214,8 +224,7 @@ class DashFragment : Fragment() {
             setPref("maxPower", 0f)
         }
         binding.speed.setOnLongClickListener {
-            setBooleanPref("forceNightMode", !forceNightMode)
-            forceNightMode = getBooleanPref("forceNightMode")
+            setBooleanPref("forceNightMode", !getBooleanPref("forceNightMode"))
             return@setOnLongClickListener true
         }
 
@@ -245,6 +254,9 @@ class DashFragment : Fragment() {
                         )
                         topUIView.layoutParams = params
                     }
+                    for (sideUIView in sideUIViews()){
+                        sideUIView.visibility = View.GONE
+                    }
                 } else {
                     for (topUIView in topUIViews()) {
                         var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
@@ -256,6 +268,9 @@ class DashFragment : Fragment() {
                             savedParams.bottomMargin
                         )
                         topUIView.layoutParams = params
+                    }
+                    for (sideUIView in sideUIViews()){
+                        sideUIView.visibility = View.VISIBLE
                     }
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -316,7 +331,7 @@ class DashFragment : Fragment() {
             viewModel.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
-                } else if (isSunUp(viewModel) == 1 && !forceNightMode) {
+                } else if (isSunUp(viewModel) == 1 && !getBooleanPref("forceNightMode")) {
                     gearColorSelected = Color.DKGRAY
                 } else {
                     gearColorSelected = Color.LTGRAY
@@ -384,7 +399,7 @@ class DashFragment : Fragment() {
                 //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
-                    if (forceNightMode) {
+                    if (getBooleanPref("forceNightMode")) {
                         colorFrom = getBackgroundColor(0)
                     } else {
                         colorFrom = getBackgroundColor(isSunUp(viewModel))
@@ -562,7 +577,7 @@ class DashFragment : Fragment() {
                 var bsBinding = binding.BSWarningLeft
                 var colorFrom: Int
                 colorFrom = getBackgroundColor(1)
-                if (forceNightMode) {
+                if (getBooleanPref("forceNightMode")) {
                     colorFrom = getBackgroundColor(0)
                 } else if (viewModel.getValue(Constants.isSunUp) != null) {
                     colorFrom = getBackgroundColor(viewModel.getValue(Constants.isSunUp)!!.toInt())
@@ -790,7 +805,7 @@ class DashFragment : Fragment() {
         val window: Window? = activity?.window
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
-        if (sunUpVal == 0 || forceNightMode) {
+        if (sunUpVal == 0 || getBooleanPref("forceNightMode")) {
 
             binding.powerBar.setDayValue(0)
             binding.fullbattery.setDayValue(0)

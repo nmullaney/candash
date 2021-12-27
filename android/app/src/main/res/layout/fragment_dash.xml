@@ -646,7 +646,7 @@
     <TextView
         android:id="@+id/fronttorquelabel"
 
-        android:layout_height="20dp"
+        android:layout_height="18dp"
         android:layout_width="0dp"
         android:layout_marginBottom="0dp"
         android:gravity="left|bottom"
@@ -662,13 +662,13 @@
 
         android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginBottom="5dp"
 
         android:gravity="right|center"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
-        android:text="50"
-        android:textSize="18sp"
+        android:text="0"
+        android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="@id/fronttorquelabel"
         app:layout_constraintEnd_toEndOf="@id/fronttorquelabel"/>
@@ -696,8 +696,8 @@
         android:layout_height="50dp"
         android:layout_width="50dp"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
-
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
         android:gravity="center"
         android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
@@ -711,10 +711,9 @@
     <TextView
         android:id="@+id/reartorquelabel"
 
-        android:layout_height="20dp"
+        android:layout_height="18dp"
         android:layout_width="0dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="0dp"
 
         android:gravity="right|top"
         android:fontFamily="sans-serif-condensed"
@@ -737,7 +736,7 @@
         android:gravity="center"
         android:fontFamily="sans-serif-black"
         android:fontFeatureSettings="tnum"
-        android:text="nM"
+        android:text="Nm"
         android:textSize="20sp"
 
         app:layout_constraintHeight_percent=".5"
@@ -750,8 +749,8 @@
 
         android:layout_height="50dp"
         android:layout_width="50dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
 
         android:gravity="center"
         android:fontFamily="sans-serif-black"
@@ -773,8 +772,8 @@
         android:gravity="right|top"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
-        android:text="50"
-        android:textSize="18sp"
+        android:text="0"
+        android:textSize="25sp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toStartOf="@id/reartorquelabel"
         app:layout_constraintTop_toBottomOf="@id/reartorquelabel"
@@ -786,7 +785,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/guideline1"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45"/>
+        app:layout_constraintGuide_percent="0.466"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
