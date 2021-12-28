@@ -52,4 +52,5 @@ object Constants {
     const val maxHeatPower = "maxHeatPower"
     const val frontTorque = "frontTorque"
     const val rearTorque = "rearTorque"
+    const val battBrickMin = "battBrickMin"
 }
