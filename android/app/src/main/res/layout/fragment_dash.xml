@@ -10,10 +10,10 @@
         android:id="@+id/speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fontFamily="sans-serif-thin"
+        android:fontFamily="@font/interthin"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
-        android:letterSpacing="-.05"
+        android:letterSpacing="-.1"
         android:paddingBottom="40dp"
         android:textColor="@color/black"
         app:fontWeight="300"
@@ -27,14 +27,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5"
 
-        tools:text="33" />
+        tools:text="65" />
 
 
     <TextView
         android:id="@+id/unit"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:gravity="center_horizontal|top"
         android:text="@string/mph"
         app:autoSizeMaxTextSize="550sp"
@@ -102,7 +102,7 @@
 
     <!--        android:layout_width="60dp"-->
     <!--        android:layout_height="80dp"-->
-    <!--        android:fontFamily="sans-serif-black"-->
+    <!--        android:fontFamily="@font/interbold"-->
     <!--        android:gravity="center|center_vertical"-->
     <!--        android:text="25"-->
     <!--        android:textAlignment="center"-->
@@ -155,7 +155,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
-        android:id="@+id/left_turn_signal_light"
+        android:id="@+id/left_turn_signal_medium"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/ic_turnleftbright"
@@ -180,7 +180,7 @@
         app:layout_constraintTop_toTopOf="parent"  />
 
     <ImageView
-        android:id="@+id/right_turn_signal_light"
+        android:id="@+id/right_turn_signal_medium"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/ic_turnrightbright"
@@ -214,12 +214,12 @@
         android:drawablePadding="5dp"
         android:layout_width="300dp"
         android:layout_height="0dp"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:textColor="#cccccc"
         android:visibility="gone"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
-        android:text="Apply slight turning force to steering wheel"
+        android:text="Apply smedium turning force to steering wheel"
         android:textAlignment="center"
         android:textSize="15sp"
         android:layout_marginTop="24dp"
@@ -239,7 +239,7 @@
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:visibility="gone"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:textColor="#cccccc"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
@@ -263,7 +263,7 @@
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:visibility="gone"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:textColor="#cccccc"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
@@ -284,7 +284,7 @@
         android:id="@+id/batterypercent"
         android:layout_width="100dp"
         android:layout_height="30dp"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interextrabold"
         android:paddingRight="10dp"
         android:text="50 %"
         app:layout_constraintTop_toTopOf="parent"
@@ -650,7 +650,7 @@
         android:layout_width="0dp"
         android:layout_marginBottom="0dp"
         android:gravity="left|bottom"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:text="FRONT TQ"
         android:paddingRight="0dp"
@@ -681,7 +681,7 @@
         android:layout_marginBottom="0dp"
 
         android:gravity="center"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:text="Nm"
         android:textSize="20sp"
@@ -699,7 +699,7 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:gravity="center"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:text="Nm"
 
@@ -716,7 +716,7 @@
         android:layout_marginTop="5dp"
 
         android:gravity="right|top"
-        android:fontFamily="sans-serif-condensed"
+        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:text="REAR TQ"
         android:paddingRight="0dp"
@@ -734,7 +734,7 @@
         android:layout_marginBottom="0dp"
 
         android:gravity="center"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:text="Nm"
         android:textSize="20sp"
@@ -753,7 +753,7 @@
         android:layout_marginLeft="5dp"
 
         android:gravity="center"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:text="nM"
 
@@ -815,7 +815,7 @@
         android:layout_width="0dp"
         android:layout_marginBottom="0dp"
         android:gravity="center|center_vertical"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
 
@@ -837,7 +837,7 @@
         android:layout_marginLeft="20dp"
 
         android:gravity="left|center_vertical"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
 
@@ -857,7 +857,7 @@
         android:layout_marginBottom="0dp"
         android:layout_marginRight="10dp"
         android:gravity="right|center_vertical"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
 

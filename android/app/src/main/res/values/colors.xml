@@ -23,5 +23,6 @@
     <color name="start_color">#4CAF50</color>
     <color name="stop_color">#F44336</color>
     <color name="light_gray">#EEEEEE</color>
+    <color name="medium_gray">#555555</color>
     <color name="dark_gray">#222222</color>
 </resources>

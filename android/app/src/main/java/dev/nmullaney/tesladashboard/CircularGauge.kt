@@ -72,7 +72,7 @@ class CircularGauge @JvmOverloads constructor(
         paint.setColorFilter(backgroundLineColor)
         canvas?.drawArc(0f+paint.strokeWidth/2,  0f + paint.strokeWidth/2, width.toFloat() - paint.strokeWidth/2, height.toFloat() - paint.strokeWidth/2 , 90f, 360f, false, paint)
 
-        if (percentWidth < 0f) {
+        if (powerWidth < 0f) {
             paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
         } else {
             paint.colorFilter = lineColor
@@ -90,9 +90,11 @@ class CircularGauge @JvmOverloads constructor(
     fun setDayValue(isSunUpVal: Int = 1){
         isSunUp = isSunUpVal
         if (isSunUp == 1){
-            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
+            backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
         } else {
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
+            backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
 
         }

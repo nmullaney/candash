@@ -10,7 +10,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 class MockPandaService : PandaService {
-    private val MS_BETWEEN_REQUESTS = 5_000L
+    private val MS_BETWEEN_REQUESTS = 2_000L
     private val carStateFlow = MutableStateFlow(CarState())
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var shutdown = false
@@ -40,19 +40,23 @@ class MockPandaService : PandaService {
     private fun mockCarStates() : List<CarState> =
         listOf(
             CarState(mutableMapOf(
-                Constants.frontLeftDoorState to 2f,
+                Constants.autopilotState to 1f,
+                Constants.isSunUp to 1f,
+                Constants.autopilotHands to 1f
+
+                )),
+            CarState(mutableMapOf(
+                Constants.autopilotState to 3f,
+                Constants.isSunUp to 1f,
+                Constants.autopilotHands to 1f
+
+            )),
+            CarState(mutableMapOf(
+                Constants.autopilotState to 3f,
                 Constants.isSunUp to 1f
             )),
             CarState(mutableMapOf(
-                Constants.frontLeftDoorState to 2f,
-                Constants.isSunUp to 1f
-            )),
-            CarState(mutableMapOf(
-                Constants.frontLeftDoorState to 1f,
-                Constants.isSunUp to 1f
-            )),
-            CarState(mutableMapOf(
-                Constants.frontLeftDoorState to 1f,
+                Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f
             )))
 }
