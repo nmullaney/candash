@@ -98,7 +98,11 @@ class DashFragment : Fragment() {
             binding.reartorque,
             binding.reartorquelabel,
             binding.reartorqueunits,
-            binding.reartorquegauge
+            binding.reartorquegauge,
+            binding.batttemp,
+            binding.batttemplabel,
+            binding.batttempunits,
+            binding.batttempgauge
         )
 
     fun getBackgroundColor(sunUpVal: Int): Int {
@@ -284,7 +288,7 @@ class DashFragment : Fragment() {
                 }
             }
         }
-        viewModel.carState().observe(viewLifecycleOwner) {
+        viewModel.carState().observe(viewLifecycleOwner) { it ->
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
             }
@@ -322,7 +326,7 @@ class DashFragment : Fragment() {
             if (power >= 0) {
                 binding.powerBar.setGauge(((power / getPref("maxPower")).pow(0.7f)))
             } else {
-                binding.powerBar.setGauge(-((abs(power) / getPref("maxPower")).pow(0.7f)))
+                binding.powerBar.setGauge(-((abs(power) / abs(getPref("minPower"))).pow(0.7f)))
             }
 
             binding.powerBar.invalidate()
@@ -393,6 +397,10 @@ class DashFragment : Fragment() {
                 }
                 binding.reartorquegauge.setGauge(rearTorqueVal.toFloat()/getPref("rearTorqueMax"))
                 binding.reartorquegauge.invalidate()
+            }
+            it.getValue(Constants.battBrickMin)?.let{
+                binding.batttemp.text = "%.1f".format(it.toFloat())
+                binding.batttempgauge.setGauge((it.toFloat() + 40f)/128)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 if (getBooleanPref("forceNightMode")) {
@@ -838,6 +846,10 @@ class DashFragment : Fragment() {
             binding.reartorque.setTextColor(Color.WHITE)
             binding.reartorquelabel.setTextColor(Color.WHITE)
             binding.reartorqueunits.setTextColor(Color.WHITE)
+            binding.batttemp.setTextColor(Color.WHITE)
+            binding.batttemplabel.setTextColor(Color.WHITE)
+            binding.batttempunits.setTextColor(Color.WHITE)
+
 
             //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
@@ -871,6 +883,10 @@ class DashFragment : Fragment() {
             binding.reartorque.setTextColor(Color.DKGRAY)
             binding.reartorquelabel.setTextColor(Color.DKGRAY)
             binding.reartorqueunits.setTextColor(Color.DKGRAY)
+            binding.batttemp.setTextColor(Color.DKGRAY)
+            binding.batttemplabel.setTextColor(Color.DKGRAY)
+            binding.batttempunits.setTextColor(Color.DKGRAY)
+
 
             //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
