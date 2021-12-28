@@ -372,7 +372,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.frontTorque)?.let{
                 var frontTorqueVal = it.toFloat()
                 if ((viewModel.getValue(Constants.gearSelected)?.toInt() == Constants.gearReverse)){
-                    frontTorqueVal = abs(frontTorqueVal)
+                    frontTorqueVal = -(frontTorqueVal)
                 }
                     
                 binding.fronttorque.text = frontTorqueVal.toInt().toString()
@@ -385,7 +385,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.rearTorque)?.let{
                 var rearTorqueVal = it.toFloat()
                 if ((viewModel.getValue(Constants.gearSelected)?.toInt() == Constants.gearReverse)){
-                    rearTorqueVal = abs(rearTorqueVal)
+                    rearTorqueVal = -(rearTorqueVal)
                 }
                 binding.reartorque.text = rearTorqueVal.toInt().toString()
                 if (abs(getPref("rearTorqueMax")) < rearTorqueVal.toFloat()){
@@ -395,7 +395,11 @@ class DashFragment : Fragment() {
                 binding.reartorquegauge.invalidate()
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-
+                if (getBooleanPref("forceNightMode")) {
+                    colorFrom = getBackgroundColor(0)
+                } else {
+                    colorFrom = getBackgroundColor(isSunUp(viewModel))
+                }
                 //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
@@ -571,12 +575,12 @@ class DashFragment : Fragment() {
  */
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
+
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
                 val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
                 val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 var bsBinding = binding.BSWarningLeft
-                var colorFrom: Int
-                colorFrom = getBackgroundColor(1)
+                var colorFrom = getBackgroundColor(1)
                 if (getBooleanPref("forceNightMode")) {
                     colorFrom = getBackgroundColor(0)
                 } else if (viewModel.getValue(Constants.isSunUp) != null) {
