@@ -82,7 +82,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.steeringAngle, 0, Hex(0x129), 16, 14, .1f, -819.2f)
         insertCANSignal(Constants.frontTorque, 0, Hex(0x1D5), 8, 13, .222f, 0f, signed = true)
         insertCANSignal(Constants.rearTorque, 0, Hex(0x1D8), 8, 13, .222f, 0f, signed = true)
-        insertCANSignal(Constants.battBrickMin, 0, Hex(0x332), 24, 8, .5f, -40f)
+        insertCANSignal(Constants.battBrickMin, 0, Hex(0x332), 24, 8, .5f, -40f, 2, 0)
 
 
 
