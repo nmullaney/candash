@@ -27,7 +27,7 @@ class CircularGauge @JvmOverloads constructor(
     private var percentWidth : Float = 0f
     private var isSunUp : Int = 0
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
+    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
     private var powerWidth : Float = 0f
 
@@ -77,8 +77,18 @@ class CircularGauge @JvmOverloads constructor(
         } else {
             paint.colorFilter = lineColor
         }
-        canvas?.drawArc(0f+paint.strokeWidth/2,  0f + paint.strokeWidth/2, width.toFloat() - paint.strokeWidth/2, height.toFloat() - paint.strokeWidth/2 , 90f, powerWidth, false, paint)
-
+        if (powerWidth != 0f) {
+            canvas?.drawArc(
+                0f + paint.strokeWidth / 2,
+                0f + paint.strokeWidth / 2,
+                width.toFloat() - paint.strokeWidth / 2,
+                height.toFloat() - paint.strokeWidth / 2,
+                90f,
+                powerWidth,
+                false,
+                paint
+            )
+        }
         //canvas?.drawArc(rect, 0f, 360f, true, paint)
 
 
@@ -93,7 +103,7 @@ class CircularGauge @JvmOverloads constructor(
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
         } else {
-            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
+            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
 
