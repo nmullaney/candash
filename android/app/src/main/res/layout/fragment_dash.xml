@@ -10,10 +10,10 @@
         android:id="@+id/speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fontFamily="@font/interthin"
+        android:fontFamily="@font/promptextralight"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
-        android:letterSpacing="-.1"
+        android:letterSpacing="-.08"
         android:paddingBottom="40dp"
         android:textColor="@color/black"
         app:fontWeight="300"
@@ -34,7 +34,7 @@
         android:id="@+id/unit"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:fontFamily="@font/interbold"
+        android:fontFamily="@font/interextrabold"
         android:gravity="center_horizontal|top"
         android:text="@string/mph"
         app:autoSizeMaxTextSize="550sp"
@@ -208,30 +208,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/APWarning"
-        android:drawableLeft="@drawable/ic_autopilot"
-        android:drawablePadding="5dp"
-        android:layout_width="300dp"
-        android:layout_height="0dp"
-        android:fontFamily="@font/interbold"
-        android:textColor="#cccccc"
-        android:visibility="gone"
-        android:background="@drawable/rounded_corner"
-        android:gravity="center|center_vertical"
-        android:text="Apply medium turning force to steering wheel"
-        android:textAlignment="center"
-        android:textSize="15sp"
-        android:layout_marginTop="24dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="30dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
 
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
     <TextView
         android:id="@+id/BSWarningLeft"
         android:drawableLeft="@drawable/ic_bsl2"
@@ -652,7 +629,7 @@
         android:gravity="right|bottom"
         android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
-        android:text="FRONT TQ"
+        android:text="F TRQ"
         android:paddingRight="0dp"
 
         app:layout_constraintBottom_toTopOf="@id/fronttorque"
@@ -718,7 +695,7 @@
         android:gravity="right|top"
         android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
-        android:text="REAR TQ"
+        android:text="R TRQ"
         android:paddingRight="0dp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintTop_toBottomOf="@id/guideline1"
@@ -768,7 +745,7 @@
         android:layout_height="30dp"
         android:layout_width="0dp"
         android:layout_marginTop="0dp"
-        
+
         android:gravity="right|top"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
@@ -785,12 +762,12 @@
 
         android:layout_height="18dp"
         android:layout_width="0dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
 
         android:gravity="right|top"
         android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
-        android:text="BATT TEMP"
+        android:text="BATT T"
         android:paddingRight="0dp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintTop_toBottomOf="@id/reartorque"
@@ -821,7 +798,7 @@
 
         android:layout_height="50dp"
         android:layout_width="50dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
 
         android:gravity="center"
@@ -866,7 +843,7 @@
         android:id="@+id/guideline2"
         android:orientation="vertical"
 
-        app:layout_constraintGuide_percent=".80"/>
+        app:layout_constraintGuide_percent=".8"/>
 
     <dev.nmullaney.tesladashboard.LinearGauge
         android:id="@+id/power_bar"
@@ -910,7 +887,7 @@
         android:layout_marginLeft="20dp"
 
         android:gravity="left|center_vertical"
-        android:fontFamily="@font/interbold"
+        android:fontFamily="@font/intersemibold"
         android:fontFeatureSettings="tnum"
 
 
@@ -930,7 +907,7 @@
         android:layout_marginBottom="0dp"
         android:layout_marginRight="10dp"
         android:gravity="right|center_vertical"
-        android:fontFamily="@font/interbold"
+        android:fontFamily="@font/intersemibold"
         android:fontFeatureSettings="tnum"
 
 
@@ -942,6 +919,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintWidth_percent=".2"
         tools:text="0 W" />
+
+    <TextView
+        android:id="@+id/APWarning"
+        android:drawableLeft="@drawable/ic_autopilot"
+        android:drawablePadding="5dp"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/intersemibold"
+        android:textColor="#cccccc"
+        android:visibility="gone"
+        android:background="@drawable/rounded_corner"
+        android:gravity="center|center_vertical"
+        android:text="Apply medium turning force to steering wheel"
+        android:textAlignment="center"
+        android:textSize="15sp"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="30dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -187,6 +187,12 @@ class DashFragment : Fragment() {
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
             binding.speed.text = vehicleSpeedVal.toInt().toString()
         }
+        if (viewModel.getValue(Constants.driveConfig) == Constants.rwd){
+            binding.fronttorquegauge.visibility = View.GONE
+            binding.fronttorquelabel.visibility = View.GONE
+            binding.fronttorque.visibility = View.GONE
+            binding.fronttorqueunits.visibility = View.GONE
+        }
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
             binding.fullbattery.setGauge(it)
@@ -823,6 +829,7 @@ class DashFragment : Fragment() {
             binding.fullbattery.setDayValue(0)
             binding.fronttorquegauge.setDayValue(0)
             binding.reartorquegauge.setDayValue(0)
+            binding.batttempgauge.setDayValue(0)
             //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
@@ -859,6 +866,7 @@ class DashFragment : Fragment() {
             binding.fullbattery.setDayValue(1)
             binding.fronttorquegauge.setDayValue(1)
             binding.reartorquegauge.setDayValue(1)
+            binding.batttempgauge.setDayValue(1)
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")

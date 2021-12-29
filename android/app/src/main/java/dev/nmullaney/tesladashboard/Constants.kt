@@ -53,4 +53,7 @@ object Constants {
     const val frontTorque = "frontTorque"
     const val rearTorque = "rearTorque"
     const val battBrickMin = "battBrickMin"
+    const val driveConfig = "driveConfig"
+    const val awd = 1f
+    const val rwd = 0f
 }
