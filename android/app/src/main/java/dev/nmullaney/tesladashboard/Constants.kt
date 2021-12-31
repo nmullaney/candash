@@ -56,4 +56,7 @@ object Constants {
     const val driveConfig = "driveConfig"
     const val awd = 1f
     const val rwd = 0f
+    const val frontTemp = "frontTemp"
+    const val rearTemp = "rearTemp"
+    const val coolantFlow = "coolantFlow"
 }
