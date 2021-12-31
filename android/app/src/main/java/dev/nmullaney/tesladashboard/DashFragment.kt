@@ -102,7 +102,37 @@ class DashFragment : Fragment() {
             binding.batttemp,
             binding.batttemplabel,
             binding.batttempunits,
-            binding.batttempgauge
+            binding.batttempgauge,
+            binding.fronttemp,
+            binding.fronttemplabel,
+            binding.fronttempunits,
+            binding.fronttempgauge,
+            binding.reartemp,
+            binding.reartemplabel,
+            binding.reartempunits,
+            binding.reartempgauge,
+            binding.coolantflow,
+            binding.coolantflowlabel,
+            binding.coolantflowunits,
+            binding.coolantflowgauge
+        
+        )
+
+    private fun leftSideUIViews(): List<View> =
+        listOf(
+            binding.fronttemp,
+            binding.fronttemplabel,
+            binding.fronttempunits,
+            binding.fronttempgauge,
+            binding.reartemp,
+            binding.reartemplabel,
+            binding.reartempunits,
+            binding.reartempgauge,
+            binding.coolantflow,
+            binding.coolantflowlabel,
+            binding.coolantflowunits,
+            binding.coolantflowgauge
+
         )
 
     fun getBackgroundColor(sunUpVal: Int): Int {
@@ -187,12 +217,15 @@ class DashFragment : Fragment() {
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
             binding.speed.text = vehicleSpeedVal.toInt().toString()
         }
+        /*
         if (viewModel.getValue(Constants.driveConfig) == Constants.rwd){
-            binding.fronttorquegauge.visibility = View.GONE
-            binding.fronttorquelabel.visibility = View.GONE
-            binding.fronttorque.visibility = View.GONE
-            binding.fronttorqueunits.visibility = View.GONE
+            binding.fronttorquegauge.visibility = View.INVISIBLE
+            binding.fronttorquelabel.visibility = View.INVISIBLE
+            binding.fronttorque.visibility = View.INVISIBLE
+            binding.fronttorqueunits.visibility = View.INVISIBLE
         }
+
+         */
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
             binding.fullbattery.setGauge(it)
@@ -378,7 +411,21 @@ class DashFragment : Fragment() {
                 )
                 binding.PRND.text = (ss)
             }
-
+            it.getValue(Constants.frontTemp)?.let{
+                binding.fronttemp.text = it.toInt().toString()
+                binding.fronttempgauge.setGauge(it.toFloat()/214f)
+                binding.fronttempgauge.invalidate()
+            }
+            it.getValue(Constants.rearTemp)?.let{
+                binding.reartemp.text = it.toInt().toString()
+                binding.reartempgauge.setGauge(it.toFloat()/214f)
+                binding.reartempgauge.invalidate()
+            }
+            it.getValue(Constants.coolantFlow)?.let{
+                binding.coolantflow.text = "%.1f".format(it.toFloat())
+                binding.coolantflowgauge.setGauge(it.toFloat()/40f)
+                binding.coolantflowgauge.invalidate()
+            }
             it.getValue(Constants.frontTorque)?.let{
                 var frontTorqueVal = it.toFloat()
                 if ((viewModel.getValue(Constants.gearSelected)?.toInt() == Constants.gearReverse)){
@@ -423,7 +470,7 @@ class DashFragment : Fragment() {
                         colorFrom = getBackgroundColor(isSunUp(viewModel))
                     }
                     autopilotAnimation.setObjectValues(colorFrom, colorTo)
-                    autopilotAnimation.duration = 1000
+                    autopilotAnimation.duration = 500
 
                     autopilotAnimation.addUpdateListener { animator ->
                         binding.root.setBackgroundColor(
@@ -830,6 +877,9 @@ class DashFragment : Fragment() {
             binding.fronttorquegauge.setDayValue(0)
             binding.reartorquegauge.setDayValue(0)
             binding.batttempgauge.setDayValue(0)
+            binding.fronttempgauge.setDayValue(0)
+            binding.reartempgauge.setDayValue(0)
+            binding.coolantflowgauge.setDayValue(0)
             //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
@@ -856,7 +906,16 @@ class DashFragment : Fragment() {
             binding.batttemp.setTextColor(Color.WHITE)
             binding.batttemplabel.setTextColor(Color.WHITE)
             binding.batttempunits.setTextColor(Color.WHITE)
+            binding.fronttemp.setTextColor(Color.WHITE)
+            binding.fronttemplabel.setTextColor(Color.WHITE)
+            binding.fronttempunits.setTextColor(Color.WHITE)
 
+            binding.reartemp.setTextColor(Color.WHITE)
+            binding.reartemplabel.setTextColor(Color.WHITE)
+            binding.reartempunits.setTextColor(Color.WHITE)
+            binding.coolantflow.setTextColor(Color.WHITE)
+            binding.coolantflowlabel.setTextColor(Color.WHITE)
+            binding.coolantflowunits.setTextColor(Color.WHITE)
 
             //binding.displaymaxspeed.setTextColor(Color.WHITE)
 
@@ -867,6 +926,9 @@ class DashFragment : Fragment() {
             binding.fronttorquegauge.setDayValue(1)
             binding.reartorquegauge.setDayValue(1)
             binding.batttempgauge.setDayValue(1)
+            binding.fronttempgauge.setDayValue(1)
+            binding.reartempgauge.setDayValue(1)
+            binding.coolantflowgauge.setDayValue(1)
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
@@ -894,7 +956,16 @@ class DashFragment : Fragment() {
             binding.batttemp.setTextColor(Color.DKGRAY)
             binding.batttemplabel.setTextColor(Color.DKGRAY)
             binding.batttempunits.setTextColor(Color.DKGRAY)
+            binding.fronttemp.setTextColor(Color.DKGRAY)
+            binding.fronttemplabel.setTextColor(Color.DKGRAY)
+            binding.fronttempunits.setTextColor(Color.DKGRAY)
 
+            binding.reartemp.setTextColor(Color.DKGRAY)
+            binding.reartemplabel.setTextColor(Color.DKGRAY)
+            binding.reartempunits.setTextColor(Color.DKGRAY)
+            binding.coolantflow.setTextColor(Color.DKGRAY)
+            binding.coolantflowlabel.setTextColor(Color.DKGRAY)
+            binding.coolantflowunits.setTextColor(Color.DKGRAY)
 
             //binding.displaymaxspeed.setTextColor(Color.BLACK)
 
@@ -904,11 +975,8 @@ class DashFragment : Fragment() {
     }
 
     fun formatWatts(power: Float): String {
-        if (abs(power) < 1000) {
-            return "${power.toInt()} W"
-        } else if ((abs(power) >= 1000) and (abs(power) < 10000)) {
-            "%.2f".format(power / 1000f)
-            return "%.2f".format(power / 1000f) + " kW"
+        if ((abs(power) < 10000)) {
+            return "%.1f".format(power / 1000f) + " kW"
         } else {
             return (power / 1000f).toInt().toString() + " kW"
         }
@@ -921,6 +989,9 @@ class DashFragment : Fragment() {
 
         fadeIn.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
+                for (leftSideUIView in leftSideUIViews()){
+                    leftSideUIView.visibility = View.GONE
+                }
             }
 
             override fun onAnimationEnd(animation: Animation?) {
@@ -954,6 +1025,9 @@ class DashFragment : Fragment() {
             }
 
             override fun onAnimationEnd(animation: Animation?) {
+                for (leftSideUIView in leftSideUIViews()){
+                    leftSideUIView.visibility = View.VISIBLE
+                }
             }
 
             override fun onAnimationRepeat(animation: Animation?) {
@@ -982,6 +1056,9 @@ class DashFragment : Fragment() {
                         binding.modelyCenter.visibility = View.INVISIBLE
                         binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
+                        for (leftSideUIView in leftSideUIViews()){
+                            leftSideUIView.visibility = View.VISIBLE
+                        }
                     }
                 }
             }

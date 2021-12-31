@@ -84,6 +84,9 @@ class CANSignalHelper {
         insertCANSignal(Constants.rearTorque, 0, Hex(0x1D8), 8, 13, .222f, 0f, signed = true)
         insertCANSignal(Constants.battBrickMin, 0, Hex(0x332), 24, 8, .5f, -40f, 2, 0)
         insertCANSignal(Constants.driveConfig, 0, Hex(0x7FF), 10, 1, 1f, 0f, 8, 1)
+        insertCANSignal(Constants.frontTemp, 0, Hex(0x396), 24, 8, 1f, -40f)
+        insertCANSignal(Constants.rearTemp, 0, Hex(0x395), 24, 8, 1f, -40f)
+        insertCANSignal(Constants.coolantFlow, 0, Hex(0x241), 22, 9, .11f, 0f)
 
 
 

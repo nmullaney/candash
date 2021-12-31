@@ -42,18 +42,23 @@ class MockPandaService : PandaService {
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
-                Constants.autopilotHands to 1f
+                Constants.autopilotHands to 1f,
+                Constants.driveConfig to 0f
 
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
                 Constants.isSunUp to 1f,
-                Constants.autopilotHands to 1f
+                Constants.autopilotHands to 1f,
+                Constants.driveConfig to 0f
+
 
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
-                Constants.isSunUp to 1f
+                Constants.isSunUp to 1f,
+                Constants.driveConfig to 1f
+
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
