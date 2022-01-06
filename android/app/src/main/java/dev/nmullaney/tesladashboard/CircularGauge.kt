@@ -8,6 +8,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import kotlin.math.abs
 
 class CircularGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -30,6 +31,8 @@ class CircularGauge @JvmOverloads constructor(
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
     private var powerWidth : Float = 0f
+    private var strokeWidth : Float = 8f
+    private var charging : Boolean = false
 
 
     fun getScreenWidth(): Int {
@@ -66,7 +69,7 @@ class CircularGauge @JvmOverloads constructor(
         val paint = Paint()
         var startX : Float = 0f
         var stopX: Float = 0f
-        paint.strokeWidth = 8f
+        paint.strokeWidth = strokeWidth
         paint.style = Paint.Style.STROKE
         rect.inset(0f,-paint.strokeWidth/2);
         paint.setColorFilter(backgroundLineColor)
@@ -76,6 +79,9 @@ class CircularGauge @JvmOverloads constructor(
             paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
         } else {
             paint.colorFilter = lineColor
+        }
+        if (charging){
+            paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
         }
         if (powerWidth != 0f) {
             canvas?.drawArc(
@@ -93,10 +99,14 @@ class CircularGauge @JvmOverloads constructor(
 
 
     }
-    fun setGauge(percent:Float){
+    fun setGauge(percent:Float, sWidth:Float = 8f, charge:Boolean = false){
         powerWidth = percent * 360f
+        charging = charge
+        strokeWidth = sWidth
 
     }
+
+
     fun setDayValue(isSunUpVal: Int = 1){
         isSunUp = isSunUpVal
         if (isSunUp == 1){
