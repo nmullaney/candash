@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dev.nmullaney.tesladashboard">
+    package="app.candash.cluster">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -8,7 +8,7 @@
 
 
     <application
-        android:name=".TeslaDashboardApplication"
+        android:name="app.candash.cluster.TeslaDashboardApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -17,7 +17,7 @@
         android:theme="@style/Theme.TeslaDashboard"
         >
         <activity
-            android:name=".FullscreenActivity"
+            android:name="app.candash.cluster.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|smallestScreenSize
       |screenLayout|orientation"
 
@@ -31,7 +31,7 @@
             </intent-filter>
 
         </activity>
-        <receiver android:name=".PowerConnectionReceiver">
+        <receiver android:name="app.candash.cluster.PowerConnectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
