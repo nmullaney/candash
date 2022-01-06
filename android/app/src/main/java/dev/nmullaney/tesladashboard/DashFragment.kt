@@ -135,6 +135,16 @@ class DashFragment : Fragment() {
 
         )
 
+    private fun chargingViews(): List<View> =
+        listOf(
+            binding.powerBar,
+            binding.maxpower,
+            binding.minpower,
+            binding.power,
+            binding.speed,
+            binding.unit
+        )
+
     fun getBackgroundColor(sunUpVal: Int): Int {
         return when (sunUpVal) {
             1 -> requireContext().getColor(R.color.day_background)
@@ -348,7 +358,10 @@ class DashFragment : Fragment() {
 
             power = (battAmps * battVolts)
             if (power > getPref("maxPower")) setPref("maxPower", power)
-            if (power < getPref("minPower")) setPref("minPower", power)
+            if (viewModel.getValue(Constants.gearSelected)?.toInt() != Constants.gearPark){
+                // do not store minpower if car is charging
+                if (power < getPref("minPower")) setPref("minPower", power)
+            }
             //binding.power.text = "%.2f".format(power)
 
             if (!getBooleanPref("HRSPRS")) {
@@ -411,14 +424,14 @@ class DashFragment : Fragment() {
                 )
                 binding.PRND.text = (ss)
             }
-            it.getValue(Constants.frontTemp)?.let{
-                binding.fronttemp.text = it.toInt().toString()
-                binding.fronttempgauge.setGauge(it.toFloat()/214f)
+            it.getValue(Constants.frontTemp)?.let{ frontTempVal ->
+                binding.fronttemp.text = frontTempVal.toInt().toString()
+                binding.fronttempgauge.setGauge(frontTempVal.toFloat()/214f)
                 binding.fronttempgauge.invalidate()
             }
-            it.getValue(Constants.rearTemp)?.let{
-                binding.reartemp.text = it.toInt().toString()
-                binding.reartempgauge.setGauge(it.toFloat()/214f)
+            it.getValue(Constants.rearTemp)?.let{ rearTempVal ->
+                binding.reartemp.text = rearTempVal.toInt().toString()
+                binding.reartempgauge.setGauge(rearTempVal.toFloat()/214f)
                 binding.reartempgauge.invalidate()
             }
             it.getValue(Constants.coolantFlow)?.let{
@@ -716,6 +729,34 @@ class DashFragment : Fragment() {
                     }
                 }
             } else {
+                // in park
+                    if (power < 0f){
+                        for (chargingView in chargingViews()){
+                            chargingView.visibility = View.GONE
+                        }
+                        binding.chargemeter.visibility = View.VISIBLE
+                        viewModel.getValue(Constants.stateOfCharge)?.toFloat()
+                            ?.let { socVal ->
+                                binding.chargemeter.setGauge(socVal/100f, 16f, true)
+                                binding.bigsoc.text = socVal.toInt().toString()
+                                binding.chargemeter.invalidate()
+                                binding.bigsoc.visibility = View.VISIBLE
+                                binding.chargerate.text = formatWatts(abs(battAmps * battVolts))
+                                binding.chargerate.visibility = View.VISIBLE
+
+                            }
+
+
+                    } else {
+                        binding.chargemeter.visibility = View.INVISIBLE
+                        binding.bigsoc.visibility = View.INVISIBLE
+                        binding.chargerate.visibility = View.INVISIBLE
+
+                        for (chargingView in chargingViews()){
+                            chargingView.visibility = View.VISIBLE
+                        }
+                    }
+
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE
                 binding.blindSpotLeft2a.visibility = View.INVISIBLE
                 binding.blindSpotRight1a.visibility = View.INVISIBLE
@@ -884,6 +925,9 @@ class DashFragment : Fragment() {
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
             binding.speed.setTextColor(Color.WHITE)
+            binding.bigsoc.setTextColor(Color.WHITE)
+            binding.chargerate.setTextColor(Color.LTGRAY)
+            binding.chargemeter.setDayValue(0)
             binding.unit.setTextColor(Color.LTGRAY)
             binding.batterypercent.setTextColor(Color.LTGRAY)
             binding.deadbattery.setColorFilter(Color.DKGRAY)
@@ -930,10 +974,15 @@ class DashFragment : Fragment() {
             binding.reartempgauge.setDayValue(1)
             binding.coolantflowgauge.setDayValue(1)
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
-            binding.root.setBackgroundColor(Color.parseColor("#FFEEEEEE"))
+            binding.root.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
 
             binding.speed.setTextColor(Color.BLACK)
+            binding.speed.setTextColor(Color.BLACK)
+            binding.bigsoc.setTextColor(Color.BLACK)
+            binding.chargerate.setTextColor(Color.DKGRAY)
+            binding.chargemeter.setDayValue(1)
+
             binding.unit.setTextColor(Color.GRAY)
             binding.batterypercent.setTextColor(Color.DKGRAY)
             binding.deadbattery.clearColorFilter()
