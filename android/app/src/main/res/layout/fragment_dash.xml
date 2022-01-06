@@ -8,6 +8,8 @@
 
     <TextView
         android:id="@+id/speed"
+        android:visibility="invisible"
+
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fontFamily="@font/interregular"
@@ -28,56 +30,10 @@
 
         tools:text="65" />
 
-    <dev.nmullaney.tesladashboard.CircularGauge
-        android:id="@+id/chargemeter"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
-        android:visibility="gone"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/bigsoc"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:fontFamily="@font/interregular"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:visibility="gone"
-
-        app:fontWeight="300"
-        app:layout_constraintHeight_percent=".5"
-        app:autoSizeMaxTextSize="220sp"
-        app:autoSizeMinTextSize="30sp"
-        app:autoSizeStepGranularity="10sp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintCircle="@id/chargemeter"
-        app:layout_constraintCircleRadius="0dp"
-
-        tools:text="100" />
-    <TextView
-        android:id="@+id/chargerate"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:textSize="30sp"
-        android:fontFamily="@font/intersemibold"
-        android:visibility="gone"
-
-        app:autoSizeMaxTextSize="40sp"
-        app:autoSizeMinTextSize="20sp"
-        app:autoSizeStepGranularity="5sp"
-        app:autoSizeTextType="uniform"
-        android:gravity="center|center"
-        app:layout_constraintTop_toBottomOf="@id/bigsoc"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:text="250 kW"/>
     <TextView
         android:id="@+id/unit"
+        android:visibility="invisible"
+
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:fontFamily="@font/interextrabold"
@@ -95,6 +51,74 @@
         app:layout_constraintCircleRadius="100dp"
         tools:layout_editor_absoluteX="461dp"
         tools:layout_editor_absoluteY="318dp" />
+
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/chargemeter"
+        android:visibility="invisible"
+
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bigsoc"
+
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:fontFamily="@font/intersemibold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+
+        app:fontWeight="300"
+        app:layout_constraintHeight_percent=".5"
+        app:autoSizeMaxTextSize="220sp"
+        app:autoSizeMinTextSize="30sp"
+        app:autoSizeStepGranularity="10sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintCircle="@id/chargemeter"
+        app:layout_constraintCircleRadius="0dp"
+
+        tools:text="80" />
+
+    <TextView
+        android:id="@+id/bigsocpercent"
+
+        android:layout_width="100dp"
+        android:layout_height="200dp"
+        android:fontFamily="@font/interlight"
+        android:gravity="center|left"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+
+        app:layout_constraintLeft_toRightOf="@id/bigsoc"
+        app:layout_constraintTop_toTopOf="@id/bigsoc"
+        app:layout_constraintBottom_toBottomOf="@id/bigsoc"
+        tools:text="%" />
+    <TextView
+        android:id="@+id/chargerate"
+        android:visibility="invisible"
+        android:fontFeatureSettings="tnum"
+
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:textSize="30sp"
+        android:fontFamily="@font/intersemibold"
+
+        app:autoSizeMaxTextSize="40sp"
+        app:autoSizeMinTextSize="20sp"
+        app:autoSizeStepGranularity="5sp"
+        app:autoSizeTextType="uniform"
+        android:gravity="center|center"
+        app:layout_constraintTop_toBottomOf="@id/bigsoc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="250 kW"/>
 
     <ImageView
         android:id="@+id/autopilot"
@@ -331,7 +355,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <dev.nmullaney.tesladashboard.BatteryGauge
+    <app.candash.cluster.BatteryGauge
         android:id="@+id/fullbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
@@ -712,7 +736,7 @@
         app:layout_constraintCircle="@id/fronttempgauge"
         app:layout_constraintCircleRadius="0dp"
         />
-    <dev.nmullaney.tesladashboard.CircularGauge
+    <app.candash.cluster.CircularGauge
         android:id="@+id/fronttempgauge"
 
         android:layout_height="50dp"
@@ -777,7 +801,7 @@
         app:layout_constraintCircle="@id/reartempgauge"
         app:layout_constraintCircleRadius="0dp"
         />
-    <dev.nmullaney.tesladashboard.CircularGauge
+    <app.candash.cluster.CircularGauge
         android:id="@+id/reartempgauge"
 
         android:layout_height="50dp"
@@ -843,7 +867,7 @@
         app:layout_constraintCircleRadius="0dp"
 
         />
-    <dev.nmullaney.tesladashboard.CircularGauge
+    <app.candash.cluster.CircularGauge
         android:id="@+id/coolantflowgauge"
 
         android:layout_height="50dp"
@@ -907,7 +931,7 @@
         app:layout_constraintCircle="@id/fronttorquegauge"
         app:layout_constraintCircleRadius="0dp"
         />
-    <dev.nmullaney.tesladashboard.CircularGauge
+    <app.candash.cluster.CircularGauge
         android:id="@+id/fronttorquegauge"
 
         android:layout_height="50dp"
@@ -961,7 +985,7 @@
         app:layout_constraintCircleRadius="0dp"
         />
 
-    <dev.nmullaney.tesladashboard.CircularGauge
+    <app.candash.cluster.CircularGauge
         android:id="@+id/reartorquegauge"
 
         android:layout_height="50dp"
@@ -1033,7 +1057,7 @@
         app:layout_constraintCircleRadius="0dp"
         />
 
-    <dev.nmullaney.tesladashboard.CircularGauge
+    <app.candash.cluster.CircularGauge
         android:id="@+id/batttempgauge"
 
         android:layout_height="50dp"
@@ -1094,7 +1118,7 @@
         app:layout_constraintGuide_percent=".2"/>
 
 
-    <dev.nmullaney.tesladashboard.LinearGauge
+    <app.candash.cluster.LinearGauge
         android:id="@+id/power_bar"
         android:layout_height="5dp"
         android:layout_width="match_parent"
