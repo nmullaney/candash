@@ -616,7 +616,6 @@ class DashFragment : Fragment() {
 
 
 
-
 /*
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 if (leftTurnSignalVal.toInt() > 0) {
@@ -647,6 +646,8 @@ class DashFragment : Fragment() {
             }
 
  */
+
+
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
