@@ -730,37 +730,7 @@ class DashFragment : Fragment() {
                 }
             } else {
                 // in park
-                    if (power < 0f){
-                        for (chargingView in chargingViews()){
-                            chargingView.visibility = View.GONE
-                        }
-                        binding.chargemeter.visibility = View.VISIBLE
-                        viewModel.getValue(Constants.stateOfCharge)?.toFloat()
-                            ?.let { socVal ->
-                                binding.chargemeter.setGauge(socVal/100f, 16f, true)
-                                binding.bigsoc.text = socVal.toInt().toString()
-                                binding.chargemeter.invalidate()
-                                binding.bigsoc.visibility = View.VISIBLE
-                                binding.bigsocpercent.visibility = View.VISIBLE
-                                binding.bigsocpercent.text = '%'.toString()
 
-                                binding.chargerate.text = formatWatts(abs(battAmps * battVolts))
-                                binding.chargerate.visibility = View.VISIBLE
-
-                            }
-
-
-                    } else {
-                        binding.chargemeter.visibility = View.INVISIBLE
-                        binding.bigsoc.visibility = View.INVISIBLE
-                        binding.bigsocpercent.visibility = View.INVISIBLE
-
-                        binding.chargerate.visibility = View.INVISIBLE
-
-                        for (chargingView in chargingViews()){
-                            chargingView.visibility = View.VISIBLE
-                        }
-                    }
 
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE
                 binding.blindSpotLeft2a.visibility = View.INVISIBLE
@@ -769,7 +739,40 @@ class DashFragment : Fragment() {
             }
 
 
+        it.getValue(Constants.chargeStatus)?.let {chargeStatusVal ->
+            if (chargeStatusVal != Constants.chargeStatusInactive){
+                for (chargingView in chargingViews()){
+                    chargingView.visibility = View.GONE
+                }
+                binding.chargemeter.visibility = View.VISIBLE
+                viewModel.getValue(Constants.stateOfCharge)?.toFloat()
+                    ?.let { socVal ->
+                        binding.chargemeter.setGauge(socVal/100f, 32f, true)
+                        binding.bigsoc.text = socVal.toInt().toString()
+                        binding.chargemeter.invalidate()
+                        binding.bigsoc.visibility = View.VISIBLE
+                        binding.bigsocpercent.visibility = View.VISIBLE
+                        binding.chargerate.text = formatWatts(abs(battAmps * battVolts))
+                        binding.chargerate.visibility = View.VISIBLE
+
+                    }
+
+
+            } else {
+                binding.chargemeter.visibility = View.INVISIBLE
+                binding.bigsoc.visibility = View.INVISIBLE
+                binding.bigsocpercent.visibility = View.INVISIBLE
+
+                binding.chargerate.visibility = View.INVISIBLE
+
+                for (chargingView in chargingViews()){
+                    chargingView.visibility = View.VISIBLE
+                }
+            }
         }
+        }
+
+
     }
 
 
