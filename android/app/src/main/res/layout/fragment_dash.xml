@@ -71,9 +71,11 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:fontFamily="@font/intersemibold"
+
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="30sp"
+        android:letterSpacing="-.08"
 
         app:fontWeight="300"
         app:layout_constraintHeight_percent=".5"
@@ -84,7 +86,7 @@
         app:layout_constraintCircle="@id/chargemeter"
         app:layout_constraintCircleRadius="0dp"
 
-        tools:text="80" />
+        tools:text="5" />
 
     <TextView
         android:id="@+id/bigsocpercent"
@@ -99,7 +101,7 @@
         app:layout_constraintLeft_toRightOf="@id/bigsoc"
         app:layout_constraintTop_toTopOf="@id/bigsoc"
         app:layout_constraintBottom_toBottomOf="@id/bigsoc"
-        tools:text="%" />
+        android:text="%" />
     <TextView
         android:id="@+id/chargerate"
         android:visibility="invisible"
@@ -717,7 +719,8 @@
         android:text="0"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="@id/guideline1"
-        app:layout_constraintStart_toStartOf="@id/fronttemplabel"/>
+        app:layout_constraintStart_toStartOf="@id/fronttemplabel"
+        app:layout_constraintEnd_toEndOf="@id/fronttemplabel"/>
     <TextView
         android:id="@+id/fronttempunits"
 
@@ -782,7 +785,8 @@
         android:text="0"
         android:textSize="25sp"
         app:layout_constraintTop_toBottomOf="@id/reartemplabel"
-        app:layout_constraintStart_toStartOf="@id/reartemplabel"/>
+        app:layout_constraintStart_toStartOf="@id/reartemplabel"
+        app:layout_constraintEnd_toEndOf="@id/reartemplabel"/>
     <TextView
         android:id="@+id/reartempunits"
 

@@ -59,4 +59,12 @@ object Constants {
     const val frontTemp = "frontTemp"
     const val rearTemp = "rearTemp"
     const val coolantFlow = "coolantFlow"
+    const val chargeStatus = "chargeStatus"
+    const val chargeStatusConnected = 1f
+    const val chargeStatusInactive = 0f
+    const val chargeStatusEnabled = 5f
+    const val chargeStatusStandby = 2f
+    const val chargeStatusEVSETestActive = 3f
+    const val chargeStatusEVSETestPassed = 4f
+    const val chargeStatusFault = 6f
 }
