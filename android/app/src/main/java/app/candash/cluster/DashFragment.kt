@@ -617,35 +617,43 @@ class DashFragment : Fragment() {
 
 
 /*
-            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
-                if (leftTurnSignalVal.toInt() > 0) {
-                    binding.leftTurnSignalDark.visibility = View.VISIBLE
-                } else {
-                    binding.leftTurnSignalDark.visibility = View.INVISIBLE
-                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
-                }
-                if (leftTurnSignalVal.toInt() > 1) {
-                    binding.leftTurnSignalLight.visibility = View.VISIBLE
-                } else {
-                    binding.leftTurnSignalLight.visibility = View.INVISIBLE
+            it.getValue(Constants.indicatorLeft)?.let { leftTurnSignalVal ->
+                when (leftTurnSignalVal.toInt()){
+                    0 -> {
+                        binding.leftTurnSignalDark.visibility = View.INVISIBLE
+                        binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                    }
+                    1 -> {
+                        binding.leftTurnSignalLight.visibility = View.VISIBLE
+                        //binding.leftTurnSignalDark.visibility = View.VISIBLE
+                    }
+                    2 -> {
+                        binding.leftTurnSignalLight.visibility = View.VISIBLE
+                    }
                 }
             }
-            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
-                if (rightTurnSignalVal.toInt() > 0) {
-                    binding.rightTurnSignalDark.visibility = View.VISIBLE
-                } else {
-                    binding.rightTurnSignalDark.visibility = View.INVISIBLE
-                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
-                }
 
-                if (rightTurnSignalVal.toInt() > 1) {
-                    binding.rightTurnSignalLight.visibility = View.VISIBLE
-                } else {
-                    binding.rightTurnSignalLight.visibility = View.INVISIBLE
+            it.getValue(Constants.indicatorRight)?.let { rightTurnSignalVal ->
+                when (rightTurnSignalVal.toInt()){
+                    0 -> {
+                        binding.rightTurnSignalDark.visibility = View.INVISIBLE
+                        binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                    }
+                    1 -> {
+                        binding.rightTurnSignalLight.visibility = View.VISIBLE
+                        //binding.rightTurnSignalDark.visibility = View.VISIBLE
+                    }
+                    2 -> {
+                        //binding.rightTurnSignalLight.visibility = View.VISIBLE
+                    }
                 }
             }
+
 
  */
+
+
+
 
 
 

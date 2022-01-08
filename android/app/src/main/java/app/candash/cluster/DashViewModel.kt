@@ -104,10 +104,27 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun startCarStateJob() {
         carStateJob = viewModelScope.launch {
             dashRepository.carState().collect {
+                //var oldTimestamp = Timestamp(System.currentTimeMillis())
+                //var oldValue = 0f
                 for ((k, v) in it.carData){
+                    /*
+                    carStateHistory()[k]?.let { carStateItemVal ->
+                        oldTimestamp = carStateItemVal.timestamp
+                        oldValue = carStateItemVal.value
+                    }
+
+                     */
                     var ts = TimestampedValue(k, v.toFloat(), Timestamp(System.currentTimeMillis()) )
                     carStateHistory()[k] = ts
-                    Log.d(TAG, "Appending to history:"+k + v.toString())
+                    //Log.d(TAG, "Appending to history:"+k + v.toString())
+                    /*
+                    if (k == Constants.turnSignalLeft && v != oldValue) {
+                        var timeDiff = ts.timestamp.time - oldTimestamp.time
+                        Log.d(TAG, "leftTurnSignal: " + v.toString() + "interval (ms): " + timeDiff.toString())
+
+                    }
+
+                     */
                 }
                 carStateData.postValue(it)
 
