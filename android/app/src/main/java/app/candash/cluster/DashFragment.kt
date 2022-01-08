@@ -588,7 +588,7 @@ class DashFragment : Fragment() {
                 )
             }
 
-
+/*
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 binding.leftTurnSignal.setBackgroundResource(R.drawable.left_turn_anim)
                 var turnSignalAnimation =
@@ -614,18 +614,18 @@ class DashFragment : Fragment() {
                 }
             }
 
+ */
 
 
-/*
-            it.getValue(Constants.indicatorLeft)?.let { leftTurnSignalVal ->
+            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
                 when (leftTurnSignalVal.toInt()){
                     0 -> {
                         binding.leftTurnSignalDark.visibility = View.INVISIBLE
                         binding.leftTurnSignalLight.visibility = View.INVISIBLE
                     }
                     1 -> {
-                        binding.leftTurnSignalLight.visibility = View.VISIBLE
-                        //binding.leftTurnSignalDark.visibility = View.VISIBLE
+                        binding.leftTurnSignalLight.visibility = View.INVISIBLE
+                        binding.leftTurnSignalDark.visibility = View.VISIBLE
                     }
                     2 -> {
                         binding.leftTurnSignalLight.visibility = View.VISIBLE
@@ -633,24 +633,23 @@ class DashFragment : Fragment() {
                 }
             }
 
-            it.getValue(Constants.indicatorRight)?.let { rightTurnSignalVal ->
+            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
                 when (rightTurnSignalVal.toInt()){
                     0 -> {
                         binding.rightTurnSignalDark.visibility = View.INVISIBLE
                         binding.rightTurnSignalLight.visibility = View.INVISIBLE
                     }
                     1 -> {
-                        binding.rightTurnSignalLight.visibility = View.VISIBLE
-                        //binding.rightTurnSignalDark.visibility = View.VISIBLE
+                        binding.rightTurnSignalLight.visibility = View.INVISIBLE
+                        binding.rightTurnSignalDark.visibility = View.VISIBLE
                     }
                     2 -> {
-                        //binding.rightTurnSignalLight.visibility = View.VISIBLE
+                        binding.rightTurnSignalLight.visibility = View.VISIBLE
                     }
+
                 }
             }
 
-
- */
 
 
 
