@@ -47,13 +47,17 @@ class CANSignalHelper {
         addToMapList(mFrameSignalMap, CANSignal.frameId, CANSignal)
     }
     fun createCANSignals() {
+
         insertCANSignal(Constants.stateOfCharge, 0, Hex(0x33A), 48, 7, 1f, 0f)
         insertCANSignal(Constants.battVolts, 0, Hex(0x132), 0, 16, 0.01f, 0f)
         insertCANSignal(Constants.battAmps, 0, Hex(0x132), 16, 16, -.1f, 0f, signed=true)
 
         insertCANSignal(Constants.uiSpeed, 1, Hex(0x257), 24, 9, 1f, 0f)
-        //insertCANSignal(Constants.uiSpeedHighSpeed, 0, Hex(0x334), 16, 8, 1f, 50f)
+        //insertCANSignal(Constants.uiSpeedTestBus0, 0, Hex(0x257), 24, 9, 1f, 0f)
 
+        //insertCANSignal(Constants.uiSpeedHighSpeed, 0, Hex(0x334), 16, 8, 1f, 50f)
+        //insertCANSignal(Constants.indicatorLeft, 0, Hex(0x3E2), 4, 2, 1f, 0f)
+        //insertCANSignal(Constants.indicatorRight, 0, Hex(0x3E3), 4, 2, 1f, 0f)
         insertCANSignal(Constants.uiSpeedUnits, 1, Hex(0x257), 33, 1, 1f, 0f)
         insertCANSignal(Constants.blindSpotLeft, 1, Hex(0x399), 4, 2, 1f, 0f)
         insertCANSignal(Constants.blindSpotRight, 1, Hex(0x399), 6, 2, 1f, 0f)

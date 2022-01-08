@@ -67,4 +67,7 @@ object Constants {
     const val chargeStatusEVSETestActive = 3f
     const val chargeStatusEVSETestPassed = 4f
     const val chargeStatusFault = 6f
+    const val uiSpeedTestBus0 = "uiSpeedTestBus0"
+    const val indicatorLeft = "indicatorLeft"
+    const val indicatorRight = "indicatorRight"
 }
