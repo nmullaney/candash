@@ -99,8 +99,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                         Log.d(TAG, "Sending heartbeat on thread: ${Thread.currentThread().name}")
                         sendHello(getSocket())
                     }
-
-                    val buf = ByteArray(16)
+                    // up to 512 frames which are 16 bytes each
+                    val buf = ByteArray(16 * 512)
                     val packet = DatagramPacket(buf, buf.size, serverAddress())
                     Log.d(TAG, "C: Waiting to receive... on thread: ${Thread.currentThread().name}")
 
@@ -117,8 +117,20 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     }
 
                     //Log.d(TAG, "Packet from: " + packet.address + ":" + packet.port)
+                    for (i in buf.indices step 16){
 
-                    val newPandaFrame = NewPandaFrame(buf)
+                        val newPandaFrame = NewPandaFrame(buf.sliceArray(i..i+15))
+                        // Log.d(TAG, "bufindex = " + i.toString()+ " pandaFrame :" + newPandaFrame.frameId.toString())
+                        if (newPandaFrame.frameId == 0L){
+                            break
+                        } else if (newPandaFrame.frameId == 6L && newPandaFrame.busId == 15L) {
+                            // It's an ack
+                            sendFilter(getSocket())
+                        } else {
+                            handleFrame(newPandaFrame)
+                        }
+                    }
+
                     /*
                     Log.d(TAG, "Binary = " + buf.getPayloadBinaryString())
                     Log.d(TAG, "FrameId = " + newPandaFrame.frameIdHex.hexString)
@@ -126,12 +138,6 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                     Log.d(TAG, "FrameLength = " + newPandaFrame.frameLength)
                      */
 
-                    if (newPandaFrame.frameId == 6L && newPandaFrame.busId == 15L) {
-                        // It's an ack
-                        sendFilter(getSocket())
-                    } else {
-                        handleFrame(newPandaFrame)
-                    }
                     yield()
                 }
                 sendBye(getSocket())
