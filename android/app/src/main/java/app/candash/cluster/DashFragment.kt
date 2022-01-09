@@ -208,6 +208,8 @@ class DashFragment : Fragment() {
         } else {
             colorFrom = getBackgroundColor(isSunUp(viewModel))
         }
+        uiSpeedUnitsMPH = getBooleanPref("uiSpeedUnitsMPH")
+
         HRSPRS = getBooleanPref("HRSPRS")
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
         val bsColorTo = Color.parseColor("#FFEE0000")
@@ -424,6 +426,14 @@ class DashFragment : Fragment() {
                 )
                 binding.PRND.text = (ss)
             }
+            /*
+            it.getValue(Constants.maxSpeedAP)?.let { maxSpeedAPVal ->
+                binding.displaymaxspeed.text = maxSpeedAPVal.toInt().toString() + " MPH"
+            }
+
+             */
+
+
             it.getValue(Constants.frontTemp)?.let{ frontTempVal ->
                 binding.fronttemp.text = frontTempVal.toInt().toString()
                 binding.fronttempgauge.setGauge(frontTempVal.toFloat()/214f)
@@ -543,7 +553,17 @@ class DashFragment : Fragment() {
 
 
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
-                uiSpeedUnitsMPH = uiSpeedUnitsVal.toInt() == 0
+                if (uiSpeedUnitsVal.toInt() == 0) {
+
+                    uiSpeedUnitsMPH = true
+                    setBooleanPref("uiSpeedUnitsMPH", true)
+                    binding.unit.text = "mph"
+                } else{
+                    uiSpeedUnitsMPH = false
+                    setBooleanPref("uiSpeedUnitsMPH", false)
+                    binding.unit.text = "km/h"
+
+                }
             }
             if (showSOC == true) {
                 viewModel.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
@@ -555,7 +575,7 @@ class DashFragment : Fragment() {
                 }
             } else {
                 if (uiSpeedUnitsMPH == true) {
-                    binding.unit.text = "MPH"
+
 
                     viewModel.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
@@ -563,12 +583,10 @@ class DashFragment : Fragment() {
 
                     }
                 } else {
-                    binding.unit.text =
-                        "KPH"
 
                     viewModel.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
-                            ((stateOfChargeVal.toInt()) / .62).toString() + " km"
+                            ((stateOfChargeVal.toInt()) / .62).toInt().toString() + " km"
                     }
                 }
             }
@@ -588,33 +606,7 @@ class DashFragment : Fragment() {
                 )
             }
 
-/*
-            it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
-                binding.leftTurnSignal.setBackgroundResource(R.drawable.left_turn_anim)
-                var turnSignalAnimation =
-                    binding.leftTurnSignal.background as AnimationDrawable
-                if (leftTurnSignalVal.toInt() > 0) {
-                    binding.leftTurnSignal.visibility = View.VISIBLE
-                    turnSignalAnimation.start()
-                } else {
-                    turnSignalAnimation.stop()
-                    binding.leftTurnSignal.visibility = View.INVISIBLE
-                }
-            }
-            it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
-                binding.rightTurnSignal.setBackgroundResource(R.drawable.right_turn_anim)
-                var turnSignalAnimation =
-                    binding.rightTurnSignal.background as AnimationDrawable
-                if (rightTurnSignalVal.toInt() > 0) {
-                    binding.rightTurnSignal.visibility = View.VISIBLE
-                    turnSignalAnimation.start()
-                } else {
-                    turnSignalAnimation.stop()
-                    binding.rightTurnSignal.visibility = View.INVISIBLE
-                }
-            }
 
- */
 
 
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
@@ -979,7 +971,7 @@ class DashFragment : Fragment() {
             binding.coolantflowlabel.setTextColor(Color.WHITE)
             binding.coolantflowunits.setTextColor(Color.WHITE)
 
-            //binding.displaymaxspeed.setTextColor(Color.WHITE)
+            binding.displaymaxspeed.setTextColor(Color.WHITE)
 
 
         } else {
@@ -1035,7 +1027,7 @@ class DashFragment : Fragment() {
             binding.coolantflowlabel.setTextColor(Color.DKGRAY)
             binding.coolantflowunits.setTextColor(Color.DKGRAY)
 
-            //binding.displaymaxspeed.setTextColor(Color.BLACK)
+            binding.displaymaxspeed.setTextColor(Color.BLACK)
 
         }
         val wm = activity?.windowManager
@@ -1045,7 +1037,7 @@ class DashFragment : Fragment() {
     fun formatWatts(power: Float): String {
         if ((abs(power) < 10000)) {
             return "%.1f".format(power / 1000f) + " kW"
-        } else {
+    } else {
             return (power / 1000f).toInt().toString() + " kW"
         }
     }
