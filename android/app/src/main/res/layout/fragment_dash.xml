@@ -32,13 +32,12 @@
 
     <TextView
         android:id="@+id/unit"
-        android:visibility="invisible"
 
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:fontFamily="@font/interextrabold"
         android:gravity="center_horizontal|top"
-        android:text="@string/mph"
+        tools:text="km/h"
         app:autoSizeMaxTextSize="550sp"
         app:autoSizeMinTextSize="20sp"
         app:autoSizeStepGranularity="10sp"
@@ -147,6 +146,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/displaymaxspeed"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:gravity="right"
+        android:textSize="15sp"
+        android:fontFamily="@font/intersemibold"
+        app:layout_constraintStart_toEndOf="@id/autopilot_inactive"
+        tools:text="35 mph"/>
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
     <!--        android:layout_width="60dp"-->

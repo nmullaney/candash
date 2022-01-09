@@ -26,7 +26,7 @@ object Constants {
     const val frunkState = "frunkState"
     const val uiSpeedUnits = "UISpeedUnits"
     const val autopilotHands = "AutopilotHands"
-    const val maxSpeedAP = "AutopilotMaxSpeed"
+    const val maxSpeedAP = "maxSpeedAP"
     const val cruiseControlSpeed = "CruiseControlSpeed"
     const val uiSpeedHighSpeed = "UISpeedHighSpeed"
     const val visionSpeedLimit = "VisionSpeedLimit"
@@ -70,4 +70,5 @@ object Constants {
     const val uiSpeedTestBus0 = "uiSpeedTestBus0"
     const val indicatorLeft = "indicatorLeft"
     const val indicatorRight = "indicatorRight"
+    const val conditionalSpeedLimit = "conditionalSpeedLimit"
 }
