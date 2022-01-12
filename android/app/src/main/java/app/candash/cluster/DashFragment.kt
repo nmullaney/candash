@@ -86,7 +86,9 @@ class DashFragment : Fragment() {
             binding.leftTurnSignalLight,
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
-            binding.rightTurnSignalDark
+            binding.rightTurnSignalDark,
+            binding.autopilot,
+            binding.autopilotInactive
         )
     
     private fun sideUIViews(): List<View> =
@@ -229,7 +231,7 @@ class DashFragment : Fragment() {
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
             binding.speed.text = vehicleSpeedVal.toInt().toString()
         }
-        /*
+
         if (viewModel.getValue(Constants.driveConfig) == Constants.rwd){
             binding.fronttorquegauge.visibility = View.INVISIBLE
             binding.fronttorquelabel.visibility = View.INVISIBLE
@@ -237,7 +239,7 @@ class DashFragment : Fragment() {
             binding.fronttorqueunits.visibility = View.INVISIBLE
         }
 
-         */
+         
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
             binding.fullbattery.setGauge(it)
@@ -557,7 +559,7 @@ class DashFragment : Fragment() {
 
                     uiSpeedUnitsMPH = true
                     setBooleanPref("uiSpeedUnitsMPH", true)
-                    binding.unit.text = "mph"
+                    binding.unit.text = "MPH"
                 } else{
                     uiSpeedUnitsMPH = false
                     setBooleanPref("uiSpeedUnitsMPH", false)
