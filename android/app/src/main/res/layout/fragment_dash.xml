@@ -17,7 +17,7 @@
         android:letterSpacing="-.1"
         android:paddingBottom="0dp"
         android:textColor="@color/black"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="25dp"
         app:autoSizeMaxTextSize="240sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"

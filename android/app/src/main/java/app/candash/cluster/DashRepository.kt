@@ -20,6 +20,10 @@ class DashRepository @ExperimentalCoroutinesApi
         getPandaService().startRequests()
     }
 
+    fun isRunning() : Boolean {
+        return getPandaService().isRunning()
+    }
+
     @ExperimentalCoroutinesApi
     suspend fun shutdown() {
         getPandaService().shutdown()

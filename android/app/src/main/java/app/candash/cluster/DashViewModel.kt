@@ -63,6 +63,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         }
     }
 
+    fun isRunning() : Boolean{
+        return dashRepository.isRunning()
+    }
+
     fun shutdown() {
         viewModelScope.launch {
             dashRepository.shutdown()
