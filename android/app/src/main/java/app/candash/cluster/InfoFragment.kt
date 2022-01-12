@@ -56,11 +56,16 @@ class InfoFragment() : Fragment() {
 
         }
         binding.startButton.setOnClickListener {
-            viewModel.startUp()
+            if (viewModel.isRunning() == false){
+                viewModel.startUp()
+            }
+
         }
 
         binding.stopButton.setOnClickListener {
-            viewModel.shutdown()
+            if (viewModel.isRunning() == true){
+                viewModel.shutdown()
+            }
         }
 
         binding.root.setOnLongClickListener {

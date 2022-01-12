@@ -6,4 +6,5 @@ interface PandaService {
     suspend fun startRequests()
     suspend fun shutdown()
     fun carState() : Flow<CarState>
+    fun isRunning() : Boolean
 }

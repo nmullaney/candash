@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.IOException
 import java.net.*
-import java.util.*
 import java.util.concurrent.Executors
 
 
@@ -78,6 +77,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
             }
         }
         return (String(chars).toLong(radix = 2)) * -1
+    }
+
+    override fun isRunning() : Boolean {
+        return !shutdown
     }
 
     @ExperimentalCoroutinesApi

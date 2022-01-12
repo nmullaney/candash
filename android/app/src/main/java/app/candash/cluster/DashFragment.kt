@@ -3,12 +3,9 @@ package app.candash.cluster
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
-
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
-import android.graphics.drawable.AnimationDrawable
-
 import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
@@ -229,6 +226,8 @@ class DashFragment : Fragment() {
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
+            // lower height of default Inter font to match tesla
+            binding.speed.scaleY = .9f
             binding.speed.text = vehicleSpeedVal.toInt().toString()
         }
 
