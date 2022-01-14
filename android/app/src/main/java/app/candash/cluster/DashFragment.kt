@@ -173,6 +173,9 @@ class DashFragment : Fragment() {
             apply()
         }
     }
+    private fun prefContains(name:String) : Boolean {
+        return prefs.contains(name)
+    }
     private fun getPref(name:String) : Float {
         return prefs.getFloat(name, 0f)
     }
@@ -261,7 +264,14 @@ class DashFragment : Fragment() {
 
         }
         viewModel.getValue(Constants.isSunUp)?.let { sunUpVal ->
-            setColors(sunUpVal.toInt())
+            if (!prefContains("sunUp")){
+                setColors(sunUpVal.toInt())
+                setPref("sunUp", sunUpVal)
+            }
+            if (getPref("sunUp") != sunUpVal){
+                setColors(sunUpVal.toInt())
+                setPref("sunUp", sunUpVal)
+            }
         }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
@@ -959,7 +969,16 @@ class DashFragment : Fragment() {
             binding.frontbraketempgauge.setDayValue(0)
             binding.rearbraketempgauge.setDayValue(0)
             binding.coolantflowgauge.setDayValue(0)
-
+            binding.powerBar.invalidate()
+            binding.fullbattery.invalidate()
+            binding.fronttorquegauge.invalidate()
+            binding.reartorquegauge.invalidate()
+            binding.batttempgauge.invalidate()
+            binding.fronttempgauge.invalidate()
+            binding.reartempgauge.invalidate()
+            binding.frontbraketempgauge.invalidate()
+            binding.rearbraketempgauge.invalidate()
+            binding.coolantflowgauge.invalidate()
             //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
@@ -1023,7 +1042,16 @@ class DashFragment : Fragment() {
             binding.frontbraketempgauge.setDayValue(1)
             binding.rearbraketempgauge.setDayValue(1)
             binding.coolantflowgauge.setDayValue(1)
-
+            binding.powerBar.invalidate()
+            binding.fullbattery.invalidate()
+            binding.fronttorquegauge.invalidate()
+            binding.reartorquegauge.invalidate()
+            binding.batttempgauge.invalidate()
+            binding.fronttempgauge.invalidate()
+            binding.reartempgauge.invalidate()
+            binding.frontbraketempgauge.invalidate()
+            binding.rearbraketempgauge.invalidate()
+            binding.coolantflowgauge.invalidate()
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")

@@ -18,7 +18,8 @@
         android:paddingBottom="0dp"
         android:textColor="@color/black"
         android:layout_marginBottom="25dp"
-        app:autoSizeMaxTextSize="240sp"
+        android:scaleY=".9"
+        app:autoSizeMaxTextSize="300sp"
         app:autoSizeMinTextSize="30sp"
         app:autoSizeStepGranularity="10sp"
         app:autoSizeTextType="uniform"
@@ -28,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5"
 
-        tools:text="17" />
+        tools:text="125" />
 
     <TextView
         android:id="@+id/unit"
@@ -47,7 +48,7 @@
         app:layout_constraintBottom_toBottomOf="@id/speed"
         app:layout_constraintCircle="@id/speed"
         app:layout_constraintCircleAngle="180"
-        app:layout_constraintCircleRadius="110dp"
+        app:layout_constraintCircleRadius="115dp"
         tools:layout_editor_absoluteX="461dp"
         tools:layout_editor_absoluteY="318dp" />
 

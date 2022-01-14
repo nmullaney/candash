@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CAN Dash</string>
+    <string name="app_name">CANdash</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="panda_data_received">Panda Data Received</string>
