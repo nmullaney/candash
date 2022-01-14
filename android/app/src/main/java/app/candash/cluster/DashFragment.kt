@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.pow
 
 
@@ -113,8 +114,15 @@ class DashFragment : Fragment() {
             binding.coolantflow,
             binding.coolantflowlabel,
             binding.coolantflowunits,
-            binding.coolantflowgauge
-        
+            binding.coolantflowgauge,
+            binding.frontbraketemp,
+            binding.frontbraketemplabel,
+            binding.frontbraketempunits,
+            binding.frontbraketempgauge,
+            binding.rearbraketemp,
+            binding.rearbraketemplabel,
+            binding.rearbraketempunits,
+            binding.rearbraketempgauge,
         )
 
     private fun leftSideUIViews(): List<View> =
@@ -127,11 +135,14 @@ class DashFragment : Fragment() {
             binding.reartemplabel,
             binding.reartempunits,
             binding.reartempgauge,
-            binding.coolantflow,
-            binding.coolantflowlabel,
-            binding.coolantflowunits,
-            binding.coolantflowgauge
-
+            binding.frontbraketemp,
+            binding.frontbraketemplabel,
+            binding.frontbraketempunits,
+            binding.frontbraketempgauge,
+            binding.rearbraketemp,
+            binding.rearbraketemplabel,
+            binding.rearbraketempunits,
+            binding.rearbraketempgauge,
         )
 
     private fun chargingViews(): List<View> =
@@ -438,7 +449,18 @@ class DashFragment : Fragment() {
 
              */
 
-
+            if (it.containsKey(Constants.brakeTempFL) && it.containsKey(Constants.brakeTempFR)){
+                val frontBrakeTemp = max(it.getValue(Constants.brakeTempFL)!!.toInt(), it.getValue(Constants.brakeTempFR)!!.toInt())
+                binding.frontbraketemp.text = frontBrakeTemp.toString()
+                binding.frontbraketempgauge.setGauge(frontBrakeTemp.toFloat()/984f)
+                binding.fronttempgauge.invalidate()
+            }
+            if (it.containsKey(Constants.brakeTempRL) && it.containsKey(Constants.brakeTempRR)){
+                val rearBrakeTemp = max(it.getValue(Constants.brakeTempRL)!!.toInt(), it.getValue(Constants.brakeTempRR)!!.toInt())
+                binding.rearbraketemp.text = rearBrakeTemp.toString()
+                binding.rearbraketempgauge.setGauge(rearBrakeTemp.toFloat()/984f)
+                binding.reartempgauge.invalidate()
+            }
             it.getValue(Constants.frontTemp)?.let{ frontTempVal ->
                 binding.fronttemp.text = frontTempVal.toInt().toString()
                 binding.fronttempgauge.setGauge(frontTempVal.toFloat()/214f)
@@ -934,7 +956,10 @@ class DashFragment : Fragment() {
             binding.batttempgauge.setDayValue(0)
             binding.fronttempgauge.setDayValue(0)
             binding.reartempgauge.setDayValue(0)
+            binding.frontbraketempgauge.setDayValue(0)
+            binding.rearbraketempgauge.setDayValue(0)
             binding.coolantflowgauge.setDayValue(0)
+
             //window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
@@ -969,6 +994,12 @@ class DashFragment : Fragment() {
             binding.fronttemp.setTextColor(Color.WHITE)
             binding.fronttemplabel.setTextColor(Color.WHITE)
             binding.fronttempunits.setTextColor(Color.WHITE)
+            binding.frontbraketemp.setTextColor(Color.WHITE)
+            binding.frontbraketemplabel.setTextColor(Color.WHITE)
+            binding.frontbraketempunits.setTextColor(Color.WHITE)
+            binding.rearbraketemp.setTextColor(Color.WHITE)
+            binding.rearbraketemplabel.setTextColor(Color.WHITE)
+            binding.rearbraketempunits.setTextColor(Color.WHITE)
 
             binding.reartemp.setTextColor(Color.WHITE)
             binding.reartemplabel.setTextColor(Color.WHITE)
@@ -989,6 +1020,10 @@ class DashFragment : Fragment() {
             binding.fronttempgauge.setDayValue(1)
             binding.reartempgauge.setDayValue(1)
             binding.coolantflowgauge.setDayValue(1)
+            binding.frontbraketempgauge.setDayValue(1)
+            binding.rearbraketempgauge.setDayValue(1)
+            binding.coolantflowgauge.setDayValue(1)
+
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
@@ -1029,6 +1064,13 @@ class DashFragment : Fragment() {
             binding.reartemp.setTextColor(Color.DKGRAY)
             binding.reartemplabel.setTextColor(Color.DKGRAY)
             binding.reartempunits.setTextColor(Color.DKGRAY)
+
+            binding.frontbraketemp.setTextColor(Color.DKGRAY)
+            binding.frontbraketemplabel.setTextColor(Color.DKGRAY)
+            binding.frontbraketempunits.setTextColor(Color.DKGRAY)
+            binding.rearbraketemp.setTextColor(Color.DKGRAY)
+            binding.rearbraketemplabel.setTextColor(Color.DKGRAY)
+            binding.rearbraketempunits.setTextColor(Color.DKGRAY)
             binding.coolantflow.setTextColor(Color.DKGRAY)
             binding.coolantflowlabel.setTextColor(Color.DKGRAY)
             binding.coolantflowunits.setTextColor(Color.DKGRAY)
