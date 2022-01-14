@@ -26,6 +26,9 @@ class MockPandaService : PandaService {
             }
         }
     }
+    override fun isRunning() : Boolean {
+        return !shutdown
+    }
 
     override suspend fun shutdown() {
         withContext(pandaContext) {
@@ -59,7 +62,8 @@ class MockPandaService : PandaService {
                 Constants.gearSelected to Constants.gearPark.toFloat(),
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -23f,
-                Constants.battVolts to 390f
+                Constants.battVolts to 390f,
+                Constants.uiSpeed to 0.0f,
 
 
             )),
@@ -69,14 +73,17 @@ class MockPandaService : PandaService {
                 Constants.driveConfig to 1f,
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -10f,
-                Constants.battVolts to 390f
+                Constants.battVolts to 390f,
+                Constants.uiSpeed to 22.0f,
 
 
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
-                Constants.isSunUp to 1f
-            )))
+                Constants.isSunUp to 1f,
+                Constants.uiSpeed to 65.0f,
+
+                )))
 }
 /*
     private fun mockCarStates() : List<CarState> =

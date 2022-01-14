@@ -60,7 +60,7 @@ class BatteryGauge @JvmOverloads constructor(
         var stopX: Float = 0f
         paint.strokeWidth = 15f.px
         paint.setColorFilter(lineColor)
-        canvas?.drawLine(3f.px, 15f.px, (3f+powerWidth).px, 15f.px, paint)
+        canvas?.drawLine(3f.px, 12.5f.px, (3f+powerWidth).px, 12.5f.px, paint)
 
 
     }

@@ -1,12 +1,12 @@
 package app.candash.cluster;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Arrays;
-
 import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
 
 public class PandaFrame {
     private static final String TAG = PandaFrame.class.getSimpleName();
