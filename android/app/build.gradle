@@ -9,8 +9,11 @@ apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     signingConfigs {
-        release {
-        }
+
+        release {}
+
+
+
     }
     compileSdk 30
     buildToolsVersion "30.0.2"
