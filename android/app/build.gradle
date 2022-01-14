@@ -15,6 +15,7 @@ android {
     compileSdk 30
     buildToolsVersion "30.0.2"
 
+
     defaultConfig {
         applicationId "app.candash.cluster"
         minSdkVersion 23
