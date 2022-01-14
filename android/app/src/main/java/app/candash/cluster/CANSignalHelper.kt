@@ -68,8 +68,8 @@ class CANSignalHelper {
         insertCANSignal(Constants.isSunUp, 0, Hex(0x2D3), 25, 2, 1f, 0f)
         //insertCANSignal(Constants.rearLeftVehicle, 1, Hex(0x22E), 36, 9, 1f, 0f)
         //insertCANSignal(Constants.rearRightVehicle, 1, Hex(0x22E), 9, 9, 1f, 0f)
-        insertCANSignal(Constants.leftVehicle, 0, Hex(0x22E), 45, 9, 1f, 0f)
-        insertCANSignal(Constants.rightVehicle, 0, Hex(0x22E), 0, 9, 1f, 0f)
+        insertCANSignal(Constants.leftVehicle, 1, Hex(0x22E), 45, 9, 1f, 0f)
+        insertCANSignal(Constants.rightVehicle, 1, Hex(0x22E), 0, 9, 1f, 0f)
         insertCANSignal(Constants.autopilotState, 1, Hex(0x399), 0, 4, 1f, 0f)
         insertCANSignal(Constants.autopilotHands, 1, Hex(0x399), 42, 4, 1f, 0f)
         insertCANSignal(Constants.cruiseControlSpeed, 0, Hex(0x368), 32, 9, .5f, 0f)
@@ -92,6 +92,13 @@ class CANSignalHelper {
         insertCANSignal(Constants.rearTemp, 0, Hex(0x395), 24, 8, 1f, -40f)
         insertCANSignal(Constants.coolantFlow, 0, Hex(0x241), 22, 9, .11f, 0f)
         insertCANSignal(Constants.chargeStatus, 0, Hex(0x204), 4, 2, 1f, 0f)
+        insertCANSignal(Constants.brakeTempFL, 0, Hex(0x3FE), 0, 10, 1f, -40f)
+        insertCANSignal(Constants.brakeTempFR, 0, Hex(0x3FE), 10, 10, 1f, -40f)
+        insertCANSignal(Constants.brakeTempRL, 0, Hex(0x3FE), 20, 10, 1f, -40f)
+        insertCANSignal(Constants.brakeTempRR, 0, Hex(0x3FE), 30, 10, 1f, -40f)
+
+
+
         //insertCANSignal(Constants.vehicleSpeed, 1, Hex(0x175), 42, 10, .5f, 0f)
 
 
