@@ -236,6 +236,10 @@ class DashFragment : Fragment() {
             binding.fronttorquelabel.visibility = View.INVISIBLE
             binding.fronttorque.visibility = View.INVISIBLE
             binding.fronttorqueunits.visibility = View.INVISIBLE
+            binding.fronttempgauge.visibility = View.INVISIBLE
+            binding.fronttemplabel.visibility = View.INVISIBLE
+            binding.fronttemp.visibility = View.INVISIBLE
+            binding.fronttempunits.visibility = View.INVISIBLE
         }
 
          
@@ -537,6 +541,7 @@ class DashFragment : Fragment() {
 
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
                 var sensingSpeedLimit = 35
+                binding.speed.scaleY = .9f
 
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
 
