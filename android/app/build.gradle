@@ -9,12 +9,7 @@ apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     signingConfigs {
-        release {
-            storeFile file('C:\\Users\\osuni\\Documents\\osunick.jks')
-            storePassword '***REMOVED***'
-            keyAlias 'key1'
-            keyPassword '***REMOVED***'
-        }
+        release {}
     }
     compileSdk 30
     buildToolsVersion "30.0.2"
