@@ -71,4 +71,7 @@ object Constants {
     const val brakeTempFR = "brakeTempFR"
     const val brakeTempRL = "brakeTempRL"
     const val brakeTempRR = "brakeTempRR"
+    const val busTestResult = "busTestResult"
+    const val chassisBus = 1
+    const val vehicleBus = 0
 }

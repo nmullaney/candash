@@ -164,7 +164,24 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     private fun handleFrame(frame: NewPandaFrame) {
         var binaryPayloadString = ""
         val updateState = CarState(HashMap())
+        val busTest = sharedPreferences.getInt(Constants.busTestResult, 2)
+        if (busTest == 2 && (frame.frameIdHex == Hex(0x132))){
+            with (sharedPreferences.edit()){
+                putInt(Constants.busTestResult, Constants.vehicleBus)
+                apply()
+            }
+            sendFilter(getSocket())
+        }
 
+        if (busTest == 2 && (frame.frameIdHex == Hex(0x22E))){
+            // bus 0 is Chassis Bus
+            with (sharedPreferences.edit()){
+                putInt(Constants.busTestResult, Constants.chassisBus)
+                apply()
+            }
+            sendFilter(getSocket())
+
+        }
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
             if (frame.getCANValue(channel) != null){
                 carState.updateValue(channel.name, frame.getCANValue(channel)!!)
@@ -205,7 +222,19 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
 
     private fun sendFilter(socket: DatagramSocket) {
-        sendData(socket, signalHelper.socketFilterToInclude())
+        val result = sharedPreferences.getInt(Constants.busTestResult, 2)
+        if (result == 0){
+            sendData(socket, signalHelper.socketFilterToInclude())
+        }
+        if (result == 1) {
+            // bus 0 canServer A = chassis bus
+            sendData(socket, signalHelper.socketFilterToInclude(true))
+        }
+        if (result == 2){
+            // need to send test signals to figure this out
+            sendData(socket, signalHelper.testSocketFilterToInclude())
+        }
+
         // Uncomment this to send all data
         //sendData(socket, byteArrayOf(0x0C))
     }

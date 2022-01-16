@@ -1,5 +1,7 @@
 package app.candash.cluster
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Bundle
@@ -21,7 +23,8 @@ class InfoFragment() : Fragment() {
     private lateinit var pandaInfo: NsdServiceInfo
     private lateinit var viewModel: DashViewModel
     private var zeroconfHost : String = ""
-
+    private lateinit var prefs : SharedPreferences
+    private lateinit var editor : SharedPreferences.Editor
 
 
     override fun onCreateView(
@@ -30,6 +33,8 @@ class InfoFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInfoBinding.inflate(inflater, container, false)
+        prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
+        editor = prefs.edit()
         return binding.root
     }
 
@@ -45,11 +50,15 @@ class InfoFragment() : Fragment() {
         binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
 
         binding.saveButton.setOnClickListener {
+            editor.remove(Constants.busTestResult)
+            editor.commit()
             viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
         }
         binding.scanButton.setOnClickListener {
 
             viewModel.getZeroconfHost().observe(viewLifecycleOwner){
+                editor.remove(Constants.busTestResult)
+                editor.commit()
                 viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, it)
                 binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
             }
@@ -57,6 +66,8 @@ class InfoFragment() : Fragment() {
         }
         binding.startButton.setOnClickListener {
             if (viewModel.isRunning() == false){
+                editor.remove(Constants.busTestResult)
+                editor.commit()
                 viewModel.startUp()
             }
 
