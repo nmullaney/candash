@@ -17,7 +17,14 @@ class NewPandaFrame(wholeByteArray: ByteArray) {
             value + (byte.toUByte().toLong() shl (index * 8))
         }
     }
-
+    fun isZero() : Boolean {
+        for (b in payloadByteArray) {
+            if (b.toInt() != 0) {
+                return false
+            }
+        }
+        return true
+    }
     fun getCANValue(canSignal: CANSignal): Float? {
         if (!isCorrectMux(canSignal)) {
             return null

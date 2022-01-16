@@ -166,6 +166,22 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
         val updateState = CarState(HashMap())
 
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
+            // since I am using the 'any bus' filter, 0x399 exists on both buses with different data, so hard coding
+            // a filter to remove the undesirable frame.
+            if (frame.frameIdHex == Hex(0x399) && (frame.frameLength == 3L)){
+                return
+            }
+            if (frame.frameIdHex == Hex(0x3FE) && (frame.frameLength == 8L)){
+                return
+            }
+            if (frame.frameIdHex == Hex(0x395) && (frame.getCANValue(channel) == -40F)){
+                return
+            }
+
+            if (frame.frameIdHex == Hex(0x396) || frame.frameIdHex == Hex(0x395)) {
+                Log.d(TAG, "frame ID: "+frame.frameIdHex.toString()+ "value: " +frame.getCANValue(channel) + "length: " +frame.frameLength.toString() + "name: " + channel.name)
+            }
+
             if (frame.getCANValue(channel) != null){
                 carState.updateValue(channel.name, frame.getCANValue(channel)!!)
                 carStateFlow.value = CarState(HashMap(carState.carData))
