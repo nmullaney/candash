@@ -174,7 +174,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
             if (frame.frameIdHex == Hex(0x3FE) && (frame.frameLength == 8L)){
                 return
             }
-            if (frame.frameIdHex == Hex(0x395) && (frame.getCANValue(channel) == -40F)){
+            // all bytes in the wrong  bus 0x395 frame are 0 except for the first
+            if (frame.frameIdHex == Hex(0x395) && (frame.isZero(1))){
                 return
             }
 

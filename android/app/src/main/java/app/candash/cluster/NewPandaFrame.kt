@@ -12,19 +12,22 @@ class NewPandaFrame(wholeByteArray: ByteArray) {
     val frameLength = secondHeaderValue and 0x0F
     val busId = secondHeaderValue shr 4
 
-    private fun getHeaderValue(start: Int, length: Int) : Long {
-        return headerByteArray.sliceArray(start until (start + length)).foldIndexed(0L) { index, value, byte ->
-            value + (byte.toUByte().toLong() shl (index * 8))
-        }
+    private fun getHeaderValue(start: Int, length: Int): Long {
+        return headerByteArray.sliceArray(start until (start + length))
+            .foldIndexed(0L) { index, value, byte ->
+                value + (byte.toUByte().toLong() shl (index * 8))
+            }
     }
-    fun isZero() : Boolean {
-        for (b in payloadByteArray) {
-            if (b.toInt() != 0) {
+    // for checking if the bytes in the range specified are zero (useful for tossing out unwanted frames from the wrong bus)
+    fun isZero(start: Int = 0, end: Int = (payloadByteArray.size - 1)): Boolean {
+        for (i in start..end) {
+            if (payloadByteArray[i].toInt() != 0) {
                 return false
             }
         }
         return true
     }
+
     fun getCANValue(canSignal: CANSignal): Float? {
         if (!isCorrectMux(canSignal)) {
             return null
@@ -37,7 +40,7 @@ class NewPandaFrame(wholeByteArray: ByteArray) {
             val byteIndex = startBit / 8
             val endBitForByte = 8 - (startBit % 8)
             val bitLengthForByte = endBitForByte.coerceAtMost(totalLength)
-            val valueForByte : Long =
+            val valueForByte: Long =
                 (payloadByteArray[byteIndex].toLong() shr (8 - endBitForByte) and rightMask(
                     8 - bitLengthForByte
                 ).toLong())
@@ -53,8 +56,8 @@ class NewPandaFrame(wholeByteArray: ByteArray) {
         }
     }
 
-    private fun valueToSigned(value: Long, bits : Int) : Long {
-        val msbMask : Long = 1L shl (bits - 1)
+    private fun valueToSigned(value: Long, bits: Int): Long {
+        val msbMask: Long = 1L shl (bits - 1)
         return (value xor msbMask) - msbMask
     }
 
