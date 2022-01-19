@@ -50,7 +50,8 @@ class MockPandaService : PandaService {
                 Constants.gearSelected to Constants.gearPark.toFloat(),
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -20f,
-                Constants.battVolts to 390f
+                Constants.battVolts to 390f,
+                Constants.uiSpeedUnits to 0f,
 
 
                 )),
@@ -62,6 +63,8 @@ class MockPandaService : PandaService {
                 Constants.gearSelected to Constants.gearPark.toFloat(),
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -23f,
+                Constants.uiSpeedUnits to 0f,
+
                 Constants.battVolts to 390f,
                 Constants.uiSpeed to 0.0f,
 
@@ -74,6 +77,8 @@ class MockPandaService : PandaService {
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -10f,
                 Constants.battVolts to 390f,
+                Constants.uiSpeedUnits to 0f,
+
                 Constants.uiSpeed to 22.0f,
 
 
@@ -82,6 +87,7 @@ class MockPandaService : PandaService {
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.uiSpeed to 65.0f,
+                Constants.uiSpeedUnits to 0f,
 
                 )))
 }

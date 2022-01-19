@@ -34,18 +34,16 @@
         android:id="@+id/unit"
 
         android:layout_width="200dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:fontFamily="@font/interregular"
         android:gravity="center_horizontal|top"
         tools:text="km/h"
-        app:autoSizeMaxTextSize="550dp"
-        app:autoSizeMinTextSize="20dp"
-        app:autoSizeStepGranularity="10dp"
+        android:textSize="30dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/speed"
         app:layout_constraintCircle="@id/speed"
         app:layout_constraintCircleAngle="180"
-        app:layout_constraintCircleRadius="110dp"
+        app:layout_constraintCircleRadius="120dp"
         />
 
 

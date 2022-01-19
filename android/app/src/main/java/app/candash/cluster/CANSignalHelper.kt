@@ -53,11 +53,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.battAmps, -1, Hex(0x132), 16, 16, -.1f, 0f, signed=true)
 
         insertCANSignal(Constants.uiSpeed, -1, Hex(0x257), 24, 9, 1f, 0f)
-        //insertCANSignal(Constants.uiSpeedTestBus0, 0, Hex(0x257), 24, 9, 1f, 0f)
-
         //insertCANSignal(Constants.uiSpeedHighSpeed, -1, Hex(0x257), 34, 9, 1f, 0f)
-        //insertCANSignal(Constants.indicatorLeft, 0, Hex(0x3E2), 4, 2, 1f, 0f)
-        //insertCANSignal(Constants.indicatorRight, 0, Hex(0x3E3), 4, 2, 1f, 0f)
         insertCANSignal(Constants.uiSpeedUnits, -1, Hex(0x257), 33, 1, 1f, 0f)
         insertCANSignal(Constants.blindSpotLeft, -1, Hex(0x399), 4, 2, 1f, 0f)
         insertCANSignal(Constants.blindSpotRight, -1, Hex(0x399), 6, 2, 1f, 0f)
@@ -96,12 +92,6 @@ class CANSignalHelper {
         insertCANSignal(Constants.brakeTempFR, -1, Hex(0x3FE), 10, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRL, -1, Hex(0x3FE), 20, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRR, -1, Hex(0x3FE), 30, 10, 1f, -40f)
-
-
-
-        //insertCANSignal(Constants.vehicleSpeed, 1, Hex(0x175), 42, 10, .5f, 0f)
-
-
 
     }
 

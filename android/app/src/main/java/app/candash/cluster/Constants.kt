@@ -71,4 +71,8 @@ object Constants {
     const val brakeTempFR = "brakeTempFR"
     const val brakeTempRL = "brakeTempRL"
     const val brakeTempRR = "brakeTempRR"
+    const val showPerfGauges = 2f
+    const val showPowerGauges = 1f
+    const val showSimpleGauges = 0f
+    const val gaugeMode = "gaugeMode"
 }
