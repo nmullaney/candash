@@ -1,4 +1,4 @@
-What is CANdash?
+# What is CANdash?
 
 CANdash is an Android app that turns your Android device into an instrument cluster for your Tesla Model 3 or Y. It is designed to fit in with the Tesla user experience, and add capabilities that are not in your current instrumentation, like live blind spot monitoring. For more visit https://candash.app
 
@@ -8,11 +8,11 @@ CANdash is an Android app that turns your Android device into an instrument clus
 ![Screenshot_20220117-111104(1)](https://user-images.githubusercontent.com/523563/150214811-041b5a21-c847-4523-bcc9-dc4fb804bd6c.png)
 
 
-Compile
+# Compile
 
 Clone the repo and make sure you open the project from the android subdirectory. It should then compile normally.
 
-Setup
+# Setup
 
 First, you must purchase and install a CANserver in your tesla, if you want blind spot monitoring you will need the dual bus Tesla version. http://www.jwardell.com/canserver/
 Please update your CANserver to Version 2.1 of the firmware. Easiest way is to connect your canserver to your home wifi and using a desktop browser to "check for updates" in the CANserver webui.
@@ -23,7 +23,7 @@ Launch the CAN Dash and long press any blank area on the screen to bring up the 
 Once you are sure you are connected to the CANserver, click ‘scan’ and if the phone and CANserver are on the same network, the IP address should auto populate and you should start seeing data appear on the right side of the screen. Once you see this, press the ‘DASH’ button to start the dashboard.
 If you do not plug in the phone it will follow your display preferences for sleep and time out. If the device has power then it will keep the display on with any auto-brightness you have enabled.
 
-Dash View
+# Dash View
 
 This screen should work without any user interaction required.
 Tap the speed units (MPH or km/h) to toggle the performance gauges
@@ -35,11 +35,13 @@ Blind spot monitoring is based on the ultrasonic sensors in the rear bumper, as 
 If you turn on your signal and the car sees a car in your blind spot, the background of the dashboard will turn red
 If the phone is plugged in the screen should never turn off- let me know if it does
 
-Auto launch
+# Auto launch
+
 If you want to use this on a device that is always in your car, consider installing Tasker. With Tasker you can have the phone automatically turn on the hotspot when plugged in or connected to vehicle bluetooth, and turn off the hotspot when the phone is unplugged (if you have it plugged into your car, this will happen when the car sleeps)
 To have the phone power on automatically when plugged in, use this fastboot command: fastboot oem off-mode-charge 0
 
-Known issues:
+# Known issues
+
 Speed will occasionally pause for a second or two (possible CANServer issue)
 
 
