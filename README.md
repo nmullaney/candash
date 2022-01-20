@@ -1,5 +1,7 @@
 # What is CANdash?
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FqJygy1jJZ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 CANdash is an Android app that turns your Android device into an instrument cluster for your Tesla Model 3 or Y. It is designed to fit in with the Tesla user experience, and add capabilities that are not in your current instrumentation, like live blind spot monitoring. For more visit https://candash.app
 
 ![Screenshot_20220117-111104(1)](https://user-images.githubusercontent.com/523563/150214706-b8a09117-093d-4b32-a459-79da69aa4502.png)
