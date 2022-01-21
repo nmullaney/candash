@@ -48,6 +48,13 @@ To have the phone power on automatically when plugged in, use this fastboot comm
 
 Speed will occasionally pause for a second or two (possible CANServer issue)
 
+# 3D Printing
+
+The best experience for a CANdash is with a custom mount on your steering column. Spare pieces of steering column trim can be ordered from Tesla ~$80 or eBay ~$50. Designs and templates in the 3dprinting directory in this repository.
+
+![imgonline-com-ua-CompressToSize-fOIyrYco7Ogps](https://user-images.githubusercontent.com/523563/150484151-ed40c8b7-5376-48e8-a64a-dab1e5cfbbaa.jpg)
+![imgonline-com-ua-CompressToSize-nFWSIa1huwlZOj](https://user-images.githubusercontent.com/523563/150484156-4d77b172-028f-4520-8650-c186b8539c51.jpg)
+
 
 Contact me with  feedback or questions: info@candash.app
 
