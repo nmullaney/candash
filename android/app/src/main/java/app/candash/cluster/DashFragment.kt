@@ -166,7 +166,7 @@ class DashFragment : Fragment() {
         )
 
 
-    private fun chargingViews(): List<View> =
+    private fun chargingHiddenViews(): List<View> =
         listOf(
             binding.powerBar,
             binding.power,
@@ -174,7 +174,36 @@ class DashFragment : Fragment() {
             binding.unit
         )
 
-    private fun minMaxChargingViews(): List<View> =
+    private fun chargingViews(): List<View> =
+        listOf(
+            binding.bigsoc,
+            binding.bigsocpercent,
+            binding.chargerate
+        )
+
+    private fun doorViews(): List<View> =
+        listOf(
+            binding.modely,
+            binding.frontleftdoor,
+            binding.frontrightdoor,
+            binding.rearleftdoor,
+            binding.rearrightdoor,
+            binding.hood,
+            binding.hatch
+        )
+
+    private fun doorViewsCenter(): List<View> =
+        listOf(
+            binding.modelyCenter,
+            binding.frontleftdoorCenter,
+            binding.frontrightdoorCenter,
+            binding.rearleftdoorCenter,
+            binding.rearrightdoorCenter,
+            binding.hood,
+            binding.hatch
+        )
+
+    private fun minMaxchargingHiddenViews(): List<View> =
         listOf(
             binding.maxpower,
             binding.minpower,
@@ -415,7 +444,9 @@ class DashFragment : Fragment() {
 
             power = (battAmps * battVolts)
             if (power > getPref("maxPower")) setPref("maxPower", power)
-            if (viewModel.getValue(Constants.chargeStatus)?.toInt() == Constants.chargeStatusInactive.toInt()) {
+            if (viewModel.getValue(Constants.chargeStatus)
+                    ?.toInt() == Constants.chargeStatusInactive.toInt()
+            ) {
                 // do not store minpower if car is charging
                 if (power < getPref("minPower")) setPref("minPower", power)
             }
@@ -844,11 +875,11 @@ class DashFragment : Fragment() {
             it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
                 if (!isSplitScreen()) {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
-                        for (chargingView in chargingViews()) {
-                            chargingView.visibility = View.GONE
+                        for (chargingHiddenView in chargingHiddenViews()) {
+                            chargingHiddenView.visibility = View.GONE
                         }
-                        for (minMaxChargingView in minMaxChargingViews()) {
-                            minMaxChargingView.visibility = View.GONE
+                        for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
+                            minMaxchargingHiddenView.visibility = View.GONE
                         }
 
                         binding.chargemeter.visibility = View.VISIBLE
@@ -872,12 +903,50 @@ class DashFragment : Fragment() {
 
                         binding.chargerate.visibility = View.INVISIBLE
 
-                        for (chargingView in chargingViews()) {
-                            chargingView.visibility = View.VISIBLE
+                        for (chargingHiddenView in chargingHiddenViews()) {
+                            chargingHiddenView.visibility = View.VISIBLE
                         }
                         if (getPref(Constants.gaugeMode) > 0f) {
-                            for (minMaxChargingView in minMaxChargingViews()) {
-                                minMaxChargingView.visibility = View.VISIBLE
+                            for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
+                                minMaxchargingHiddenView.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                } else {
+                    if (chargeStatusVal != Constants.chargeStatusInactive) {
+                        for (chargingHiddenView in chargingHiddenViews()) {
+                            chargingHiddenView.visibility = View.GONE
+                        }
+                        for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
+                            minMaxchargingHiddenView.visibility = View.GONE
+                        }
+                        if (doorOpen) {
+                            binding.chargemeter.visibility = View.INVISIBLE
+                            binding.bigsoc.visibility = View.INVISIBLE
+                            binding.bigsocpercent.visibility = View.INVISIBLE
+
+                            binding.chargerate.visibility = View.INVISIBLE
+                        } else {
+                            binding.chargemeter.visibility = View.VISIBLE
+                            binding.bigsoc.visibility = View.VISIBLE
+                            binding.bigsocpercent.visibility = View.VISIBLE
+
+                            binding.chargerate.visibility = View.VISIBLE
+                        }
+                    } else {
+                        binding.chargemeter.visibility = View.INVISIBLE
+                        binding.bigsoc.visibility = View.INVISIBLE
+                        binding.bigsocpercent.visibility = View.INVISIBLE
+
+                        binding.chargerate.visibility = View.INVISIBLE
+                        if (!doorOpen){
+                            for (chargingHiddenView in chargingHiddenViews()) {
+                                chargingHiddenView.visibility = View.VISIBLE
+                            }
+                        }
+                        if (getPref(Constants.gaugeMode) > 0f) {
+                            for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
+                                minMaxchargingHiddenView.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -1207,8 +1276,12 @@ class DashFragment : Fragment() {
                     for (leftSideUIView in leftSideUIViews()) {
                         leftSideUIView.visibility = View.INVISIBLE
                     }
-                }
 
+                }
+                for (doorViewCenter in doorViewsCenter()) {
+                    doorViewCenter.visibility = View.INVISIBLE
+                }
+                binding.modelyCenter.visibility = View.GONE
             }
 
             override fun onAnimationEnd(animation: Animation?) {
@@ -1228,6 +1301,7 @@ class DashFragment : Fragment() {
             }
 
             override fun onAnimationEnd(animation: Animation?) {
+
                 binding.modelyCenter.visibility = View.VISIBLE
 
 
@@ -1252,6 +1326,7 @@ class DashFragment : Fragment() {
             }
         })
         if (!isSplitScreen()) {
+
             binding.modely.clearAnimation()
             if (doorOpen && !fadeIn.hasStarted() && binding.modely.visibility != View.VISIBLE) {
 
@@ -1259,19 +1334,21 @@ class DashFragment : Fragment() {
 
             } else {
                 if (doorOpen) {
+                    for (doorViewCenter in doorViewsCenter()) {
+                        doorViewCenter.visibility = View.INVISIBLE
+                    }
                     binding.modely.visibility = View.VISIBLE
+                    binding.modelyCenter.visibility = View.INVISIBLE
                 }
                 if (!doorOpen && !fadeOut.hasStarted() && (binding.modely.visibility == View.VISIBLE)) {
                     binding.modely.startAnimation(fadeOut)
                     binding.modely.visibility = View.INVISIBLE
-                    binding.modelyCenter.visibility = View.INVISIBLE
                     binding.speed.visibility = View.VISIBLE
                     binding.unit.visibility = View.VISIBLE
                 } else {
                     if (!doorOpen) {
                         binding.modely.visibility = View.INVISIBLE
                         // in case split screen is turned off while door open
-                        binding.modelyCenter.visibility = View.INVISIBLE
                         binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
                         if (getPref(Constants.gaugeMode) == 2f) {
@@ -1285,26 +1362,30 @@ class DashFragment : Fragment() {
             }
 
         } else {
+            for (doorView in doorViews()) {
+                doorView.visibility = View.INVISIBLE
+            }
             binding.modelyCenter.clearAnimation()
-            if (doorOpen && !fadeIn.hasStarted() && binding.modelyCenter.visibility != View.VISIBLE) {
+            if (doorOpen && !fadeInCenter.hasStarted() && binding.modelyCenter.visibility != View.VISIBLE) {
 
 
                 binding.modelyCenter.startAnimation(fadeInCenter)
 
             } else {
                 if (doorOpen) {
+                    for (doorView in doorViews()) {
+                        doorView.visibility = View.INVISIBLE
+                    }
                     binding.modelyCenter.visibility = View.VISIBLE
                 }
                 if (!doorOpen && !fadeOut.hasStarted() && (binding.modelyCenter.visibility == View.VISIBLE)) {
                     binding.modelyCenter.startAnimation(fadeOut)
                     binding.unit.visibility = View.VISIBLE
-                    binding.modely.visibility = View.INVISIBLE
                     binding.modelyCenter.visibility = View.INVISIBLE
                     binding.speed.visibility = View.VISIBLE
                     binding.unit.visibility = View.VISIBLE
                 } else {
                     if (!doorOpen) {
-                        binding.modely.visibility = View.INVISIBLE
                         binding.modelyCenter.visibility = View.INVISIBLE
                         binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
