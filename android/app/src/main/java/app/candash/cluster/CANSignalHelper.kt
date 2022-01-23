@@ -5,30 +5,39 @@ import android.util.Log
 class CANSignalHelper {
     private val TAG = CANSignalHelper::class.java.simpleName
 
+    companion object {
+        const val MAX_FILTERS = 48
+        const val CLEAR_FILTERS_BYTE : Byte = 0x18
+        const val ADD_FILTERS_BYTE : Byte = 0x0F
+    }
+
     private val mNameSignalMap = HashMap<String, CANSignal>()
     private val mFrameSignalMap : MutableMap<Hex, MutableList<CANSignal>>  = mutableMapOf()
 
-    fun socketFilterToInclude() : ByteArray {
-        val filters = mutableListOf<Byte>()
-        // This first byte indicates we are including these
-        filters.add(0x0F)
-        signalsToUse().forEach { canSignal ->
-            filters.add(canSignal.busId.toByte())
-            filters.addAll(canSignal.frameId.byteArray.asList())
-            Log.v(TAG, "frame id in socket filter:" + canSignal.frameId.hexString)
-        }
-        return filters.toByteArray()
+    fun clearFiltersPacket() : ByteArray {
+        return byteArrayOf(CLEAR_FILTERS_BYTE);
     }
 
-    fun signalsToUse() : List<CANSignal> {
-        return signalNamesToUse().mapNotNull {
+    fun addFilterPackets(signalNamesToUse: List<String>) : List<ByteArray> {
+        return signalsToUse(signalNamesToUse).chunked(MAX_FILTERS).map { CANSignals ->
+            CANSignals.fold(mutableListOf(ADD_FILTERS_BYTE)) { byteList, CANSignal ->
+                byteList.add(CANSignal.busId.toByte())
+                byteList.addAll(CANSignal.frameId.byteArray.asList())
+                Log.v(TAG, "frame id in socket filter:" + CANSignal.frameId.hexString)
+                byteList
+            }.toByteArray()
+        }
+    }
+
+    fun signalsToUse(signalNamesToUse: List<String>) : List<CANSignal> {
+        val names = signalNamesToUse.ifEmpty { defaultSignalNamesToUse() }
+        return names.mapNotNull {
             getALLCANSignals().get(it)
         }
     }
 
-    fun signalNamesToUse() : List<String> {
+    fun defaultSignalNamesToUse() : List<String> {
         return getALLCANSignals().keys.toList()
-
     }
 
     fun getALLCANSignals() : Map<String, CANSignal> {
