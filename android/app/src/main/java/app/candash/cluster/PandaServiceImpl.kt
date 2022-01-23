@@ -33,14 +33,13 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     private val socketTimeoutMs = 1_000
     private val signalHelper = CANSignalHelper()
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    private var signalsToRequest: List<String> = arrayListOf()
     private lateinit var socket: DatagramSocket
 
     @ExperimentalCoroutinesApi
     override fun carState(): Flow<CarState> {
         return carStateFlow
     }
-
-
 
     private fun getSocket(): DatagramSocket {
         if (!this::socket.isInitialized) {
@@ -84,12 +83,10 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
     @ExperimentalCoroutinesApi
-    override suspend fun startRequests() {
+    override suspend fun startRequests(signalNamesToRequest: List<String>) {
         withContext(pandaContext) {
+            signalsToRequest = signalNamesToRequest
             Log.d(TAG, "Starting requests on thread: ${Thread.currentThread().name}")
-            while (inShutdown) {
-                yield()
-            }
             shutdown = false
             try {
 
@@ -97,7 +94,6 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                 sendHello(createSocket())
 
                 while (!shutdown) {
-
                     if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
                         Log.d(TAG, "Sending heartbeat on thread: ${Thread.currentThread().name}")
                         sendHello(getSocket())
@@ -128,7 +124,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                             break
                         } else if (newPandaFrame.frameId == 6L && newPandaFrame.busId == 15L) {
                             // It's an ack
-                            sendFilter(getSocket())
+                            sendFilter(getSocket(), signalsToRequest)
                         } else {
                             handleFrame(newPandaFrame)
                         }
@@ -152,6 +148,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                 Log.d(TAG, "Socket disconnected")
                 getSocket().close()
                 Log.d(TAG, "Socket closed")
+                carState.carData.clear()
                 inShutdown = false
             } catch (exception: Exception) {
                 inShutdown = false
@@ -221,8 +218,11 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     }
 
 
-    private fun sendFilter(socket: DatagramSocket) {
-        sendData(socket, signalHelper.socketFilterToInclude())
+    private fun sendFilter(socket: DatagramSocket, signalNamesToUse: List<String>) {
+        sendData(socket, signalHelper.clearFiltersPacket())
+        signalHelper.addFilterPackets(signalNamesToUse).forEach {
+            sendData(socket, it)
+        }
         // Uncomment this to send all data
         //sendData(socket, byteArrayOf(0x0C))
     }
@@ -288,7 +288,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                 TAG,
                 "in doRestart, restarting requests on thread: ${Thread.currentThread().name}"
             )
-            startRequests()
+            startRequests(signalsToRequest)
         }
     }
 
