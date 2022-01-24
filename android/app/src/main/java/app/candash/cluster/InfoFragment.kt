@@ -1,5 +1,6 @@
 package app.candash.cluster
 
+import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Bundle
@@ -16,10 +17,10 @@ import app.candash.cluster.databinding.FragmentInfoBinding
 
 class InfoFragment() : Fragment() {
     private val TAG = InfoFragment::class.java.simpleName
-    private lateinit var nsdManager: NsdManager
     private lateinit var binding : FragmentInfoBinding
     private lateinit var pandaInfo: NsdServiceInfo
     private lateinit var viewModel: DashViewModel
+
     private var zeroconfHost : String = ""
 
 
@@ -48,12 +49,10 @@ class InfoFragment() : Fragment() {
             viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
         }
         binding.scanButton.setOnClickListener {
-
-            viewModel.getZeroconfHost().observe(viewLifecycleOwner){
-                viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, it)
-                binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
+            if (viewModel.getZeroConfIpAddress() != "0.0.0.0"){
+                viewModel.saveSettings(false, viewModel.getZeroConfIpAddress())
             }
-
+            binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
         }
         binding.startButton.setOnClickListener {
             if (viewModel.isRunning() == false){
@@ -108,5 +107,15 @@ class InfoFragment() : Fragment() {
         carState.carData.forEach {
             Log.d(TAG, "Name: " + it.key + ", Value: " + it.value)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.startDiscoveryService()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.stopDiscoveryService()
     }
 }
