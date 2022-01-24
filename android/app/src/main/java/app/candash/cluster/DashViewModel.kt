@@ -64,13 +64,14 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         cancelCarStateJob()
         setServerIpAddress(ipAddress)
         setUseMockServer(useMockServer)
-        startUp()
+        startUp(arrayListOf())
         startCarStateJob()
     }
 
-    fun startUp() {
+    // An empty list will return all defined signals
+    fun startUp(signalNamesToRequest: List<String>) {
         viewModelScope.launch {
-            dashRepository.startRequests()
+            dashRepository.startRequests(signalNamesToRequest)
         }
     }
 
@@ -88,6 +89,12 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun carState() : LiveData<CarState> {
         startCarStateJob()
         return carStateData
+    }
+
+    fun clearCarState() {
+        if (carStateData.value != null) {
+            carStateData.value = CarState()
+        }
     }
 
     fun getValue(key: String): Float? {

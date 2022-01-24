@@ -16,8 +16,8 @@ class DashRepository @ExperimentalCoroutinesApi
         return if (useMockService()) mockPandaService else pandaService
     }
 
-    suspend fun startRequests() {
-        getPandaService().startRequests()
+    suspend fun startRequests(signalNamesToRequest: List<String>) {
+        getPandaService().startRequests(signalNamesToRequest)
     }
 
     fun isRunning() : Boolean {

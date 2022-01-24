@@ -16,7 +16,7 @@ class MockPandaService : PandaService {
     private var shutdown = false
     private var count: AtomicInteger = AtomicInteger(0)
 
-    override suspend fun startRequests() {
+    override suspend fun startRequests(signalNamesToRequest: List<String>) {
         withContext(pandaContext) {
             shutdown = false
             while (!shutdown) {

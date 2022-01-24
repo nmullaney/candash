@@ -55,14 +55,14 @@ class InfoFragment() : Fragment() {
             binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
         }
         binding.startButton.setOnClickListener {
-            if (viewModel.isRunning() == false){
-                viewModel.startUp()
+            if (!viewModel.isRunning()){
+                viewModel.startUp(signalNames())
             }
 
         }
 
         binding.stopButton.setOnClickListener {
-            if (viewModel.isRunning() == true){
+            if (viewModel.isRunning()){
                 viewModel.shutdown()
             }
         }
@@ -75,6 +75,10 @@ class InfoFragment() : Fragment() {
         }
         binding.scrollView.setOnLongClickListener{
             switchToDash()
+        }
+
+        binding.trash.setOnClickListener {
+            viewModel.clearCarState()
         }
 
         viewModel.carState().observe(viewLifecycleOwner) { carState ->
@@ -95,7 +99,23 @@ class InfoFragment() : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.isRunning()) {
+            viewModel.startUp(signalNames())
+        }
+    }
 
+    fun signalNames() : List<String> {
+        return arrayListOf()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (viewModel.isRunning()) {
+            viewModel.shutdown()
+        }
+    }
 
     fun switchToDash() : Boolean {
         viewModel.switchToDashFragment()
