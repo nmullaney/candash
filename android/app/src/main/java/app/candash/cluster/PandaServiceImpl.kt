@@ -1,11 +1,14 @@
 package app.candash.cluster
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.wifi.WifiManager
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +39,12 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
     private var signalsToRequest: List<String> = arrayListOf()
     private lateinit var socket: DatagramSocket
 
-    @ExperimentalCoroutinesApi
+
+
+
+
+
+@ExperimentalCoroutinesApi
     override fun carState(): Flow<CarState> {
         return carStateFlow
     }
@@ -84,6 +92,7 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
 
     @ExperimentalCoroutinesApi
     override suspend fun startRequests(signalNamesToRequest: List<String>) {
+
         withContext(pandaContext) {
             signalsToRequest = signalNamesToRequest
             Log.d(TAG, "Starting requests on thread: ${Thread.currentThread().name}")
@@ -277,6 +286,8 @@ class PandaServiceImpl(val sharedPreferences: SharedPreferences, val context: Co
                 ) {
                     super.onCapabilitiesChanged(network, networkCapabilities)
                     Log.d(TAG, "in network callback, capabilities changed")
+                    doRestart()
+
                 }
             })
         }

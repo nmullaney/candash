@@ -1,9 +1,12 @@
 package app.candash.cluster
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.net.wifi.WifiManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
@@ -36,8 +39,11 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private var discoveryStarted = false
     private var zeroConfIpAddress : String = "0.0.0.0"
     private var discoveryListener : NsdManager.DiscoveryListener? = null
+    private var signalsToRequest : List <String> = arrayListOf()
 
     private lateinit var carStateJob: Job
+
+
 
     fun useMockServer() : Boolean = sharedPreferences.getBoolean(Constants.useMockServerPrefKey, false)
 
@@ -70,8 +76,15 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     // An empty list will return all defined signals
     fun startUp(signalNamesToRequest: List<String>) {
+        signalsToRequest = signalNamesToRequest
         viewModelScope.launch {
             dashRepository.startRequests(signalNamesToRequest)
+        }
+    }
+
+    fun restart(){
+        viewModelScope.launch {
+            dashRepository.startRequests(signalsToRequest)
         }
     }
 

@@ -104,6 +104,7 @@ class InfoFragment() : Fragment() {
         if (!viewModel.isRunning()) {
             viewModel.startUp(signalNames())
         }
+        viewModel.startDiscoveryService()
     }
 
     fun signalNames() : List<String> {
@@ -115,6 +116,8 @@ class InfoFragment() : Fragment() {
         if (viewModel.isRunning()) {
             viewModel.shutdown()
         }
+        viewModel.stopDiscoveryService()
+
     }
 
     fun switchToDash() : Boolean {
@@ -129,13 +132,7 @@ class InfoFragment() : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.startDiscoveryService()
-    }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.stopDiscoveryService()
-    }
+
+
 }

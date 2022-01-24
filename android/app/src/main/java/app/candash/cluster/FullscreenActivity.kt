@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -33,8 +35,8 @@ class FullscreenActivity : AppCompatActivity() {
         return super.getApplicationContext()
     }
 
+
     private lateinit var viewModel: DashViewModel
-    private lateinit var pcr: BroadcastReceiver
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -51,6 +53,19 @@ class FullscreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val hotSpotReceiver = object : BroadcastReceiver() {
+            override fun onReceive(contxt: Context, intent: Intent) {
+                val action = intent.action
+                if ("android.net.wifi.WIFI_AP_STATE_CHANGED" == action) {
+                    val state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0)
+                    if (WifiManager.WIFI_STATE_ENABLED == state % 10){
+                        viewModel.restart()
+                    }
+                }
+            }
+        }
+        this.registerReceiver(hotSpotReceiver,
+            IntentFilter("android.net.wifi.WIFI_AP_STATE_CHANGED"))
         // check every second if battery is connected
         var context = applicationContext
 
