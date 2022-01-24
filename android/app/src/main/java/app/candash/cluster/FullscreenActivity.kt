@@ -10,7 +10,6 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -37,15 +36,16 @@ class FullscreenActivity : AppCompatActivity() {
 
 
     private lateinit var viewModel: DashViewModel
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
         // Checks the orientation of the screen
-        if (isInMultiWindowMode){
+        if (isInMultiWindowMode) {
             viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
             viewModel.setSplitScreen(true)
-        }else {
+        } else {
             viewModel.setSplitScreen(false)
         }
 
@@ -58,14 +58,17 @@ class FullscreenActivity : AppCompatActivity() {
                 val action = intent.action
                 if ("android.net.wifi.WIFI_AP_STATE_CHANGED" == action) {
                     val state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0)
-                    if (WifiManager.WIFI_STATE_ENABLED == state % 10){
+                    val prevState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, 0)
+                    if ((WifiManager.WIFI_STATE_ENABLED == state % 10) && (WifiManager.WIFI_STATE_ENABLED != prevState % 10)) {
                         viewModel.restart()
                     }
                 }
             }
         }
-        this.registerReceiver(hotSpotReceiver,
-            IntentFilter("android.net.wifi.WIFI_AP_STATE_CHANGED"))
+        this.registerReceiver(
+            hotSpotReceiver,
+            IntentFilter("android.net.wifi.WIFI_AP_STATE_CHANGED")
+        )
         // check every second if battery is connected
         var context = applicationContext
 
@@ -98,7 +101,8 @@ class FullscreenActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
-            window.insetsController?.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            window.insetsController?.systemBarsBehavior =
+                WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -106,7 +110,8 @@ class FullscreenActivity : AppCompatActivity() {
             )
         }
 
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         supportFragmentManager
@@ -134,7 +139,8 @@ class FullscreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     }
 
     override fun onDestroy() {
