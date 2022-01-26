@@ -293,12 +293,15 @@ class DashFragment : Fragment() {
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
 
         // milliseconds
+        /*
         if (!isSplitScreen()) {
             for (topUIView in topUIViews()) {
                 savedLayoutParams[topUIView] =
                     ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
             }
         }
+
+         */
 
 
         // set initial speedometer value
@@ -375,6 +378,7 @@ class DashFragment : Fragment() {
 
             if (view.windowToken != null) {
                 if (it) {
+                    // splitscreen is on
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         window?.insetsController?.hide(WindowInsets.Type.statusBars())
                         window?.insetsController?.systemBarsBehavior =
@@ -384,6 +388,7 @@ class DashFragment : Fragment() {
                         wm?.removeViewImmediate(window?.getDecorView());
                         wm?.addView(window?.getDecorView(), window?.getAttributes());
                     }
+                    /*
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
@@ -395,10 +400,14 @@ class DashFragment : Fragment() {
                         )
                         topUIView.layoutParams = params
                     }
+
+                     */
                     for (sideUIView in sideUIViews()) {
                         sideUIView.visibility = View.GONE
                     }
                 } else {
+                    //no splitscreen
+                    /*
                     for (topUIView in topUIViews()) {
                         var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         var savedParams = savedLayoutParams[topUIView]
@@ -410,6 +419,7 @@ class DashFragment : Fragment() {
                         )
                         topUIView.layoutParams = params
                     }
+                     */
                     for (sideUIView in sideUIViews()) {
                         sideUIView.visibility = View.VISIBLE
                     }
@@ -1105,7 +1115,6 @@ class DashFragment : Fragment() {
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
         if (sunUpVal == 0 || getBooleanPref("forceNightMode")) {
-
             binding.powerBar.setDayValue(0)
             binding.fullbattery.setDayValue(0)
             binding.fronttorquegauge.setDayValue(0)
@@ -1200,9 +1209,8 @@ class DashFragment : Fragment() {
             binding.rearbraketempgauge.invalidate()
             binding.coolantflowgauge.invalidate()
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
-            binding.root.setBackgroundColor(Color.parseColor("#FFFFFFFF"))
+            binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
             //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
-
             binding.speed.setTextColor(Color.BLACK)
             binding.speed.setTextColor(Color.BLACK)
             binding.bigsoc.setTextColor(Color.BLACK)

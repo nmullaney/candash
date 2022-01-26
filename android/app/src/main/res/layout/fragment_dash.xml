@@ -126,7 +126,7 @@
         android:visibility="invisible"
 
         android:src="@drawable/ic_autopilot"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="9dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -139,7 +139,7 @@
         android:visibility="invisible"
 
         android:src="@drawable/ic_autopilot_inactive"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="9dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -281,7 +281,7 @@
         android:textAlignment="center"
         android:textSize="20dp"
         android:paddingLeft="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="14dp"
 
 
         app:layout_constraintStart_toStartOf="parent"
@@ -347,7 +347,7 @@
         android:text="50 %"
         android:gravity="end|top"
         app:layout_constraintBottom_toBottomOf="@id/deadbattery"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="4dp"
         android:textSize="20dp"
 
 
@@ -358,7 +358,7 @@
         android:layout_width="70dp"
         android:layout_height="25dp"
         android:src="@drawable/ic_deadbattery"
-        android:layout_marginTop="12.5dp"
+        android:layout_marginTop="16.5dp"
         android:paddingRight="20dp"
         android:paddingTop="0dp"
         android:gravity="center|center"
@@ -372,7 +372,7 @@
         android:src="@drawable/ic_fullbattery"
         android:paddingRight="20dp"
         android:paddingTop="0dp"
-        android:layout_marginTop="12.5dp"
+        android:layout_marginTop="16.5dp"
         android:gravity="center|center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
