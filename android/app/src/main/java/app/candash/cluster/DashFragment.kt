@@ -1441,17 +1441,5 @@ class DashFragment : Fragment() {
         return margin
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!viewModel.isRunning()) {
-            viewModel.startUp(arrayListOf())
-        }
-    }
 
-    override fun onPause() {
-        super.onPause()
-        if (viewModel.isRunning()) {
-            viewModel.shutdown()
-        }
-    }
 }

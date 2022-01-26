@@ -101,9 +101,7 @@ class InfoFragment() : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (!viewModel.isRunning()) {
-            viewModel.startUp(signalNames())
-        }
+
         viewModel.startDiscoveryService()
     }
 
@@ -113,9 +111,7 @@ class InfoFragment() : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        if (viewModel.isRunning()) {
-            viewModel.shutdown()
-        }
+
         viewModel.stopDiscoveryService()
 
     }

@@ -75,7 +75,7 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     // An empty list will return all defined signals
-    fun startUp(signalNamesToRequest: List<String>) {
+    fun startUp(signalNamesToRequest: List<String> = arrayListOf()) {
         signalsToRequest = signalNamesToRequest
         viewModelScope.launch {
             dashRepository.startRequests(signalNamesToRequest)
