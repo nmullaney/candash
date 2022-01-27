@@ -1,5 +1,8 @@
 package app.candash.cluster
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,6 +13,7 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -19,7 +23,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import java.util.*
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -30,6 +40,27 @@ class FullscreenActivity : AppCompatActivity() {
     private var handler: Handler = Handler()
     private var runnable: Runnable? = null
     private var delay = 1000
+    private val TAG = FullscreenActivity::class.java.simpleName
+    private val STANDARD_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+    private var bluetoothAdapter: BluetoothAdapter? = null
+    private lateinit var socket: BluetoothSocket
+    private lateinit var connectedDevice: BluetoothDevice
+
+
+    fun connectToDevice(bluetoothDevice: BluetoothDevice) = flow {
+        emit(ConnectionState.Connecting(bluetoothDevice))
+        bluetoothAdapter?.cancelDiscovery()
+        try {
+            socket =
+                bluetoothDevice.createInsecureRfcommSocketToServiceRecord(STANDARD_UUID)?.also {
+                    it.connect()
+                }!!
+            connectedDevice = bluetoothDevice
+            socket?.let { emit(ConnectionState.Connected(it)) }
+        } catch (e: Exception) {
+            emit(ConnectionState.ConnectionFailed(e.message ?: "Failed to connect"))
+        }
+    }.flowOn(Dispatchers.IO)
     override fun getApplicationContext(): Context {
         return super.getApplicationContext()
     }
@@ -53,6 +84,35 @@ class FullscreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+        var REQUEST_ENABLE_BT = 0
+        if (bluetoothAdapter == null) {
+            // Device doesn't support Bluetooth
+        }
+        if (bluetoothAdapter?.isEnabled == false) {
+            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+        }
+        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+        pairedDevices?.forEach { device ->
+            val deviceName = device.name
+            val deviceHardwareAddress = device.address // MAC address
+            Log.d(TAG, "BT: "+deviceName)
+                if (device.uuids != null){
+                    for (uuid in device.uuids){
+                        Log.d(TAG, "deviceName "+device.name+" uuid: "+uuid.toString())
+                    }
+                }
+                if (device.name == "OBDII"){
+                    lifecycleScope.launchWhenCreated {
+                        connectToDevice(device).collect { state ->
+                            Log.d(TAG, "obd state:" + state.toString())
+                        }
+                    }
+                }
+        }
+
+
         val hotSpotReceiver = object : BroadcastReceiver() {
             override fun onReceive(contxt: Context, intent: Intent) {
                 val action = intent.action

@@ -15,12 +15,12 @@ android {
 
 
     }
-    compileSdk 30
+    compileSdkVersion 30
 
 
     defaultConfig {
         applicationId "app.candash.cluster"
-        minSdkVersion 23
+        minSdkVersion 28
         targetSdkVersion 30
         versionCode 8
         versionName "1.0"
