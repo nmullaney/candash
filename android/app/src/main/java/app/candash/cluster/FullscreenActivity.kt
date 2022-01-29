@@ -29,6 +29,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.nio.charset.Charset
 import java.util.*
 
 /**
@@ -104,14 +105,18 @@ class FullscreenActivity : AppCompatActivity() {
                     }
                 }
                 if (device.name == "OBDII"){
-                    lifecycleScope.launchWhenCreated {
-                        connectToDevice(device).collect { state ->
-                            Log.d(TAG, "obd state:" + state.toString())
-                        }
-                    }
+                    connectedDevice = device
                 }
         }
+        var charset: Charset = Charsets.UTF_8
+        if (connectedDevice != null){
+            lifecycleScope.launchWhenCreated {
+                BluetoothService.connectDevice(connectedDevice)
+                var output = BluetoothService.sendData("ATI".toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString())
+            }
 
+        }
 
         val hotSpotReceiver = object : BroadcastReceiver() {
             override fun onReceive(contxt: Context, intent: Intent) {
