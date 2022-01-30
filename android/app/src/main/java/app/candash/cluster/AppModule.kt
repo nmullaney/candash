@@ -17,14 +17,14 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun providePandaServiceImpl(sharedPreferences: SharedPreferences, @ApplicationContext context: Context) : PandaServiceImpl {
-        return PandaServiceImpl(sharedPreferences, context)
+    fun providePandaService(sharedPreferences: SharedPreferences, @ApplicationContext context: Context) : PandaService {
+        return PandaService(sharedPreferences, context)
     }
 
     @Singleton
     @Provides
-    fun provideMockPandaService() : MockPandaService {
-        return MockPandaService()
+    fun provideMockPandaService() : MockCANService {
+        return MockCANService()
     }
 
     @Singleton
