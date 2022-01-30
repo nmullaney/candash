@@ -1,4 +1,4 @@
-package app.candash.cluster
+package app.candash.cluster.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice

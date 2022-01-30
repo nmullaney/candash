@@ -24,9 +24,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import app.candash.cluster.bluetooth.BluetoothService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.nio.charset.Charset
@@ -109,7 +109,7 @@ class FullscreenActivity : AppCompatActivity() {
                 }
         }
         var charset: Charset = Charsets.UTF_8
-        if (connectedDevice != null){
+        if (this::connectedDevice.isInitialized){
             lifecycleScope.launchWhenCreated {
                 BluetoothService.connectDevice(connectedDevice)
                 var output = BluetoothService.sendData("ATI".toByteArray(charset), byteArrayOf(), byteArrayOf() )

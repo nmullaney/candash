@@ -43,12 +43,23 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     private lateinit var carStateJob: Job
 
-
-
     fun useMockServer() : Boolean = sharedPreferences.getBoolean(Constants.useMockServerPrefKey, false)
 
     fun setUseMockServer(useMockServer: Boolean) {
         sharedPreferences.edit().putBoolean(Constants.useMockServerPrefKey, useMockServer).apply()
+    }
+
+    fun getCurrentCANServiceIndex() : Int {
+        return dashRepository.getCANServiceType().ordinal
+    }
+
+    fun getCANServiceOptions(context: Context) : List<String> {
+        return CANServiceType.values().map { context.getString(it.nameResId) }
+    }
+
+    private fun setCANServiceByIndex(selectedPosition: Int) {
+        val type = CANServiceType.values()[selectedPosition]
+        dashRepository.setCANServiceType(type)
     }
 
     fun serverIpAddress() : String? = sharedPreferences.getString(Constants.ipAddressPrefKey, Constants.ipAddressLocalNetwork)
@@ -65,11 +76,11 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun getZeroConfIpAddress() : String{
         return zeroConfIpAddress
     }
-    fun saveSettings(useMockServer: Boolean = false, ipAddress: String) {
+    fun saveSettings(selectedServicePosition: Int, ipAddress: String) {
         shutdown()
         cancelCarStateJob()
+        setCANServiceByIndex(selectedServicePosition)
         setServerIpAddress(ipAddress)
-        setUseMockServer(useMockServer)
         startUp(arrayListOf())
         startCarStateJob()
     }
