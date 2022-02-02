@@ -58,4 +58,5 @@ The best experience for a CANdash is with a custom mount on your steering column
 
 Contact me with  feedback or questions: info@candash.app
 
-Discord for live feedback: https://discord.gg/hNnPHVZj
+Discord for live feedback: https://discord.gg/Wr5VQaGY9M
+Mailing list: https://groups.google.com/g/candashapp/
