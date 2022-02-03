@@ -171,7 +171,7 @@ class DashFragment : Fragment() {
             binding.powerBar,
             binding.power,
             binding.speed,
-            binding.unit
+            binding.unit,
         )
 
     private fun chargingViews(): List<View> =
@@ -508,6 +508,7 @@ class DashFragment : Fragment() {
                 var gearEndIndex = 1
                 gearState = gearStateVal.toInt()
                 if (gearStateVal.toInt() == Constants.gearPark) {
+                    binding.autopilotInactive.visibility = View.INVISIBLE
                     gearStartIndex = 0
                     gearEndIndex = 1
 
@@ -709,7 +710,7 @@ class DashFragment : Fragment() {
                 } else {
                     uiSpeedUnitsMPH = false
                     setBooleanPref("uiSpeedUnitsMPH", false)
-                    binding.unit.text = "km/h"
+                    binding.unit.text = "KM/H"
 
                 }
             }

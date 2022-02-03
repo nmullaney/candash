@@ -37,7 +37,7 @@
         android:layout_height="40dp"
         android:fontFamily="@font/interregular"
         android:gravity="center_horizontal|top"
-        tools:text="km/h"
+        tools:text="KM/H"
         android:textSize="30dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/speed"
@@ -203,7 +203,7 @@
         android:id="@+id/left_turn_signal"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="45dp"
         android:layout_marginLeft="10dp"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -213,7 +213,7 @@
     <ImageView
         android:id="@+id/right_turn_signal"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="10dp"
 
@@ -226,7 +226,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/ic_turnleftdark"
-        android:paddingTop="40dp"
+        android:paddingTop="45dp"
         android:paddingLeft="10dp"
         android:visibility="gone"
 
@@ -237,7 +237,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/ic_turnleftbright"
-        android:paddingTop="40dp"
+        android:paddingTop="45dp"
         android:paddingLeft="10dp"
         android:visibility="gone"
 
@@ -249,7 +249,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/ic_turnrightdark"
-        android:paddingTop="40dp"
+        android:paddingTop="45dp"
         android:paddingRight="10dp"
         android:gravity="center"
         android:visibility="gone"
@@ -262,7 +262,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/ic_turnrightbright"
-        android:paddingTop="40dp"
+        android:paddingTop="45dp"
         android:paddingRight="10dp"
         android:gravity="center"
         android:visibility="gone"
