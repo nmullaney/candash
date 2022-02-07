@@ -89,12 +89,15 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun startUp(signalNamesToRequest: List<String> = arrayListOf()) {
         signalsToRequest = signalNamesToRequest
         viewModelScope.launch {
+            Log.d(TAG, "inStartup")
             dashRepository.startRequests(signalNamesToRequest)
         }
     }
 
     fun restart(){
         viewModelScope.launch {
+            Log.d(TAG, "inRestart")
+
             dashRepository.startRequests(signalsToRequest)
         }
     }

@@ -84,39 +84,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-        var REQUEST_ENABLE_BT = 0
-        if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
-        }
-        if (bluetoothAdapter?.isEnabled == false) {
-            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-        }
-        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-        pairedDevices?.forEach { device ->
-            val deviceName = device.name
-            val deviceHardwareAddress = device.address // MAC address
-            Log.d(TAG, "BT: "+deviceName)
-                if (device.uuids != null){
-                    for (uuid in device.uuids){
-                        Log.d(TAG, "deviceName "+device.name+" uuid: "+uuid.toString())
-                    }
-                }
-                if (device.name == "OBDII"){
-                    connectedDevice = device
-                }
-        }
-        var charset: Charset = Charsets.UTF_8
-        if (this::connectedDevice.isInitialized){
-            lifecycleScope.launchWhenCreated {
-                BluetoothService.connectDevice(connectedDevice)
-                var output = BluetoothService.sendData("ATI".toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString())
-            }
 
-        }
 
         val hotSpotReceiver = object : BroadcastReceiver() {
             override fun onReceive(contxt: Context, intent: Intent) {
@@ -178,6 +146,7 @@ class FullscreenActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility =
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        super.onCreate(savedInstanceState)
 
         supportFragmentManager
             .beginTransaction()
@@ -205,12 +174,15 @@ class FullscreenActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        Log.d(TAG,"onResume")
+
         viewModel.startUp()
     }
 
     override fun onStart() {
         super.onStart()
-        viewModel.startUp()
+        // Log.d(TAG,"onStart")
+        // viewModel.startUp()
     }
 
     override fun onStop() {

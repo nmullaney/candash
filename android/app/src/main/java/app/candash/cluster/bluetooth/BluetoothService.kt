@@ -24,15 +24,14 @@ object BluetoothService {
         coroutineScope {
             withContext(Dispatchers.IO) {
                 outputStream.write(data)
-                listenData(startBytes, untilBytes = untilBytes)
+                listenData()
             }
         }
 
     public fun connected() = this::socket.isInitialized && socket.isConnected
 
     private suspend fun listenData(
-        startBytes: ByteArray,
-        untilBytes: ByteArray
+
     ): ByteArray {
         var buffer = byteArrayOf()
         withContext(Dispatchers.IO) {
@@ -42,27 +41,11 @@ object BluetoothService {
                 if (bytes != 0) {
                     var tempBuffer = ByteArray(bytes)
                     inputStream.read(tempBuffer)
-                    val index = Bytes.indexOf(tempBuffer, startBytes)
-                    if (index != -1) {
-                        startReady = true
-                        buffer = byteArrayOf()
-                        tempBuffer = tempBuffer.sliceArray(index until bytes - 1)
-                    } else if (!startReady) {
-                        continue
-                    }
-                    buffer = Bytes.concat(buffer, tempBuffer)
-                    val i = Bytes.indexOf(tempBuffer, untilBytes)
-                    if (i != -1) {
-                        buffer = Bytes.concat(
-                            buffer,
-                            tempBuffer.sliceArray(0 until i + untilBytes.size)
-                        )
-                        break
-                    } else {
-                        buffer = Bytes.concat(buffer, tempBuffer)
-                    }
+                    buffer = Bytes.concat(buffer,tempBuffer)
+                    break
+
                 }
-                delay(300L)
+                delay(500L)
             }
         }
         return buffer
@@ -72,7 +55,7 @@ object BluetoothService {
     suspend fun connectDevice(device: BluetoothDevice) {
         BluetoothAdapter.getDefaultAdapter()?.cancelDiscovery()
         withContext(Dispatchers.IO) {
-            socket = device.createInsecureRfcommSocketToServiceRecord(uuid)
+            socket = device.createRfcommSocketToServiceRecord(uuid)
             try {
                 if (socket.isConnected) {
                     socket.close()
@@ -80,7 +63,7 @@ object BluetoothService {
                 socket.connect()
                 outputStream = socket.outputStream
                 inputStream = socket.inputStream
-                Log.d(TAG, socket.isConnected.toString())
+                Log.d(TAG, "BT is connected: "+ socket.isConnected.toString())
             } catch (e: IOException) {
                 // Error
             }
