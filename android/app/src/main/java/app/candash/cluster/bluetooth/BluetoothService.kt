@@ -46,10 +46,12 @@ object BluetoothService {
                     inputStream.read(tempBuffer)
                     buffer = Bytes.concat(buffer,tempBuffer)
                     Log.d(TAG, "BToutput: "+buffer.toString(charset))
+                    var charset: Charset = Charsets.UTF_8
 
 
+                }else{
+                    break
                 }
-                delay(500L)
             }
         }
     }
