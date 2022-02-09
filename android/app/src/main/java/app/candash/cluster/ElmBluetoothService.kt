@@ -51,13 +51,30 @@ class ElmBluetoothService(val context: Context) :
         if (this::connectedDevice.isInitialized){
             withContext(elmContext) {
                 BluetoothService.connectDevice(connectedDevice)
-                BluetoothService.sendData(("ATZ"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                BluetoothService.sendData(("AT CRA 7D5"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                var output = BluetoothService.sendData(("ATZ"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("ATD"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("ATSPB"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("ATL0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("ATAL"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("ATPBC001"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
 
 
-                BluetoothService.sendData(("0100"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("AT CM 373"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+
+                output = BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+
+                output = BluetoothService.sendData(("AT MA"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                Log.d(TAG, "BToutput: "+output.toString(charset))
             }
 
         }    }
