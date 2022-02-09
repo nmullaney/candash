@@ -9,6 +9,7 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.nio.charset.Charset
 import java.util.*
 
 
@@ -34,6 +35,8 @@ object BluetoothService {
 
     ): ByteArray {
         var buffer = byteArrayOf()
+        var charset: Charset = Charsets.UTF_8
+
         withContext(Dispatchers.IO) {
             var startReady = false
             while (true) {
@@ -42,13 +45,13 @@ object BluetoothService {
                     var tempBuffer = ByteArray(bytes)
                     inputStream.read(tempBuffer)
                     buffer = Bytes.concat(buffer,tempBuffer)
-                    break
+                    Log.d(TAG, "BToutput: "+buffer.toString(charset))
+
 
                 }
                 delay(500L)
             }
         }
-        return buffer
     }
 
 

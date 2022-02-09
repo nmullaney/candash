@@ -51,17 +51,13 @@ class ElmBluetoothService(val context: Context) :
         if (this::connectedDevice.isInitialized){
             withContext(elmContext) {
                 BluetoothService.connectDevice(connectedDevice)
-                var output = BluetoothService.sendData(("ATZ"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("AT CRA 7D5"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString(charset))
+                BluetoothService.sendData(("ATZ"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                BluetoothService.sendData(("AT CRA 7D5"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
 
-                output = BluetoothService.sendData(("0100"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString(charset))
+
+                BluetoothService.sendData(("0100"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
             }
 
         }    }
