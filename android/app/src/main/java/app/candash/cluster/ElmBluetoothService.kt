@@ -7,10 +7,15 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import app.candash.cluster.bluetooth.BluetoothService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.nio.charset.Charset
 import java.util.*
@@ -42,7 +47,7 @@ class ElmBluetoothService(val context: Context) :
             }
 
              */
-            if (device.name == "OBDII"){
+            if (device.name == "OBDLink LX"){
                 connectedDevice = device
             }
         }
@@ -51,30 +56,40 @@ class ElmBluetoothService(val context: Context) :
         if (this::connectedDevice.isInitialized){
             withContext(elmContext) {
                 BluetoothService.connectDevice(connectedDevice)
-                var output = BluetoothService.sendData(("ATZ"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                var output = BluetoothService.sendData(("ATZ"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATD"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("ATD"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATSPB"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("ATSPB"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATL0"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                //output = BluetoothService.sendData(("ATL0"+"\r").toByteArray(charset))
+                //Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("ATL1"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATAL"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("ATAL"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATPBC001"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
-                Log.d(TAG, "BToutput: "+output.toString(charset))
-
-
-                output = BluetoothService.sendData(("AT CM 373"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("ATPBC001"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
 
-                output = BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("STFPA 132, 7FF"+"\r").toByteArray(charset))
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("STFPA 241, 7FF"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
 
-                output = BluetoothService.sendData(("AT MA"+"\r").toByteArray(charset), byteArrayOf(), byteArrayOf() )
+                output = BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
+
+                //output = BluetoothService.sendData(("AT MA"+"\r").toByteArray(charset))
+                //Log.d(TAG, "BToutput: "+output.toString(charset))
+                BluetoothService.requestData(("STM"+"\r").toByteArray(charset))
+                BluetoothService.getData(this).collect {
+                    Log.d(TAG, "BToutput: $it")
+                    if (it == "BUFFER FULL") {
+                        BluetoothService.requestData(("AT MA"+"\r").toByteArray(charset))
+                    }
+                }
             }
 
         }    }

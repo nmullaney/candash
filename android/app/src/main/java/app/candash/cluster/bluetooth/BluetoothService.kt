@@ -1,15 +1,22 @@
 package app.candash.cluster.bluetooth
 
+import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import com.google.common.primitives.Bytes
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.*
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.shareIn
+import java.io.*
 import java.util.*
+import java.util.concurrent.Flow
 
 
 object BluetoothService {
@@ -20,7 +27,7 @@ object BluetoothService {
     private lateinit var socket: BluetoothSocket
 
 
-    suspend fun sendData(data: ByteArray, startBytes: ByteArray, untilBytes: ByteArray) =
+    suspend fun sendData(data: ByteArray) =
         coroutineScope {
             withContext(Dispatchers.IO) {
                 outputStream.write(data)
@@ -51,6 +58,20 @@ object BluetoothService {
         return buffer
     }
 
+    suspend fun requestData(data: ByteArray) =
+        coroutineScope {
+            withContext(Dispatchers.IO) {
+                outputStream.write(data)
+            }
+        }
+
+    suspend fun getData(scope: CoroutineScope) = flow<String> {
+            while(true) {
+                val buffer = BufferedReader(InputStreamReader(inputStream))
+                val line = buffer.readLine()
+                emit(line)
+            }
+    }.flowOn(Dispatchers.IO).shareIn(scope, SharingStarted.Eagerly, 1)
 
     suspend fun connectDevice(device: BluetoothDevice) {
         BluetoothAdapter.getDefaultAdapter()?.cancelDiscovery()
