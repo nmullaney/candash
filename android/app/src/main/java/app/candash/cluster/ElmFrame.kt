@@ -8,6 +8,7 @@ class ElmFrame(rawData: String) {
     val frameId = rawData.substring(0, 3)
     val frameIdHex
         get() = Hex(frameId)
+
     private var payloadByteArray = byteArrayOf()
     fun frameLength():Int {
         return payloadString.length

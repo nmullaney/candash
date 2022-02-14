@@ -54,6 +54,7 @@ class ElmBluetoothService(val context: Context) :
         }
         Log.d(TAG, "BTloop")
         var charset: Charset = Charsets.UTF_8
+        signalHelper.getALLCANSignals()
         if (this::connectedDevice.isInitialized){
             withContext(elmContext) {
                 BluetoothService.connectDevice(connectedDevice)
@@ -87,9 +88,13 @@ class ElmBluetoothService(val context: Context) :
                 BluetoothService.requestData(("STM"+"\r").toByteArray(charset))
                 BluetoothService.getData(this).collect {
                     Log.d(TAG, "BToutput: $it")
-                    val frame = ElmFrame(it.toString())
-                    handleFrame(frame)
-                    if (it == "BUFFER FULL") {
+                    if (it.split(" ")[0].length == 3){
+                        val frame = ElmFrame(it.toString())
+                        handleFrame(frame)
+                    }
+                    //val frame = ElmFrame(it.toString())
+                    //handleFrame(frame)
+                    if (it == "0 00 00") {
                         BluetoothService.requestData(("STM"+"\r").toByteArray(charset))
                     }
                 }
@@ -102,7 +107,7 @@ class ElmBluetoothService(val context: Context) :
         BluetoothService.shutdown()
     }
     private fun handleFrame(frame: ElmFrame) {
-
+        Log.d(TAG, "BTframeID:"+frame.frameIdHex.string)
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
             // since I am using the 'any bus' filter, 0x399 exists on both buses with different data, so hard coding
             // a filter to remove the undesirable frame.
