@@ -25,10 +25,11 @@ object BluetoothService {
     private lateinit var outputStream: OutputStream
     private lateinit var inputStream: InputStream
     private lateinit var socket: BluetoothSocket
-
+    private var shutdown: Boolean = false
 
     suspend fun sendData(data: ByteArray) =
         coroutineScope {
+            shutdown = false
             withContext(Dispatchers.IO) {
                 outputStream.write(data)
                 listenData()
@@ -37,6 +38,9 @@ object BluetoothService {
 
     public fun connected() = this::socket.isInitialized && socket.isConnected
 
+    public fun shutdown(){
+        shutdown = true
+    }
     private suspend fun listenData(
 
     ): ByteArray {
@@ -67,6 +71,9 @@ object BluetoothService {
 
     suspend fun getData(scope: CoroutineScope) = flow<String> {
             while(true) {
+                if (shutdown){
+                    break
+                }
                 val buffer = BufferedReader(InputStreamReader(inputStream))
                 val line = buffer.readLine()
                 emit(line)

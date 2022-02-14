@@ -169,8 +169,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     }
 
     private fun handleFrame(frame: NewPandaFrame) {
-        var binaryPayloadString = ""
-        val updateState = CarState(HashMap())
 
         signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
             // since I am using the 'any bus' filter, 0x399 exists on both buses with different data, so hard coding
