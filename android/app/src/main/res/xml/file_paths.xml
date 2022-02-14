@@ -1,0 +1,4 @@
+<paths>
+    <files-path name="logs" path="logs/"/>
+    <external-cache-path name="cache" path="logs/" />
+</paths>
