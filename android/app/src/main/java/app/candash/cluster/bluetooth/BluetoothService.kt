@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.shareIn
 import java.io.*
+import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.Flow
 
@@ -26,6 +27,10 @@ object BluetoothService {
     private lateinit var inputStream: InputStream
     private lateinit var socket: BluetoothSocket
     private var shutdown: Boolean = false
+    private var lastHeartbeatTimestamp = 0L
+    private val heartBeatIntervalMs = 4_000
+    private val socketTimeoutMs = 1_000
+    private val charset: Charset = Charsets.UTF_8
 
     suspend fun sendData(data: ByteArray) =
         coroutineScope {
@@ -65,6 +70,7 @@ object BluetoothService {
     suspend fun requestData(data: ByteArray) =
         coroutineScope {
             withContext(Dispatchers.IO) {
+                lastHeartbeatTimestamp = System.currentTimeMillis()
                 outputStream.write(data)
             }
         }
@@ -72,12 +78,16 @@ object BluetoothService {
     suspend fun getData(scope: CoroutineScope) = flow<String> {
             while(true) {
                 if (shutdown){
+                    Log.d(TAG, "BTShutdown")
                     break
                 }
                 val buffer = BufferedReader(InputStreamReader(inputStream))
                 val line = buffer.readLine()
                 emit(line)
-            }
+                    if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
+                        outputStream.write(("STM"+"\r").toByteArray(charset))
+                    }
+                }
     }.flowOn(Dispatchers.IO).shareIn(scope, SharingStarted.Eagerly, 1)
 
     suspend fun connectDevice(device: BluetoothDevice) {
