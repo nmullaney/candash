@@ -1,7 +1,8 @@
 package app.candash.cluster
 
-import android.content.Context
-import android.net.nsd.NsdManager
+import android.content.ClipData
+import android.content.Intent
+import android.net.Uri
 import android.net.nsd.NsdServiceInfo
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -9,11 +10,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider.getUriForFile
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentInfoBinding
+import java.io.File
+
 
 class InfoFragment() : Fragment() {
     private val TAG = InfoFragment::class.java.simpleName
@@ -73,6 +77,11 @@ class InfoFragment() : Fragment() {
         binding.startDashButton.setOnClickListener(){
             switchToDash()
         }
+
+        binding.emailLogs.setOnClickListener() {
+            sendEmailLogs()
+        }
+
         binding.scrollView.setOnLongClickListener{
             switchToDash()
         }
@@ -128,7 +137,34 @@ class InfoFragment() : Fragment() {
         }
     }
 
+    private fun sendEmailLogs() {
+        context?.let { ctx ->
+            val logPath = File(ctx.externalCacheDir, "logs/")
+            logPath.mkdirs()
+            val outputFile = File(logPath, "output.txt")
+            val contentUri: Uri =
+                getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".fileprovider", outputFile)
+            try {
+                Runtime.getRuntime().exec(
+                    "logcat -f " + outputFile.absolutePath
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Cannot generate logs", e)
+            }
+            outputFile.setReadable(true)
 
+            val emailIntent = Intent(Intent.ACTION_SEND)
+            emailIntent.clipData = ClipData.newRawUri("CANDash Logs", contentUri)
+            emailIntent.type = "vnd.android.cursor.dir/email"
+            val to = arrayOf("info@candash.app")
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, to)
+            emailIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "CANDash Logs")
 
-
+            val chooser = Intent.createChooser(emailIntent, "Send email...")
+            chooser.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            startActivity(chooser)
+        }
+    }
 }
