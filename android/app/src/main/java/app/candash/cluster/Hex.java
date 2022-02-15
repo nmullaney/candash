@@ -34,7 +34,6 @@ public class Hex {
         return (byte) value;
     }
 
-g
     private int hxCharToInt(char hxChar) {
         if (hxChar >= '0' && hxChar <= '9') {
             return hxChar - '0';

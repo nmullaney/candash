@@ -1,6 +1,10 @@
 package app.candash.cluster
 
+import android.util.Log
+
+
 class ElmFrame(rawData: String) {
+    private val TAG = ElmFrame::class.java.simpleName
 
     private val headerString = rawData.substring(0,3)
     private val payloadString = rawData.substring(4).filterNot { it.isWhitespace() }
@@ -11,10 +15,12 @@ class ElmFrame(rawData: String) {
 
     private var payloadByteArray = byteArrayOf()
     fun frameLength():Int {
-        return payloadString.length
+        return (payloadString.length/ 2)
     }
     fun getCANValue(canSignal: CANSignal): Float? {
+        //val pString = payloadString.padEnd(16-payloadString.length, '0')
         payloadByteArray = getByteArray(payloadString)
+        Log.d(TAG, payloadString)
         if (!isCorrectMux(canSignal)) {
             return null
         }
@@ -23,6 +29,7 @@ class ElmFrame(rawData: String) {
         var startBit = canSignal.startBit
         var totalLength = canSignal.bitLength
         while (totalLength > 0) {
+
             val byteIndex = startBit / 8
             val endBitForByte = 8 - (startBit % 8)
             val bitLengthForByte = endBitForByte.coerceAtMost(totalLength)
