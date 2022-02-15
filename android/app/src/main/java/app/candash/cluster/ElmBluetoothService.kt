@@ -64,7 +64,7 @@ class ElmBluetoothService(val context: Context) :
                 Log.d(TAG, "BToutput: "+output.toString(charset))
                 output = BluetoothService.sendData(("AT E0"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATSPB"+"\r").toByteArray(charset))
+                output = BluetoothService.sendData(("STP 31"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
                 //output = BluetoothService.sendData(("ATL0"+"\r").toByteArray(charset))
                 //Log.d(TAG, "BToutput: "+output.toString(charset))
@@ -72,8 +72,7 @@ class ElmBluetoothService(val context: Context) :
                 Log.d(TAG, "BToutput: "+output.toString(charset))
                 output = BluetoothService.sendData(("ATAL"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
-                output = BluetoothService.sendData(("ATPBC001"+"\r").toByteArray(charset))
-                Log.d(TAG, "BToutput: "+output.toString(charset))
+
                 val signals = signalHelper.getALLCANSignals()
                 signals.forEach() {
                     output = BluetoothService.sendData(("STFPA "+it.value.frameId.string+", 7FF"+"\r").toByteArray(charset))
@@ -87,6 +86,8 @@ class ElmBluetoothService(val context: Context) :
                     if (it.split(" ")[0].length == 3){
                         val frame = ElmFrame(it.toString())
                         handleFrame(frame)
+                    } else {
+                        // BluetoothService.requestData(("STM"+"\r").toByteArray(charset))
                     }
                     //val frame = ElmFrame(it.toString())
                     //handleFrame(frame)
