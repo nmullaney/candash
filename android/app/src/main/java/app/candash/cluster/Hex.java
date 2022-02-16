@@ -61,9 +61,12 @@ public class Hex {
     public String getString() {
         StringBuilder buffer = new StringBuilder();
         for (byte b : mByteArray) {
+            if (String.format("%x", b).length() < 2){
+                buffer.append("0");
+            }
             buffer.append(String.format("%x", b));
         }
-        return buffer.toString();
+        return buffer.toString().substring(1);
     }
 
     public String getHexString() {
