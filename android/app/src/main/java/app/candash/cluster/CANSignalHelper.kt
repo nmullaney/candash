@@ -10,6 +10,7 @@ class CANSignalHelper {
         const val CLEAR_FILTERS_BYTE : Byte = 0x18
         const val ADD_FILTERS_BYTE : Byte = 0x0F
     }
+    private var signalSet : MutableSet<String> = mutableSetOf()
 
     private val mNameSignalMap = HashMap<String, CANSignal>()
     private val mFrameSignalMap : MutableMap<Hex, MutableList<CANSignal>>  = mutableMapOf()
@@ -18,6 +19,9 @@ class CANSignalHelper {
         return byteArrayOf(CLEAR_FILTERS_BYTE);
     }
 
+    fun getFrames() : MutableSet<String>{
+        return signalSet
+    }
     fun addFilterPackets(signalNamesToUse: List<String>) : List<ByteArray> {
         return signalsToUse(signalNamesToUse).chunked(MAX_FILTERS).map { CANSignals ->
             CANSignals.fold(mutableListOf(ADD_FILTERS_BYTE)) { byteList, CANSignal ->
@@ -54,6 +58,7 @@ class CANSignalHelper {
         val CANSignal = CANSignal(name, busId, frameId, startBit, bitLength, factor, offset, serviceIndex, muxIndex, signed)
         mNameSignalMap.put(CANSignal.name, CANSignal)
         addToMapList(mFrameSignalMap, CANSignal.frameId, CANSignal)
+        signalSet.add(frameId.string)
     }
     fun createCANSignals() {
 

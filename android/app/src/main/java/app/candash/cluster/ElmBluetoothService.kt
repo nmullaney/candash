@@ -72,18 +72,37 @@ class ElmBluetoothService(val context: Context) :
                 Log.d(TAG, "BToutput: "+output.toString(charset))
                 output = BluetoothService.sendData(("ATAL"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("STFAC"+"\r").toByteArray(charset))
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                /*
+                output = BluetoothService.sendData(("STFPA 241, 7FF"+"\r").toByteArray(charset))
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("STFPA 132, 7FF"+"\r").toByteArray(charset))
+                Log.d(TAG, "BToutput: "+output.toString(charset))
+                output = BluetoothService.sendData(("STFPA 3F5, 7FF"+"\r").toByteArray(charset))
+                Log.d(TAG, "BToutput: "+output.toString(charset))
 
+                 */
+                val frames = signalHelper.getFrames()
+                for (frame in frames) {
+                    output = BluetoothService.sendData(("STFPA "+frame+", 7FF"+"\r").toByteArray(charset))
+                    Log.d(TAG, "BToutput: "+output.toString(charset))
+
+                }
+/*
                 val signals = signalHelper.getALLCANSignals()
                 signals.forEach() {
                     output = BluetoothService.sendData(("STFPA "+it.value.frameId.string+", 7FF"+"\r").toByteArray(charset))
                 }
+
+ */
                 output = BluetoothService.sendData(("AT H1"+"\r").toByteArray(charset))
                 Log.d(TAG, "BToutput: "+output.toString(charset))
 
                 BluetoothService.requestData(("STM"+"\r").toByteArray(charset))
                 BluetoothService.getData(this).collect {
                     Log.d(TAG, "BToutput: $it")
-                    if (it.split(" ")[0].length == 3){
+                    if ((it.split(" ")[0].length == 3) and !(it.split(" ")[0].equals("CAN"))){
                         val frame = ElmFrame(it.toString())
                         handleFrame(frame)
                     } else {

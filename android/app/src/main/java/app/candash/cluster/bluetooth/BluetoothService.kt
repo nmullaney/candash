@@ -28,7 +28,7 @@ object BluetoothService {
     private lateinit var socket: BluetoothSocket
     private var shutdown: Boolean = false
     private var lastHeartbeatTimestamp = 0L
-    private val heartBeatIntervalMs = 4_000
+    private val heartBeatIntervalMs = 1_000
     private val socketTimeoutMs = 1_000
     private val charset: Charset = Charsets.UTF_8
 
@@ -84,9 +84,13 @@ object BluetoothService {
                 val buffer = BufferedReader(InputStreamReader(inputStream))
                 val line = buffer.readLine()
                 emit(line)
+                /*
                     if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
                         outputStream.write(("STM"+"\r").toByteArray(charset))
+                        lastHeartbeatTimestamp = System.currentTimeMillis()
                     }
+
+                 */
                 }
     }.flowOn(Dispatchers.IO).shareIn(scope, SharingStarted.Eagerly, 1)
 
