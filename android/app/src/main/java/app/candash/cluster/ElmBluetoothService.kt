@@ -87,7 +87,6 @@ class ElmBluetoothService(val context: Context) :
                 for (frame in frames) {
                     output = BluetoothService.sendData(("STFPA "+frame+", 7FF"+"\r").toByteArray(charset))
                     Log.d(TAG, "BToutput: "+output.toString(charset))
-
                 }
 /*
                 val signals = signalHelper.getALLCANSignals()

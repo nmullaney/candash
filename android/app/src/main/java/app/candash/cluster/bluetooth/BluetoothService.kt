@@ -34,6 +34,7 @@ object BluetoothService {
 
     suspend fun sendData(data: ByteArray) =
         coroutineScope {
+            Log.d(TAG, "BTCommand:"+data.toString(charset))
             shutdown = false
             withContext(Dispatchers.IO) {
                 outputStream.write(data)
