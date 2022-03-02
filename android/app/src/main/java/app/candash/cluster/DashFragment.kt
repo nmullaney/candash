@@ -1433,7 +1433,7 @@ class DashFragment : Fragment() {
                 3 -> binding.autopilot.visibility = View.VISIBLE
             }
         }
-        if (autopilotStateVal == 3) {
+        if (autopilotStateVal > 2) {
 
             // set pivot to center of image
             binding.autopilot.pivotX = (binding.autopilot.width / 2).toFloat()
