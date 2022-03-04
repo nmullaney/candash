@@ -1419,18 +1419,18 @@ class DashFragment : Fragment() {
 
             val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
             val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-            when (lastAutopilotState) {
-                1 -> fadeOut.cancel()
-                2 -> fadeIn.cancel()
-                3 -> binding.autopilot.visibility = View.INVISIBLE
+            when {
+                lastAutopilotState == 1 -> fadeOut.cancel()
+                lastAutopilotState == 2 -> fadeIn.cancel()
+                lastAutopilotState > 2 -> binding.autopilot.visibility = View.INVISIBLE
             }
             binding.autopilotInactive.clearAnimation()
             binding.autopilotInactive.visibility =
-                if (autopilotStateVal == 3) View.INVISIBLE else View.VISIBLE
-            when (autopilotStateVal) {
-                1 -> binding.autopilotInactive.startAnimation(fadeOut)
-                2 -> binding.autopilotInactive.startAnimation(fadeIn)
-                3 -> binding.autopilot.visibility = View.VISIBLE
+                if (autopilotStateVal > 2 ) View.INVISIBLE else View.VISIBLE
+            when  {
+                autopilotStateVal == 1 -> binding.autopilotInactive.startAnimation(fadeOut)
+                autopilotStateVal == 2 -> binding.autopilotInactive.startAnimation(fadeIn)
+                autopilotStateVal > 2 -> binding.autopilot.visibility = View.VISIBLE
             }
         }
         if (autopilotStateVal > 2) {
