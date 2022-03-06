@@ -30,7 +30,7 @@ class CircularGauge @JvmOverloads constructor(
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
     private var powerWidth : Float = 0f
-    private var strokeWidth : Float = 8f
+    private var strokeWidth : Float = 12f
     private var charging : Boolean = false
 
 
