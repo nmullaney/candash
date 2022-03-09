@@ -1182,7 +1182,7 @@
 
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:gravity="right|top"
+        android:gravity="right|bottom"
         android:paddingRight="0dp"
         android:text="BATT T"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
@@ -1233,7 +1233,7 @@
         android:layout_width="0dp"
         android:layout_marginTop="0dp"
 
-        android:gravity="right|top"
+        android:gravity="right|bottom"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
         android:text="0"
