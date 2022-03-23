@@ -1233,14 +1233,14 @@
         android:layout_width="0dp"
         android:layout_marginTop="0dp"
 
-        android:gravity="right|bottom"
+        android:gravity="right|center_vertical"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
         android:text="0"
         android:textSize="25dp"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toStartOf="@id/batttemplabel"
-        app:layout_constraintTop_toBottomOf="@id/batttemplabel"
+        app:layout_constraintBottom_toBottomOf="@id/batttempgauge"
         app:layout_constraintEnd_toEndOf="@id/batttemplabel"
         />
 
