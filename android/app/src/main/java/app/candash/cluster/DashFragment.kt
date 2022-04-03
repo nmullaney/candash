@@ -686,7 +686,15 @@ class DashFragment : Fragment() {
                 var sensingSpeedLimit = 35
                 binding.speed.scaleY = .9f
 
-                binding.speed.text = vehicleSpeedVal.toInt().toString()
+                var vehicleSpeedInt = vehicleSpeedVal.toInt()
+                var displaySpeedString = vehicleSpeedInt.toString()
+                if (vehicleSpeedInt >= 100) {
+                    // The speed display needs to be shifted slightly to the left when the value
+                    // is over 100 (either MPH or KM/h)
+
+                    displaySpeedString += " "
+                }
+                binding.speed.text = displaySpeedString
 
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f) {
                     sensingSpeedLimit = 35f.kmh.toInt()
