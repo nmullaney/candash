@@ -11,14 +11,14 @@
 
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginBottom="25dp"
         android:fontFamily="@font/interextralight"
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:letterSpacing="-.1"
         android:paddingBottom="0dp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="25dp"
         android:scaleY=".9"
+        android:textColor="@color/black"
         app:autoSizeMaxTextSize="300dp"
         app:autoSizeMinTextSize="30dp"
         app:autoSizeStepGranularity="10dp"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".5"
 
-        tools:text="125" />
+        tools:text="266" />
     <TextView
         android:id="@+id/unit"
 
@@ -198,14 +198,13 @@
     <!--    />-->
 
 
-
     <ImageView
         android:id="@+id/left_turn_signal"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="20dp"
 
+        android:layout_marginTop="45dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -215,8 +214,8 @@
         android:layout_width="40dp"
         android:layout_height="45dp"
         android:layout_marginTop="40dp"
-        android:layout_marginRight="10dp"
 
+        android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -272,16 +271,16 @@
 
     <TextView
         android:id="@+id/PRND"
-        android:layout_width="120dp"
+        android:layout_width="110dp"
         android:layout_height="30dp"
+        android:layout_marginTop="14dp"
         android:fontFamily="@font/interbold"
-        android:textColor="@color/prnd_not_selected"
         android:gravity="center|center_vertical"
+        android:paddingLeft="10dp"
         android:text="P  R  N  D"
         android:textAlignment="center"
+        android:textColor="@color/prnd_not_selected"
         android:textSize="20dp"
-        android:paddingLeft="20dp"
-        android:layout_marginTop="14dp"
 
 
         app:layout_constraintStart_toStartOf="parent"
@@ -718,54 +717,56 @@
         app:layout_constraintEnd_toStartOf="@id/guideline3"
         app:layout_constraintBottom_toTopOf="@id/reartempgauge"
         />
+
     <TextView
         android:id="@+id/fronttempunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
+        android:layout_marginBottom="10dp"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
         android:text="&#176;C"
         android:textSize="20dp"
-
-        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintBottom_toTopOf="@+id/reartempunits"
         app:layout_constraintCircle="@id/fronttempgauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="86dp" />
+
     <TextView
         android:id="@+id/fronttemplabel"
 
-        android:layout_height="20dp"
         android:layout_width="100dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="left|bottom"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="F OIL"
+        android:gravity="bottom|left"
         android:paddingRight="0dp"
 
-        app:layout_constraintTop_toTopOf="@id/fronttempgauge"
-        app:layout_constraintStart_toEndOf="@id/guideline3" />
+        android:text="F OIL"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="@id/fronttempgauge" />
+
     <TextView
         android:id="@+id/fronttemp"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginBottom="0dp"
+        android:layout_height="27dp"
 
-        android:gravity="left|center"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="left|center"
         android:text="0"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="@id/fronttempgauge"
-        app:layout_constraintTop_toBottomOf="@id/fronttemplabel"
-        app:layout_constraintStart_toStartOf="@id/fronttemplabel"
-        app:layout_constraintEnd_toEndOf="@id/fronttemplabel"/>
+        app:layout_constraintEnd_toEndOf="@id/fronttemplabel"
+        app:layout_constraintStart_toStartOf="@id/fronttemplabel" />
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/fronttorquegauge"
@@ -785,101 +786,104 @@
         app:layout_constraintStart_toEndOf="@id/guideline2"
         app:layout_constraintBottom_toTopOf="@id/reartorquegauge"
         />
+
     <TextView
         android:id="@+id/fronttorqueunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:text="Nm"
-        android:textSize="20dp"
+        android:textSize="16dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/fronttorquegauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="598dp"
+        tools:layout_editor_absoluteY="91dp" />
+
     <TextView
         android:id="@+id/fronttorquelabel"
 
-        android:layout_height="20dp"
         android:layout_width="100dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="right|bottom"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="F TRQ"
+        android:gravity="right|bottom"
         android:paddingRight="0dp"
 
-        app:layout_constraintTop_toTopOf="@id/fronttorquegauge"
-        app:layout_constraintEnd_toStartOf="@id/guideline2" />
+        android:text="F MOT"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
+        app:layout_constraintTop_toTopOf="@id/fronttorquegauge" />
+
     <TextView
         android:id="@+id/fronttorque"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginBottom="0dp"
+        android:layout_height="27dp"
 
-        android:gravity="right|center"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="right|center"
         android:text="0"
         android:textSize="25dp"
         app:layout_constraintBottom_toBottomOf="@id/fronttorquegauge"
-        app:layout_constraintTop_toBottomOf="@id/fronttorquelabel"
-        app:layout_constraintStart_toStartOf="@id/fronttorquelabel"
-        app:layout_constraintEnd_toEndOf="@id/fronttorquelabel"/>
+        app:layout_constraintEnd_toEndOf="@id/fronttorquelabel"
+        app:layout_constraintStart_toStartOf="@id/fronttorquelabel" />
+
     <TextView
         android:id="@+id/reartemplabel"
 
-        android:layout_height="20dp"
         android:layout_width="100dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="left|bottom"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="R OIL"
+        android:gravity="left|bottom"
         android:paddingRight="0dp"
 
-        app:layout_constraintBottom_toTopOf="@id/reartemp"
-        app:layout_constraintStart_toEndOf="@id/guideline3" />
+        android:text="R OIL"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/reartempunits" />
+
     <TextView
         android:id="@+id/reartemp"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginBottom="5dp"
+        android:layout_height="27dp"
 
-        android:gravity="left|center"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="left|center"
         android:text="0"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline1"
-        app:layout_constraintStart_toStartOf="@id/reartemplabel"
-        app:layout_constraintEnd_toEndOf="@id/reartemplabel"/>
+        app:layout_constraintBottom_toBottomOf="@+id/reartempunits"
+        app:layout_constraintEnd_toEndOf="@id/reartemplabel"
+        app:layout_constraintStart_toStartOf="@id/reartemplabel" />
+
     <TextView
         android:id="@+id/reartempunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:text="&#176;C"
         android:textSize="20dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/reartempgauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="104dp"
+        tools:layout_editor_absoluteY="151dp" />
     <app.candash.cluster.CircularGauge
         android:id="@+id/reartempgauge"
 
@@ -902,24 +906,25 @@
     <TextView
         android:id="@+id/frontbraketemplabel"
 
-        android:layout_height="20dp"
         android:layout_width="100dp"
-        android:layout_marginTop="0dp"
-        android:gravity="left|bottom"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="F BRK"
+        android:gravity="left|bottom"
         android:paddingRight="0dp"
-        app:layout_constraintTop_toTopOf="@id/frontbraketempgauge"
+        android:text="F BRK"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toBottomOf="@id/guideline1"
-        app:layout_constraintStart_toEndOf="@id/guideline3" />
+        app:layout_constraintTop_toTopOf="@id/frontbraketempgauge" />
 
     <TextView
         android:id="@+id/frontbraketemp"
 
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="27dp"
 
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
@@ -928,28 +933,25 @@
         app:layout_constraintBottom_toBottomOf="@id/frontbraketempgauge"
         app:layout_constraintEnd_toEndOf="@id/frontbraketemplabel"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/frontbraketemplabel"
-        app:layout_constraintTop_toBottomOf="@id/frontbraketemplabel"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="@id/frontbraketemplabel" />
 
     <TextView
         android:id="@+id/frontbraketempunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:text="&#176;C"
         android:textSize="20dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/frontbraketempgauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="104dp"
+        tools:layout_editor_absoluteY="211dp" />
     <app.candash.cluster.CircularGauge
         android:id="@+id/frontbraketempgauge"
 
@@ -971,116 +973,117 @@
     <TextView
         android:id="@+id/rearbraketemplabel"
 
-        android:layout_height="20dp"
         android:layout_width="100dp"
-        android:layout_marginTop="0dp"
-        android:gravity="left|bottom"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="R BRK"
+        android:gravity="bottom|left"
         android:paddingRight="0dp"
 
-        app:layout_constraintTop_toTopOf="@id/rearbraketempgauge"
-        app:layout_constraintStart_toEndOf="@id/guideline3" />
+        android:text="R BRK"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="@id/rearbraketempgauge" />
+
     <TextView
         android:id="@+id/rearbraketemp"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginBottom="0dp"
+        android:layout_height="27dp"
 
-        android:gravity="left|center"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="left|center"
         android:text="0"
         android:textSize="25dp"
-        app:layout_constraintTop_toBottomOf="@id/rearbraketemplabel"
-        app:layout_constraintStart_toStartOf="@id/rearbraketemplabel"
+        app:layout_constraintBottom_toBottomOf="@id/rearbraketempgauge"
         app:layout_constraintEnd_toEndOf="@id/rearbraketemplabel"
-        app:layout_constraintBottom_toBottomOf="@id/rearbraketempgauge"/>
+        app:layout_constraintStart_toStartOf="@id/rearbraketemplabel" />
+
     <TextView
         android:id="@+id/rearbraketempunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="afrc"
+        android:gravity="center"
         android:text="&#176;C"
         android:textSize="20dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/rearbraketempgauge"
         app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5"
 
-        />
+        tools:layout_editor_absoluteX="104dp"
+        tools:layout_editor_absoluteY="271dp" />
+
     <app.candash.cluster.CircularGauge
         android:id="@+id/rearbraketempgauge"
 
-        android:layout_height="50dp"
         android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
-        android:text="Nm"
+        android:gravity="center"
 
-        app:layout_constraintHeight_percent=".5"
+        android:text="Nm"
         app:layout_constraintEnd_toStartOf="@id/guideline3"
-        app:layout_constraintTop_toBottomOf="@id/frontbraketemp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintTop_toBottomOf="@+id/frontbraketempunits" />
+
     <TextView
         android:id="@+id/reartorquelabel"
 
-        android:layout_height="20dp"
         android:layout_width="100dp"
-        android:layout_marginBottom="0dp"
-        android:gravity="right|bottom"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="R TRQ"
+        android:gravity="right|bottom"
         android:paddingRight="0dp"
 
-        app:layout_constraintBottom_toTopOf="@id/reartorque"
-        app:layout_constraintEnd_toEndOf="@id/guideline2" />
+        android:text="R MOT"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/reartorqueunits" />
+
     <TextView
         android:id="@+id/reartorque"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginBottom="5dp"
+        android:layout_height="27dp"
 
-        android:gravity="right|center"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="right|center"
         android:text="0"
         android:textSize="25dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline1"
-        app:layout_constraintStart_toStartOf="@id/reartorquelabel"
-        app:layout_constraintEnd_toEndOf="@id/reartorquelabel"/>
+        app:layout_constraintBottom_toBottomOf="@+id/reartorqueunits"
+        app:layout_constraintEnd_toEndOf="@id/reartorquelabel"
+        app:layout_constraintStart_toStartOf="@id/reartorquelabel" />
+
     <TextView
         android:id="@+id/reartorqueunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:text="Nm"
-        android:textSize="20dp"
+        android:textSize="16dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/reartorquegauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="598dp"
+        tools:layout_editor_absoluteY="151dp" />
     <app.candash.cluster.CircularGauge
         android:id="@+id/reartorquegauge"
 
@@ -1099,42 +1102,42 @@
         app:layout_constraintStart_toEndOf="@id/guideline2"
         app:layout_constraintBottom_toBottomOf="@id/guideline1"
         />
+
     <TextView
         android:id="@+id/coolantflowlabel"
 
-        android:layout_height="20dp"
         android:layout_width="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="16dp"
 
-        android:gravity="right|bottom"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
-        android:text="COOL FL"
+        android:gravity="right|bottom"
         android:paddingRight="0dp"
-        app:layout_constraintHeight_percent=".5"
-        app:layout_constraintTop_toTopOf="@id/coolantflowgauge"
-        app:layout_constraintTop_toBottomOf="@id/guideline1"
+        android:text="COOL"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
+        app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toStartOf="@id/fronttorque"
-        />
+        app:layout_constraintTop_toBottomOf="@id/guideline1"
+        app:layout_constraintTop_toTopOf="@id/coolantflowgauge" />
+
     <TextView
         android:id="@+id/coolantflowunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:text="lpm"
         android:textSize="15dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/coolantflowgauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="602dp"
+        tools:layout_editor_absoluteY="211dp" />
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/coolantflowgauge"
@@ -1153,24 +1156,23 @@
         app:layout_constraintStart_toEndOf="@id/guideline2"
         app:layout_constraintTop_toBottomOf="@id/guideline1"
         />
+
     <TextView
         android:id="@+id/coolantflow"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="27dp"
 
-        android:gravity="right|center_vertical"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="right|center_vertical"
         android:text="0"
         android:textSize="25dp"
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintBottom_toBottomOf="@id/coolantflowgauge"
-        app:layout_constraintStart_toStartOf="@id/coolantflowlabel"
-        app:layout_constraintTop_toBottomOf="@id/coolantflowlabel"
         app:layout_constraintEnd_toEndOf="@id/coolantflowlabel"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/coolantflowlabel" />
 
     />
 
@@ -1178,35 +1180,36 @@
         android:id="@+id/batttemplabel"
 
         android:layout_width="0dp"
-        android:layout_height="18dp"
+        android:layout_height="16dp"
 
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="right|bottom"
         android:paddingRight="0dp"
-        android:text="BATT T"
+        android:text="BATT"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toStartOf="@id/coolantflowlabel"
         app:layout_constraintTop_toTopOf="@id/batttempgauge" />
+
     <TextView
         android:id="@+id/batttempunits"
 
+        android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_width="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="0dp"
 
-        android:gravity="center"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
+        android:gravity="center"
         android:text="&#176;C"
         android:textSize="20dp"
 
-        app:layout_constraintHeight_percent=".5"
         app:layout_constraintCircle="@id/batttempgauge"
         app:layout_constraintCircleRadius="0dp"
-        />
+        app:layout_constraintHeight_percent=".5"
+        tools:layout_editor_absoluteX="603dp"
+        tools:layout_editor_absoluteY="270dp" />
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/batttempgauge"
@@ -1226,23 +1229,23 @@
         app:layout_constraintStart_toEndOf="@id/guideline2"
         app:layout_constraintTop_toBottomOf="@id/coolantflowgauge"
         />
+
     <TextView
         android:id="@+id/batttemp"
 
-        android:layout_height="30dp"
         android:layout_width="0dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="27dp"
 
-        android:gravity="right|center_vertical"
+        android:layout_marginBottom="5dp"
         android:fontFamily="sans-serif"
         android:fontFeatureSettings="tnum"
+        android:gravity="right|center_vertical"
         android:text="0"
         android:textSize="25dp"
-        app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="@id/batttemplabel"
         app:layout_constraintBottom_toBottomOf="@id/batttempgauge"
         app:layout_constraintEnd_toEndOf="@id/batttemplabel"
-        />
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/batttemplabel" />
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -1325,22 +1328,21 @@
         tools:text="0 W" />
 
     <TextView
-        android:layout_height="30dp"
         android:id="@+id/maxpower"
         android:layout_width="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="10dp"
-        android:gravity="right|center_vertical"
+        android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
         android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
 
+        android:gravity="right|center_vertical"
         app:autoSizeMaxTextSize="15dp"
         app:autoSizeMinTextSize="10dp"
         app:autoSizeStepGranularity="5dp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent=".2"
         tools:text="0 W" />
 

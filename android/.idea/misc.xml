@@ -33,12 +33,14 @@
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_bs_warning.xml" value="0.2630208333333333" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_dash.xml" value="0.22" />
         <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_info.xml" value="0.2636752136752137" />
-        <entry key="app/src/main/res/layout/fragment_dash.xml" value="0.2140625" />
+        <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.14537037037037037" />
+        <entry key="app/src/main/res/layout/fragment_bs_warning.xml" value="0.14537037037037037" />
+        <entry key="app/src/main/res/layout/fragment_dash.xml" value="0.45" />
         <entry key="app/src/main/res/layout/fragment_info.xml" value="0.20087336244541484" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
