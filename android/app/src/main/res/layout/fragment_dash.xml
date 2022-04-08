@@ -200,8 +200,8 @@
 
     <ImageView
         android:id="@+id/left_turn_signal"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginStart="20dp"
 
         android:layout_marginTop="45dp"
@@ -211,9 +211,9 @@
 
     <ImageView
         android:id="@+id/right_turn_signal"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="45dp"
 
         android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -222,50 +222,51 @@
 
     <ImageView
         android:id="@+id/left_turn_signal_dark"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnleftdark"
-        android:paddingTop="45dp"
-        android:paddingLeft="10dp"
-        android:visibility="gone"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="45dp"
 
+        android:src="@drawable/ic_turnleftdark"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/left_turn_signal_light"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnleftbright"
-        android:paddingTop="45dp"
-        android:paddingLeft="10dp"
-        android:visibility="gone"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="45dp"
 
+        android:src="@drawable/ic_turnleftbright"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/right_turn_signal_dark"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnrightdark"
-        android:paddingTop="45dp"
-        android:paddingRight="10dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="20dp"
         android:gravity="center"
-        android:visibility="gone"
 
+        android:src="@drawable/ic_turnrightdark"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/right_turn_signal_light"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_turnrightbright"
-        android:paddingTop="45dp"
-        android:paddingRight="10dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="20dp"
         android:gravity="center"
-        android:visibility="gone"
 
+        android:src="@drawable/ic_turnrightbright"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
