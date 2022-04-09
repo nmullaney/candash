@@ -357,11 +357,11 @@
         android:id="@+id/deadbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_deadbattery"
         android:layout_marginTop="16.5dp"
-        android:paddingRight="20dp"
-        android:paddingTop="0dp"
         android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:paddingRight="20dp"
+        android:src="@drawable/ic_deadbattery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -369,11 +369,11 @@
         android:id="@+id/fullbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_fullbattery"
-        android:paddingRight="20dp"
-        android:paddingTop="0dp"
         android:layout_marginTop="16.5dp"
         android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:paddingRight="20dp"
+        android:src="@drawable/ic_fullbattery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
