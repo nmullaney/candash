@@ -86,7 +86,14 @@ class DashFragment : Fragment() {
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
             binding.autopilot,
-            binding.autopilotInactive
+            binding.autopilotInactive,
+            binding.telltaleDrl,
+            binding.telltaleLb,
+            binding.telltaleHb,
+            binding.telltaleAhbStdby,
+            binding.telltaleAhbActive,
+            binding.telltaleFogFront,
+            binding.telltaleFogRear
         )
 
     private fun sideUIViews(): List<View> =
@@ -791,6 +798,83 @@ class DashFragment : Fragment() {
                 }
             }
 
+            it.getValue(Constants.logging1HzIndex)?.let { messageIndexVal ->
+                if (messageIndexVal == 18f) {
+                    it.getValue(Constants.drlMode)?.let { drlModeVal ->
+                        if (drlModeVal == Constants.drlModePosition) {
+                            binding.telltaleDrl.visibility = View.VISIBLE
+                        } else {
+                            binding.telltaleDrl.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+            }
+
+            it.getValue(Constants.lowBeamLeft)?.let { lowBeamVal ->
+                if (lowBeamVal == Constants.lowBeamLeftOn) {
+                    binding.telltaleLb.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleLb.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.autoHighBeamEnabled)?.let { ahbEnabledVal ->
+                if (ahbEnabledVal == 1f) {
+                    binding.telltaleHb.visibility = View.INVISIBLE
+                    if (viewModel.getValue(Constants.highBeamSwitchActive) == 1f) {
+                        if (viewModel.getValue(Constants.highLowBeamDecision) == 2f) {
+                            // Auto High Beam is on, AHB decision is ON
+                            binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                            binding.telltaleAhbActive.visibility = View.VISIBLE
+                            binding.telltaleLb.visibility = View.INVISIBLE
+                        } else {
+                            // Auto High Beam is on, AHB decision is OFF
+                            binding.telltaleAhbStdby.visibility = View.VISIBLE
+                            binding.telltaleAhbActive.visibility = View.INVISIBLE
+                            if (viewModel.getValue(Constants.highBeamStalkStatus) == 1f) {
+                                // Pulled on left stalk, flash HB
+                                binding.telltaleLb.visibility = View.INVISIBLE
+                                binding.telltaleHb.visibility = View.VISIBLE
+                            } else {
+                                // Stalk idle, business as usual
+                                if (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOn) {
+                                    binding.telltaleLb.visibility = View.VISIBLE
+                                }
+                                binding.telltaleHb.visibility = View.INVISIBLE
+                            }
+                        }
+                    }
+                } else {
+                    binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                    binding.telltaleAhbActive.visibility = View.INVISIBLE
+                    if ((viewModel.getValue(Constants.highBeamSwitchActive) == 1f) or
+                        (viewModel.getValue(Constants.highBeamStalkStatus) == 1f)) {
+                        binding.telltaleLb.visibility = View.INVISIBLE
+                        binding.telltaleHb.visibility = View.VISIBLE
+                    } else {
+                        if (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOn) {
+                            binding.telltaleLb.visibility = View.VISIBLE
+                        }
+                        binding.telltaleHb.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+            it.getValue(Constants.rearFogSwitch)?.let { fogRearVal ->
+                if (fogRearVal == Constants.rearFogSwitchOn) {
+                    binding.telltaleFogRear.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleFogRear.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.frontFogSwitch)?.let { fogFrontVal ->
+                if (fogFrontVal == Constants.frontFogSwitchOn) {
+                    binding.telltaleFogFront.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleFogFront.visibility = View.INVISIBLE
+                }
+            }
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 

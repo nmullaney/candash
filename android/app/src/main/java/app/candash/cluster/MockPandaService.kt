@@ -43,6 +43,7 @@ class MockPandaService : PandaService {
     private fun mockCarStates() : List<CarState> =
         listOf(
             CarState(mutableMapOf(
+                Constants.autoHighBeamEnabled to 0f,
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.autopilotHands to 1f,
@@ -52,8 +53,11 @@ class MockPandaService : PandaService {
                 Constants.battAmps to -20f,
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,
-
-
+                Constants.drlMode to Constants.drlModePosition,
+                Constants.turnSignalLeft to 1f,
+                Constants.frontFogSwitch to Constants.frontFogSwitchOff,
+                Constants.rearFogSwitch to Constants.rearFogSwitchOff,
+                Constants.frontLeftDoorState to 1f
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -67,8 +71,11 @@ class MockPandaService : PandaService {
 
                 Constants.battVolts to 390f,
                 Constants.uiSpeed to 0.0f,
-
-
+                Constants.drlMode to Constants.drlModePosition,
+                Constants.lowBeamLeft to Constants.lowBeamLeftOn,
+                Constants.turnSignalLeft to 0f,
+                Constants.turnSignalRight to 1f,
+                Constants.frontLeftDoorState to 1f
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -78,9 +85,10 @@ class MockPandaService : PandaService {
                 Constants.battAmps to -10f,
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,
-
+                Constants.highBeamStalkStatus to 1f,
                 Constants.uiSpeed to 22.0f,
-
+                Constants.turnSignalRight to 0f,
+                Constants.frontLeftDoorState to 2f
 
             )),
             CarState(mutableMapOf(
@@ -88,8 +96,13 @@ class MockPandaService : PandaService {
                 Constants.isSunUp to 1f,
                 Constants.uiSpeed to 65.0f,
                 Constants.uiSpeedUnits to 0f,
-
-                )))
+                Constants.drlMode to Constants.drlModeOff,
+                Constants.lowBeamLeft to Constants.lowBeamLeftOff,
+                Constants.highBeamStalkStatus to 0f,
+                Constants.frontFogSwitch to Constants.frontFogSwitchOn,
+                Constants.rearFogSwitch to Constants.rearFogSwitchOn,
+                Constants.frontLeftDoorState to 2f
+            )))
 }
 /*
     private fun mockCarStates() : List<CarState> =

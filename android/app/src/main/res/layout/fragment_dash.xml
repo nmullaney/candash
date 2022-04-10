@@ -49,11 +49,11 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/chargemeter"
-        android:visibility="invisible"
-
         android:layout_width="350dp"
+
         android:layout_height="350dp"
         android:layout_marginBottom="10dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,11 +65,10 @@
         android:layout_height="200dp"
         android:fontFamily="@font/interextralight"
         android:gravity="center"
-        android:visibility="invisible"
         android:letterSpacing="-.07"
         android:textColor="@color/black"
         android:textSize="30dp"
-        android:layout_marginBottom="0dp"
+        android:visibility="invisible"
         app:autoSizeMaxTextSize="220dp"
         app:autoSizeMinTextSize="30dp"
         app:autoSizeStepGranularity="10dp"
@@ -148,11 +147,10 @@
         android:id="@+id/displaymaxspeed"
         android:layout_width="80dp"
         android:layout_height="30dp"
+        android:fontFamily="@font/interbold"
         android:gravity="right"
         android:textSize="15dp"
-        android:fontFamily="@font/interbold"
-        app:layout_constraintStart_toEndOf="@id/autopilot_inactive"
-        />
+        app:layout_constraintStart_toEndOf="@id/autopilot_inactive" />
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
     <!--        android:layout_width="60dp"-->
@@ -200,32 +198,32 @@
 
     <ImageView
         android:id="@+id/left_turn_signal"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="200dp"
 
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
         android:id="@+id/right_turn_signal"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="45dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
 
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="200dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
         android:id="@+id/left_turn_signal_dark"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="45dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_turnleftdark"
         android:visibility="gone"
@@ -233,11 +231,95 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/left_turn_signal_light"
+        android:id="@+id/telltale_drl"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_drl"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_fog_rear"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="48dp"
+
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_telltale_fog_rear"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_fog_front"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="48dp"
+
+        android:layout_marginEnd="49dp"
+        android:src="@drawable/ic_telltale_fog_front"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_lb"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_lb"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_hb"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_hb"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_ahb_active"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_ahb_active"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_ahb_stdby"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_ahb_stdby"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/left_turn_signal_light"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_turnleftbright"
         android:visibility="gone"
@@ -246,10 +328,10 @@
 
     <ImageView
         android:id="@+id/right_turn_signal_dark"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="200dp"
         android:gravity="center"
 
         android:src="@drawable/ic_turnrightdark"
@@ -259,10 +341,10 @@
 
     <ImageView
         android:id="@+id/right_turn_signal_light"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="200dp"
         android:gravity="center"
 
         android:src="@drawable/ic_turnrightbright"
@@ -383,7 +465,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_modely"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
         app:layout_constraintStart_toStartOf="parent"
@@ -476,15 +558,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:src="@drawable/ic_modely"
-        android:visibility="gone"
+        android:visibility="invisible"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent=".5"
-        app:layout_constraintHeight_percent=".6"
-        />
+        app:layout_constraintWidth_percent=".5" />
 
 
     <ImageView
@@ -579,16 +660,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="start"
+        android:layout_marginLeft="20dp"
         android:adjustViewBounds="true"
         android:scaleType="fitStart"
-        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_bsl1_big"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
-        android:src="@drawable/ic_bsl1_big" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
