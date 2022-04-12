@@ -61,9 +61,6 @@ class CANSignalHelper {
         insertCANSignal(Constants.battVolts, -1, Hex(0x132), 0, 16, 0.01f, 0f)
         insertCANSignal(Constants.battAmps, -1, Hex(0x132), 16, 16, -.1f, 0f, signed=true)
 
-        insertCANSignal(Constants.logging1HzIndex, -1, Hex(0x381), 0, 5, 1f, 0f)
-        insertCANSignal(Constants.drlMode, -1, Hex(0x381), 5, 2, 1f, 0f)
-
         insertCANSignal(Constants.uiSpeed, -1, Hex(0x257), 24, 9, 1f, 0f)
         //insertCANSignal(Constants.uiSpeedHighSpeed, -1, Hex(0x257), 34, 9, 1f, 0f)
         insertCANSignal(Constants.uiSpeedUnits, -1, Hex(0x257), 33, 1, 1f, 0f)
@@ -73,13 +70,15 @@ class CANSignalHelper {
         insertCANSignal(Constants.uiRange, -1, Hex(0x33A), 0, 10, 1f, 0f)
         insertCANSignal(Constants.turnSignalLeft, -1, Hex(0x3F5), 0, 2, 1f, 0f)
         insertCANSignal(Constants.turnSignalRight, -1, Hex(0x3F5), 2, 2, 1f, 0f)
+
         insertCANSignal(Constants.lowBeamLeft, -1, Hex(0x3F5), 28, 2, 1f, 0f)
-        insertCANSignal(Constants.highBeamSwitchActive, -1, Hex(0x3F5), 58, 1, 1f, 0f)
+        insertCANSignal(Constants.highBeamRequest, -1, Hex(0x3F5), 58, 1, 1f, 0f)
         insertCANSignal(Constants.autoHighBeamEnabled, -1, Hex(0x273), 41, 1, 1f, 0f)
         insertCANSignal(Constants.highLowBeamDecision, -1, Hex(0x3E9), 11, 2, 1f, 0f)
         insertCANSignal(Constants.highBeamStalkStatus, -1, Hex(0x249), 12, 2, 1f, 0f)
         insertCANSignal(Constants.frontFogSwitch, -1, Hex(0x273), 3, 1, 1f, 0f)
         insertCANSignal(Constants.rearFogSwitch, -1, Hex(0x273), 23, 1, 1f, 0f)
+
         insertCANSignal(Constants.isSunUp, -1, Hex(0x2D3), 25, 2, 1f, 0f)
         //insertCANSignal(Constants.rearLeftVehicle, 1, Hex(0x22E), 36, 9, 1f, 0f)
         //insertCANSignal(Constants.rearRightVehicle, 1, Hex(0x22E), 9, 9, 1f, 0f)
@@ -111,6 +110,8 @@ class CANSignalHelper {
         insertCANSignal(Constants.brakeTempFR, -1, Hex(0x3FE), 10, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRL, -1, Hex(0x3FE), 20, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRR, -1, Hex(0x3FE), 30, 10, 1f, -40f)
+
+        // insertCANSignal(Constants.drlMode, -1, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
 
     }
 

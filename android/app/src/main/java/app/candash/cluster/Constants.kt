@@ -61,15 +61,10 @@ object Constants {
     const val uiSpeedTestBus0 = "uiSpeedTestBus0"
     const val indicatorLeft = "indicatorLeft"
     const val indicatorRight = "indicatorRight"
-    const val logging1HzIndex = "logging1HzIndex"
-    const val drlMode = "drlMode"
-    const val drlModeOff = 0f
-    const val drlModePosition = 1f
-    const val drlModeDrl = 2f
     const val lowBeamLeft = "lowBeamLeft"
     const val lowBeamLeftOff = 0f
     const val lowBeamLeftOn = 1f
-    const val highBeamSwitchActive = "highBeamSwitchActive"
+    const val highBeamRequest = "highBeamRequest"
     const val autoHighBeamEnabled = "autoHighBeamEnabled"
     const val highLowBeamDecision = "highLowBeamDecision"
     const val highBeamStalkStatus = "highBeamStalkStatus"
@@ -79,6 +74,10 @@ object Constants {
     const val rearFogSwitch = "rearFogSwitch"
     const val rearFogSwitchOff = 0f
     const val rearFogSwitchOn = 1f
+    const val drlMode = "drlMode"
+    const val drlModeOff = 0f
+    const val drlModePosition = 1f
+    const val drlModeDrl = 2f
     const val conditionalSpeedLimit = "conditionalSpeedLimit"
     const val brakeTempFL = "brakeTempFL"
     const val brakeTempFR = "brakeTempFR"

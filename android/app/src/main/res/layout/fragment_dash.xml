@@ -238,7 +238,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_drl"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -250,7 +250,7 @@
 
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_telltale_fog_rear"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -262,7 +262,7 @@
 
         android:layout_marginEnd="49dp"
         android:src="@drawable/ic_telltale_fog_front"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -274,7 +274,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_lb"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -286,7 +286,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_hb"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -298,7 +298,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_ahb_active"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -310,7 +310,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_ahb_stdby"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

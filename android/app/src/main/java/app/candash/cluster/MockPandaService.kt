@@ -43,7 +43,6 @@ class MockPandaService : PandaService {
     private fun mockCarStates() : List<CarState> =
         listOf(
             CarState(mutableMapOf(
-                Constants.autoHighBeamEnabled to 0f,
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.autopilotHands to 1f,
@@ -75,7 +74,6 @@ class MockPandaService : PandaService {
                 Constants.battAmps to -10f,
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,
-                Constants.highBeamStalkStatus to 1f,
                 Constants.uiSpeed to 22.0f,
             )),
             CarState(mutableMapOf(

@@ -23,9 +23,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 
-
 class DashFragment : Fragment() {
-
     private lateinit var binding: FragmentDashBinding
 
     private lateinit var viewModel: DashViewModel
@@ -797,16 +795,12 @@ class DashFragment : Fragment() {
 
                 }
             }
-/*
-            it.getValue(Constants.logging1HzIndex)?.let { messageIndexVal ->
-                if (messageIndexVal == 18f) {
-                    it.getValue(Constants.drlMode)?.let { drlModeVal ->
-                        if (drlModeVal == Constants.drlModePosition) {
-                            binding.telltaleDrl.visibility = View.VISIBLE
-                        } else {
-                            binding.telltaleDrl.visibility = View.INVISIBLE
-                        }
-                    }
+
+            it.getValue(Constants.drlMode)?.let { drlModeVal ->
+                if (drlModeVal == Constants.drlModePosition) {
+                    binding.telltaleDrl.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleDrl.visibility = View.INVISIBLE
                 }
             }
 
@@ -821,7 +815,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.autoHighBeamEnabled)?.let { ahbEnabledVal ->
                 if (ahbEnabledVal == 1f) {
                     binding.telltaleHb.visibility = View.INVISIBLE
-                    if (viewModel.getValue(Constants.highBeamSwitchActive) == 1f) {
+                    if (viewModel.getValue(Constants.highBeamRequest) == 1f) {
                         if (viewModel.getValue(Constants.highLowBeamDecision) == 2f) {
                             // Auto High Beam is on, AHB decision is ON
                             binding.telltaleAhbStdby.visibility = View.INVISIBLE
@@ -843,11 +837,19 @@ class DashFragment : Fragment() {
                                 binding.telltaleHb.visibility = View.INVISIBLE
                             }
                         }
+                    } else {
+                        binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                        binding.telltaleAhbActive.visibility = View.INVISIBLE
+                        if (viewModel.getValue(Constants.highBeamStalkStatus) == 1f) {
+                            // Pulled on left stalk, flash HB
+                            binding.telltaleLb.visibility = View.INVISIBLE
+                            binding.telltaleHb.visibility = View.VISIBLE
+                        }
                     }
                 } else {
                     binding.telltaleAhbStdby.visibility = View.INVISIBLE
                     binding.telltaleAhbActive.visibility = View.INVISIBLE
-                    if ((viewModel.getValue(Constants.highBeamSwitchActive) == 1f) or
+                    if ((viewModel.getValue(Constants.highBeamRequest) == 1f) or
                         (viewModel.getValue(Constants.highBeamStalkStatus) == 1f)) {
                         binding.telltaleLb.visibility = View.INVISIBLE
                         binding.telltaleHb.visibility = View.VISIBLE
@@ -875,7 +877,7 @@ class DashFragment : Fragment() {
                     binding.telltaleFogFront.visibility = View.INVISIBLE
                 }
             }
-*/
+
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
