@@ -797,7 +797,7 @@ class DashFragment : Fragment() {
 
                 }
             }
-
+/*
             it.getValue(Constants.logging1HzIndex)?.let { messageIndexVal ->
                 if (messageIndexVal == 18f) {
                     it.getValue(Constants.drlMode)?.let { drlModeVal ->
@@ -875,7 +875,7 @@ class DashFragment : Fragment() {
                     binding.telltaleFogFront.visibility = View.INVISIBLE
                 }
             }
-
+*/
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
