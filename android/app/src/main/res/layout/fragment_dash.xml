@@ -226,7 +226,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_turnleftdark"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -241,6 +241,18 @@
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_seatbelt"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="20dp"
+
+        android:src="@drawable/ic_seatbelt"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
 
     <ImageView
         android:id="@+id/telltale_fog_rear"
@@ -322,7 +334,7 @@
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_turnleftbright"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -335,7 +347,7 @@
         android:gravity="center"
 
         android:src="@drawable/ic_turnrightdark"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -348,7 +360,7 @@
         android:gravity="center"
 
         android:src="@drawable/ic_turnrightbright"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -445,6 +457,32 @@
         android:paddingRight="20dp"
         android:src="@drawable/ic_deadbattery"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/batt_charge"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:layout_marginEnd="60dp"
+        android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:src="@drawable/ic_batt_charging"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/fullbattery"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/batt_heat"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:layout_marginEnd="85dp"
+        android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:src="@drawable/ic_batt_heating"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/fullbattery"
         app:layout_constraintTop_toTopOf="parent" />
 
     <app.candash.cluster.BatteryGauge
@@ -1356,14 +1394,13 @@
 
     <app.candash.cluster.LinearGauge
         android:id="@+id/power_bar"
-        android:layout_height="5dp"
         android:layout_width="match_parent"
+        android:layout_height="5dp"
         android:layout_marginBottom="25dp"
-        android:layout_marginTop="20dp"
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 
 
         />

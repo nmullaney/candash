@@ -111,7 +111,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.brakeTempRL, -1, Hex(0x3FE), 20, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRR, -1, Hex(0x3FE), 30, 10, 1f, -40f)
 
-        // insertCANSignal(Constants.drlMode, -1, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
+        insertCANSignal(Constants.drlMode, -1, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
 
     }
 

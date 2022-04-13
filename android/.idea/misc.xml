@@ -47,6 +47,8 @@
         <entry key="app/src/main/res/drawable/ic_maxspeedinactive.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_modely.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_rearleftdoor.xml" value="0.216" />
+        <entry key="app/src/main/res/drawable/ic_rearrightdoor.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_seatbelt.xml" value="0.1825" />
         <entry key="app/src/main/res/drawable/ic_telltale_ahb_active.xml" value="0.1365" />
         <entry key="app/src/main/res/drawable/ic_telltale_ahb_stdby.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/ic_turnleftbright.xml" value="0.216" />

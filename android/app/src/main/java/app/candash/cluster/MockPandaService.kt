@@ -52,7 +52,13 @@ class MockPandaService : PandaService {
                 Constants.battAmps to -20f,
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,
-                Constants.frontLeftDoorState to 2f
+                Constants.liftgateState to 2f,
+                Constants.frunkState to 2f,
+                Constants.frontLeftDoorState to 2f,
+                Constants.frontRightDoorState to 2f,
+                Constants.rearLeftDoorState to 2f,
+                Constants.rearRightDoorState to 2f,
+                Constants.drlMode to Constants.drlModePosition
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -66,7 +72,8 @@ class MockPandaService : PandaService {
 
                 Constants.battVolts to 390f,
                 Constants.uiSpeed to 0.0f,
-                Constants.frontLeftDoorState to 2f
+                Constants.frontLeftDoorState to 2f,
+                Constants.drlMode to Constants.drlModePosition
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -77,14 +84,16 @@ class MockPandaService : PandaService {
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,
                 Constants.uiSpeed to 22.0f,
-                Constants.frontLeftDoorState to 2f
+                Constants.frontLeftDoorState to 2f,
+                Constants.drlMode to Constants.drlModePosition
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.uiSpeed to 65.0f,
                 Constants.uiSpeedUnits to 0f,
-                Constants.frontLeftDoorState to 1f
+                Constants.frontLeftDoorState to 1f,
+                Constants.drlMode to Constants.drlModePosition
             )))
 }
 /*
