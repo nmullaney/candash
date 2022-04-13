@@ -20,7 +20,7 @@ class MockPandaService : PandaService {
         withContext(pandaContext) {
             shutdown = false
             while (!shutdown) {
-                delay(MS_BETWEEN_REQUESTS)
+                Thread.sleep(MS_BETWEEN_REQUESTS)
                 carStateFlow.value = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
                 yield()
             }
