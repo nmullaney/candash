@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.core.content.FileProvider.getUriForFile
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -44,17 +45,19 @@ class InfoFragment() : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
-
-        binding.toggleServerGroup.check(if (viewModel.useMockServer()) R.id.mock_server_button else R.id.real_server_button)
+        val options = viewModel.getCANServiceOptions(requireContext())
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, options)
+        binding.chooseService.adapter = adapter
+        binding.chooseService.setSelection(viewModel.getCurrentCANServiceIndex())
 
         binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
 
         binding.saveButton.setOnClickListener {
-            viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
+            viewModel.saveSettings(getSelectedCANServiceIndex(), binding.editIpAddress.text.toString())
         }
         binding.scanButton.setOnClickListener {
             if (viewModel.getZeroConfIpAddress() != "0.0.0.0"){
-                viewModel.saveSettings(false, viewModel.getZeroConfIpAddress())
+                viewModel.saveSettings(getSelectedCANServiceIndex(), viewModel.getZeroConfIpAddress())
             }
             binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
         }
@@ -106,6 +109,10 @@ class InfoFragment() : Fragment() {
                 }
             }
         }
+    }
+
+    fun getSelectedCANServiceIndex() : Int {
+        return binding.chooseService.selectedItemPosition
     }
 
     override fun onResume() {

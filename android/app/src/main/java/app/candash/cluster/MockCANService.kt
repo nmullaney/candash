@@ -9,7 +9,7 @@ import kotlinx.coroutines.yield
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
-class MockPandaService : PandaService {
+class MockCANService : CANService {
     private val MS_BETWEEN_REQUESTS = 2_000L
     private val carStateFlow = MutableStateFlow(CarState())
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
@@ -28,6 +28,10 @@ class MockPandaService : PandaService {
     }
     override fun isRunning() : Boolean {
         return !shutdown
+    }
+
+    override fun getType(): CANServiceType {
+        return CANServiceType.MOCK
     }
 
     override suspend fun shutdown() {
