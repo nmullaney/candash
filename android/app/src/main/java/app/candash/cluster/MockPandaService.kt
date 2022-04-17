@@ -58,7 +58,7 @@ class MockPandaService : PandaService {
                 Constants.rearLeftDoorState to 2f,
                 Constants.rearRightDoorState to 2f,
                 Constants.drlMode to Constants.drlModeOff,
-                //Constants.driverBuckle to 1f
+                Constants.chargeStatus to Constants.chargeStatusInactive
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -74,10 +74,11 @@ class MockPandaService : PandaService {
                 Constants.uiSpeed to 0.0f,
                 Constants.frontLeftDoorState to 2f,
                 Constants.drlMode to Constants.drlModeDrl,
-                Constants.passengerUnbuckled to 1f
+                Constants.passengerUnbuckled to 1f,
+                Constants.chargeStatus to Constants.chargeStatusInactive
             )),
             CarState(mutableMapOf(
-                Constants.autopilotState to 3f,
+                Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.driveConfig to 1f,
                 Constants.stateOfCharge to 70f,
@@ -87,7 +88,8 @@ class MockPandaService : PandaService {
                 Constants.uiSpeed to 22.0f,
                 Constants.frontLeftDoorState to 2f,
                 Constants.drlMode to Constants.drlModePosition,
-                Constants.passengerUnbuckled to 0f
+                Constants.passengerUnbuckled to 0f,
+                Constants.chargeStatus to Constants.chargeStatusActive
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
@@ -96,7 +98,7 @@ class MockPandaService : PandaService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.frontLeftDoorState to 1f,
                 Constants.drlMode to Constants.drlModePosition,
-                //Constants.driverBuckle to 0f
+                Constants.chargeStatus to Constants.chargeStatusActive
             )))
 }
 /*

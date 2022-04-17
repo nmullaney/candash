@@ -993,6 +993,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
                 if (!isSplitScreen()) {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
+                        binding.fullbattery.setChargeMode(1)
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.GONE
                         }
@@ -1015,6 +1016,7 @@ class DashFragment : Fragment() {
 
 
                     } else {
+                        binding.fullbattery.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
                         binding.bigsoc.visibility = View.INVISIBLE
                         binding.bigsocpercent.visibility = View.INVISIBLE
@@ -1032,6 +1034,7 @@ class DashFragment : Fragment() {
                     }
                 } else {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
+                        binding.fullbattery.setChargeMode(1)
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.GONE
                         }
@@ -1052,6 +1055,7 @@ class DashFragment : Fragment() {
                             binding.chargerate.visibility = View.VISIBLE
                         }
                     } else {
+                        binding.fullbattery.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
                         binding.bigsoc.visibility = View.INVISIBLE
                         binding.bigsocpercent.visibility = View.INVISIBLE
