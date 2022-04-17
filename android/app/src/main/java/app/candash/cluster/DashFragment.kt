@@ -446,8 +446,6 @@ class DashFragment : Fragment() {
                 setColors(sunUpVal.toInt())
             }
 
-
-
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battAmps = battAmpsVal.toFloat()

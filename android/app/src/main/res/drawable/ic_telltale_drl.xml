@@ -2,29 +2,29 @@
     android:viewportWidth="744.49" android:width="63.53718dp" xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="#00000000"
         android:pathData="M532.74,132.66c-165.86,11 -166.14,244.82 -1,253.25C552.51,340.11 554.05,193.68 532.74,132.66ZM211.74,132.66c-21.31,61 -19.76,207.45 1,253.25C377.89,377.48 377.61,143.68 211.75,132.66Z"
-        android:strokeColor="#02e359" android:strokeLineCap="square" android:strokeWidth="40"/>
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="square" android:strokeWidth="40"/>
     <path android:fillColor="#00000000"
         android:pathData="M42.85,106.66L132.78,141.61"
-        android:strokeColor="#02e359" android:strokeLineCap="round"
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="40"/>
     <path android:fillColor="#00000000"
         android:pathData="M20,261.69L113.48,261.69"
-        android:strokeColor="#02e359" android:strokeLineCap="round"
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="40"/>
     <path android:fillColor="#00000000"
         android:pathData="M45.97,420.35L135.91,386.44"
-        android:strokeColor="#02e359" android:strokeLineCap="round"
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="40"/>
     <path android:fillColor="#00000000"
         android:pathData="M701.65,106.66L611.71,141.61"
-        android:strokeColor="#02e359" android:strokeLineCap="round"
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="40"/>
     <path android:fillColor="#00000000"
         android:pathData="M724.49,261.69L631.02,261.69"
-        android:strokeColor="#02e359" android:strokeLineCap="round"
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="40"/>
     <path android:fillColor="#00000000"
         android:pathData="M698.52,420.35L608.58,386.44"
-        android:strokeColor="#02e359" android:strokeLineCap="round"
+        android:strokeColor="@color/telltale_green" android:strokeLineCap="round"
         android:strokeLineJoin="round" android:strokeWidth="40"/>
 </vector>
