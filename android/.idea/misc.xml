@@ -51,7 +51,11 @@
         <entry key="app/src/main/res/drawable/ic_seatbelt.xml" value="0.1825" />
         <entry key="app/src/main/res/drawable/ic_telltale_ahb_active.xml" value="0.1365" />
         <entry key="app/src/main/res/drawable/ic_telltale_ahb_stdby.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/ic_telltale_fog_front.xml" value="0.228" />
+        <entry key="app/src/main/res/drawable/ic_telltale_fog_rear.xml" value="0.228" />
         <entry key="app/src/main/res/drawable/ic_turnleftbright.xml" value="0.216" />
+        <entry key="app/src/main/res/drawable/ic_turnleftdark.xml" value="0.228" />
+        <entry key="app/src/main/res/drawable/ic_turnrightbright.xml" value="0.228" />
         <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.14537037037037037" />
         <entry key="app/src/main/res/layout/fragment_bs_warning.xml" value="0.14537037037037037" />
         <entry key="app/src/main/res/layout/fragment_dash.xml" value="0.45" />
