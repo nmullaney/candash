@@ -36,7 +36,6 @@ class MockPandaService : PandaService {
         }
     }
 
-
     override fun carState(): Flow<CarState> {
         return carStateFlow
     }
@@ -58,7 +57,8 @@ class MockPandaService : PandaService {
                 Constants.frontRightDoorState to 2f,
                 Constants.rearLeftDoorState to 2f,
                 Constants.rearRightDoorState to 2f,
-                Constants.drlMode to Constants.drlModePosition
+                Constants.drlMode to Constants.drlModeOff,
+                //Constants.driverBuckle to 1f
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -73,7 +73,8 @@ class MockPandaService : PandaService {
                 Constants.battVolts to 390f,
                 Constants.uiSpeed to 0.0f,
                 Constants.frontLeftDoorState to 2f,
-                Constants.drlMode to Constants.drlModePosition
+                Constants.drlMode to Constants.drlModeDrl,
+                Constants.passengerUnbuckled to 1f
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -85,7 +86,8 @@ class MockPandaService : PandaService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.uiSpeed to 22.0f,
                 Constants.frontLeftDoorState to 2f,
-                Constants.drlMode to Constants.drlModePosition
+                Constants.drlMode to Constants.drlModePosition,
+                Constants.passengerUnbuckled to 0f
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
@@ -93,7 +95,8 @@ class MockPandaService : PandaService {
                 Constants.uiSpeed to 65.0f,
                 Constants.uiSpeedUnits to 0f,
                 Constants.frontLeftDoorState to 1f,
-                Constants.drlMode to Constants.drlModePosition
+                Constants.drlMode to Constants.drlModePosition,
+                //Constants.driverBuckle to 0f
             )))
 }
 /*

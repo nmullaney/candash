@@ -60,8 +60,12 @@ public class Hex {
 
     public String getString() {
         StringBuilder buffer = new StringBuilder();
-        for (byte b : mByteArray) {
-            buffer.append(String.format("%x", b));
+        for (int i = 0; i < mByteArray.length; i++) {
+            if(i == 0) {
+                buffer.append(String.format("%x", mByteArray[i]));
+            } else {
+                buffer.append(String.format("%02x", mByteArray[i]));
+            }
         }
         return buffer.toString();
     }

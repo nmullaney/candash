@@ -878,6 +878,29 @@ class DashFragment : Fragment() {
                 }
             }
 
+            if ((viewModel.getValue(Constants.driverUnbuckled) == 1f) or
+                (viewModel.getValue(Constants.passengerUnbuckled) == 1f)) {
+                binding.telltaleSeatbelt.visibility = View.VISIBLE
+            } else {
+                binding.telltaleSeatbelt.visibility = View.INVISIBLE
+            }
+
+            it.getValue(Constants.heatBattery)?.let { heatBatteryVal ->
+                if (heatBatteryVal == 1f) {
+                    binding.battHeat.visibility = View.VISIBLE
+                } else {
+                    binding.battHeat.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
+                if (chargeStatusVal == Constants.chargeStatusActive) {
+                    binding.battCharge.visibility = View.VISIBLE
+                } else {
+                    binding.battCharge.visibility = View.INVISIBLE
+                }
+            }
+
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {

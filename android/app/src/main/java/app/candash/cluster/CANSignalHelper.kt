@@ -6,7 +6,8 @@ class CANSignalHelper {
     private val TAG = CANSignalHelper::class.java.simpleName
 
     companion object {
-        const val MAX_FILTERS = 48
+        const val MAX_FILTERS = 43
+
         const val CLEAR_FILTERS_BYTE : Byte = 0x18
         const val ADD_FILTERS_BYTE : Byte = 0x0F
     }
@@ -112,7 +113,9 @@ class CANSignalHelper {
         insertCANSignal(Constants.brakeTempRR, -1, Hex(0x3FE), 30, 10, 1f, -40f)
 
         insertCANSignal(Constants.drlMode, -1, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
-
+        insertCANSignal(Constants.driverUnbuckled, -1, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0)
+        insertCANSignal(Constants.passengerUnbuckled, -1, Hex(0x3A1), 34, 2, 1f, 0f, 1, 0)
+        insertCANSignal(Constants.heatBattery, -1, Hex(0x2E1), 63, 1, 1f, 0f, 3, 0 )
     }
 
     private fun addToMapList(map: MutableMap<Hex, MutableList<CANSignal>>, key: Hex, value: CANSignal) {
