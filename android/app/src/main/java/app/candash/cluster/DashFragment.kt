@@ -795,10 +795,12 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.drlMode)?.let { drlModeVal ->
-                if (drlModeVal == Constants.drlModePosition) {
-                    binding.telltaleDrl.visibility = View.VISIBLE
-                } else {
+                if ((drlModeVal != Constants.drlModePosition) or
+                    ((gearState == Constants.gearPark) and
+                     (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOff))) {
                     binding.telltaleDrl.visibility = View.INVISIBLE
+                } else {
+                    binding.telltaleDrl.visibility = View.VISIBLE
                 }
             }
 
