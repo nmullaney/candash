@@ -901,6 +901,40 @@ class DashFragment : Fragment() {
                 }
             }
 
+            it.getValue(Constants.brakePark)?.let { brakeParkVal ->
+                if (brakeParkVal == Constants.brakeParkRed) {
+                    binding.telltaleBrakePark.visibility = View.VISIBLE
+                    binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
+                } else if(brakeParkVal == Constants.brakeParkAmber) {
+                    binding.telltaleBrakePark.visibility = View.INVISIBLE
+                    binding.telltaleBrakeParkFault.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleBrakePark.visibility = View.INVISIBLE
+                    binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.brakeHold)?.let { brakeHoldVal ->
+                if (brakeHoldVal == 1f) {
+                    binding.telltaleBrakeHold.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleBrakeHold.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.tpmsHard)?.let { tpmsHardVal ->
+                if (tpmsHardVal == 1f) {
+                    binding.telltaleTPMSFaultHard.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
+                    if(viewModel.getValue(Constants.tpmsSoft) == 1f) {
+                        binding.telltaleTPMSFaultSoft.visibility = View.VISIBLE
+                    } else {
+                        binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {

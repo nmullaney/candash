@@ -116,6 +116,13 @@ class CANSignalHelper {
         insertCANSignal(Constants.driverUnbuckled, -1, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0)
         insertCANSignal(Constants.passengerUnbuckled, -1, Hex(0x3A1), 34, 2, 1f, 0f, 1, 0)
         insertCANSignal(Constants.heatBattery, -1, Hex(0x2E1), 63, 1, 1f, 0f, 3, 0 )
+
+        // EPBR_telltaleLocal: 0 "LAMP_OFF" 1 "LAMP_RED_ON" 2 "LAMP_AMBER_ON" 3 "LAMP_RED_FLASH" 7 "SNA"
+        insertCANSignal(Constants.brakePark, -1, Hex(0x228), 39, 3, 1f, 0f)
+
+        insertCANSignal(Constants.brakeHold, -1, Hex(0x2B6), 10, 1, 1f, 0f)
+        insertCANSignal(Constants.tpmsSoft, -1, Hex(0x123), 13, 1, 1f, 0f)
+        insertCANSignal(Constants.tpmsHard, -1, Hex(0x123), 12, 1, 1f, 0f)
     }
 
     private fun addToMapList(map: MutableMap<Hex, MutableList<CANSignal>>, key: Hex, value: CANSignal) {

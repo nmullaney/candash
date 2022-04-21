@@ -30,5 +30,5 @@
     <color name="telltale_orange">#ffb641</color>
     <color name="telltale_red">#ff3a3a</color>
     <color name="telltale_blue">#006cff</color>
-    <color name="telltale_inactive">#404040</color>
+    <color name="telltale_inactive">#606060</color>
 </resources>

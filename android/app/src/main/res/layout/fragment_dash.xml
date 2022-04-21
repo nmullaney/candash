@@ -121,14 +121,14 @@
         android:id="@+id/autopilot"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginTop="9dp"
         android:gravity="center"
-        android:visibility="invisible"
 
         android:src="@drawable/ic_autopilot"
-        android:layout_marginTop="9dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/autopilot_inactive"
@@ -252,6 +252,125 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_park"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginStart="41dp"
+        android:src="@drawable/ic_brake_park"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_esp_active"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginStart="81dp"
+        android:src="@drawable/ic_esp_active"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_esp_active2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="121dp"
+        android:src="@drawable/ic_esp_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_hold"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:src="@drawable/ic_brake_hold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_park_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="41dp"
+        android:src="@drawable/ic_brake_park_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_TPMS_fault_hard"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_TPMS_fault_soft"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginStart="121dp"
+        android:src="@drawable/ic_tpms_warn_soft"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_TPMS_fault_hard"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:src="@drawable/ic_tpms_warn_hard"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_fog_rear"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="41dp"
+        android:src="@drawable/ic_brake_sys_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_boost_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="41dp"
+        android:src="@drawable/ic_brake_boost_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_abs_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="81dp"
+        android:src="@drawable/ic_brake_abs_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
         app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
 
     <ImageView

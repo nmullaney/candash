@@ -80,6 +80,13 @@ object Constants {
     const val drlModeDrl = 2f
     const val driverUnbuckled = "driverUnbuckled"
     const val passengerUnbuckled = "passengerUnbuckled"
+    const val brakePark = "brakePark"
+    const val brakeParkOff = 0f
+    const val brakeParkRed = 1f
+    const val brakeParkAmber = 2f
+    const val brakeHold = "brakeHold"
+    const val tpmsSoft = "tpmsSoft"
+    const val tpmsHard = "tpmsHard"
     const val heatBattery = "heatBattery"
     const val conditionalSpeedLimit = "conditionalSpeedLimit"
     const val brakeTempFL = "brakeTempFL"
