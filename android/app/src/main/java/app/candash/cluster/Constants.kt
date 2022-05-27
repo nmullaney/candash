@@ -75,4 +75,5 @@ object Constants {
     const val showPowerGauges = 1f
     const val showSimpleGauges = 0f
     const val gaugeMode = "gaugeMode"
+    const val displayOn = "displayOn"
 }

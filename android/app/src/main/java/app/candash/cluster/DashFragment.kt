@@ -441,7 +441,13 @@ class DashFragment : Fragment() {
                 setColors(sunUpVal.toInt())
             }
 
-
+            it.getValue(Constants.displayOn)?.let { displayOnVal ->
+                if (displayOnVal.toFloat() == 0f) {
+                    binding.blackout.visibility = View.VISIBLE
+                } else {
+                    binding.blackout.visibility = View.INVISIBLE
+                }
+            }
 
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
