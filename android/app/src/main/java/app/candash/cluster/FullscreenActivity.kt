@@ -72,7 +72,6 @@ class FullscreenActivity : AppCompatActivity() {
         // check every second if battery is connected
         var context = applicationContext
 
-/*
         handler.postDelayed(Runnable {
             handler.postDelayed(runnable!!, delay.toLong())
             // get battery status to decide whether or not to disable screen dimming
@@ -86,8 +85,15 @@ class FullscreenActivity : AppCompatActivity() {
                     || chargePlug == BatteryManager.BATTERY_PLUGGED_AC
                     || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
             //Log.d(TAG, "keep_screen_on" + isPlugged.toString())
+            
+            val batteryPct: Float? = batteryStatus?.let { intent ->
+                val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+                level * 100 / scale.toFloat()
+            }
+            val lowBattery: Boolean = batteryPct == null || batteryPct <= 20f
 
-            if (isPlugged) {
+            if (isPlugged || !lowBattery) {
                 this@FullscreenActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 //Log.d(TAG, "keep_screen_on")
             } else {
@@ -95,7 +101,6 @@ class FullscreenActivity : AppCompatActivity() {
                 //Log.d(TAG, "do not keep screen on")
             }
         }.also { runnable = it }, delay.toLong())
-*/
 
         setContentView(R.layout.activity_fullscreen)
         // This is a known unsafe cast, but is safe in the only correct use case:
