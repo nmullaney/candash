@@ -42,6 +42,7 @@ object Constants {
     const val gearReverse = 2
     const val gearNeutral = 3
     const val gearDrive = 4
+    const val gearSNA = 7
     const val doorOpen = 1
     const val doorClosed = 2
     const val maxDischargePower = "maxDischargePower"

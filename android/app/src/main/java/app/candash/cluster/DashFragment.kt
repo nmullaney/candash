@@ -507,7 +507,7 @@ class DashFragment : Fragment() {
                 var gearStartIndex = 0
                 var gearEndIndex = 0
                 gearState = gearStateVal.toInt()
-                if (gearStateVal.toInt() == Constants.gearInvalid) {
+                if (gearStateVal.toInt() == Constants.gearInvalid || gearStateVal.toInt() == Constants.gearSNA) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
                     gearStartIndex = 0
                     gearEndIndex = 0
@@ -855,7 +855,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            if (gearState != Constants.gearPark && gearState != Constants.gearInvalid) {
+            if (gearState != Constants.gearPark && gearState != Constants.gearInvalid && gearState != Constants.gearSNA) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
                     if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)) {
                         binding.blindSpotLeft1a.visibility = View.VISIBLE
