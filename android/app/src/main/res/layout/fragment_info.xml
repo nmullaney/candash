@@ -24,27 +24,11 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggle_server_group"
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/choose_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            app:singleSelection="true">
-            <Button
-                android:id="@+id/real_server_button"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/real_server"
-                />
-            <Button
-                android:id="@+id/mock_server_button"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mock_server"
-                />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/text_input_ip_address"
