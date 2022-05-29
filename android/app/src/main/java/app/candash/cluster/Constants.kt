@@ -87,6 +87,7 @@ object Constants {
     const val brakeHold = "brakeHold"
     const val tpmsSoft = "tpmsSoft"
     const val tpmsHard = "tpmsHard"
+    const val odometer = "odometer"
     const val heatBattery = "heatBattery"
     const val conditionalSpeedLimit = "conditionalSpeedLimit"
     const val brakeTempFL = "brakeTempFL"

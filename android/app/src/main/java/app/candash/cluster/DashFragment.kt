@@ -45,6 +45,11 @@ class DashFragment : Fragment() {
     private var gearState: Int = Constants.gearPark
     private lateinit var prefs: SharedPreferences
 
+    // Ugly debug test
+    private var battAmps1: Float = 0f
+    private var battAmps2: Float = 0f
+    private var battAmps3: Float = 0f
+
 
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
     val Int.dp: Int
@@ -91,7 +96,8 @@ class DashFragment : Fragment() {
             binding.telltaleAhbStdby,
             binding.telltaleAhbActive,
             binding.telltaleFogFront,
-            binding.telltaleFogRear
+            binding.telltaleFogRear,
+            binding.odometer
         )
 
     private fun sideUIViews(): List<View> =
@@ -449,6 +455,16 @@ class DashFragment : Fragment() {
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battAmps = battAmpsVal.toFloat()
+
+                // Noisy signal test / debug
+                battAmps1 = battAmps2
+                battAmps2 = battAmps3
+                battAmps3 = battAmps
+                if (battAmps2 > (battAmps1+battAmps2)/2) {
+                    battAmps = battAmps1
+                } else {
+                    battAmps = battAmps2
+                }
             }
             it.getValue(Constants.battVolts)?.let { battVoltsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
@@ -889,7 +905,7 @@ class DashFragment : Fragment() {
                 if (heatBatteryVal == 1f) {
                     binding.battHeat.visibility = View.VISIBLE
                 } else {
-                    binding.battHeat.visibility = View.INVISIBLE
+                    binding.battHeat.visibility = View.GONE
                 }
             }
 
@@ -897,7 +913,7 @@ class DashFragment : Fragment() {
                 if (chargeStatusVal == Constants.chargeStatusActive) {
                     binding.battCharge.visibility = View.VISIBLE
                 } else {
-                    binding.battCharge.visibility = View.INVISIBLE
+                    binding.battCharge.visibility = View.GONE
                 }
             }
 
@@ -933,6 +949,20 @@ class DashFragment : Fragment() {
                         binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
                     }
                 }
+            }
+
+            it.getValue(Constants.odometer)?.let { odometerVal ->
+                binding.odometer.visibility = View.VISIBLE
+                if (uiSpeedUnitsMPH == true) {
+                    binding.odometer.text = ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
+                } else {
+                    binding.odometer.text = odometerVal.toInt().toString() + " km"
+                }
+
+            }
+
+            if(it.getValue(Constants.odometer) == null) {
+                binding.odometer.visibility = View.INVISIBLE
             }
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
@@ -1294,6 +1324,7 @@ class DashFragment : Fragment() {
             binding.chargemeter.setDayValue(0)
             binding.unit.setTextColor(Color.LTGRAY)
             binding.batterypercent.setTextColor(Color.LTGRAY)
+            binding.odometer.setTextColor(Color.DKGRAY)
             binding.deadbattery.setColorFilter(Color.DKGRAY)
             gearColorSelected = Color.LTGRAY
             gearColor = Color.DKGRAY
@@ -1368,6 +1399,7 @@ class DashFragment : Fragment() {
 
             binding.unit.setTextColor(Color.GRAY)
             binding.batterypercent.setTextColor(Color.DKGRAY)
+            binding.odometer.setTextColor(Color.LTGRAY)
             binding.deadbattery.clearColorFilter()
             gearColorSelected = Color.DKGRAY
             gearColor = Color.parseColor("#FFDDDDDD")
