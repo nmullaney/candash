@@ -37,10 +37,12 @@ object Constants {
     const val battAmps = "BattAmps"
     const val steeringAngle = "SteeringAngle"
     const val vehicleSpeed = "Vehicle Speed"
+    const val gearInvalid = 0
     const val gearPark  = 1
     const val gearReverse = 2
     const val gearNeutral = 3
     const val gearDrive = 4
+    const val gearSNA = 7
     const val doorOpen = 1
     const val doorClosed = 2
     const val maxDischargePower = "maxDischargePower"
@@ -56,13 +58,8 @@ object Constants {
     const val rearTemp = "rearTemp"
     const val coolantFlow = "coolantFlow"
     const val chargeStatus = "chargeStatus"
-    const val chargeStatusConnected = 1f
+    const val chargeStatusActive = 1f
     const val chargeStatusInactive = 0f
-    const val chargeStatusEnabled = 5f
-    const val chargeStatusStandby = 2f
-    const val chargeStatusEVSETestActive = 3f
-    const val chargeStatusEVSETestPassed = 4f
-    const val chargeStatusFault = 6f
     const val uiSpeedTestBus0 = "uiSpeedTestBus0"
     const val indicatorLeft = "indicatorLeft"
     const val indicatorRight = "indicatorRight"
