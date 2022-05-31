@@ -30,7 +30,7 @@ class CircularGauge @JvmOverloads constructor(
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
     private var powerWidth : Float = 0f
-    private var strokeWidth : Float = 16f
+    private var strokeWidthPct : Float = 12f
     private var charging : Boolean = false
 
 
@@ -68,7 +68,7 @@ class CircularGauge @JvmOverloads constructor(
         val paint = Paint()
         var startX : Float = 0f
         var stopX: Float = 0f
-        paint.strokeWidth = strokeWidth
+        paint.strokeWidth = strokeWidthPct / 100f * width
         paint.style = Paint.Style.STROKE
         rect.inset(0f,-paint.strokeWidth/2);
         paint.setColorFilter(backgroundLineColor)
@@ -99,10 +99,10 @@ class CircularGauge @JvmOverloads constructor(
 
 
     }
-    fun setGauge(percent:Float, sWidth:Float = 16f, charge:Boolean = false){
+    fun setGauge(percent:Float, sWidthPct:Float = strokeWidthPct, charge:Boolean = false){
         powerWidth = percent * 360f
         charging = charge
-        strokeWidth = sWidth
+        strokeWidthPct = sWidthPct
 
     }
 

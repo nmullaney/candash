@@ -896,7 +896,7 @@ class DashFragment : Fragment() {
                         binding.chargemeter.visibility = View.VISIBLE
                         viewModel.getValue(Constants.stateOfCharge)?.toFloat()
                             ?.let { socVal ->
-                                binding.chargemeter.setGauge(socVal / 100f, 32f, true)
+                                binding.chargemeter.setGauge(socVal / 100f, 4f, true)
                                 binding.bigsoc.text = socVal.toInt().toString()
                                 binding.chargemeter.invalidate()
                                 binding.bigsoc.visibility = View.VISIBLE

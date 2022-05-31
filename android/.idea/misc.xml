@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.23055555555555557" />
         <entry key="../../../../layout/custom_preview.xml" value="0.34427083333333336" />
         <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/drawable/ic_autopilot_inactive.xml" value="0.3175" />
         <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/drawable/left_turn_anim.xml" value="0.295" />
@@ -40,7 +41,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
