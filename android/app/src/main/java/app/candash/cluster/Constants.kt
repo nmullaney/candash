@@ -37,10 +37,12 @@ object Constants {
     const val battAmps = "BattAmps"
     const val steeringAngle = "SteeringAngle"
     const val vehicleSpeed = "Vehicle Speed"
+    const val gearInvalid = 0
     const val gearPark  = 1
     const val gearReverse = 2
     const val gearNeutral = 3
     const val gearDrive = 4
+    const val gearSNA = 7
     const val doorOpen = 1
     const val doorClosed = 2
     const val maxDischargePower = "maxDischargePower"

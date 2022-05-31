@@ -44,7 +44,7 @@ class DashFragment : Fragment() {
     private var HRSPRS: Boolean = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
-    private var gearState: Int = Constants.gearPark
+    private var gearState: Int = Constants.gearInvalid
     private lateinit var prefs: SharedPreferences
 
 
@@ -505,8 +505,14 @@ class DashFragment : Fragment() {
                 val gear: String = binding.PRND.text.toString()
                 var ss = SpannableString(gear)
                 var gearStartIndex = 0
-                var gearEndIndex = 1
+                var gearEndIndex = 0
                 gearState = gearStateVal.toInt()
+                if (gearStateVal.toInt() == Constants.gearInvalid || gearStateVal.toInt() == Constants.gearSNA) {
+                    binding.autopilotInactive.visibility = View.INVISIBLE
+                    gearStartIndex = 0
+                    gearEndIndex = 0
+
+                }
                 if (gearStateVal.toInt() == Constants.gearPark) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
                     gearStartIndex = 0
@@ -849,7 +855,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            if (gearState != Constants.gearPark) {
+            if (gearState != Constants.gearPark && gearState != Constants.gearInvalid && gearState != Constants.gearSNA) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
                     if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)) {
                         binding.blindSpotLeft1a.visibility = View.VISIBLE
@@ -873,7 +879,7 @@ class DashFragment : Fragment() {
                     }
                 }
             } else {
-                // in park
+                // in park or off
 
 
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE

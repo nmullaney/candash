@@ -92,6 +92,7 @@ class MockCANService : CANService {
                 Constants.isSunUp to 1f,
                 Constants.uiSpeed to 65.0f,
                 Constants.uiSpeedUnits to 0f,
+                Constants.gearSelected to Constants.gearInvalid.toFloat(),
 
                 )))
 }
