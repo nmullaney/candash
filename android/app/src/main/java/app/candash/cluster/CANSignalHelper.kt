@@ -96,7 +96,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.frontTemp, -1, Hex(0x396), 24, 8, 1f, -40f)
         insertCANSignal(Constants.rearTemp, -1, Hex(0x395), 24, 8, 1f, -40f)
         insertCANSignal(Constants.coolantFlow, -1, Hex(0x241), 22, 9, .1f, 0f)
-        insertCANSignal(Constants.chargeStatus, -1, Hex(0x204), 4, 2, 1f, 0f)
+        insertCANSignal(Constants.chargeStatus, -1, Hex(0x212), 29, 1, 1f, 0f)
         insertCANSignal(Constants.brakeTempFL, -1, Hex(0x3FE), 0, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempFR, -1, Hex(0x3FE), 10, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRL, -1, Hex(0x3FE), 20, 10, 1f, -40f)
