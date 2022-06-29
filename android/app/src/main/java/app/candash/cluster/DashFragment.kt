@@ -35,6 +35,7 @@ class DashFragment : Fragment() {
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 0
     private var autopilotHandsToggle: Boolean = false
+    private var bsWarningToggle: Boolean = false
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
@@ -801,8 +802,6 @@ class DashFragment : Fragment() {
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
-                val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 var bsBinding = binding.BSWarningLeft
                 var colorFrom = getBackgroundColor(1)
                 if (getBooleanPref("forceNightMode")) {
@@ -825,33 +824,41 @@ class DashFragment : Fragment() {
                         Constants.blindSpotRight
                     ) in setOf(1f, 2f))
                 ) {
+                    if (bsWarningToggle == false) {
+                        blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
+                        blindspotAnimation.duration = 500
+                        // milliseconds
 
-                    blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
-                    blindspotAnimation.duration = 250
-                    // milliseconds
+                        blindspotAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        blindspotAnimation.repeatCount = ValueAnimator.INFINITE
+                        blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                        blindspotAnimation.start()
 
-                    blindspotAnimation.addUpdateListener { animator ->
-                        binding.root.setBackgroundColor(
-                            animator.animatedValue as Int
-                        )
+                        val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                        bsBinding.visibility = View.VISIBLE
+                        bsBinding.startAnimation(bsFadeIn)
+
+                        bsWarningToggle = true
                     }
-                    blindspotAnimation.repeatCount = ValueAnimator.INFINITE
-                    blindspotAnimation.repeatMode = ValueAnimator.REVERSE
-                    blindspotAnimation.start()
-
-
-                    bsBinding.startAnimation(bsFadeIn)
-                    bsBinding.visibility = View.VISIBLE
-
 
                 } else {
-                    if (bsBinding.visibility != View.GONE) {
+                    if (bsWarningToggle == true) {
+                        // reset the animation to start from it's current value and go to colorFrom
+                        blindspotAnimation.setObjectValues(blindspotAnimation.animatedValue, colorFrom)
+                        blindspotAnimation.repeatCount = 0
+                        blindspotAnimation.start()
+                        // it will end after reaching colorFrom, no need to stop/cancel it
+
+                        val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                         bsBinding.startAnimation(bsFadeOut)
                         bsBinding.visibility = View.GONE
 
+                        bsWarningToggle = false
                     }
-                    blindspotAnimation.cancel()
-                    binding.root.setBackgroundColor(colorFrom)
                 }
 
             }
