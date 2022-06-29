@@ -33,6 +33,7 @@ class DashFragment : Fragment() {
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 0
     private var autopilotHandsToggle: Boolean = false
+    private var bsWarningToggle: Boolean = false
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
@@ -42,7 +43,7 @@ class DashFragment : Fragment() {
     private var HRSPRS: Boolean = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
-    private var gearState: Int = Constants.gearPark
+    private var gearState: Int = Constants.gearInvalid
     private lateinit var prefs: SharedPreferences
 
     // Ugly debug test
@@ -524,8 +525,14 @@ class DashFragment : Fragment() {
                 val gear: String = binding.PRND.text.toString()
                 var ss = SpannableString(gear)
                 var gearStartIndex = 0
-                var gearEndIndex = 1
+                var gearEndIndex = 0
                 gearState = gearStateVal.toInt()
+                if (gearStateVal.toInt() == Constants.gearInvalid || gearStateVal.toInt() == Constants.gearSNA) {
+                    binding.autopilotInactive.visibility = View.INVISIBLE
+                    gearStartIndex = 0
+                    gearEndIndex = 0
+
+                }
                 if (gearStateVal.toInt() == Constants.gearPark) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
                     gearStartIndex = 0
@@ -968,8 +975,6 @@ class DashFragment : Fragment() {
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
-                val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 var bsBinding = binding.BSWarningLeft
                 var colorFrom = getBackgroundColor(1)
                 if (getBooleanPref("forceNightMode")) {
@@ -992,37 +997,45 @@ class DashFragment : Fragment() {
                         Constants.blindSpotRight
                     ) in setOf(1f, 2f))
                 ) {
+                    if (bsWarningToggle == false) {
+                        blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
+                        blindspotAnimation.duration = 500
+                        // milliseconds
 
-                    blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
-                    blindspotAnimation.duration = 250
-                    // milliseconds
+                        blindspotAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        blindspotAnimation.repeatCount = ValueAnimator.INFINITE
+                        blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                        blindspotAnimation.start()
 
-                    blindspotAnimation.addUpdateListener { animator ->
-                        binding.root.setBackgroundColor(
-                            animator.animatedValue as Int
-                        )
+                        val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                        bsBinding.visibility = View.VISIBLE
+                        bsBinding.startAnimation(bsFadeIn)
+
+                        bsWarningToggle = true
                     }
-                    blindspotAnimation.repeatCount = ValueAnimator.INFINITE
-                    blindspotAnimation.repeatMode = ValueAnimator.REVERSE
-                    blindspotAnimation.start()
-
-
-                    bsBinding.startAnimation(bsFadeIn)
-                    bsBinding.visibility = View.VISIBLE
-
 
                 } else {
-                    if (bsBinding.visibility != View.GONE) {
+                    if (bsWarningToggle == true) {
+                        // reset the animation to start from it's current value and go to colorFrom
+                        blindspotAnimation.setObjectValues(blindspotAnimation.animatedValue, colorFrom)
+                        blindspotAnimation.repeatCount = 0
+                        blindspotAnimation.start()
+                        // it will end after reaching colorFrom, no need to stop/cancel it
+
+                        val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                         bsBinding.startAnimation(bsFadeOut)
                         bsBinding.visibility = View.GONE
 
+                        bsWarningToggle = false
                     }
-                    blindspotAnimation.cancel()
-                    binding.root.setBackgroundColor(colorFrom)
                 }
 
             }
-            if (gearState != Constants.gearPark) {
+            if (gearState != Constants.gearPark && gearState != Constants.gearInvalid && gearState != Constants.gearSNA) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
                     if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)) {
                         binding.blindSpotLeft1a.visibility = View.VISIBLE
@@ -1046,7 +1059,7 @@ class DashFragment : Fragment() {
                     }
                 }
             } else {
-                // in park
+                // in park or off
 
 
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE
@@ -1070,7 +1083,7 @@ class DashFragment : Fragment() {
                         binding.chargemeter.visibility = View.VISIBLE
                         viewModel.getValue(Constants.stateOfCharge)?.toFloat()
                             ?.let { socVal ->
-                                binding.chargemeter.setGauge(socVal / 100f, 32f, true)
+                                binding.chargemeter.setGauge(socVal / 100f, 4f, true)
                                 binding.bigsoc.text = socVal.toInt().toString()
                                 binding.chargemeter.invalidate()
                                 binding.bigsoc.visibility = View.VISIBLE

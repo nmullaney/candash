@@ -3,37 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+
         <entry key="../../../../../../layout/custom_preview.xml" value="0.4082051282051282" />
-        <entry key="../../../../layout/custom_preview.xml" value="0.34427083333333336" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/drawable/ic_autopilot_inactive.xml" value="0.3175" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/drawable/left_turn_anim.xml" value="0.295" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/drawable/right_turn_anim.xml" value="0.295" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/activity_fullscreen.xml" value="0.3140625" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/fragment_dash.xml" value="0.3140625" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/fragment_info.xml" value="0.4553227875160325" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_autopilot.xml" value="0.16666666666666666" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_autopilot_inactive.xml" value="0.211" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsl1.xml" value="0.315" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsl2.xml" value="0.315" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsr1.xml" value="0.315" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_bsr2.xml" value="0.315" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_deadbattery.xml" value="0.32" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_deadbatterymask.xml" value="0.317" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_fullbattery.xml" value="0.32" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_hatch.xml" value="0.211" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_hood.xml" value="0.317" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1705" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_modely.xml" value="0.5315" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_turnleftdark.xml" value="0.2735" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/ic_turnrightdark.xml" value="0.4045" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/left_turn_anim.xml" value="0.4045" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/right_turn_anim.xml" value="0.4045" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/drawable/rounded_corner.xml" value="0.2445" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout-land/fragment_dash.xml" value="0.26851851851851855" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/activity_fullscreen.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_bs_warning.xml" value="0.2630208333333333" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_dash.xml" value="0.22" />
-        <entry key="..\:/Users/osuni/StudioProjects/tesla-dashboard/android/app/src/main/res/layout/fragment_info.xml" value="0.2636752136752137" />
+
         <entry key="app/src/main/res/drawable/ic_autopilot.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_autopilot_inactive.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_left_24.xml" value="0.216" />
@@ -76,6 +48,11 @@
         <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.14537037037037037" />
         <entry key="app/src/main/res/layout/fragment_bs_warning.xml" value="0.14537037037037037" />
         <entry key="app/src/main/res/layout/fragment_dash.xml" value="0.375" />
+
+        <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.14537037037037037" />
+        <entry key="app/src/main/res/layout/fragment_bs_warning.xml" value="0.14537037037037037" />
+        <entry key="app/src/main/res/layout/fragment_dash.xml" value="0.45" />
+
         <entry key="app/src/main/res/layout/fragment_info.xml" value="0.20087336244541484" />
       </map>
     </option>

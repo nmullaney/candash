@@ -104,6 +104,9 @@ class MockCANService : CANService {
                 Constants.drlMode to Constants.drlModePosition,
                 Constants.chargeStatus to Constants.chargeStatusActive
             )))
+                Constants.gearSelected to Constants.gearInvalid.toFloat(),
+
+                )))
 }
 /*
     private fun mockCarStates() : List<CarState> =
