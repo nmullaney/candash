@@ -1,0 +1,27 @@
+<vector android:height="51.4646dp" android:viewportHeight="598.67"
+    android:viewportWidth="744.49" android:width="64dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M370.16,70.25m-69.75,0a69.75,69.75 0,1 1,139.5 0a69.75,69.75 0,1 1,-139.5 0"
+        android:strokeColor="@color/telltale_red" android:strokeWidth="1"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M370.16,144.17h-46.58c-62,0 -110,128 -94,203.33l196,-202.33 -55.42,-1Z"
+        android:strokeColor="@color/telltale_red" android:strokeWidth="1"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M266.25,373.12l197.33,-200.62c17.67,7 21.33,15.5 25.33,21.67 38,68 30.67,198 30.67,198 -147.33,-66.67 -253.33,-19.04 -253.33,-19.04Z"
+        android:strokeColor="@color/telltale_red" android:strokeWidth="1"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M340.91,598.17h-49.33c-46.67,-47.33 -64.67,-151.33 -58.67,-159.33 60,-36.67 100,-37 139.33,-37v44s-29.2,-2.26 -68.03,10.41c0,0 -11.3,51.26 36.7,141.92Z"
+        android:strokeColor="@color/telltale_red" android:strokeWidth="1"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M539.24,57.46L462.01,138.69"
+        android:strokeColor="@color/telltale_red" android:strokeLineCap="round" android:strokeWidth="45"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M217.51,393.43L116.63,498.31"
+        android:strokeColor="@color/telltale_red" android:strokeLineCap="round" android:strokeWidth="45"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M536.62,424.64L623.58,478.83"
+        android:strokeColor="@color/telltale_red" android:strokeLineCap="round" android:strokeWidth="45"/>
+    <path android:fillColor="@color/telltale_red"
+        android:pathData="M403.58,598.17h49.33c46.67,-47.33 64.67,-151.33 58.67,-159.33 -60,-36.67 -100,-37 -139.33,-37v44s29.2,-2.26 68.03,10.41c0,0 11.3,51.26 -36.7,141.92Z"
+        android:strokeColor="@color/telltale_red" android:strokeWidth="1"/>
+</vector>
