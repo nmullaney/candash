@@ -66,7 +66,7 @@ class DashFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?gi
     ): View {
         binding = FragmentDashBinding.inflate(inflater, container, false)
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
