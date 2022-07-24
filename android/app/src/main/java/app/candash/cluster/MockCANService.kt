@@ -20,7 +20,7 @@ class MockCANService : CANService {
         withContext(pandaContext) {
             shutdown = false
             while (!shutdown) {
-                delay(MS_BETWEEN_REQUESTS)
+                Thread.sleep(MS_BETWEEN_REQUESTS)
                 carStateFlow.value = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
                 yield()
             }
@@ -40,7 +40,6 @@ class MockCANService : CANService {
         }
     }
 
-
     override fun carState(): Flow<CarState> {
         return carStateFlow
     }
@@ -58,7 +57,14 @@ class MockCANService : CANService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.displayOn to 1f,
 
-
+                Constants.liftgateState to 2f,
+                Constants.frunkState to 2f,
+                Constants.frontLeftDoorState to 2f,
+                Constants.frontRightDoorState to 2f,
+                Constants.rearLeftDoorState to 2f,
+                Constants.rearRightDoorState to 2f,
+                Constants.drlMode to Constants.drlModeOff,
+                Constants.chargeStatus to Constants.chargeStatusInactive
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
@@ -74,27 +80,36 @@ class MockCANService : CANService {
                 Constants.uiSpeed to 0.0f,
                 Constants.displayOn to 1f,
 
-
+                Constants.frontLeftDoorState to 2f,
+                Constants.drlMode to Constants.drlModeDrl,
+                Constants.passengerUnbuckled to 1f,
+                Constants.chargeStatus to Constants.chargeStatusInactive
             )),
             CarState(mutableMapOf(
-                Constants.autopilotState to 3f,
+                Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.driveConfig to 1f,
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -10f,
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,
-
                 Constants.uiSpeed to 22.0f,
                 Constants.displayOn to 1f,
 
-
+                Constants.frontLeftDoorState to 2f,
+                Constants.drlMode to Constants.drlModePosition,
+                Constants.passengerUnbuckled to 0f,
+                Constants.chargeStatus to Constants.chargeStatusActive
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
                 Constants.uiSpeed to 65.0f,
                 Constants.uiSpeedUnits to 0f,
+                Constants.frontLeftDoorState to 1f,
+                Constants.drlMode to Constants.drlModePosition,
+                Constants.chargeStatus to Constants.chargeStatusActive
+            )))
                 Constants.gearSelected to Constants.gearInvalid.toFloat(),
                 Constants.displayOn to 1f,
 

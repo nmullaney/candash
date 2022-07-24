@@ -25,4 +25,10 @@
     <color name="light_gray">#EEEEEE</color>
     <color name="medium_gray">#CCCCCC</color>
     <color name="dark_gray">#444444</color>
+    <color name="telltale_darkgreen">#00A933</color>
+    <color name="telltale_green">#02e359</color>
+    <color name="telltale_orange">#ffb641</color>
+    <color name="telltale_red">#ff3a3a</color>
+    <color name="telltale_blue">#006cff</color>
+    <color name="telltale_inactive">#909090</color>
 </resources>
