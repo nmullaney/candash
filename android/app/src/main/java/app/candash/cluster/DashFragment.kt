@@ -23,9 +23,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 
-
 class DashFragment : Fragment() {
-
     private lateinit var binding: FragmentDashBinding
 
     private lateinit var viewModel: DashViewModel
@@ -35,6 +33,7 @@ class DashFragment : Fragment() {
     private var gearColorSelected: Int = Color.DKGRAY
     private var lastAutopilotState: Int = 0
     private var autopilotHandsToggle: Boolean = false
+    private var bsWarningToggle: Boolean = false
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
@@ -44,8 +43,13 @@ class DashFragment : Fragment() {
     private var HRSPRS: Boolean = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
-    private var gearState: Int = Constants.gearPark
+    private var gearState: Int = Constants.gearInvalid
     private lateinit var prefs: SharedPreferences
+
+    // Ugly debug test
+    private var battAmps1: Float = 0f
+    private var battAmps2: Float = 0f
+    private var battAmps3: Float = 0f
 
 
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
@@ -86,7 +90,15 @@ class DashFragment : Fragment() {
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
             binding.autopilot,
-            binding.autopilotInactive
+            binding.autopilotInactive,
+            binding.telltaleDrl,
+            binding.telltaleLb,
+            binding.telltaleHb,
+            binding.telltaleAhbStdby,
+            binding.telltaleAhbActive,
+            binding.telltaleFogFront,
+            binding.telltaleFogRear,
+            binding.odometer
         )
 
     private fun sideUIViews(): List<View> =
@@ -441,11 +453,19 @@ class DashFragment : Fragment() {
                 setColors(sunUpVal.toInt())
             }
 
-
-
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battAmps = battAmpsVal.toFloat()
+
+                // Noisy signal test / debug
+                battAmps1 = battAmps2
+                battAmps2 = battAmps3
+                battAmps3 = battAmps
+                if (battAmps2 > (battAmps1+battAmps2)/2) {
+                    battAmps = battAmps1
+                } else {
+                    battAmps = battAmps2
+                }
             }
             it.getValue(Constants.battVolts)?.let { battVoltsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
@@ -505,8 +525,14 @@ class DashFragment : Fragment() {
                 val gear: String = binding.PRND.text.toString()
                 var ss = SpannableString(gear)
                 var gearStartIndex = 0
-                var gearEndIndex = 1
+                var gearEndIndex = 0
                 gearState = gearStateVal.toInt()
+                if (gearStateVal.toInt() == Constants.gearInvalid || gearStateVal.toInt() == Constants.gearSNA) {
+                    binding.autopilotInactive.visibility = View.INVISIBLE
+                    gearStartIndex = 0
+                    gearEndIndex = 0
+
+                }
                 if (gearStateVal.toInt() == Constants.gearPark) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
                     gearStartIndex = 0
@@ -791,12 +817,164 @@ class DashFragment : Fragment() {
                 }
             }
 
+            it.getValue(Constants.drlMode)?.let { drlModeVal ->
+                if ((drlModeVal != Constants.drlModePosition) or
+                    ((gearState == Constants.gearPark) and
+                     (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOff))) {
+                    binding.telltaleDrl.visibility = View.INVISIBLE
+                } else {
+                    binding.telltaleDrl.visibility = View.VISIBLE
+                }
+            }
+
+            it.getValue(Constants.lowBeamLeft)?.let { lowBeamVal ->
+                if (lowBeamVal == Constants.lowBeamLeftOn) {
+                    binding.telltaleLb.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleLb.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.autoHighBeamEnabled)?.let { ahbEnabledVal ->
+                if (ahbEnabledVal == 1f) {
+                    binding.telltaleHb.visibility = View.INVISIBLE
+                    if (viewModel.getValue(Constants.highBeamRequest) == 1f) {
+                        if (viewModel.getValue(Constants.highLowBeamDecision) == 2f) {
+                            // Auto High Beam is on, AHB decision is ON
+                            binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                            binding.telltaleAhbActive.visibility = View.VISIBLE
+                            binding.telltaleLb.visibility = View.INVISIBLE
+                        } else {
+                            // Auto High Beam is on, AHB decision is OFF
+                            binding.telltaleAhbStdby.visibility = View.VISIBLE
+                            binding.telltaleAhbActive.visibility = View.INVISIBLE
+                            if (viewModel.getValue(Constants.highBeamStalkStatus) == 1f) {
+                                // Pulled on left stalk, flash HB
+                                binding.telltaleLb.visibility = View.INVISIBLE
+                                binding.telltaleHb.visibility = View.VISIBLE
+                            } else {
+                                // Stalk idle, business as usual
+                                if (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOn) {
+                                    binding.telltaleLb.visibility = View.VISIBLE
+                                }
+                                binding.telltaleHb.visibility = View.INVISIBLE
+                            }
+                        }
+                    } else {
+                        binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                        binding.telltaleAhbActive.visibility = View.INVISIBLE
+                        if (viewModel.getValue(Constants.highBeamStalkStatus) == 1f) {
+                            // Pulled on left stalk, flash HB
+                            binding.telltaleLb.visibility = View.INVISIBLE
+                            binding.telltaleHb.visibility = View.VISIBLE
+                        }
+                    }
+                } else {
+                    binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                    binding.telltaleAhbActive.visibility = View.INVISIBLE
+                    if ((viewModel.getValue(Constants.highBeamRequest) == 1f) or
+                        (viewModel.getValue(Constants.highBeamStalkStatus) == 1f)) {
+                        binding.telltaleLb.visibility = View.INVISIBLE
+                        binding.telltaleHb.visibility = View.VISIBLE
+                    } else {
+                        if (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOn) {
+                            binding.telltaleLb.visibility = View.VISIBLE
+                        }
+                        binding.telltaleHb.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+            it.getValue(Constants.rearFogSwitch)?.let { fogRearVal ->
+                if (fogRearVal == Constants.rearFogSwitchOn) {
+                    binding.telltaleFogRear.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleFogRear.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.frontFogSwitch)?.let { fogFrontVal ->
+                if (fogFrontVal == Constants.frontFogSwitchOn) {
+                    binding.telltaleFogFront.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleFogFront.visibility = View.INVISIBLE
+                }
+            }
+
+            if ((viewModel.getValue(Constants.driverUnbuckled) == 1f) or
+                (viewModel.getValue(Constants.passengerUnbuckled) == 1f)) {
+                binding.telltaleSeatbelt.visibility = View.VISIBLE
+            } else {
+                binding.telltaleSeatbelt.visibility = View.INVISIBLE
+            }
+
+            it.getValue(Constants.heatBattery)?.let { heatBatteryVal ->
+                if (heatBatteryVal == 1f) {
+                    binding.battHeat.visibility = View.VISIBLE
+                } else {
+                    binding.battHeat.visibility = View.GONE
+                }
+            }
+
+            it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
+                if (chargeStatusVal == Constants.chargeStatusActive) {
+                    binding.battCharge.visibility = View.VISIBLE
+                } else {
+                    binding.battCharge.visibility = View.GONE
+                }
+            }
+
+            it.getValue(Constants.brakePark)?.let { brakeParkVal ->
+                if (brakeParkVal == Constants.brakeParkRed) {
+                    binding.telltaleBrakePark.visibility = View.VISIBLE
+                    binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
+                } else if(brakeParkVal == Constants.brakeParkAmber) {
+                    binding.telltaleBrakePark.visibility = View.INVISIBLE
+                    binding.telltaleBrakeParkFault.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleBrakePark.visibility = View.INVISIBLE
+                    binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.brakeHold)?.let { brakeHoldVal ->
+                if (brakeHoldVal == 1f) {
+                    binding.telltaleBrakeHold.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleBrakeHold.visibility = View.INVISIBLE
+                }
+            }
+
+            it.getValue(Constants.tpmsHard)?.let { tpmsHardVal ->
+                if (tpmsHardVal == 1f) {
+                    binding.telltaleTPMSFaultHard.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
+                    if(viewModel.getValue(Constants.tpmsSoft) == 1f) {
+                        binding.telltaleTPMSFaultSoft.visibility = View.VISIBLE
+                    } else {
+                        binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+            it.getValue(Constants.odometer)?.let { odometerVal ->
+                binding.odometer.visibility = View.VISIBLE
+                if (uiSpeedUnitsMPH == true) {
+                    binding.odometer.text = ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
+                } else {
+                    binding.odometer.text = odometerVal.toInt().toString() + " km"
+                }
+
+            }
+
+            if(it.getValue(Constants.odometer) == null) {
+                binding.odometer.visibility = View.INVISIBLE
+            }
 
             // check if AP is not engaged, otherwise blind spot supersedes the AP
 
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
-                val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                 var bsBinding = binding.BSWarningLeft
                 var colorFrom = getBackgroundColor(1)
                 if (getBooleanPref("forceNightMode")) {
@@ -819,37 +997,45 @@ class DashFragment : Fragment() {
                         Constants.blindSpotRight
                     ) in setOf(1f, 2f))
                 ) {
+                    if (bsWarningToggle == false) {
+                        blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
+                        blindspotAnimation.duration = 500
+                        // milliseconds
 
-                    blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
-                    blindspotAnimation.duration = 250
-                    // milliseconds
+                        blindspotAnimation.addUpdateListener { animator ->
+                            binding.root.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        blindspotAnimation.repeatCount = ValueAnimator.INFINITE
+                        blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                        blindspotAnimation.start()
 
-                    blindspotAnimation.addUpdateListener { animator ->
-                        binding.root.setBackgroundColor(
-                            animator.animatedValue as Int
-                        )
+                        val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                        bsBinding.visibility = View.VISIBLE
+                        bsBinding.startAnimation(bsFadeIn)
+
+                        bsWarningToggle = true
                     }
-                    blindspotAnimation.repeatCount = ValueAnimator.INFINITE
-                    blindspotAnimation.repeatMode = ValueAnimator.REVERSE
-                    blindspotAnimation.start()
-
-
-                    bsBinding.startAnimation(bsFadeIn)
-                    bsBinding.visibility = View.VISIBLE
-
 
                 } else {
-                    if (bsBinding.visibility != View.GONE) {
+                    if (bsWarningToggle == true) {
+                        // reset the animation to start from it's current value and go to colorFrom
+                        blindspotAnimation.setObjectValues(blindspotAnimation.animatedValue, colorFrom)
+                        blindspotAnimation.repeatCount = 0
+                        blindspotAnimation.start()
+                        // it will end after reaching colorFrom, no need to stop/cancel it
+
+                        val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                         bsBinding.startAnimation(bsFadeOut)
                         bsBinding.visibility = View.GONE
 
+                        bsWarningToggle = false
                     }
-                    blindspotAnimation.cancel()
-                    binding.root.setBackgroundColor(colorFrom)
                 }
 
             }
-            if (gearState != Constants.gearPark) {
+            if (gearState != Constants.gearPark && gearState != Constants.gearInvalid && gearState != Constants.gearSNA) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
                     if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)) {
                         binding.blindSpotLeft1a.visibility = View.VISIBLE
@@ -873,7 +1059,7 @@ class DashFragment : Fragment() {
                     }
                 }
             } else {
-                // in park
+                // in park or off
 
 
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE
@@ -886,6 +1072,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
                 if (!isSplitScreen()) {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
+                        binding.fullbattery.setChargeMode(1)
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.GONE
                         }
@@ -896,7 +1083,7 @@ class DashFragment : Fragment() {
                         binding.chargemeter.visibility = View.VISIBLE
                         viewModel.getValue(Constants.stateOfCharge)?.toFloat()
                             ?.let { socVal ->
-                                binding.chargemeter.setGauge(socVal / 100f, 32f, true)
+                                binding.chargemeter.setGauge(socVal / 100f, 4f, true)
                                 binding.bigsoc.text = socVal.toInt().toString()
                                 binding.chargemeter.invalidate()
                                 binding.bigsoc.visibility = View.VISIBLE
@@ -908,6 +1095,7 @@ class DashFragment : Fragment() {
 
 
                     } else {
+                        binding.fullbattery.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
                         binding.bigsoc.visibility = View.INVISIBLE
                         binding.bigsocpercent.visibility = View.INVISIBLE
@@ -925,6 +1113,7 @@ class DashFragment : Fragment() {
                     }
                 } else {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
+                        binding.fullbattery.setChargeMode(1)
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.GONE
                         }
@@ -945,6 +1134,7 @@ class DashFragment : Fragment() {
                             binding.chargerate.visibility = View.VISIBLE
                         }
                     } else {
+                        binding.fullbattery.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
                         binding.bigsoc.visibility = View.INVISIBLE
                         binding.bigsocpercent.visibility = View.INVISIBLE
@@ -1147,6 +1337,7 @@ class DashFragment : Fragment() {
             binding.chargemeter.setDayValue(0)
             binding.unit.setTextColor(Color.LTGRAY)
             binding.batterypercent.setTextColor(Color.LTGRAY)
+            binding.odometer.setTextColor(Color.DKGRAY)
             binding.deadbattery.setColorFilter(Color.DKGRAY)
             gearColorSelected = Color.LTGRAY
             gearColor = Color.DKGRAY
@@ -1221,6 +1412,7 @@ class DashFragment : Fragment() {
 
             binding.unit.setTextColor(Color.GRAY)
             binding.batterypercent.setTextColor(Color.DKGRAY)
+            binding.odometer.setTextColor(Color.LTGRAY)
             binding.deadbattery.clearColorFilter()
             gearColorSelected = Color.DKGRAY
             gearColor = Color.parseColor("#FFDDDDDD")
