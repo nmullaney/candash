@@ -456,7 +456,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battAmps = battAmpsVal.toFloat()
-
+                /*
                 // Noisy signal test / debug
                 battAmps1 = battAmps2
                 battAmps2 = battAmps3
@@ -466,6 +466,9 @@ class DashFragment : Fragment() {
                 } else {
                     battAmps = battAmps2
                 }
+                                                                                     ';P{)
+                                                                                     -=
+                 */
             }
             it.getValue(Constants.battVolts)?.let { battVoltsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
@@ -505,9 +508,9 @@ class DashFragment : Fragment() {
                 binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
             }
             if (power >= 0) {
-                binding.powerBar.setGauge(((power / getPref("maxPower")).pow(0.7f)))
+                binding.powerBar.setGauge(((power / getPref("maxPower")).pow(0.75f)))
             } else {
-                binding.powerBar.setGauge(-((abs(power) / abs(getPref("minPower"))).pow(0.7f)))
+                binding.powerBar.setGauge(-((abs(power) / abs(getPref("minPower"))).pow(0.75f)))
             }
             binding.powerBar.invalidate()
 

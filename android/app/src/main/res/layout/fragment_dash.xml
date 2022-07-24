@@ -1543,8 +1543,10 @@
     <app.candash.cluster.LinearGauge
         android:id="@+id/power_bar"
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_marginBottom="25dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="0dp"
+        android:layout_gravity="center"
+        android:gravity="center|center_vertical"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
