@@ -108,12 +108,12 @@ class MockCANService : CANService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.frontLeftDoorState to 1f,
                 Constants.drlMode to Constants.drlModePosition,
-                Constants.chargeStatus to Constants.chargeStatusActive
-            )))
+                Constants.chargeStatus to Constants.chargeStatusActive,
                 Constants.gearSelected to Constants.gearInvalid.toFloat(),
-                Constants.displayOn to 1f,
-
+                Constants.displayOn to 1f
                 )))
+
+
 }
 /*
     private fun mockCarStates() : List<CarState> =
@@ -135,7 +135,7 @@ class MockCANService : CANService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.gearSelected to Constants.gearPark.toFloat(),
                 Constants.battAmps to 20.0f,
-                Constants.displayOn to 1f,
+                Constants.displayOn to 1f
 
             )),
             CarState(mutableMapOf(
@@ -158,7 +158,7 @@ class MockCANService : CANService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.gearSelected to Constants.gearPark.toFloat(),
                 Constants.battAmps to 140.0f,
-                Constants.displayOn to 1f,
+                Constants.displayOn to 1f
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.9f,
@@ -181,7 +181,7 @@ class MockCANService : CANService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.gearSelected to Constants.gearDrive.toFloat(),
                 Constants.battAmps to 3.0f,
-                Constants.displayOn to 1f,
+                Constants.displayOn to 1f
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.8f,
@@ -200,7 +200,7 @@ class MockCANService : CANService {
                 Constants.uiSpeedUnits to 0f,
                 Constants.cruiseControlSpeed to 45.0f,
                 Constants.battAmps to 750.0f,
-                Constants.displayOn to 1f,
+                Constants.displayOn to 1f
             )),
             CarState(mutableMapOf(
                 Constants.battVolts to 389.7f,
@@ -220,7 +220,7 @@ class MockCANService : CANService {
                 Constants.maxSpeedAP to 25.0f,
                 Constants.cruiseControlSpeed to 23.0f,
                 Constants.battAmps to -200.0f,
-                Constants.displayOn to 1f,
+                Constants.displayOn to 1f
             )))
 }
 
