@@ -52,6 +52,7 @@ class MockCANService : CANService {
                 Constants.driveConfig to 0f,
                 Constants.gearSelected to Constants.gearPark.toFloat(),
                 Constants.stateOfCharge to 70f,
+                Constants.turnSignalLeft to 1.0f,
                 Constants.battAmps to -20f,
                 Constants.battVolts to 390f,
                 Constants.uiSpeedUnits to 0f,

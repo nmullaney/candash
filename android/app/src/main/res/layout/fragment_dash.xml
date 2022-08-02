@@ -201,11 +201,13 @@
         android:id="@+id/left_turn_signal"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginStart="200dp"
-
         android:layout_marginTop="48dp"
+        android:layout_marginLeft="48dp"
 
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/ic_turnleftbright"
+        android:visibility="invisible"
+
+        app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -214,24 +216,24 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="48dp"
+        android:layout_marginRight="48dp"
 
-        android:layout_marginEnd="200dp"
+        android:gravity="center"
 
 
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <ImageView
         android:id="@+id/left_turn_signal_dark"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginStart="200dp"
         android:layout_marginTop="48dp"
+        android:layout_marginLeft="48dp"
 
         android:src="@drawable/ic_turnleftdark"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -454,13 +456,13 @@
         android:id="@+id/left_turn_signal_light"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginStart="200dp"
+        android:layout_marginLeft="48dp"
         android:layout_marginTop="48dp"
-
         android:src="@drawable/ic_turnleftbright"
+
         android:visibility="invisible"
 
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -468,13 +470,14 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="48dp"
-        android:layout_marginEnd="200dp"
+        android:layout_marginRight="48dp"
+
         android:gravity="center"
 
         android:src="@drawable/ic_turnrightdark"
         android:visibility="invisible"
 
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -482,13 +485,13 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="48dp"
-        android:layout_marginEnd="200dp"
+        android:layout_marginRight="48dp"
         android:gravity="center"
-
-        android:src="@drawable/ic_turnrightbright"
         android:visibility="invisible"
 
-        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_turnrightbright"
+
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
