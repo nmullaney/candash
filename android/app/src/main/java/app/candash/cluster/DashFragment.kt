@@ -359,6 +359,7 @@ class DashFragment : Fragment() {
         }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
+            viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
         }
         binding.batterypercent.setOnClickListener {
@@ -962,13 +963,18 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.odometer)?.let { odometerVal ->
-                binding.odometer.visibility = View.VISIBLE
-                if (uiSpeedUnitsMPH == true) {
-                    binding.odometer.text = ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
-                } else {
-                    binding.odometer.text = odometerVal.toInt().toString() + " km"
+                if (prefs.getBooleanPref(Constants.odometer) == true) {
+                    binding.odometer.visibility = View.VISIBLE
+                    if (uiSpeedUnitsMPH == true) {
+                        binding.odometer.text =
+                            ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
+                    } else {
+                        binding.odometer.text = odometerVal.toInt().toString() + " km"
+                    }
                 }
-
+                else {
+                    binding.odometer.visibility = View.INVISIBLE
+                }
             }
 
             if(it.getValue(Constants.odometer) == null) {

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/day_background">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:layout_marginLeft="100dp"
+        android:textSize="18dp"
+        android:text="Display Mode"
+        android:textStyle="bold"
+        android:id="@+id/txtView"/>
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/displaysettings"
+        app:layout_constraintTop_toBottomOf="@id/txtView">
+        <RadioButton
+            android:id="@+id/displayauto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Automatic"/>
+        <RadioButton
+            android:id="@+id/displaydark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dark"/>
+    </RadioGroup>
+
+    <CheckBox
+        android:id="@+id/showodo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display Odometer"
+        app:layout_constraintTop_toBottomOf="@id/displaysettings"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textSize="18dp"
+        android:text="Gauge Mode"
+        android:textStyle="bold"
+        android:id="@+id/gaugemodelabel"
+        app:layout_constraintTop_toBottomOf="@id/showodo"/>
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/gaugemode"
+
+        app:layout_constraintTop_toBottomOf="@id/gaugemodelabel">
+        <RadioButton
+            android:id="@+id/gaugemodefull"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full"/>
+        <RadioButton
+            android:id="@+id/gaugemoderegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Regular"/>
+        <RadioButton
+            android:id="@+id/gaugemodesimple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Simple"/>
+    </RadioGroup>
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guidelinev"
+        android:orientation="vertical"
+
+        app:layout_constraintGuide_percent=".5"/>
+    <Button
+        android:id="@+id/save_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/guidelinev"
+        android:gravity="center"
+
+        />
+    <Button
+        android:id="@+id/cancel_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:text="Cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/guidelinev"
+        android:gravity="center"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
