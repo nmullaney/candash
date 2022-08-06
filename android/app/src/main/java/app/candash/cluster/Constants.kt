@@ -96,9 +96,22 @@ object Constants {
     const val brakeTempFR = "brakeTempFR"
     const val brakeTempRL = "brakeTempRL"
     const val brakeTempRR = "brakeTempRR"
-    const val showPerfGauges = 2f
-    const val showPowerGauges = 1f
-    const val showSimpleGauges = 0f
-    const val gaugeMode = "gaugeMode"
     const val displayOn = "displayOn"
+
+    // Prefs
+    const val forceNightMode = "forceNightMode"
+    const val gaugeMode = "gaugeMode"
+    const val showSimpleGauges = 0f
+    const val showRegularGauges = 1f
+    const val showFullGauges = 2f
+    const val hideOdometer = "hideOdometer"
+    const val hideBs = "hideBs"
+    const val hideSpeedLimit = "hideSpeedLimit"
+    const val blankDisplaySync = "blankDisplaySync"
+    const val tempInF = "tempInF"
+    const val powerUnits = "powerUnits"
+    const val powerUnitKw = 0f
+    const val powerUnitHp = 1f
+    const val powerUnitPs = 2f
+    const val torqueInLbfFt = "torqueInLbfFt"
 }

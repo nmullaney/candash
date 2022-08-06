@@ -5,101 +5,259 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/day_background">
+
     <TextView
+        android:id="@+id/display_mode_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:layout_marginLeft="100dp"
-        android:textSize="18dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
         android:text="Display Mode"
-        android:textStyle="bold"
-        android:id="@+id/txtView"/>
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
     <RadioGroup
+        android:id="@+id/displaysettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/displaysettings"
-        app:layout_constraintTop_toBottomOf="@id/txtView">
+        android:paddingLeft="10dp"
+        app:layout_constraintTop_toBottomOf="@id/display_mode_label">
+
         <RadioButton
             android:id="@+id/displayauto"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Automatic"/>
+            android:text="Automatic" />
+
         <RadioButton
             android:id="@+id/displaydark"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Dark"/>
+            android:text="Dark" />
     </RadioGroup>
+
+    <TextView
+        android:id="@+id/gaugemodelabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Gauge Mode"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/displaysettings" />
+
+    <RadioGroup
+        android:id="@+id/gaugemode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+
+        app:layout_constraintTop_toBottomOf="@id/gaugemodelabel">
+
+        <RadioButton
+            android:id="@+id/gaugemodefull"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Full" />
+
+        <RadioButton
+            android:id="@+id/gaugemoderegular"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Regular" />
+
+        <RadioButton
+            android:id="@+id/gaugemodesimple"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Simple" />
+    </RadioGroup>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinevleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        app:layout_constraintGuide_percent=".333" />
+
+    <TextView
+        android:id="@+id/displayOptionsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Display Options"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft" />
 
     <CheckBox
         android:id="@+id/showodo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Display Odometer"
-        app:layout_constraintTop_toBottomOf="@id/displaysettings"/>
+        android:layout_marginLeft="10dp"
+        android:text="Show Odometer"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/displayOptionsLabel" />
+
+    <CheckBox
+        android:id="@+id/showBs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Show Blindspot Arcs"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/showodo" />
+
+    <CheckBox
+        android:id="@+id/showSpeedLimit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Show Speed Limit"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/showBs" />
+
+    <CheckBox
+        android:id="@+id/blankDisplaySync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Blackout Screen w/ Center Display"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/showSpeedLimit" />
 
     <TextView
+        android:id="@+id/blankDisplayHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="Long-press left side of screen to return\nto settings while display is off.\nRecommended only with OLED screens."
+        android:textSize="12dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/blankDisplaySync" />
 
-        android:textSize="18dp"
-        android:text="Gauge Mode"
-        android:textStyle="bold"
-        android:id="@+id/gaugemodelabel"
-        app:layout_constraintTop_toBottomOf="@id/showodo"/>
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/gaugemode"
 
-        app:layout_constraintTop_toBottomOf="@id/gaugemodelabel">
-        <RadioButton
-            android:id="@+id/gaugemodefull"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Full"/>
-        <RadioButton
-            android:id="@+id/gaugemoderegular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Regular"/>
-        <RadioButton
-            android:id="@+id/gaugemodesimple"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Simple"/>
-    </RadioGroup>
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinevright"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guidelinev"
         android:orientation="vertical"
 
-        app:layout_constraintGuide_percent=".5"/>
+        app:layout_constraintGuide_percent=".667" />
+
+    <TextView
+        android:id="@+id/unitsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="Display Units"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevright" />
+
+    <RadioGroup
+        android:id="@+id/tempUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevright"
+        app:layout_constraintTop_toBottomOf="@id/unitsLabel">
+
+        <RadioButton
+            android:id="@+id/tempUnitC"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Celsius" />
+
+        <RadioButton
+            android:id="@+id/tempUnitF"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Fahrenheit" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/powerUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevright"
+        app:layout_constraintTop_toBottomOf="@id/tempUnits">
+
+        <RadioButton
+            android:id="@+id/powerUnitKw"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Kilowatt" />
+
+        <RadioButton
+            android:id="@+id/powerUnitHp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Horsepower" />
+
+        <RadioButton
+            android:id="@+id/powerUnitPs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Metric Horsepower" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/torqueUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevright"
+        app:layout_constraintTop_toBottomOf="@id/powerUnits">
+
+        <RadioButton
+            android:id="@+id/torqueUnitNm"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Newton-metre" />
+
+        <RadioButton
+            android:id="@+id/torqueUnitLbf"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="MURICA (lbf⋅ft)" />
+    </RadioGroup>
+
     <Button
         android:id="@+id/save_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
+        android:gravity="center"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/guidelinev"
-        android:gravity="center"
+        app:layout_constraintRight_toLeftOf="@id/guidelinevright"
 
         />
+
     <Button
         android:id="@+id/cancel_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
+        android:gravity="center"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/guidelinev"
-        android:gravity="center"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
 
         />
 

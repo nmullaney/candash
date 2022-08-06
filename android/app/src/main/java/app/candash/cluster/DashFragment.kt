@@ -62,10 +62,22 @@ class DashFragment : Fragment() {
         get() = (this / Resources.getSystem().displayMetrics.density)
     val Float.px: Float
         get() = (this * Resources.getSystem().displayMetrics.density)
-    val Float.kmh: Float
+    // Distance conversions
+    val Float.miToKm: Float
         get() = (this / .621371).toFloat()
-    val Float.mph: Float
+    val Float.kmToMi: Float
         get() = (this * .621371).toFloat()
+    // Temperature conversions
+    val Float.cToF: Float
+        get() = ((this * 9/5) + 32).toFloat()
+    // Power conversions
+    val Float.kwToHp: Float
+        get() = (this * 1.34102).toFloat()
+    val Float.kwToPs: Float
+        get() = (this * 1.35962).toFloat()
+    // Torque conversions
+    val Float.nmToLbfFt: Float
+        get() = (this * 0.73756).toFloat()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -289,9 +301,9 @@ class DashFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
         var colorFrom: Int
         if (!prefContains(Constants.gaugeMode)) {
-            setPref(Constants.gaugeMode, 2f)
+            setPref(Constants.gaugeMode, Constants.showFullGauges)
         }
-        if (getBooleanPref("forceNightMode")) {
+        if (getBooleanPref(Constants.forceNightMode)) {
             colorFrom = getBackgroundColor(0)
         } else {
             colorFrom = getBackgroundColor(isSunUp(viewModel))
@@ -367,10 +379,10 @@ class DashFragment : Fragment() {
             return@setOnClickListener
         }
         binding.unit.setOnClickListener {
-            if (getPref(Constants.gaugeMode) < 2f) {
+            if (getPref(Constants.gaugeMode) < Constants.showFullGauges) {
                 setPref(Constants.gaugeMode, getPref(Constants.gaugeMode) + 1f)
             } else {
-                setPref(Constants.gaugeMode, 0f)
+                setPref(Constants.gaugeMode, Constants.showSimpleGauges)
             }
         }
 
@@ -381,7 +393,7 @@ class DashFragment : Fragment() {
 
 
         binding.speed.setOnLongClickListener {
-            setBooleanPref("forceNightMode", !getBooleanPref("forceNightMode"))
+            setBooleanPref(Constants.forceNightMode, !getBooleanPref(Constants.forceNightMode))
             return@setOnLongClickListener true
         }
 
@@ -493,7 +505,7 @@ class DashFragment : Fragment() {
                 if (power < getPref("minPower")) setPref("minPower", power)
             }
             //binding.power.text = "%.2f".format(power)
-            if (getPref(Constants.gaugeMode) > 0f) {
+            if (getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
                 binding.minpower.visibility = View.VISIBLE
                 binding.maxpower.visibility = View.VISIBLE
                 if (!getBooleanPref("HRSPRS")) {
@@ -527,7 +539,7 @@ class DashFragment : Fragment() {
             viewModel.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
                     gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
-                } else if (isSunUp(viewModel) == 1 && !getBooleanPref("forceNightMode")) {
+                } else if (isSunUp(viewModel) == 1 && !getBooleanPref(Constants.forceNightMode)) {
                     gearColorSelected = Color.DKGRAY
                 } else {
                     gearColorSelected = Color.LTGRAY
@@ -578,7 +590,7 @@ class DashFragment : Fragment() {
 
              */
             // hide performance gauges if user has elected to hide them or if splitscreen mode
-            if ((getPref(Constants.gaugeMode) < 2f) || isSplitScreen()) {
+            if ((getPref(Constants.gaugeMode) < Constants.showFullGauges) || isSplitScreen()) {
                 for (leftSideUIView in leftSideUIViews()) {
                     leftSideUIView.visibility = View.INVISIBLE
                 }
@@ -665,7 +677,7 @@ class DashFragment : Fragment() {
                 binding.batttempgauge.setGauge((it.toFloat() + 40f) / 128)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-                if (getBooleanPref("forceNightMode")) {
+                if (getBooleanPref(Constants.forceNightMode)) {
                     colorFrom = getBackgroundColor(0)
                 } else {
                     colorFrom = getBackgroundColor(isSunUp(viewModel))
@@ -673,7 +685,7 @@ class DashFragment : Fragment() {
                 //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
-                    if (getBooleanPref("forceNightMode")) {
+                    if (getBooleanPref(Constants.forceNightMode)) {
                         colorFrom = getBackgroundColor(0)
                     } else {
                         colorFrom = getBackgroundColor(isSunUp(viewModel))
@@ -727,7 +739,7 @@ class DashFragment : Fragment() {
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
 
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f) {
-                    sensingSpeedLimit = 35f.kmh.toInt()
+                    sensingSpeedLimit = 35f.miToKm.toInt()
                 }
                 if (vehicleSpeedVal.toInt() > sensingSpeedLimit) {
                     l1Distance = 400
@@ -971,11 +983,11 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.odometer)?.let { odometerVal ->
-                if (prefs.getBooleanPref(Constants.odometer) == true) {
+                if (prefs.getBooleanPref(Constants.hideOdometer) == false) {
                     binding.odometer.visibility = View.VISIBLE
                     if (uiSpeedUnitsMPH == true) {
                         binding.odometer.text =
-                            ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
+                            odometerVal.toFloat().kmToMi.toInt().toString() + " mi"
                     } else {
                         binding.odometer.text = odometerVal.toInt().toString() + " km"
                     }
@@ -994,7 +1006,7 @@ class DashFragment : Fragment() {
             if (viewModel.getValue(Constants.autopilotState) != 3f) {
                 var bsBinding = binding.BSWarningLeft
                 var colorFrom = getBackgroundColor(1)
-                if (getBooleanPref("forceNightMode")) {
+                if (getBooleanPref(Constants.forceNightMode)) {
                     colorFrom = getBackgroundColor(0)
                 } else if (viewModel.getValue(Constants.isSunUp) != null) {
                     colorFrom = getBackgroundColor(viewModel.getValue(Constants.isSunUp)!!.toInt())
@@ -1122,7 +1134,7 @@ class DashFragment : Fragment() {
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.VISIBLE
                         }
-                        if (getPref(Constants.gaugeMode) > 0f) {
+                        if (getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
                             for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
                                 minMaxchargingHiddenView.visibility = View.VISIBLE
                             }
@@ -1162,7 +1174,7 @@ class DashFragment : Fragment() {
                                 chargingHiddenView.visibility = View.VISIBLE
                             }
                         }
-                        if (getPref(Constants.gaugeMode) > 0f) {
+                        if (getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
                             for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
                                 minMaxchargingHiddenView.visibility = View.VISIBLE
                             }
@@ -1322,7 +1334,7 @@ class DashFragment : Fragment() {
         val window: Window? = activity?.window
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
-        if (sunUpVal == 0 || getBooleanPref("forceNightMode")) {
+        if (sunUpVal == 0 || getBooleanPref(Constants.forceNightMode)) {
             binding.powerBar.setDayValue(0)
             binding.fullbattery.setDayValue(0)
             binding.fronttorquegauge.setDayValue(0)
@@ -1490,7 +1502,7 @@ class DashFragment : Fragment() {
 
         fadeIn.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
-                if (getPref(Constants.gaugeMode) == 2f) {
+                if (getPref(Constants.gaugeMode) == Constants.showFullGauges) {
                     for (leftSideUIView in leftSideUIViews()) {
                         leftSideUIView.visibility = View.INVISIBLE
                     }
@@ -1569,7 +1581,7 @@ class DashFragment : Fragment() {
                         // in case split screen is turned off while door open
                         binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
-                        if (getPref(Constants.gaugeMode) == 2f) {
+                        if (getPref(Constants.gaugeMode) == Constants.showFullGauges) {
                             for (leftSideUIView in leftSideUIViews()) {
                                 leftSideUIView.visibility = View.VISIBLE
                             }

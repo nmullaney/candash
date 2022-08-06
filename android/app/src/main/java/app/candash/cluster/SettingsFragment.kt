@@ -29,52 +29,104 @@ class SettingsFragment() : Fragment() {
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
-        binding.saveSettings.setOnClickListener{
+        binding.saveSettings.setOnClickListener {
             saveSettings()
         }
-        binding.cancelSettings.setOnClickListener{
+        binding.cancelSettings.setOnClickListener {
             launchInfoFragment()
         }
-        if (prefs.getBooleanPref("forceNightMode")) {
+        if (prefs.getBooleanPref(Constants.forceNightMode)) {
             binding.displaydark.isChecked = true
         } else {
             binding.displayauto.isChecked = true
         }
-        when (prefs.getPref(Constants.gaugeMode)){
-            2f -> binding.gaugemodefull.isChecked = true
-            1f -> binding.gaugemoderegular.isChecked = true
-            0f -> binding.gaugemodesimple.isChecked = true
+        when (prefs.getPref(Constants.gaugeMode)) {
+            Constants.showFullGauges -> binding.gaugemodefull.isChecked = true
+            Constants.showRegularGauges -> binding.gaugemoderegular.isChecked = true
+            Constants.showSimpleGauges -> binding.gaugemodesimple.isChecked = true
         }
-        binding.showodo.isChecked = prefs.getBooleanPref(Constants.odometer)
+        // These are inverted so that the default value (false) shows the object (show = !hide)
+        binding.showodo.isChecked = !prefs.getBooleanPref(Constants.hideOdometer)
+        binding.showBs.isChecked = !prefs.getBooleanPref(Constants.hideBs)
+        binding.showSpeedLimit.isChecked = !prefs.getBooleanPref(Constants.hideSpeedLimit)
+        // This is not inverted, because defaulting to blank display makes the app appear broken on first launch
+        binding.blankDisplaySync.isChecked = prefs.getBooleanPref(Constants.blankDisplaySync)
+
+        if (prefs.getBooleanPref(Constants.tempInF)) {
+            binding.tempUnitF.isChecked = true
+        } else {
+            binding.tempUnitC.isChecked = true
+        }
+        when (prefs.getPref(Constants.powerUnits)) {
+            Constants.powerUnitKw -> binding.powerUnitKw.isChecked = true
+            Constants.powerUnitHp -> binding.powerUnitHp.isChecked = true
+            Constants.powerUnitPs -> binding.powerUnitPs.isChecked = true
+        }
+        if (prefs.getBooleanPref(Constants.torqueInLbfFt)) {
+            binding.torqueUnitLbf.isChecked = true
+        } else {
+            binding.torqueUnitNm.isChecked = true
+        }
 
     }
 
 
-
-    private fun saveSettings(){
+    private fun saveSettings() {
         when (binding.displaysettings.checkedRadioButtonId) {
-            R.id.displaydark -> prefs.setBooleanPref("forceNightMode", true)
-            R.id.displayauto -> prefs.setBooleanPref("forceNightMode", false)
+            R.id.displaydark -> prefs.setBooleanPref(Constants.forceNightMode, true)
+            R.id.displayauto -> prefs.setBooleanPref(Constants.forceNightMode, false)
         }
-        // val radioButton: RadioButton? = binding.gaugemode.findViewById<RadioButton>(binding.gaugemode.checkedRadioButtonId)
-        when(binding.gaugemode.checkedRadioButtonId){
-            R.id.gaugemodefull -> prefs.setPref(Constants.gaugeMode, 2f)
-            R.id.gaugemoderegular -> prefs.setPref(Constants.gaugeMode, 1f)
-            R.id.gaugemodesimple -> prefs.setPref(Constants.gaugeMode, 0f)
+        when (binding.gaugemode.checkedRadioButtonId) {
+            R.id.gaugemodefull -> prefs.setPref(Constants.gaugeMode, Constants.showFullGauges)
+            R.id.gaugemoderegular -> prefs.setPref(Constants.gaugeMode, Constants.showRegularGauges)
+            R.id.gaugemodesimple -> prefs.setPref(Constants.gaugeMode, Constants.showSimpleGauges)
         }
-        if (binding.showodo.isChecked){
-            prefs.setBooleanPref(Constants.odometer, true)
+        // These are inverted so that the default value (false) shows the object (show = !hide)
+        if (binding.showodo.isChecked) {
+            prefs.setBooleanPref(Constants.hideOdometer, false)
         } else {
-            prefs.setBooleanPref(Constants.odometer, false)
+            prefs.setBooleanPref(Constants.hideOdometer, true)
+        }
+        if (binding.showBs.isChecked) {
+            prefs.setBooleanPref(Constants.hideBs, false)
+        } else {
+            prefs.setBooleanPref(Constants.hideBs, true)
+        }
+        if (binding.showSpeedLimit.isChecked) {
+            prefs.setBooleanPref(Constants.hideSpeedLimit, false)
+        } else {
+            prefs.setBooleanPref(Constants.hideSpeedLimit, true)
+        }
+        // This is not inverted, because defaulting to blank display makes the app appear broken on first launch
+        if (binding.blankDisplaySync.isChecked) {
+            prefs.setBooleanPref(Constants.blankDisplaySync, true)
+        } else {
+            prefs.setBooleanPref(Constants.blankDisplaySync, false)
+        }
+        when (binding.tempUnits.checkedRadioButtonId) {
+            R.id.tempUnitC -> prefs.setBooleanPref(Constants.tempInF, false)
+            R.id.tempUnitF -> prefs.setBooleanPref(Constants.tempInF, true)
+        }
+        when (binding.powerUnits.checkedRadioButtonId) {
+            R.id.powerUnitKw -> prefs.setPref(Constants.powerUnits, Constants.powerUnitKw)
+            R.id.powerUnitHp -> prefs.setPref(Constants.powerUnits, Constants.powerUnitHp)
+            R.id.powerUnitPs -> prefs.setPref(Constants.powerUnits, Constants.powerUnitPs)
+        }
+        when (binding.torqueUnits.checkedRadioButtonId) {
+            R.id.torqueUnitNm -> prefs.setBooleanPref(Constants.torqueInLbfFt, false)
+            R.id.torqueUnitLbf -> prefs.setBooleanPref(Constants.torqueInLbfFt, true)
         }
         launchInfoFragment()
     }
-    private fun launchInfoFragment(){
+
+    private fun launchInfoFragment() {
         viewModel.switchToInfoFragment()
     }
+
     private fun setPref(name: String, value: Float) {
         with(prefs.edit()) {
             putFloat(name, value)
