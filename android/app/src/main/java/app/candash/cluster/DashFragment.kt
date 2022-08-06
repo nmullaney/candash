@@ -70,7 +70,7 @@ class DashFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?gi
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentDashBinding.inflate(inflater, container, false)
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
@@ -358,6 +358,7 @@ class DashFragment : Fragment() {
             setPref("maxPower", 0f)
         }
         binding.root.setOnLongClickListener {
+            viewModel.switchToInfoFragment()
             viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
         }
@@ -970,13 +971,18 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.odometer)?.let { odometerVal ->
-                binding.odometer.visibility = View.VISIBLE
-                if (uiSpeedUnitsMPH == true) {
-                    binding.odometer.text = ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
-                } else {
-                    binding.odometer.text = odometerVal.toInt().toString() + " km"
+                if (prefs.getBooleanPref(Constants.odometer) == true) {
+                    binding.odometer.visibility = View.VISIBLE
+                    if (uiSpeedUnitsMPH == true) {
+                        binding.odometer.text =
+                            ((odometerVal.toInt()) * .62).toInt().toString() + " mi"
+                    } else {
+                        binding.odometer.text = odometerVal.toInt().toString() + " km"
+                    }
                 }
-
+                else {
+                    binding.odometer.visibility = View.INVISIBLE
+                }
             }
 
             if(it.getValue(Constants.odometer) == null) {

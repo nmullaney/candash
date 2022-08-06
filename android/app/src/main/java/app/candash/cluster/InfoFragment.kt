@@ -73,7 +73,9 @@ class InfoFragment() : Fragment() {
                 viewModel.shutdown()
             }
         }
-
+        binding.settings.setOnClickListener(){
+            switchToSettings()
+        }
         binding.root.setOnLongClickListener {
             switchToDash()
         }
@@ -137,6 +139,10 @@ class InfoFragment() : Fragment() {
         return true
     }
 
+    fun switchToSettings() : Boolean {
+        viewModel.switchToSettingsFragment()
+        return true
+    }
     fun logCarState(carState: CarState) {
         Log.d(TAG, "Car state size: " + carState.carData.size)
         carState.carData.forEach {

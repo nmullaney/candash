@@ -4,7 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.4082051282051282" />
-        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/fragment_dash.xml" value="0.6114151681000782" />
+        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.317" />
+        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/activity_fullscreen.xml" value="0.2625" />
+        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/fragment_dash.xml" value="0.32472826086956524" />
+        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/fragment_info.xml" value="0.3671875" />
+        <entry key="..\:/Users/osuni/StudioProjects/candash/android/app/src/main/res/layout/fragment_settings.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/drawable/ic_autopilot.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_autopilot_inactive.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_left_24.xml" value="0.216" />
