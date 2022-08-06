@@ -317,7 +317,7 @@ class DashFragment : Fragment() {
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
 
-        binding.blackout.visibility = View.INVISIBLE
+        binding.blackout.visibility = View.GONE
 
         // milliseconds
         /*
@@ -481,7 +481,7 @@ class DashFragment : Fragment() {
                     }
                     blackoutToastToggle = true
                 } else {
-                    binding.blackout.visibility = View.INVISIBLE
+                    binding.blackout.visibility = View.GONE
                     binding.blackoutToast.visibility = View.GONE
                     blackoutToastToggle = false
                 }
