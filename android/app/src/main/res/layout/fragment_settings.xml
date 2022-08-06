@@ -174,7 +174,7 @@
             android:id="@+id/tempUnitC"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Celcius" />
+            android:text="Celsius" />
 
         <RadioButton
             android:id="@+id/tempUnitF"
