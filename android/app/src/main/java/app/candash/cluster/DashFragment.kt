@@ -805,25 +805,31 @@ class DashFragment : Fragment() {
             if (!isSplitScreen() && !getBooleanPref(Constants.hideSpeedLimit) && gearState == Constants.gearDrive) {
                 it.getValue(Constants.fusedSpeedLimit)?.let { speedLimitVal ->
                     if (speedLimitVal.toFloat() != Constants.fusedSpeedNone && speedLimitVal.toFloat() != Constants.fusedSpeedSNA) {
-                        binding.speedLimit.text = speedLimitVal.toInt().toString()
+                        binding.speedLimitUs.text = speedLimitVal.toInt().toString()
+                        binding.speedLimitRound.text = speedLimitVal.toInt().toString()
                         if (mapRegion == Constants.mapUS) {
                             // There's no CA map region from the dbc, assuming that CA uses US map region and sign
                             binding.speedLimitSignUs.visibility = View.VISIBLE
+                            binding.speedLimitUs.visibility = View.VISIBLE
                             binding.speedLimitSignRound.visibility = View.INVISIBLE
+                            binding.speedLimitRound.visibility = View.INVISIBLE
                         } else {
                             // Apologies if I wrongly assumed the rest of the world uses the round sign
                             binding.speedLimitSignRound.visibility = View.VISIBLE
+                            binding.speedLimitRound.visibility = View.VISIBLE
                             binding.speedLimitSignUs.visibility = View.INVISIBLE
+                            binding.speedLimitUs.visibility = View.INVISIBLE
                         }
-                        binding.speedLimit.visibility = View.VISIBLE
                     } else {
-                        binding.speedLimit.visibility = View.INVISIBLE
+                        binding.speedLimitUs.visibility = View.INVISIBLE
+                        binding.speedLimitRound.visibility = View.INVISIBLE
                         binding.speedLimitSignUs.visibility = View.INVISIBLE
                         binding.speedLimitSignRound.visibility = View.INVISIBLE
                     }
                 }
             } else {
-                binding.speedLimit.visibility = View.INVISIBLE
+                binding.speedLimitUs.visibility = View.INVISIBLE
+                binding.speedLimitRound.visibility = View.INVISIBLE
                 binding.speedLimitSignUs.visibility = View.INVISIBLE
                 binding.speedLimitSignRound.visibility = View.INVISIBLE
             }
