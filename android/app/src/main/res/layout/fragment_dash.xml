@@ -494,24 +494,53 @@
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/speed_limit_us"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:constraint_referenced_ids="speed_limit_sign_us,speed_limit_title_us,speed_limit_value_us"
+        />
+
     <ImageView
         android:id="@+id/speed_limit_sign_us"
         android:layout_width="80dp"
         android:layout_height="96dp"
         android:gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
 
-        android:src="@drawable/speed_limit_sign_us"
+        android:src="@drawable/speed_limit_sign_us_plain"
 
         app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/speed_limit_us"
+        android:id="@+id/speed_limit_title_us"
+        android:layout_width="62dp"
+        android:layout_height="53dp"
+        android:gravity="center"
+        android:visibility="visible"
+
+        android:text="SPEED LIMIT"
+        android:fontFamily="@font/intersemibold"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:lineSpacingMultiplier=".78"
+
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
+        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_us" />
+
+    <TextView
+        android:id="@+id/speed_limit_value_us"
         android:layout_width="62dp"
         android:layout_height="68dp"
         android:gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
 
         android:text="45"
         android:fontFamily="@font/intersemibold"
@@ -523,26 +552,38 @@
         app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
         app:layout_constraintBottom_toBottomOf="@id/speed_limit_sign_us" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/speed_limit_round"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:constraint_referenced_ids="speed_limit_sign_round,speed_limit_value_round"
+        />
+
     <ImageView
         android:id="@+id/speed_limit_sign_round"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
 
         android:src="@drawable/speed_limit_sign_round"
 
-        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
-        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_round"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_round"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/speed_limit_round"
+        android:id="@+id/speed_limit_value_round"
         android:layout_width="62dp"
         android:layout_height="50dp"
         android:gravity="center"
-        android:visibility="invisible"
+        android:visibility="visible"
 
         android:text="100"
         android:fontFamily="@font/intersemibold"
