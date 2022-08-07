@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
@@ -52,6 +53,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
         val hotSpotReceiver = object : BroadcastReceiver() {
             override fun onReceive(contxt: Context, intent: Intent) {
@@ -93,7 +95,7 @@ class FullscreenActivity : AppCompatActivity() {
             }
             val lowBattery: Boolean = batteryPct == null || batteryPct <= 20f
 
-            if (isPlugged || !lowBattery) {
+            if (isPlugged || (!lowBattery && prefs.getBooleanPref(Constants.blankDisplaySync))) {
                 this@FullscreenActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 //Log.d(TAG, "keep_screen_on")
             } else {
