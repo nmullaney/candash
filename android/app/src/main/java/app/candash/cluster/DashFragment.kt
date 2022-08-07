@@ -802,7 +802,7 @@ class DashFragment : Fragment() {
                 mapRegion = mapRegionVal.toFloat()
             }
 
-            if (!isSplitScreen() && !getBooleanPref(Constants.hideSpeedLimit)) {
+            if (!isSplitScreen() && !getBooleanPref(Constants.hideSpeedLimit) && gearState == Constants.gearDrive) {
                 it.getValue(Constants.fusedSpeedLimit)?.let { speedLimitVal ->
                     if (speedLimitVal.toFloat() != Constants.fusedSpeedNone && speedLimitVal.toFloat() != Constants.fusedSpeedSNA) {
                         binding.speedLimit.text = speedLimitVal.toInt().toString()
