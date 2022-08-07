@@ -525,9 +525,9 @@
 
     <ImageView
         android:id="@+id/speed_limit_sign_round"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_marginTop="4dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:visibility="invisible"
 
