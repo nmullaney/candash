@@ -50,7 +50,7 @@ class MockCANService : CANService {
                 Constants.isSunUp to 1f,
                 Constants.autopilotHands to 1f,
                 Constants.driveConfig to 0f,
-                Constants.gearSelected to Constants.gearPark.toFloat(),
+                Constants.gearSelected to Constants.gearDrive.toFloat(),
                 Constants.stateOfCharge to 70f,
                 Constants.turnSignalLeft to 1.0f,
                 Constants.battAmps to -20f,
@@ -65,14 +65,16 @@ class MockCANService : CANService {
                 Constants.rearLeftDoorState to 2f,
                 Constants.rearRightDoorState to 2f,
                 Constants.drlMode to Constants.drlModeOff,
-                Constants.chargeStatus to Constants.chargeStatusInactive
+                Constants.chargeStatus to Constants.chargeStatusInactive,
+                Constants.mapRegion to Constants.mapUS,
+                Constants.fusedSpeedLimit to 65f
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
                 Constants.isSunUp to 1f,
                 Constants.autopilotHands to 1f,
                 Constants.driveConfig to 0f,
-                Constants.gearSelected to Constants.gearPark.toFloat(),
+                Constants.gearSelected to Constants.gearDrive.toFloat(),
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -23f,
                 Constants.uiSpeedUnits to 0f,
@@ -84,7 +86,9 @@ class MockCANService : CANService {
                 Constants.frontLeftDoorState to 2f,
                 Constants.drlMode to Constants.drlModeDrl,
                 Constants.passengerUnbuckled to 1f,
-                Constants.chargeStatus to Constants.chargeStatusInactive
+                Constants.chargeStatus to Constants.chargeStatusInactive,
+                Constants.mapRegion to Constants.mapEU,
+                Constants.fusedSpeedLimit to 100f
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
@@ -100,7 +104,8 @@ class MockCANService : CANService {
                 Constants.frontLeftDoorState to 2f,
                 Constants.drlMode to Constants.drlModePosition,
                 Constants.passengerUnbuckled to 0f,
-                Constants.chargeStatus to Constants.chargeStatusActive
+                Constants.chargeStatus to Constants.chargeStatusActive,
+                Constants.fusedSpeedLimit to Constants.fusedSpeedNone
             )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
@@ -112,6 +117,8 @@ class MockCANService : CANService {
                 Constants.chargeStatus to Constants.chargeStatusActive,
                 Constants.gearSelected to Constants.gearInvalid.toFloat(),
                 Constants.displayOn to 1f
+                Constants.fusedSpeedLimit to Constants.fusedSpeedSNA
+
                 )))
 
 

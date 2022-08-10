@@ -41,10 +41,10 @@ class DashFragment : Fragment() {
     private var battAmps: Float = 0f
     private var battVolts: Float = 0f
     private var doorOpen = false
-    private var HRSPRS: Boolean = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearInvalid
+    private var mapRegion: Float = 0f
     private lateinit var prefs: SharedPreferences
 
     // Ugly debug test
@@ -70,15 +70,17 @@ class DashFragment : Fragment() {
         get() = (this * .621371).toFloat()
     // Temperature conversions
     val Float.cToF: Float
-        get() = ((this * 9/5) + 32).toFloat()
+        get() = ((this * 9/5) + 32)
+    val Int.cToF: Int
+        get() = ((this * 9/5) + 32)
     // Power conversions
-    val Float.kwToHp: Float
-        get() = (this * 1.34102).toFloat()
-    val Float.kwToPs: Float
-        get() = (this * 1.35962).toFloat()
+    val Float.wToHp: Float
+        get() = (this  / 745.7f)
+    val Float.wToPs: Float
+        get() = (this / 735.5f)
     // Torque conversions
-    val Float.nmToLbfFt: Float
-        get() = (this * 0.73756).toFloat()
+    val Int.nmToLbfFt: Int
+        get() = (this * 0.73756).toInt()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -311,7 +313,30 @@ class DashFragment : Fragment() {
         }
         uiSpeedUnitsMPH = getBooleanPref("uiSpeedUnitsMPH")
 
-        HRSPRS = getBooleanPref("HRSPRS")
+        if (getBooleanPref(Constants.tempInF)) {
+            binding.frontbraketempunits.text = "°F"
+            binding.rearbraketempunits.text = "°F"
+            binding.fronttempunits.text = "°F"
+            binding.reartempunits.text = "°F"
+            binding.batttempunits.text = "°F"
+        } else {
+            binding.frontbraketempunits.text = "°C"
+            binding.rearbraketempunits.text = "°C"
+            binding.fronttempunits.text = "°C"
+            binding.reartempunits.text = "°C"
+            binding.batttempunits.text = "°C"
+        }
+
+        if (getBooleanPref(Constants.torqueInLbfFt)) {
+            binding.fronttorqueunits.text = "lb-ft"
+            binding.reartorqueunits.text = "lb-ft"
+        } else {
+            binding.fronttorqueunits.text = "Nm"
+            binding.reartorqueunits.text = "Nm"
+        }
+
+        // Power unit labels handled in formatWatts()
+
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
         val bsColorTo = Color.parseColor("#FFEE0000")
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
@@ -390,8 +415,11 @@ class DashFragment : Fragment() {
         }
 
         binding.power.setOnClickListener {
-
-            setBooleanPref("HRSPRS", !getBooleanPref("HRSPRS"))
+            if (getPref(Constants.powerUnits) < Constants.powerUnitPs) {
+                setPref(Constants.powerUnits, getPref(Constants.powerUnits) + 1f)
+            } else {
+                setPref(Constants.powerUnits, Constants.powerUnitKw)
+            }
         }
 
 
@@ -521,26 +549,14 @@ class DashFragment : Fragment() {
             if (getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
                 binding.minpower.visibility = View.VISIBLE
                 binding.maxpower.visibility = View.VISIBLE
-                if (!getBooleanPref("HRSPRS")) {
-                    binding.minpower.text = formatWatts(getPref("minPower"))
-                    binding.maxpower.text = formatWatts(getPref("maxPower"))
+                binding.minpower.text = formatWatts(getPref("minPower"))
+                binding.maxpower.text = formatWatts(getPref("maxPower"))
 
-                } else {
-                    binding.minpower.text =
-                        (getPref("minPower") * 0.00134102).toInt().toString() + " hp"
-                    binding.maxpower.text =
-                        (getPref("maxPower") * 0.00134102).toInt().toString() + " hp"
-
-                }
             } else {
                 binding.minpower.visibility = View.INVISIBLE
                 binding.maxpower.visibility = View.INVISIBLE
             }
-            if (!getBooleanPref("HRSPRS")) {
-                binding.power.text = formatWatts(power)
-            } else {
-                binding.power.text = (power * 0.00134102).toInt().toString() + " hp"
-            }
+            binding.power.text = formatWatts(power)
             if (power >= 0) {
                 binding.powerBar.setGauge(((power / getPref("maxPower")).pow(0.75f)))
             } else {
@@ -628,7 +644,11 @@ class DashFragment : Fragment() {
                     it.getValue(Constants.brakeTempFL)!!.toInt(),
                     it.getValue(Constants.brakeTempFR)!!.toInt()
                 )
-                binding.frontbraketemp.text = frontBrakeTemp.toString()
+                if (getBooleanPref(Constants.tempInF)) {
+                    binding.frontbraketemp.text = frontBrakeTemp.cToF.toString()
+                } else {
+                    binding.frontbraketemp.text = frontBrakeTemp.toString()
+                }
                 binding.frontbraketempgauge.setGauge(frontBrakeTemp.toFloat() / 984f)
                 binding.fronttempgauge.invalidate()
             }
@@ -637,17 +657,29 @@ class DashFragment : Fragment() {
                     it.getValue(Constants.brakeTempRL)!!.toInt(),
                     it.getValue(Constants.brakeTempRR)!!.toInt()
                 )
-                binding.rearbraketemp.text = rearBrakeTemp.toString()
+                if (getBooleanPref(Constants.tempInF)) {
+                    binding.rearbraketemp.text = rearBrakeTemp.cToF.toString()
+                } else {
+                    binding.rearbraketemp.text = rearBrakeTemp.toString()
+                }
                 binding.rearbraketempgauge.setGauge(rearBrakeTemp.toFloat() / 984f)
                 binding.reartempgauge.invalidate()
             }
             it.getValue(Constants.frontTemp)?.let { frontTempVal ->
-                binding.fronttemp.text = frontTempVal.toInt().toString()
+                if (getBooleanPref(Constants.tempInF)) {
+                    binding.fronttemp.text = frontTempVal.toFloat().cToF.toInt().toString()
+                } else {
+                    binding.fronttemp.text = frontTempVal.toInt().toString()
+                }
                 binding.fronttempgauge.setGauge(frontTempVal.toFloat() / 214f)
                 binding.fronttempgauge.invalidate()
             }
             it.getValue(Constants.rearTemp)?.let { rearTempVal ->
-                binding.reartemp.text = rearTempVal.toInt().toString()
+                if (getBooleanPref(Constants.tempInF)) {
+                    binding.reartemp.text = rearTempVal.toFloat().cToF.toInt().toString()
+                } else {
+                    binding.reartemp.text = rearTempVal.toInt().toString()
+                }
                 binding.reartempgauge.setGauge(rearTempVal.toFloat() / 214f)
                 binding.reartempgauge.invalidate()
             }
@@ -663,8 +695,11 @@ class DashFragment : Fragment() {
                 ) {
                     frontTorqueVal = -(frontTorqueVal)
                 }
-
-                binding.fronttorque.text = frontTorqueVal.toInt().toString()
+                if (getBooleanPref(Constants.torqueInLbfFt)) {
+                    binding.fronttorque.text = frontTorqueVal.toInt().nmToLbfFt.toString()
+                } else {
+                    binding.fronttorque.text = frontTorqueVal.toInt().toString()
+                }
                 if (abs(getPref("frontTorqueMax")) < frontTorqueVal.toFloat()) {
                     setPref("frontTorqueMax", abs(frontTorqueVal.toFloat()))
                 }
@@ -678,7 +713,11 @@ class DashFragment : Fragment() {
                 ) {
                     rearTorqueVal = -(rearTorqueVal)
                 }
-                binding.reartorque.text = rearTorqueVal.toInt().toString()
+                if (getBooleanPref(Constants.torqueInLbfFt)) {
+                    binding.reartorque.text = rearTorqueVal.toInt().nmToLbfFt.toString()
+                } else {
+                    binding.reartorque.text = rearTorqueVal.toInt().toString()
+                }
                 if (abs(getPref("rearTorqueMax")) < rearTorqueVal.toFloat()) {
                     setPref("rearTorqueMax", abs(rearTorqueVal.toFloat()))
                 }
@@ -686,7 +725,11 @@ class DashFragment : Fragment() {
                 binding.reartorquegauge.invalidate()
             }
             it.getValue(Constants.battBrickMin)?.let {
-                binding.batttemp.text = "%.1f".format(it.toFloat())
+                if (getBooleanPref(Constants.tempInF)) {
+                    binding.batttemp.text = it.toFloat().cToF.toInt().toString()
+                } else {
+                    binding.batttemp.text = "%.1f".format(it.toFloat())
+                }
                 binding.batttempgauge.setGauge((it.toFloat() + 40f) / 128)
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
@@ -818,7 +861,33 @@ class DashFragment : Fragment() {
                 )
             }
 
+            it.getValue(Constants.mapRegion)?.let { mapRegionVal ->
+                mapRegion = mapRegionVal.toFloat()
+            }
 
+            if (!isSplitScreen() && !getBooleanPref(Constants.hideSpeedLimit) && gearState == Constants.gearDrive) {
+                it.getValue(Constants.fusedSpeedLimit)?.let { speedLimitVal ->
+                    if (speedLimitVal.toFloat() != Constants.fusedSpeedNone && speedLimitVal.toFloat() != Constants.fusedSpeedSNA) {
+                        if (mapRegion == Constants.mapUS) {
+                            // There's no CA map region from the dbc, assuming that CA uses US map region and sign
+                            binding.speedLimitValueUs.text = speedLimitVal.toInt().toString()
+                            binding.speedLimitUs.visibility = View.VISIBLE
+                            binding.speedLimitRound.visibility = View.INVISIBLE
+                        } else {
+                            // Apologies if I wrongly assumed the rest of the world uses the round sign
+                            binding.speedLimitValueRound.text = speedLimitVal.toInt().toString()
+                            binding.speedLimitRound.visibility = View.VISIBLE
+                            binding.speedLimitUs.visibility = View.INVISIBLE
+                        }
+                    } else {
+                        binding.speedLimitUs.visibility = View.INVISIBLE
+                        binding.speedLimitRound.visibility = View.INVISIBLE
+                    }
+                }
+            } else {
+                binding.speedLimitUs.visibility = View.INVISIBLE
+                binding.speedLimitRound.visibility = View.INVISIBLE
+            }
 
 
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
@@ -1130,7 +1199,7 @@ class DashFragment : Fragment() {
                                 binding.chargemeter.invalidate()
                                 binding.bigsoc.visibility = View.VISIBLE
                                 binding.bigsocpercent.visibility = View.VISIBLE
-                                binding.chargerate.text = formatWatts(abs(battAmps * battVolts))
+                                binding.chargerate.text = formatWatts(abs(battAmps * battVolts), convert = false)
                                 binding.chargerate.visibility = View.VISIBLE
 
                             }
@@ -1500,11 +1569,30 @@ class DashFragment : Fragment() {
 
     }
 
-    fun formatWatts(power: Float): String {
-        if ((abs(power) < 10000)) {
-            return "%.1f".format(power / 1000f) + " kW"
+    fun formatWatts(power: Float, convert: Boolean = true): String {
+        if (getPref(Constants.powerUnits) == Constants.powerUnitHp && convert) {
+            val hp = power.wToHp
+            return if ((abs(hp) < 10)) {
+                "%.1f".format(hp) + " hp"
+            } else {
+                hp.toInt().toString() + " hp"
+            }
+        }
+
+        if (getPref(Constants.powerUnits) == Constants.powerUnitPs && convert) {
+            val ps = power.wToPs
+            return if ((abs(ps) < 10)) {
+                "%.1f".format(ps) + " PS"
+            } else {
+                ps.toInt().toString() + " PS"
+            }
+        }
+
+        val kw = power / 1000f
+        return if ((abs(kw) < 10)) {
+            "%.1f".format(kw) + " kW"
         } else {
-            return (power / 1000f).toInt().toString() + " kW"
+            kw.toInt().toString() + " kW"
         }
     }
 
