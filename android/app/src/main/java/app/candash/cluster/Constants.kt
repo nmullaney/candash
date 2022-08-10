@@ -111,6 +111,7 @@ object Constants {
     const val brakeTempFR = "brakeTempFR"
     const val brakeTempRL = "brakeTempRL"
     const val brakeTempRR = "brakeTempRR"
+    const val displayOn = "displayOn"
 
     // Prefs
     const val forceNightMode = "forceNightMode"

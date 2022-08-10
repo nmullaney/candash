@@ -113,6 +113,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.brakeTempFR, -1, Hex(0x3FE), 10, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRL, -1, Hex(0x3FE), 20, 10, 1f, -40f)
         insertCANSignal(Constants.brakeTempRR, -1, Hex(0x3FE), 30, 10, 1f, -40f)
+        insertCANSignal(Constants.displayOn, -1, Hex(0x353), 5, 1, 1f, 0f)
 
         insertCANSignal(Constants.drlMode, -1, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
         insertCANSignal(Constants.driverUnbuckled, -1, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0)
