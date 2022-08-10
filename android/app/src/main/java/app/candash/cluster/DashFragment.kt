@@ -43,6 +43,7 @@ class DashFragment : Fragment() {
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearInvalid
+    private var mapRegion: Float = 0f
     private lateinit var prefs: SharedPreferences
 
     // Ugly debug test
@@ -839,7 +840,33 @@ class DashFragment : Fragment() {
                 )
             }
 
+            it.getValue(Constants.mapRegion)?.let { mapRegionVal ->
+                mapRegion = mapRegionVal.toFloat()
+            }
 
+            if (!isSplitScreen() && !getBooleanPref(Constants.hideSpeedLimit) && gearState == Constants.gearDrive) {
+                it.getValue(Constants.fusedSpeedLimit)?.let { speedLimitVal ->
+                    if (speedLimitVal.toFloat() != Constants.fusedSpeedNone && speedLimitVal.toFloat() != Constants.fusedSpeedSNA) {
+                        if (mapRegion == Constants.mapUS) {
+                            // There's no CA map region from the dbc, assuming that CA uses US map region and sign
+                            binding.speedLimitValueUs.text = speedLimitVal.toInt().toString()
+                            binding.speedLimitUs.visibility = View.VISIBLE
+                            binding.speedLimitRound.visibility = View.INVISIBLE
+                        } else {
+                            // Apologies if I wrongly assumed the rest of the world uses the round sign
+                            binding.speedLimitValueRound.text = speedLimitVal.toInt().toString()
+                            binding.speedLimitRound.visibility = View.VISIBLE
+                            binding.speedLimitUs.visibility = View.INVISIBLE
+                        }
+                    } else {
+                        binding.speedLimitUs.visibility = View.INVISIBLE
+                        binding.speedLimitRound.visibility = View.INVISIBLE
+                    }
+                }
+            } else {
+                binding.speedLimitUs.visibility = View.INVISIBLE
+                binding.speedLimitRound.visibility = View.INVISIBLE
+            }
 
 
             it.getValue(Constants.turnSignalLeft)?.let { leftTurnSignalVal ->
