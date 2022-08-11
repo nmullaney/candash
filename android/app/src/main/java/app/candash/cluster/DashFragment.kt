@@ -498,7 +498,7 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.displayOn)?.let { displayOnVal ->
-                if (displayOnVal.toFloat() == 0f && getBooleanPref(Constants.blankDisplaySync)) {
+                if (displayOnVal.toFloat() == 0f && prefs.getBooleanPref(Constants.blankDisplaySync)) {
                     binding.blackout.visibility = View.VISIBLE
 
                     if (!blackoutToastToggle) {

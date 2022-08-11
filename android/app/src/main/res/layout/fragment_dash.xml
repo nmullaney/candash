@@ -511,7 +511,6 @@
         android:layout_height="96dp"
         android:gravity="center"
         android:visibility="visible"
-
         android:src="@drawable/speed_limit_sign_us_plain"
 
         app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
@@ -525,7 +524,7 @@
         android:visibility="visible"
 
         android:text="SPEED LIMIT"
-        android:fontFamily="@font/intersemibold"
+        android:fontFamily="@font/montserratbold"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="14dp"

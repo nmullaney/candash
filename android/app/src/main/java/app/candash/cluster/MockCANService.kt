@@ -116,7 +116,7 @@ class MockCANService : CANService {
                 Constants.drlMode to Constants.drlModePosition,
                 Constants.chargeStatus to Constants.chargeStatusActive,
                 Constants.gearSelected to Constants.gearInvalid.toFloat(),
-                Constants.displayOn to 1f
+                Constants.displayOn to 1f,
                 Constants.fusedSpeedLimit to Constants.fusedSpeedSNA
 
                 )))
