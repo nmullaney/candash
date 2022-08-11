@@ -34,6 +34,7 @@ class DashFragment : Fragment() {
     private var lastAutopilotState: Int = 0
     private var autopilotHandsToggle: Boolean = false
     private var bsWarningToggle: Boolean = false
+    private var blackoutToastToggle: Boolean = false
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
@@ -341,6 +342,8 @@ class DashFragment : Fragment() {
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
 
+        binding.blackout.visibility = View.GONE
+
         // milliseconds
         /*
         if (!isSplitScreen()) {
@@ -492,6 +495,24 @@ class DashFragment : Fragment() {
             // set display night/day mode based on reported car status
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
+            }
+
+            it.getValue(Constants.displayOn)?.let { displayOnVal ->
+                if (displayOnVal.toFloat() == 0f && getBooleanPref(Constants.blankDisplaySync)) {
+                    binding.blackout.visibility = View.VISIBLE
+
+                    if (!blackoutToastToggle) {
+                        binding.blackoutToast.visibility = View.VISIBLE
+                        val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                        fadeOut.duration = 5000
+                        binding.blackoutToast.startAnimation(fadeOut)
+                    }
+                    blackoutToastToggle = true
+                } else {
+                    binding.blackout.visibility = View.GONE
+                    binding.blackoutToast.visibility = View.GONE
+                    blackoutToastToggle = false
+                }
             }
 
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
