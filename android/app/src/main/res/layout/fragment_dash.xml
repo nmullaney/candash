@@ -511,7 +511,7 @@
         android:layout_height="96dp"
         android:gravity="center"
         android:visibility="visible"
-        android:src="@drawable/speed_limit_sign_us_plain"
+        android:src="@drawable/shadow"
 
         app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
         app:layout_constraintTop_toTopOf="parent" />
