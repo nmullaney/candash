@@ -507,8 +507,8 @@
 
     <ImageView
         android:id="@+id/speed_limit_sign_us"
-        android:layout_width="80dp"
-        android:layout_height="96dp"
+        android:layout_width="60dp"
+        android:layout_height="72dp"
         android:gravity="center"
         android:visibility="visible"
         android:src="@drawable/shadow"
@@ -518,8 +518,8 @@
 
     <TextView
         android:id="@+id/speed_limit_title_us"
-        android:layout_width="62dp"
-        android:layout_height="53dp"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:visibility="visible"
 
@@ -527,7 +527,7 @@
         android:fontFamily="@font/montserratbold"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="14dp"
+        android:textSize="10dp"
         android:lineSpacingMultiplier=".78"
 
         app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
@@ -536,8 +536,8 @@
 
     <TextView
         android:id="@+id/speed_limit_value_us"
-        android:layout_width="62dp"
-        android:layout_height="68dp"
+        android:layout_width="46dp"
+        android:layout_height="51dp"
         android:gravity="center"
         android:visibility="visible"
 
@@ -545,7 +545,7 @@
         android:fontFamily="@font/intersemibold"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="32dp"
+        android:textSize="24dp"
 
         app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
         app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
