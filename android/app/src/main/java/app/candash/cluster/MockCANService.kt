@@ -81,7 +81,8 @@ class MockCANService : CANService {
 
                 Constants.battVolts to 390f,
                 Constants.uiSpeed to 0.0f,
-                Constants.displayOn to 1f,
+                // display should stay on because gear is in drive
+                Constants.displayOn to 0f,
 
                 Constants.frontLeftDoorState to 2f,
                 Constants.drlMode to Constants.drlModeDrl,
@@ -118,8 +119,13 @@ class MockCANService : CANService {
                 Constants.gearSelected to Constants.gearInvalid.toFloat(),
                 Constants.displayOn to 1f,
                 Constants.fusedSpeedLimit to Constants.fusedSpeedSNA
-
-                )))
+            )),
+            CarState(mutableMapOf(
+                // display will turn off if the pref is enabled
+                Constants.gearSelected to Constants.gearPark.toFloat(),
+                Constants.displayOn to 0f,
+            ))
+        )
 
 
 }
