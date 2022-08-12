@@ -498,7 +498,9 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.displayOn)?.let { displayOnVal ->
-                if (displayOnVal.toFloat() == 0f && prefs.getBooleanPref(Constants.blankDisplaySync)) {
+                if (displayOnVal.toFloat() == 0f && prefs.getBooleanPref(Constants.blankDisplaySync)
+                    // Never turn off screen if in gear
+                    && gearState != Constants.gearDrive && gearState != Constants.gearReverse) {
                     binding.blackout.visibility = View.VISIBLE
 
                     if (!blackoutToastToggle) {
