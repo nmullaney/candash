@@ -338,7 +338,7 @@ class DashFragment : Fragment() {
         // Power unit labels handled in formatWatts()
 
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
-        val bsColorTo = Color.parseColor("#FFEE0000")
+        val bsColorTo = Color.parseColor("#FFFF0000")
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
 
