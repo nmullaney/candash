@@ -55,12 +55,6 @@ class InfoFragment() : Fragment() {
         binding.saveButton.setOnClickListener {
             viewModel.saveSettings(getSelectedCANServiceIndex(), binding.editIpAddress.text.toString())
         }
-        binding.scanButton.setOnClickListener {
-            if (viewModel.getZeroConfIpAddress() != "0.0.0.0"){
-                viewModel.saveSettings(getSelectedCANServiceIndex(), viewModel.getZeroConfIpAddress())
-            }
-            binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
-        }
         binding.startButton.setOnClickListener {
             if (!viewModel.isRunning()){
                 viewModel.startUp(signalNames())
@@ -116,10 +110,18 @@ class InfoFragment() : Fragment() {
     fun getSelectedCANServiceIndex() : Int {
         return binding.chooseService.selectedItemPosition
     }
+    private fun setupZeroConfListener() {
+        viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
+            if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
+                viewModel.saveSettings(ipAddress)
+            }
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
-
+        setupZeroConfListener()
         viewModel.startDiscoveryService()
     }
 
@@ -129,7 +131,6 @@ class InfoFragment() : Fragment() {
 
     override fun onPause() {
         super.onPause()
-
         viewModel.stopDiscoveryService()
 
     }

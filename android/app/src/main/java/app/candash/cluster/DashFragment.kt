@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
 import android.view.*
@@ -18,7 +19,9 @@ import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import app.candash.cluster.databinding.FragmentDashBinding
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
@@ -1774,5 +1777,30 @@ class DashFragment : Fragment() {
         return margin
     }
 
+    // If the discoveryService finds a different ip address, save the new
+    // address and restart
+    private fun setupZeroConfListener() {
+        viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
+            if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
+                viewModel.saveSettings(ipAddress)
+            }
+        }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        setupZeroConfListener()
+        binding.root.postDelayed({
+            viewModel.startDiscoveryService()
+        }, 2000)
+    }
+    override fun onDestroy() {
+        viewModel.stopDiscoveryService()
+        super.onDestroy()
+    }
+
+    override fun onPause() {
+        viewModel.stopDiscoveryService()
+        super.onPause()
+    }
 }
