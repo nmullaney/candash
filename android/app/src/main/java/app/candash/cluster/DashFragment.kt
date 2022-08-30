@@ -1781,7 +1781,7 @@ class DashFragment : Fragment() {
     // address and restart
     private fun setupZeroConfListener() {
         viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
-            if (viewModel.serverIpAddress() != ipAddress) {
+            if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
                 viewModel.saveSettings(ipAddress)
             }
         }

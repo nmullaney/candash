@@ -110,13 +110,14 @@ class InfoFragment() : Fragment() {
     fun getSelectedCANServiceIndex() : Int {
         return binding.chooseService.selectedItemPosition
     }
-
     private fun setupZeroConfListener() {
         viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
-            binding.editIpAddress.text = SpannableStringBuilder(ipAddress)
-            viewModel.saveSettings(getSelectedCANServiceIndex(), binding.editIpAddress.text.toString())
+            if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
+                viewModel.saveSettings(ipAddress)
+            }
         }
     }
+
 
     override fun onResume() {
         super.onResume()
