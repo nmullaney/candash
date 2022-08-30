@@ -1,12 +1,9 @@
 package app.candash.cluster
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
-import android.net.wifi.WifiManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
@@ -37,7 +34,9 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private var isSplitScreen = MutableLiveData<Boolean>()
     private var renderWidth : Float = 100f
     private var discoveryStarted = false
-    private var zeroConfIpAddress : String = "0.0.0.0"
+    private val _zeroConfIpAddress = MutableLiveData("0.0.0.0")
+    val zeroConfIpAddress : LiveData<String>
+        get() = _zeroConfIpAddress
     private var discoveryListener : NsdManager.DiscoveryListener? = null
     private var signalsToRequest : List <String> = arrayListOf()
 
@@ -68,14 +67,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         sharedPreferences.edit().putString(Constants.ipAddressPrefKey, ipAddress).apply()
     }
 
-    fun setZeroConfIpAddress(ipAddress: String){
-        zeroConfIpAddress = ipAddress
-
+    fun saveSettings(ipAddress: String) {
+        saveSettings(CANServiceType.values().indexOf(CANServiceType.PANDA), ipAddress)
     }
 
-    fun getZeroConfIpAddress() : String{
-        return zeroConfIpAddress
-    }
     fun saveSettings(selectedServicePosition: Int, ipAddress: String) {
         shutdown()
         cancelCarStateJob()
@@ -136,11 +131,6 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
             return null
         }
     }
-
-
-
-
-
 
     fun cancelCarStateJob() {
         if (::carStateJob.isInitialized) {
@@ -223,82 +213,114 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     fun startDiscoveryService() {
-        nsdManager?.discoverServices("_panda._udp", NsdManager.PROTOCOL_DNS_SD, getDiscoveryListener())
+        try {
+            nsdManager?.discoverServices(
+                "_panda._udp",
+                NsdManager.PROTOCOL_DNS_SD,
+                createDiscoveryListener()
+            )
+        } catch (iae: java.lang.IllegalArgumentException) {
+            Log.e(TAG, "Unable to start discovery service", iae)
+        }
     }
 
     fun stopDiscoveryService() {
-        nsdManager.stopServiceDiscovery(discoveryListener)
-        discoveryListener = null
-    }
+        try {
+            if (discoveryListener != null) {
 
-    fun getZeroconfHost() {
-        if (discoveryListener == null){
-            nsdManager?.discoverServices("_panda._udp", NsdManager.PROTOCOL_DNS_SD, getDiscoveryListener())
+                nsdManager.apply {
+                    stopServiceDiscovery(discoveryListener)
+                }
+
+            }
+        }catch (iae: java.lang.IllegalArgumentException) {
+            Log.e(TAG, "Unable to stop discovery service", iae)
         }
     }
 
-    fun getResolveListener() : NsdManager.ResolveListener {
-        val resolveListener = object : NsdManager.ResolveListener {
-            override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                // Called when the resolve fails. Use the error code to debug.
-                Log.e(TAG, "Resolve failed: $errorCode")
-            }
 
-            override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
-                Log.e(TAG, "Resolve Succeeded. $serviceInfo")
-                val host: InetAddress = serviceInfo.host
-                zeroConfIpAddress = host.hostAddress
-                Log.e(TAG, "IP Succeeded. $zeroconfHost")
+    private fun createDiscoveryListener() : NsdManager.DiscoveryListener =
+        NsdDiscoveryListener(nsdManager, _zeroConfIpAddress)
 
-            }
-        }
-        return resolveListener
+}
+
+class NsdDiscoveryListener(
+    private val nsdManager: NsdManager,
+    private val ipAddressLiveData: MutableLiveData<String>
+) : NsdManager.DiscoveryListener {
+
+    companion object {
+        const val TAG = "NsdDiscoveryListener"
     }
-    private fun getDiscoveryListener() : NsdManager.DiscoveryListener {
-        if (discoveryListener == null){
-            discoveryListener = object : NsdManager.DiscoveryListener {
 
-                // Called as soon as service discovery begins.
-                override fun onDiscoveryStarted(regType: String) {
-                    Log.d(TAG, "Service discovery started")
-                    discoveryStarted = true
-                }
+    private var discoveryStarted = false
+
+    // Called as soon as service discovery begins.
+    override fun onDiscoveryStarted(regType: String) {
+        Log.d(TAG, "Service discovery started")
+        discoveryStarted = true
+    }
 
 
-                override fun onServiceFound(service: NsdServiceInfo) {
-                    // A service was found! Do something with it.
-                    Log.d(TAG, "Service discovery success$service")
-                    Log.d(TAG, "Service Type: ${service.serviceType} Service Name: ${service.serviceName}")
-                    nsdManager.resolveService(service, getResolveListener())
-                    discoveryStarted = false
-                }
+    override fun onServiceFound(service: NsdServiceInfo) {
+        // A service was found! Do something with it.
+        Log.d(TAG, "Service discovery success$service")
+        Log.d(TAG, "Service Type: ${service.serviceType} Service Name: ${service.serviceName}")
+        nsdManager.resolveService(service, NsdResolveListener(ipAddressLiveData))
+        discoveryStarted = false
+    }
 
-                override fun onServiceLost(service: NsdServiceInfo) {
-                    // When the network service is no longer available.
-                    // Internal bookkeeping code goes here.
-                    Log.e(TAG, "service lost: $service")
-                }
+    override fun onServiceLost(service: NsdServiceInfo) {
+        // When the network service is no longer available.
+        // Internal bookkeeping code goes here.
+        Log.e(TAG, "service lost: $service")
+    }
 
-                override fun onDiscoveryStopped(serviceType: String) {
-                    Log.i(TAG, "Discovery stopped: $serviceType")
-                }
+    override fun onDiscoveryStopped(serviceType: String) {
+        Log.i(TAG, "Discovery stopped: $serviceType")
+    }
 
-                override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-                    Log.e(TAG, "Discovery failed: Error code:$errorCode")
+    override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
+        Log.e(TAG, "Discovery failed: Error code:$errorCode")
 
-                    when (errorCode) {
-                        //do nothing if we're at the max limit, just wait it out
-                        //NsdManager.FAILURE_MAX_LIMIT -> return
-                    }
-                    nsdManager?.stopServiceDiscovery(this)
-                }
-
-                override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-                    Log.e(TAG, "Discovery failed: Error code:$errorCode")
-                    nsdManager?.stopServiceDiscovery(this)
-                }
-            }
+        when (errorCode) {
+            //do nothing if we're at the max limit, just wait it out
+            //NsdManager.FAILURE_MAX_LIMIT -> return
         }
-        return discoveryListener!!
+        try {
+            nsdManager?.stopServiceDiscovery(this)
+        }catch (iae: java.lang.IllegalArgumentException){
+            Log.e(TAG, "Unable to stop discovery service", iae)
+        }
+    }
+
+    override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
+        Log.e(TAG, "Discovery failed: Error code:$errorCode")
+        try {
+            nsdManager?.stopServiceDiscovery(this)
+        }catch (iae: java.lang.IllegalArgumentException){
+            Log.e(TAG, "Unable to stop discovery service", iae)
+        }
+    }
+}
+
+class NsdResolveListener(private val ipAddressLiveData: MutableLiveData<String>) :
+    NsdManager.ResolveListener {
+
+    companion object {
+        const val TAG = "NsdResolveListener"
+    }
+
+    override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
+        // Called when the resolve fails. Use the error code to debug.
+        Log.e(TAG, "Resolve failed: $errorCode")
+    }
+
+    override fun onServiceResolved(serviceInfo: NsdServiceInfo) {
+        Log.e(TAG, "Resolve Succeeded. $serviceInfo")
+        val host: InetAddress = serviceInfo.host
+        ipAddressLiveData.postValue(host.hostAddress)
+        Log.e(TAG, "IP Succeeded. $host")
+
     }
 }
