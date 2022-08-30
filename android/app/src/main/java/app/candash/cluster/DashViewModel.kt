@@ -287,12 +287,20 @@ class NsdDiscoveryListener(
             //do nothing if we're at the max limit, just wait it out
             //NsdManager.FAILURE_MAX_LIMIT -> return
         }
-        nsdManager?.stopServiceDiscovery(this)
+        try {
+            nsdManager?.stopServiceDiscovery(this)
+        }catch (iae: java.lang.IllegalArgumentException){
+            Log.e(TAG, "Unable to stop discovery service", iae)
+        }
     }
 
     override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
         Log.e(TAG, "Discovery failed: Error code:$errorCode")
-        nsdManager?.stopServiceDiscovery(this)
+        try {
+            nsdManager?.stopServiceDiscovery(this)
+        }catch (iae: java.lang.IllegalArgumentException){
+            Log.e(TAG, "Unable to stop discovery service", iae)
+        }
     }
 }
 
