@@ -438,6 +438,7 @@ class DashFragment : Fragment() {
             if (view.windowToken != null) {
                 if (it) {
                     // splitscreen is on
+                    /*
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         window?.insetsController?.hide(WindowInsets.Type.statusBars())
                         window?.insetsController?.systemBarsBehavior =
@@ -447,6 +448,8 @@ class DashFragment : Fragment() {
                         wm?.removeViewImmediate(window?.getDecorView());
                         wm?.addView(window?.getDecorView(), window?.getAttributes());
                     }
+
+                     */
                     /*
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
@@ -483,6 +486,7 @@ class DashFragment : Fragment() {
                         sideUIView.visibility = View.VISIBLE
                     }
                 }
+                /*
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     window?.insetsController?.hide(WindowInsets.Type.statusBars())
                     window?.insetsController?.systemBarsBehavior =
@@ -492,6 +496,8 @@ class DashFragment : Fragment() {
                     wm?.removeViewImmediate(window?.getDecorView());
                     wm?.addView(window?.getDecorView(), window?.getAttributes());
                 }
+
+                 */
             }
         }
         viewModel.carState().observe(viewLifecycleOwner) { it ->
@@ -1442,7 +1448,7 @@ class DashFragment : Fragment() {
             binding.frontbraketempgauge.invalidate()
             binding.rearbraketempgauge.invalidate()
             binding.coolantflowgauge.invalidate()
-            //window?.statusBarColor = Color.BLACK
+            window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             //binding.speed.setTypeface(resources.getFont(R.font.orbitronlight), Typeface.NORMAL )
             binding.speed.setTextColor(Color.WHITE)
@@ -1518,7 +1524,7 @@ class DashFragment : Fragment() {
             binding.coolantflowgauge.invalidate()
             //view.setBackgroundColor(Color.parseColor("#"+Integer.toString(R.color.day_background, 16)))
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
-            //window?.statusBarColor = Color.parseColor("#FFEEEEEE")
+            window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.speed.setTextColor(Color.BLACK)
             binding.speed.setTextColor(Color.BLACK)
             binding.bigsoc.setTextColor(Color.BLACK)

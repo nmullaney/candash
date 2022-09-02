@@ -8,7 +8,6 @@
 
     <TextView
         android:id="@+id/speed"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="25dp"
@@ -50,10 +49,9 @@
     <app.candash.cluster.CircularGauge
         android:id="@+id/chargemeter"
         android:layout_width="350dp"
-
+        android:visibility="invisible"
         android:layout_height="350dp"
         android:layout_marginBottom="10dp"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +61,7 @@
         android:id="@+id/bigsoc"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:fontFamily="@font/interextralight"
+        android:fontFamily="@font/intermedium"
         android:gravity="center"
         android:letterSpacing="-.07"
         android:textColor="@color/black"
@@ -80,7 +78,7 @@
 
         tools:layout_editor_absoluteX="362dp"
         tools:layout_editor_absoluteY="117dp"
-        tools:text="5" />
+        tools:text="100" />
 
     <TextView
         android:id="@+id/bigsocpercent"
@@ -88,7 +86,7 @@
 
         android:layout_width="100dp"
         android:layout_height="200dp"
-        android:fontFamily="@font/interlight"
+        android:fontFamily="@font/interbold"
         android:gravity="center|left"
         android:textColor="@color/black"
         android:textSize="40dp"

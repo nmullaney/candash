@@ -45,9 +45,15 @@ class FullscreenActivity : AppCompatActivity() {
         // Checks the orientation of the screen
         if (isInMultiWindowMode) {
             viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
+            window.insetsController?.show(WindowInsets.Type.statusBars())
             viewModel.setSplitScreen(true)
         } else {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
             viewModel.setSplitScreen(false)
+
         }
 
     }
@@ -109,7 +115,6 @@ class FullscreenActivity : AppCompatActivity() {
         // TeslaDashboardApplication extends Hilt_TeslaDashboardApplication
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
             window.insetsController?.systemBarsBehavior =
                 WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         } else {
