@@ -347,16 +347,6 @@ class DashFragment : Fragment() {
 
         binding.blackout.visibility = View.GONE
 
-        // milliseconds
-        /*
-        if (!isSplitScreen()) {
-            for (topUIView in topUIViews()) {
-                savedLayoutParams[topUIView] =
-                    ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
-            }
-        }
-
-         */
 
 
         // set initial speedometer value
@@ -437,67 +427,16 @@ class DashFragment : Fragment() {
 
             if (view.windowToken != null) {
                 if (it) {
-                    // splitscreen is on
-                    /*
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        window?.insetsController?.hide(WindowInsets.Type.statusBars())
-                        window?.insetsController?.systemBarsBehavior =
-                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                        val wm = activity?.windowManager
 
-                        wm?.removeViewImmediate(window?.getDecorView());
-                        wm?.addView(window?.getDecorView(), window?.getAttributes());
-                    }
-
-                     */
-                    /*
-                    for (topUIView in topUIViews()) {
-                        val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
-                        val savedParams = savedLayoutParams[topUIView]
-                        params.setMargins(
-                            savedParams!!.leftMargin,
-                            savedParams.topMargin + 4.px,
-                            savedParams.rightMargin,
-                            savedParams.bottomMargin
-                        )
-                        topUIView.layoutParams = params
-                    }
-
-                     */
                     for (sideUIView in sideUIViews()) {
                         sideUIView.visibility = View.GONE
                     }
                 } else {
-                    //no splitscreen
-                    /*
-                    for (topUIView in topUIViews()) {
-                        var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
-                        var savedParams = savedLayoutParams[topUIView]
-                        params.setMargins(
-                            savedParams!!.leftMargin,
-                            savedParams.topMargin,
-                            savedParams.rightMargin,
-                            savedParams.bottomMargin
-                        )
-                        topUIView.layoutParams = params
-                    }
-                     */
+
                     for (sideUIView in sideUIViews()) {
                         sideUIView.visibility = View.VISIBLE
                     }
                 }
-                /*
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    window?.insetsController?.hide(WindowInsets.Type.statusBars())
-                    window?.insetsController?.systemBarsBehavior =
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                    val wm = activity?.windowManager
-
-                    wm?.removeViewImmediate(window?.getDecorView());
-                    wm?.addView(window?.getDecorView(), window?.getAttributes());
-                }
-
-                 */
             }
         }
         viewModel.carState().observe(viewLifecycleOwner) { it ->

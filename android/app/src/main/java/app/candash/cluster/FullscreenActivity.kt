@@ -45,10 +45,14 @@ class FullscreenActivity : AppCompatActivity() {
         // Checks the orientation of the screen
         if (isInMultiWindowMode) {
             viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
-            window.insetsController?.show(WindowInsets.Type.statusBars())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.show(WindowInsets.Type.statusBars())
+            }
             viewModel.setSplitScreen(true)
         } else {
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.hide(WindowInsets.Type.statusBars())
+            }
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
