@@ -1058,8 +1058,9 @@ class DashFragment : Fragment() {
                 binding.telltaleFogFront.visibility = View.INVISIBLE
             }
 
-            if ((it.getValue(Constants.driverUnbuckled) == 1f) or
-                (it.getValue(Constants.passengerUnbuckled) == 1f)) {
+            if ( gearState != Constants.gearSNA && gearState != Constants.gearInvalid &&
+                ((it.getValue(Constants.driverUnbuckled) == 1f) or
+                (it.getValue(Constants.passengerUnbuckled) == 1f))) {
                 binding.telltaleSeatbelt.visibility = View.VISIBLE
             } else {
                 binding.telltaleSeatbelt.visibility = View.INVISIBLE
