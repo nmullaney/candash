@@ -20,8 +20,8 @@ class MockCANService : CANService {
         withContext(pandaContext) {
             shutdown = false
             while (!shutdown) {
-                Thread.sleep(MS_BETWEEN_REQUESTS)
                 carStateFlow.value = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
+                Thread.sleep(MS_BETWEEN_REQUESTS)
                 yield()
             }
             // Clear carState after stopping
