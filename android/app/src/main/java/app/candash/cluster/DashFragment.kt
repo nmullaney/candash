@@ -46,7 +46,7 @@ class DashFragment : Fragment() {
     private var doorOpen = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
-    private var gearState: Int = Constants.gearInvalid
+    private var gearState: Int = Constants.gearSNA
     private var mapRegion: Float = 0f
     private lateinit var prefs: SharedPreferences
 
@@ -382,7 +382,10 @@ class DashFragment : Fragment() {
             binding.batterypercent.text = it.toInt().toString() + " %"
             binding.fullbattery.setGauge(it)
             binding.fullbattery.invalidate()
-
+        } ?: run {
+            binding.batterypercent.text = ""
+            binding.fullbattery.setGauge(0f)
+            binding.fullbattery.invalidate()
         }
         viewModel.getValue(Constants.isSunUp)?.let { sunUpVal ->
             if (!prefs.prefContains("sunUp")) {
@@ -521,34 +524,45 @@ class DashFragment : Fragment() {
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battVolts = battVoltsVal.toFloat()
             }
+            if (it.getValue(Constants.battVolts) != null) {
+                power = (battAmps * battVolts)
+                if (power > prefs.getPref("maxPower")) prefs.setPref("maxPower", power)
+                if (viewModel.getValue(Constants.chargeStatus)
+                        ?.toInt() == Constants.chargeStatusInactive.toInt()
+                ) {
+                    // do not store minpower if car is charging
+                    if (power < prefs.getPref("minPower")) prefs.setPref("minPower", power)
+                }
+                //binding.power.text = "%.2f".format(power)
+                if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
+                    binding.minpower.visibility = View.VISIBLE
+                    binding.maxpower.visibility = View.VISIBLE
+                    binding.minpower.text = formatWatts(prefs.getPref("minPower"))
+                    binding.maxpower.text = formatWatts(prefs.getPref("maxPower"))
 
-            power = (battAmps * battVolts)
-            if (power > prefs.getPref("maxPower")) prefs.setPref("maxPower", power)
-            if (viewModel.getValue(Constants.chargeStatus)
-                    ?.toInt() == Constants.chargeStatusInactive.toInt()
-            ) {
-                // do not store minpower if car is charging
-                if (power < prefs.getPref("minPower")) prefs.setPref("minPower", power)
-            }
-            //binding.power.text = "%.2f".format(power)
-            if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
-                binding.minpower.visibility = View.VISIBLE
-                binding.maxpower.visibility = View.VISIBLE
-                binding.minpower.text = formatWatts(prefs.getPref("minPower"))
-                binding.maxpower.text = formatWatts(prefs.getPref("maxPower"))
-
+                } else {
+                    binding.minpower.visibility = View.INVISIBLE
+                    binding.maxpower.visibility = View.INVISIBLE
+                }
+                binding.power.text = formatWatts(power)
+                if (power >= 0) {
+                    binding.powerBar.setGauge(((power / prefs.getPref("maxPower")).pow(0.75f)))
+                } else {
+                    binding.powerBar.setGauge(
+                        -((abs(power) / abs(prefs.getPref("minPower"))).pow(
+                            0.75f
+                        ))
+                    )
+                }
+                binding.powerBar.invalidate()
             } else {
-                binding.minpower.visibility = View.INVISIBLE
-                binding.maxpower.visibility = View.INVISIBLE
+                binding.powerBar.setGauge(0f)
+                binding.powerBar.invalidate()
+                binding.powerBar.visibility = View.INVISIBLE
+                binding.power.text = ""
+                binding.minpower.text = ""
+                binding.maxpower.text = ""
             }
-            binding.power.text = formatWatts(power)
-            if (power >= 0) {
-                binding.powerBar.setGauge(((power / prefs.getPref("maxPower")).pow(0.75f)))
-            } else {
-                binding.powerBar.setGauge(-((abs(power) / abs(prefs.getPref("minPower"))).pow(0.75f)))
-            }
-            binding.powerBar.invalidate()
-
 
             viewModel.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 if (autopilotStateVal.toInt() > 2) {
@@ -559,7 +573,7 @@ class DashFragment : Fragment() {
                     gearColorSelected = Color.LTGRAY
                 }
             }
-            viewModel.getValue(Constants.gearSelected)?.let { gearStateVal ->
+            it.getValue(Constants.gearSelected)?.let { gearStateVal ->
                 val gear: String = binding.PRND.text.toString()
                 var ss = SpannableString(gear)
                 var gearStartIndex = 0
@@ -567,15 +581,17 @@ class DashFragment : Fragment() {
                 gearState = gearStateVal.toInt()
                 if (gearStateVal.toInt() == Constants.gearInvalid || gearStateVal.toInt() == Constants.gearSNA) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
+                    binding.PRND.visibility = View.INVISIBLE
                     gearStartIndex = 0
                     gearEndIndex = 0
 
+                } else {
+                    binding.PRND.visibility = View.VISIBLE
                 }
                 if (gearStateVal.toInt() == Constants.gearPark) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
                     gearStartIndex = 0
                     gearEndIndex = 1
-
                 }
                 if (gearStateVal.toInt() == Constants.gearReverse) {
                     gearStartIndex = 3
@@ -596,6 +612,9 @@ class DashFragment : Fragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 binding.PRND.text = (ss)
+            } ?: run {
+                binding.PRND.visibility = View.INVISIBLE
+                gearState = Constants.gearSNA
             }
             /*
             it.getValue(Constants.maxSpeedAP)?.let { maxSpeedAPVal ->
@@ -636,6 +655,10 @@ class DashFragment : Fragment() {
                 }
                 binding.frontbraketempgauge.setGauge(frontBrakeTemp.toFloat() / 984f)
                 binding.fronttempgauge.invalidate()
+            } else {
+                binding.frontbraketemp.text = ""
+                binding.frontbraketempgauge.setGauge(0f)
+                binding.frontbraketempgauge.invalidate()
             }
             if (it.containsKey(Constants.brakeTempRL) && it.containsKey(Constants.brakeTempRR)) {
                 val rearBrakeTemp = max(
@@ -649,6 +672,10 @@ class DashFragment : Fragment() {
                 }
                 binding.rearbraketempgauge.setGauge(rearBrakeTemp.toFloat() / 984f)
                 binding.reartempgauge.invalidate()
+            } else {
+                binding.rearbraketemp.text = ""
+                binding.rearbraketempgauge.setGauge(0f)
+                binding.rearbraketempgauge.invalidate()
             }
             it.getValue(Constants.frontTemp)?.let { frontTempVal ->
                 if (prefs.getBooleanPref(Constants.tempInF)) {
@@ -657,6 +684,10 @@ class DashFragment : Fragment() {
                     binding.fronttemp.text = frontTempVal.toInt().toString()
                 }
                 binding.fronttempgauge.setGauge(frontTempVal.toFloat() / 214f)
+                binding.fronttempgauge.invalidate()
+            } ?: run {
+                binding.fronttemp.text = ""
+                binding.fronttempgauge.setGauge(0f)
                 binding.fronttempgauge.invalidate()
             }
             it.getValue(Constants.rearTemp)?.let { rearTempVal ->
@@ -667,10 +698,18 @@ class DashFragment : Fragment() {
                 }
                 binding.reartempgauge.setGauge(rearTempVal.toFloat() / 214f)
                 binding.reartempgauge.invalidate()
+            } ?: run {
+                binding.reartemp.text = ""
+                binding.reartempgauge.setGauge(0f)
+                binding.reartempgauge.invalidate()
             }
             it.getValue(Constants.coolantFlow)?.let {
                 binding.coolantflow.text = "%.1f".format(it.toFloat())
                 binding.coolantflowgauge.setGauge(it.toFloat() / 40f)
+                binding.coolantflowgauge.invalidate()
+            } ?: run {
+                binding.coolantflow.text = ""
+                binding.coolantflowgauge.setGauge(0f)
                 binding.coolantflowgauge.invalidate()
             }
             it.getValue(Constants.frontTorque)?.let {
@@ -690,6 +729,10 @@ class DashFragment : Fragment() {
                 }
                 binding.fronttorquegauge.setGauge(frontTorqueVal.toFloat() / prefs.getPref("frontTorqueMax"))
                 binding.fronttorquegauge.invalidate()
+            } ?: run {
+                binding.fronttorque.text = ""
+                binding.fronttorquegauge.setGauge(0f)
+                binding.fronttorquegauge.invalidate()
             }
             it.getValue(Constants.rearTorque)?.let {
                 var rearTorqueVal = it.toFloat()
@@ -708,6 +751,10 @@ class DashFragment : Fragment() {
                 }
                 binding.reartorquegauge.setGauge(rearTorqueVal.toFloat() / prefs.getPref("rearTorqueMax"))
                 binding.reartorquegauge.invalidate()
+            } ?: run {
+                binding.reartorque.text = ""
+                binding.reartorquegauge.setGauge(0f)
+                binding.reartorquegauge.invalidate()
             }
             it.getValue(Constants.battBrickMin)?.let {
                 if (prefs.getBooleanPref(Constants.tempInF)) {
@@ -716,6 +763,10 @@ class DashFragment : Fragment() {
                     binding.batttemp.text = "%.1f".format(it.toFloat())
                 }
                 binding.batttempgauge.setGauge((it.toFloat() + 40f) / 128)
+            } ?: run {
+                binding.batttemp.text = ""
+                binding.batttempgauge.setGauge(0f)
+                binding.batttempgauge.invalidate()
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 if (prefs.getBooleanPref(Constants.forceNightMode)) {
@@ -723,7 +774,6 @@ class DashFragment : Fragment() {
                 } else {
                     colorFrom = getBackgroundColor(isSunUp(viewModel))
                 }
-                //TODO: change colors to autopilot_blue constant
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
                     binding.APWarning.clearAnimation()
                     if (prefs.getBooleanPref(Constants.forceNightMode)) {
@@ -752,12 +802,9 @@ class DashFragment : Fragment() {
                         binding.APWarning.clearAnimation()
                         binding.APWarning.visibility = View.VISIBLE
                         binding.root.setBackgroundColor(requireContext().getColor(R.color.autopilot_blue))
-
                     }
                 } else {
-
                     autopilotAnimation.cancel()
-
                     binding.APWarning.clearAnimation()
                     binding.root.clearAnimation()
                     binding.root.setBackgroundColor(colorFrom)
@@ -767,10 +814,7 @@ class DashFragment : Fragment() {
                         binding.APWarning.startAnimation(fadeOutWarning)
                         binding.APWarning.visibility = View.GONE
                     }
-
                 }
-
-
             }
 
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
@@ -789,9 +833,9 @@ class DashFragment : Fragment() {
                     l1Distance = 300
                     l2Distance = 200
                 }
+            } ?: run {
+                binding.speed.text = ""
             }
-
-
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
                 if (uiSpeedUnitsVal.toInt() == 0) {
 
@@ -802,48 +846,50 @@ class DashFragment : Fragment() {
                     uiSpeedUnitsMPH = false
                     prefs.setBooleanPref("uiSpeedUnitsMPH", false)
                     binding.unit.text = "KM/H"
-
                 }
+            } ?: run {
+                binding.unit.text = ""
             }
             if (showSOC == true) {
-                viewModel.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                    if (binding.batterypercent.text != stateOfChargeVal.toInt().toString()) {
-                        binding.batterypercent.text =
-                            stateOfChargeVal.toInt().toString() + " %"
-                    }
-
+                it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
+                    binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
+                } ?: run {
+                    binding.batterypercent.text = ""
                 }
             } else {
                 if (uiSpeedUnitsMPH == true) {
-
-
-                    viewModel.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
                             stateOfChargeVal.toInt().toString() + " mi"
-
+                    } ?: run {
+                        binding.batterypercent.text = ""
                     }
                 } else {
-
-                    viewModel.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
+                    it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
                         binding.batterypercent.text =
                             ((stateOfChargeVal.toInt()) / .62).toInt().toString() + " km"
+                    } ?: run {
+                        binding.batterypercent.text = ""
                     }
                 }
             }
-            processDoors()
+            processDoors(it)
 
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
                 binding.fullbattery.setGauge(stateOfChargeVal.toFloat())
                 binding.fullbattery.invalidate()
+            } ?: run {
+                binding.fullbattery.setGauge(0f)
+                binding.fullbattery.invalidate()
             }
-
-
 
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
                 updateAutopilotUI(
                     autopilotStateVal.toInt(),
                     it.getValue(Constants.steeringAngle)?.toInt()
                 )
+            } ?: run {
+                updateAutopilotUI(0, 0)
             }
 
             it.getValue(Constants.mapRegion)?.let { mapRegionVal ->
@@ -868,6 +914,9 @@ class DashFragment : Fragment() {
                         binding.speedLimitUs.visibility = View.INVISIBLE
                         binding.speedLimitRound.visibility = View.INVISIBLE
                     }
+                } ?: run {
+                    binding.speedLimitUs.visibility = View.INVISIBLE
+                    binding.speedLimitRound.visibility = View.INVISIBLE
                 }
             } else {
                 binding.speedLimitUs.visibility = View.INVISIBLE
@@ -889,6 +938,9 @@ class DashFragment : Fragment() {
                         binding.leftTurnSignalLight.visibility = View.VISIBLE
                     }
                 }
+            } ?: run {
+                binding.leftTurnSignalDark.visibility = View.INVISIBLE
+                binding.leftTurnSignalLight.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.turnSignalRight)?.let { rightTurnSignalVal ->
@@ -906,6 +958,9 @@ class DashFragment : Fragment() {
                     }
 
                 }
+            } ?: run {
+                binding.rightTurnSignalDark.visibility = View.INVISIBLE
+                binding.rightTurnSignalLight.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.drlMode)?.let { drlModeVal ->
@@ -916,6 +971,8 @@ class DashFragment : Fragment() {
                 } else {
                     binding.telltaleDrl.visibility = View.VISIBLE
                 }
+            } ?: run {
+                binding.telltaleDrl.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.lowBeamLeft)?.let { lowBeamVal ->
@@ -924,6 +981,8 @@ class DashFragment : Fragment() {
                 } else {
                     binding.telltaleLb.visibility = View.INVISIBLE
                 }
+            } ?: run {
+                binding.telltaleLb.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.autoHighBeamEnabled)?.let { ahbEnabledVal ->
@@ -974,6 +1033,9 @@ class DashFragment : Fragment() {
                         binding.telltaleHb.visibility = View.INVISIBLE
                     }
                 }
+            } ?: run {
+                binding.telltaleAhbStdby.visibility = View.INVISIBLE
+                binding.telltaleAhbActive.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.rearFogSwitch)?.let { fogRearVal ->
@@ -982,6 +1044,8 @@ class DashFragment : Fragment() {
                 } else {
                     binding.telltaleFogRear.visibility = View.INVISIBLE
                 }
+            } ?: run {
+                binding.telltaleFogRear.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.frontFogSwitch)?.let { fogFrontVal ->
@@ -990,10 +1054,12 @@ class DashFragment : Fragment() {
                 } else {
                     binding.telltaleFogFront.visibility = View.INVISIBLE
                 }
+            } ?: run {
+                binding.telltaleFogFront.visibility = View.INVISIBLE
             }
 
-            if ((viewModel.getValue(Constants.driverUnbuckled) == 1f) or
-                (viewModel.getValue(Constants.passengerUnbuckled) == 1f)) {
+            if ((it.getValue(Constants.driverUnbuckled) == 1f) or
+                (it.getValue(Constants.passengerUnbuckled) == 1f)) {
                 binding.telltaleSeatbelt.visibility = View.VISIBLE
             } else {
                 binding.telltaleSeatbelt.visibility = View.INVISIBLE
@@ -1005,6 +1071,8 @@ class DashFragment : Fragment() {
                 } else {
                     binding.battHeat.visibility = View.GONE
                 }
+            } ?: run {
+                binding.battHeat.visibility = View.GONE
             }
 
             it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
@@ -1013,6 +1081,8 @@ class DashFragment : Fragment() {
                 } else {
                     binding.battCharge.visibility = View.GONE
                 }
+            } ?: run {
+                binding.battCharge.visibility = View.GONE
             }
 
             it.getValue(Constants.brakePark)?.let { brakeParkVal ->
@@ -1026,6 +1096,9 @@ class DashFragment : Fragment() {
                     binding.telltaleBrakePark.visibility = View.INVISIBLE
                     binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
                 }
+            } ?: run {
+                binding.telltaleBrakePark.visibility = View.INVISIBLE
+                binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.brakeHold)?.let { brakeHoldVal ->
@@ -1034,6 +1107,8 @@ class DashFragment : Fragment() {
                 } else {
                     binding.telltaleBrakeHold.visibility = View.INVISIBLE
                 }
+            } ?: run {
+                binding.telltaleBrakeHold.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.tpmsHard)?.let { tpmsHardVal ->
@@ -1047,6 +1122,9 @@ class DashFragment : Fragment() {
                         binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
                     }
                 }
+            } ?: run {
+                binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
+                binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.odometer)?.let { odometerVal ->
@@ -1062,9 +1140,7 @@ class DashFragment : Fragment() {
                 else {
                     binding.odometer.visibility = View.INVISIBLE
                 }
-            }
-
-            if(it.getValue(Constants.odometer) == null) {
+            } ?: run {
                 binding.odometer.visibility = View.INVISIBLE
             }
 
@@ -1141,6 +1217,9 @@ class DashFragment : Fragment() {
                         binding.blindSpotLeft1a.visibility = View.INVISIBLE
                         binding.blindSpotLeft2a.visibility = View.INVISIBLE
                     }
+                } ?: run {
+                    binding.blindSpotLeft1a.visibility = View.INVISIBLE
+                    binding.blindSpotLeft2a.visibility = View.INVISIBLE
                 }
 
 
@@ -1153,11 +1232,12 @@ class DashFragment : Fragment() {
                         binding.blindSpotRight1a.visibility = View.INVISIBLE
                         binding.blindSpotRight2a.visibility = View.INVISIBLE
                     }
+                } ?: run {
+                    binding.blindSpotRight1a.visibility = View.INVISIBLE
+                    binding.blindSpotRight2a.visibility = View.INVISIBLE
                 }
             } else {
                 // in park or off
-
-
                 binding.blindSpotLeft1a.visibility = View.INVISIBLE
                 binding.blindSpotLeft2a.visibility = View.INVISIBLE
                 binding.blindSpotRight1a.visibility = View.INVISIBLE
@@ -1188,8 +1268,6 @@ class DashFragment : Fragment() {
                                 binding.chargerate.visibility = View.VISIBLE
 
                             }
-
-
                     } else {
                         binding.fullbattery.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
@@ -1205,7 +1283,7 @@ class DashFragment : Fragment() {
                             for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
                                 minMaxchargingHiddenView.visibility = View.VISIBLE
                             }
-                        }
+                        } else {}
                     }
                 } else {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
@@ -1245,54 +1323,67 @@ class DashFragment : Fragment() {
                             for (minMaxchargingHiddenView in minMaxchargingHiddenViews()) {
                                 minMaxchargingHiddenView.visibility = View.VISIBLE
                             }
-                        }
+                        } else {}
                     }
                 }
+            } ?: run {
+                binding.fullbattery.setChargeMode(0)
+                binding.chargemeter.visibility = View.INVISIBLE
+                binding.bigsoc.visibility = View.INVISIBLE
+                binding.bigsocpercent.visibility = View.INVISIBLE
+                binding.chargerate.visibility = View.INVISIBLE
             }
         }
-
-
     }
 
 
-    fun processDoors() {
-
-        if ((viewModel.getValue(Constants.liftgateState) in setOf(1f, 4f)) or
-            (viewModel.getValue(Constants.frunkState) in setOf(1f, 4f)) or
-            (viewModel.getValue(Constants.frontLeftDoorState) in setOf(1f, 4f)) or
-            (viewModel.getValue(Constants.frontRightDoorState) in setOf(1f, 4f)) or
-            (viewModel.getValue(Constants.rearLeftDoorState) in setOf(1f, 4f)) or
-            (viewModel.getValue(Constants.rearRightDoorState) in setOf(1f, 4f))
+    fun processDoors(cState: CarState) {
+        // Passing through carState so we're not using historical (old) state info
+        if (cState.getValue(Constants.frontLeftDoorState) == null) {
+            // if there's no state for FL door, assume there's no state for any door
+            for (door in doorViews()) {
+                door.visibility = View.GONE
+            }
+            for (door in doorViewsCenter()) {
+                door.visibility = View.GONE
+            }
+            doorOpen = false
+            updateCarStateUI(doorOpen)
+        } else if ((cState.getValue(Constants.liftgateState) in setOf(1f, 4f)) or
+            (cState.getValue(Constants.frunkState) in setOf(1f, 4f)) or
+            (cState.getValue(Constants.frontLeftDoorState) in setOf(1f, 4f)) or
+            (cState.getValue(Constants.frontRightDoorState) in setOf(1f, 4f)) or
+            (cState.getValue(Constants.rearLeftDoorState) in setOf(1f, 4f)) or
+            (cState.getValue(Constants.rearRightDoorState) in setOf(1f, 4f))
         ) {
             doorOpen = true
             updateCarStateUI(doorOpen)
 
-            displayOpenDoors()
-        } else if ((viewModel.getValue(Constants.liftgateState) == 2f) and
-            (viewModel.getValue(Constants.frunkState) == 2f) and
-            (viewModel.getValue(Constants.frontLeftDoorState) == 2f) and
-            (viewModel.getValue(Constants.frontRightDoorState) == 2f) and
-            (viewModel.getValue(Constants.rearLeftDoorState) == 2f) and
-            (viewModel.getValue(Constants.rearRightDoorState) == 2f)
+            displayOpenDoors(cState)
+        } else if ((cState.getValue(Constants.liftgateState) == 2f) and
+            (cState.getValue(Constants.frunkState) == 2f) and
+            (cState.getValue(Constants.frontLeftDoorState) == 2f) and
+            (cState.getValue(Constants.frontRightDoorState) == 2f) and
+            (cState.getValue(Constants.rearLeftDoorState) == 2f) and
+            (cState.getValue(Constants.rearRightDoorState) == 2f)
         ) {
-            displayOpenDoors()
+            displayOpenDoors(cState)
             doorOpen = false
             updateCarStateUI(doorOpen)
         }
     }
 
-    fun displayOpenDoors() {
+    fun displayOpenDoors(cState: CarState) {
         if (!isSplitScreen()) {
-            viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
+            cState.getValue(Constants.liftgateState)?.let { liftgateVal ->
                 if (liftgateVal.toInt() in setOf(1, 4)) {
                     binding.hatch.visibility = View.VISIBLE
                 } else {
                     binding.hatch.visibility = View.GONE
                 }
-
             }
 
-            viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
+            cState.getValue(Constants.frunkState)?.let { frunkVal ->
 
                 if (frunkVal.toInt() in setOf(1, 4)) {
                     binding.hood.visibility = View.VISIBLE
@@ -1302,7 +1393,7 @@ class DashFragment : Fragment() {
 
             }
 
-            viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
+            cState.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
 
                 if (frontLeftDoorVal.toInt() in setOf(1, 4)) {
                     binding.frontleftdoor.visibility = View.VISIBLE
@@ -1311,7 +1402,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+            cState.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
 
                 if (frontRightDoorVal.toInt() in setOf(1, 4)) {
                     binding.frontrightdoor.visibility = View.VISIBLE
@@ -1320,7 +1411,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+            cState.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
 
                 if (rearLeftDoorVal.toInt() in setOf(1, 4)) {
                     binding.rearleftdoor.visibility = View.VISIBLE
@@ -1329,7 +1420,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+            cState.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
 
                 if (rearRightDoorVal.toInt() in setOf(1, 4)) {
                     binding.rearrightdoor.visibility = View.VISIBLE
@@ -1339,7 +1430,7 @@ class DashFragment : Fragment() {
 
             }
         } else {
-            viewModel.getValue(Constants.liftgateState)?.let { liftgateVal ->
+            cState.getValue(Constants.liftgateState)?.let { liftgateVal ->
                 if (liftgateVal.toInt() in setOf(1, 3)) {
                     binding.hatchCenter.visibility = View.VISIBLE
                 } else {
@@ -1348,7 +1439,7 @@ class DashFragment : Fragment() {
 
             }
 
-            viewModel.getValue(Constants.frunkState)?.let { frunkVal ->
+            cState.getValue(Constants.frunkState)?.let { frunkVal ->
 
                 if (frunkVal.toInt() in setOf(1, 4)) {
                     binding.hoodCenter.visibility = View.VISIBLE
@@ -1358,7 +1449,7 @@ class DashFragment : Fragment() {
 
             }
 
-            viewModel.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
+            cState.getValue(Constants.frontLeftDoorState)?.let { frontLeftDoorVal ->
 
                 if (frontLeftDoorVal.toInt() in setOf(1, 4)) {
                     binding.frontleftdoorCenter.visibility = View.VISIBLE
@@ -1367,7 +1458,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            viewModel.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
+            cState.getValue(Constants.frontRightDoorState)?.let { frontRightDoorVal ->
 
                 if (frontRightDoorVal.toInt() in setOf(1, 4)) {
                     binding.frontrightdoorCenter.visibility = View.VISIBLE
@@ -1376,7 +1467,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            viewModel.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
+            cState.getValue(Constants.rearLeftDoorState)?.let { rearLeftDoorVal ->
 
                 if (rearLeftDoorVal.toInt() in setOf(1, 4)) {
                     binding.rearleftdoorCenter.visibility = View.VISIBLE
@@ -1385,7 +1476,7 @@ class DashFragment : Fragment() {
                 }
 
             }
-            viewModel.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
+            cState.getValue(Constants.rearRightDoorState)?.let { rearRightDoorVal ->
 
                 if (rearRightDoorVal.toInt() in setOf(1, 4)) {
                     binding.rearrightdoorCenter.visibility = View.VISIBLE
@@ -1672,11 +1763,9 @@ class DashFragment : Fragment() {
                                 leftSideUIView.visibility = View.VISIBLE
                             }
                         }
-
                     }
                 }
             }
-
         } else {
             for (doorView in doorViews()) {
                 doorView.visibility = View.INVISIBLE
@@ -1735,18 +1824,17 @@ class DashFragment : Fragment() {
             binding.autopilotInactive.visibility =
                 if (autopilotStateVal > 2 ) View.INVISIBLE else View.VISIBLE
             when  {
-                autopilotStateVal == 1 -> binding.autopilotInactive.startAnimation(fadeOut)
+                autopilotStateVal < 2 -> binding.autopilotInactive.startAnimation(fadeOut)
+                autopilotStateVal > 7 -> binding.autopilotInactive.startAnimation(fadeOut)
                 autopilotStateVal == 2 -> binding.autopilotInactive.startAnimation(fadeIn)
                 autopilotStateVal > 2 -> binding.autopilot.visibility = View.VISIBLE
             }
         }
         if (autopilotStateVal > 2) {
-
             // set pivot to center of image
             binding.autopilot.pivotX = (binding.autopilot.width / 2).toFloat()
             binding.autopilot.pivotY = (binding.autopilot.height / 2).toFloat()
             binding.autopilot.rotation = steeringAngle.toFloat()
-
         }
         lastAutopilotState = autopilotStateVal
     }

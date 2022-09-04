@@ -24,6 +24,8 @@ class MockCANService : CANService {
                 carStateFlow.value = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
                 yield()
             }
+            // Clear carState after stopping
+            carStateFlow.value = CarState()
         }
     }
     override fun isRunning() : Boolean {
