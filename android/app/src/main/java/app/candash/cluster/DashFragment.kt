@@ -116,7 +116,8 @@ class DashFragment : Fragment() {
             binding.telltaleAhbActive,
             binding.telltaleFogFront,
             binding.telltaleFogRear,
-            binding.odometer
+            binding.odometer,
+            binding.battCharge
         )
 
     private fun sideUIViews(): List<View> =
@@ -345,8 +346,13 @@ class DashFragment : Fragment() {
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
 
-        binding.blackout.visibility = View.GONE
-
+        // milliseconds
+        if (!isSplitScreen()) {
+            for (topUIView in topUIViews()) {
+                savedLayoutParams[topUIView] =
+                    ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
+            }
+        }
 
 
         // set initial speedometer value
@@ -424,17 +430,42 @@ class DashFragment : Fragment() {
         viewModel.getSplitScreen().observe(viewLifecycleOwner) {
             val window: Window? = activity?.window
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // only needed for Android 11+
+                if (view.windowToken != null) {
+                    if (it) {
 
-            if (view.windowToken != null) {
-                if (it) {
+                        for (topUIView in topUIViews()) {
+                            val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                            val savedParams = savedLayoutParams[topUIView]
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 40.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin
+                            )
+                            topUIView.layoutParams = params
+                        }
 
-                    for (sideUIView in sideUIViews()) {
-                        sideUIView.visibility = View.GONE
-                    }
-                } else {
-
-                    for (sideUIView in sideUIViews()) {
-                        sideUIView.visibility = View.VISIBLE
+                        for (sideUIView in sideUIViews()) {
+                            sideUIView.visibility = View.GONE
+                        }
+                    } else {
+                        //no splitscreen
+                        for (topUIView in topUIViews()) {
+                            var params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                            var savedParams = savedLayoutParams[topUIView]
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin
+                            )
+                            topUIView.layoutParams = params
+                        }
+                        for (sideUIView in sideUIViews()) {
+                            sideUIView.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
