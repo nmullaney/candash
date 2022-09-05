@@ -21,6 +21,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private val TAG = PandaService::class.java.simpleName
 
     @ExperimentalCoroutinesApi
+    private var flipBus = false
     private val carStateFlow = MutableStateFlow(CarState())
     private val carState: CarState = CarState()
     private val port = 1338
@@ -34,7 +35,11 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private val signalHelper = CANSignalHelper()
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var signalsToRequest: List<String> = arrayListOf()
+    private var recentSignalsReceived: MutableSet<String> = mutableSetOf()
+    private var lastReceivedCheckTimestamp = 0L
+    private val signalsReceivedCheckIntervalMs = 5_000
     private lateinit var socket: DatagramSocket
+    private var pandaConnected = false
 
 
 
@@ -104,9 +109,23 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                 sendHello(createSocket())
 
                 while (!shutdown) {
-                    if (System.currentTimeMillis() > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
+                    val now = System.currentTimeMillis()
+                    if (now > (lastHeartbeatTimestamp + heartBeatIntervalMs)) {
                         Log.d(TAG, "Sending heartbeat on thread: ${Thread.currentThread().name}")
                         sendHello(getSocket())
+                    }
+                    // Warning for missing signals
+                    if (pandaConnected && now > lastReceivedCheckTimestamp + signalsReceivedCheckIntervalMs) {
+                        val deltaSeconds = ((now-lastReceivedCheckTimestamp) / 1000).toInt()
+                        for (name in signalHelper.getALLCANSignals().keys){
+                            if (!recentSignalsReceived.contains(name)){
+                                Log.w(
+                                    TAG,"Did not receive signal '$name' in the last $deltaSeconds seconds"
+                                )
+                            }
+                        }
+                        recentSignalsReceived.clear()
+                        lastReceivedCheckTimestamp = now
                     }
                     // up to 512 frames which are 16 bytes each
                     val buf = ByteArray(16 * 512)
@@ -115,11 +134,17 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
 
                     try {
                         getSocket().receive(packet)
+                        if (!pandaConnected) {
+                            recentSignalsReceived.clear()
+                            lastReceivedCheckTimestamp = System.currentTimeMillis()
+                            pandaConnected = true
+                        }
                     } catch (socketTimeoutException: SocketTimeoutException) {
                         Log.w(
                             TAG,
                             "Socket timed out without receiving a packet on thread: ${Thread.currentThread().name}"
                         )
+                        pandaConnected = false
                         sendBye(getSocket())
                         yield()
                         continue
@@ -149,6 +174,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
 
                     yield()
                 }
+                pandaConnected = false
                 sendBye(getSocket())
                 Log.d(
                     TAG,
@@ -171,28 +197,38 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private fun handleFrame(frame: NewPandaFrame) {
         var binaryPayloadString = ""
         val updateState = CarState(HashMap())
-
-        signalHelper.getSignalsForFrame(frame.frameIdHex).forEach { channel ->
-            // since I am using the 'any bus' filter, 0x399 exists on both buses with different data, so hard coding
-            // a filter to remove the undesirable frame.
-            if (frame.frameIdHex == Hex(0x399) && (frame.frameLength == 3L)){
+        // 0x399 is a different length on each bus, so we use it to auto-detect the buses
+        // Length of 3 only on vehicle bus
+        if (frame.frameIdHex == Hex(0x399) && (frame.frameLength == 3L)){
+            if (frame.busId.toInt() == Constants.vehicleBus && flipBus){
+                // chassis bus = 0, vehicle bus = 1, don't flip
+                Log.i(TAG, "chassis bus = 0, vehicle bus = 1; un-flipping bus IDs")
+                flipBus = false
+                sendFilter(getSocket(), signalsToRequest)
+                return
+            }else if (frame.busId.toInt() == Constants.chassisBus && !flipBus){
+                // chassis bus = 1, vehicle bus = 0, should flip
+                Log.i(TAG, "chassis bus = 1, vehicle bus = 0; flipping bus IDs")
+                flipBus = true
+                sendFilter(getSocket(), signalsToRequest)
                 return
             }
-            if (frame.frameIdHex == Hex(0x3FE) && (frame.frameLength == 8L)){
-                return
-            }
-            // all bytes in the wrong  bus 0x395 frame are 0 except for the first
-            if (frame.frameIdHex == Hex(0x395) && (frame.isZero(1))){
-                return
-            }
+        }
 
-            if (frame.frameIdHex == Hex(0x396) || frame.frameIdHex == Hex(0x395)) {
-                Log.d(TAG, "frame ID: "+frame.frameIdHex.toString()+ "value: " +frame.getCANValue(channel) + "length: " +frame.frameLength.toString() + "name: " + channel.name)
+        var busId = frame.busId.toInt()
+        if (flipBus) {
+            busId = when (busId) {
+                Constants.chassisBus -> Constants.vehicleBus
+                Constants.vehicleBus -> Constants.chassisBus
+                else -> Constants.anyBus
             }
+        }
 
-            if (frame.getCANValue(channel) != null){
-                carState.updateValue(channel.name, frame.getCANValue(channel)!!)
+        signalHelper.getSignalsForFrame(busId, frame.frameIdHex).forEach { signal ->
+            if (frame.getCANValue(signal) != null){
+                carState.updateValue(signal.name, frame.getCANValue(signal)!!)
                 carStateFlow.value = CarState(HashMap(carState.carData))
+                recentSignalsReceived.add(signal.name)
             }
         }
     }
@@ -230,7 +266,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
 
     private fun sendFilter(socket: DatagramSocket, signalNamesToUse: List<String>) {
         sendData(socket, signalHelper.clearFiltersPacket())
-        signalHelper.addFilterPackets(signalNamesToUse).forEach {
+        signalHelper.addFilterPackets(signalNamesToUse, flipBus).forEach {
             sendData(socket, it)
         }
         // Uncomment this to send all data

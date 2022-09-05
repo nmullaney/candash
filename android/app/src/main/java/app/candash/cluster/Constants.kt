@@ -1,6 +1,10 @@
 package app.candash.cluster
 
 object Constants {
+    // PandaService may flip these automatically
+    const val chassisBus = 0
+    const val vehicleBus = 1
+    const val anyBus = -1
     const val uiSpeed = "UISpeed"
     const val battVolts = "BattVolts"
     const val stateOfCharge = "UI_SOC"
