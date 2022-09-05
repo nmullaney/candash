@@ -312,6 +312,8 @@ class DashFragment : Fragment() {
         }
         if (prefs.getBooleanPref(Constants.forceNightMode)) {
             colorFrom = getBackgroundColor(0)
+            // Go ahead and load dark mode instead of waiting on a signal
+            setColors(0)
         } else {
             colorFrom = getBackgroundColor(isSunUp(viewModel))
         }
@@ -345,6 +347,8 @@ class DashFragment : Fragment() {
         val bsColorTo = Color.parseColor("#FFFF0000")
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
+
+        binding.blackout.visibility = View.GONE
 
         // milliseconds
         if (!isSplitScreen()) {
