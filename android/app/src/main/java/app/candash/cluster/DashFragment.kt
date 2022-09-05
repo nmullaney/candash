@@ -312,6 +312,8 @@ class DashFragment : Fragment() {
         }
         if (prefs.getBooleanPref(Constants.forceNightMode)) {
             colorFrom = getBackgroundColor(0)
+            // Go ahead and load dark mode instead of waiting on a signal
+            setColors(0)
         } else {
             colorFrom = getBackgroundColor(isSunUp(viewModel))
         }
