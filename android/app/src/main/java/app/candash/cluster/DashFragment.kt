@@ -346,6 +346,8 @@ class DashFragment : Fragment() {
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
 
+        binding.blackout.visibility = View.GONE
+
         // milliseconds
         if (!isSplitScreen()) {
             for (topUIView in topUIViews()) {
