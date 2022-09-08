@@ -122,6 +122,8 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                                 Log.w(
                                     TAG,"Did not receive signal '$name' in the last $deltaSeconds seconds"
                                 )
+                                carState.carData.remove(name)
+                                carStateFlow.value = CarState(HashMap(carState.carData))
                             }
                         }
                         recentSignalsReceived.clear()
@@ -146,6 +148,8 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                         )
                         pandaConnected = false
                         sendBye(getSocket())
+                        carState.carData.clear()
+                        carStateFlow.value = CarState(HashMap(carState.carData))
                         yield()
                         continue
                     }
@@ -184,7 +188,9 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                 Log.d(TAG, "Socket disconnected")
                 getSocket().close()
                 Log.d(TAG, "Socket closed")
-                carState.carData.clear()
+                // Don't clear carState when shutting down, because this happens when switching between apps and is very jarring
+                // carState.carData.clear()
+                // carStateFlow.value = CarState(HashMap(carState.carData))
                 inShutdown = false
             } catch (exception: Exception) {
                 inShutdown = false
