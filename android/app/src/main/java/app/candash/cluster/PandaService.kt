@@ -263,10 +263,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     }
 
     private fun sendBye(socket: DatagramSocket) {
-        if (!socket.isConnected) {
-            // In case we're already disconnected, don't fail dramatically when trying to send data
-            return
-        }
         // prepare data to be sent
         val udpOutputData = goodbye
 
@@ -295,11 +291,15 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
         try {
             socket.send(packet)
         } catch (ioException: IOException) {
-            Log.e(TAG, "IOException while sending data.", ioException)
-            if (!isBye) checkNetwork()
+            if (!isBye) {
+                Log.e(TAG, "IOException while sending data.", ioException)
+                checkNetwork()
+            }
         } catch (socketException: SocketException) {
-            Log.e(TAG, "SocketException while sending data.", socketException)
-            if (!isBye) checkNetwork()
+            if (!isBye) {
+                Log.e(TAG, "SocketException while sending data.", socketException)
+                checkNetwork()
+            }
         }
     }
 
