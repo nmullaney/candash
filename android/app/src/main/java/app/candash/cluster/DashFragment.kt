@@ -109,6 +109,9 @@ class DashFragment : Fragment() {
             binding.rightTurnSignalDark,
             binding.autopilot,
             binding.autopilotInactive,
+        )
+    private fun telltaleUIViews(): List<View> =
+        listOf(
             binding.telltaleDrl,
             binding.telltaleLb,
             binding.telltaleHb,
@@ -119,7 +122,6 @@ class DashFragment : Fragment() {
             binding.odometer,
             binding.battCharge
         )
-
     private fun sideUIViews(): List<View> =
         listOf(
             binding.fronttorque,
@@ -356,6 +358,10 @@ class DashFragment : Fragment() {
                 savedLayoutParams[topUIView] =
                     ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
             }
+        } else {
+            for (telltaleUIView in telltaleUIViews()){
+                telltaleUIView.visibility = View.INVISIBLE
+            }
         }
 
 
@@ -447,7 +453,7 @@ class DashFragment : Fragment() {
                             val savedParams = savedLayoutParams[topUIView]
                             params.setMargins(
                                 savedParams!!.leftMargin,
-                                savedParams.topMargin - 40.px,
+                                savedParams.topMargin - 30.px,
                                 savedParams.rightMargin,
                                 savedParams.bottomMargin
                             )
@@ -506,19 +512,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battAmps = battAmpsVal.toFloat()
-                /*
-                // Noisy signal test / debug
-                battAmps1 = battAmps2
-                battAmps2 = battAmps3
-                battAmps3 = battAmps
-                if (battAmps2 > (battAmps1+battAmps2)/2) {
-                    battAmps = battAmps1
-                } else {
-                    battAmps = battAmps2
-                }
-                                                                                     ';P{)
-                                                                                     -=
-                 */
+
             }
             it.getValue(Constants.battVolts)?.let { battVoltsVal ->
                 //batt amps and batt volts are on the same signal so if amps are there so are volts
