@@ -120,7 +120,6 @@ class MockCANService : CANService {
                 Constants.chargeStatus to Constants.chargeStatusActive,
                 Constants.gearSelected to Constants.gearInvalid.toFloat(),
                 Constants.displayOn to 1f,
-                Constants.fusedSpeedLimit to Constants.fusedSpeedSNA
             )),
             CarState(mutableMapOf(
                 // display will turn off if the pref is enabled

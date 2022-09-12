@@ -65,8 +65,8 @@ class CANSignalHelper {
         // Otherwise try the "anyBus" (-1) map
         return mBusFrameSignalMap[Constants.anyBus]?.get(frame) ?: listOf()
     }
-    fun insertCANSignal(name:String, busId:Int, frameId:Hex, startBit:Int, bitLength:Int, factor:Float, offset:Float,serviceIndex:Int = 0, muxIndex:Int = 0, signed:Boolean = false){
-        val CANSignal = CANSignal(name, busId, frameId, startBit, bitLength, factor, offset, serviceIndex, muxIndex, signed)
+    fun insertCANSignal(name:String, busId:Int, frameId:Hex, startBit:Int, bitLength:Int, factor:Float, offset:Float,serviceIndex:Int = 0, muxIndex:Int = 0, signed:Boolean = false, sna:Float? = null){
+        val CANSignal = CANSignal(name, busId, frameId, startBit, bitLength, factor, offset, serviceIndex, muxIndex, signed, sna)
         mNameSignalMap.put(CANSignal.name, CANSignal)
         addToMapList(mBusFrameSignalMap, CANSignal.busId, CANSignal.frameId, CANSignal)
     }
@@ -74,11 +74,11 @@ class CANSignalHelper {
 
         insertCANSignal(Constants.stateOfCharge, Constants.vehicleBus, Hex(0x33A), 48, 7, 1f, 0f)
         insertCANSignal(Constants.battVolts, Constants.vehicleBus, Hex(0x132), 0, 16, 0.01f, 0f)
-        insertCANSignal(Constants.battAmps, Constants.vehicleBus, Hex(0x132), 16, 16, -.1f, 0f, signed=true)
+        insertCANSignal(Constants.battAmps, Constants.vehicleBus, Hex(0x132), 16, 16, -.1f, 0f, signed=true, sna=3276.7f)
 
         insertCANSignal(Constants.uiSpeed, Constants.vehicleBus, Hex(0x257), 24, 9, 1f, 0f)
         //insertCANSignal(Constants.uiSpeedHighSpeed, Constants.vehicleBus, Hex(0x257), 34, 9, 1f, 0f)
-        insertCANSignal(Constants.fusedSpeedLimit, Constants.chassisBus, Hex(0x399), 8, 5, 5f, 0f)
+        insertCANSignal(Constants.fusedSpeedLimit, Constants.chassisBus, Hex(0x399), 8, 5, 5f, 0f, sna=0f)
         insertCANSignal(Constants.uiSpeedUnits, Constants.vehicleBus, Hex(0x257), 33, 1, 1f, 0f)
         insertCANSignal(Constants.blindSpotLeft, Constants.chassisBus, Hex(0x399), 4, 2, 1f, 0f)
         insertCANSignal(Constants.blindSpotRight, Constants.chassisBus, Hex(0x399), 6, 2, 1f, 0f)
@@ -124,25 +124,25 @@ class CANSignalHelper {
         insertCANSignal(Constants.rearTemp, Constants.vehicleBus, Hex(0x395), 24, 8, 1f, -40f)
         insertCANSignal(Constants.coolantFlow, Constants.vehicleBus, Hex(0x241), 22, 9, .1f, 0f)
         insertCANSignal(Constants.chargeStatus, Constants.vehicleBus, Hex(0x212), 29, 1, 1f, 0f)
-        insertCANSignal(Constants.brakeTempFL, Constants.vehicleBus, Hex(0x3FE), 0, 10, 1f, -40f)
-        insertCANSignal(Constants.brakeTempFR, Constants.vehicleBus, Hex(0x3FE), 10, 10, 1f, -40f)
-        insertCANSignal(Constants.brakeTempRL, Constants.vehicleBus, Hex(0x3FE), 20, 10, 1f, -40f)
-        insertCANSignal(Constants.brakeTempRR, Constants.vehicleBus, Hex(0x3FE), 30, 10, 1f, -40f)
+        insertCANSignal(Constants.brakeTempFL, Constants.vehicleBus, Hex(0x3FE), 0, 10, 1f, -40f, sna=983f)
+        insertCANSignal(Constants.brakeTempFR, Constants.vehicleBus, Hex(0x3FE), 10, 10, 1f, -40f, sna=983f)
+        insertCANSignal(Constants.brakeTempRL, Constants.vehicleBus, Hex(0x3FE), 20, 10, 1f, -40f, sna=983f)
+        insertCANSignal(Constants.brakeTempRR, Constants.vehicleBus, Hex(0x3FE), 30, 10, 1f, -40f, sna=983f)
         insertCANSignal(Constants.displayOn, Constants.vehicleBus, Hex(0x353), 5, 1, 1f, 0f)
 
         insertCANSignal(Constants.drlMode, Constants.vehicleBus, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
-        insertCANSignal(Constants.driverUnbuckled, Constants.vehicleBus, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0)
-        insertCANSignal(Constants.passengerUnbuckled, Constants.vehicleBus, Hex(0x3A1), 34, 2, 1f, 0f, 1, 0)
+        insertCANSignal(Constants.driverUnbuckled, Constants.vehicleBus, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0, sna=2f)
+        insertCANSignal(Constants.passengerUnbuckled, Constants.vehicleBus, Hex(0x3A1), 34, 2, 1f, 0f, 1, 0, sna=2f)
         insertCANSignal(Constants.heatBattery, Constants.vehicleBus, Hex(0x2E1), 63, 1, 1f, 0f, 3, 0 )
 
         // EPBR_telltaleLocal: 0 "LAMP_OFF" 1 "LAMP_RED_ON" 2 "LAMP_AMBER_ON" 3 "LAMP_RED_FLASH" 7 "SNA"
-        insertCANSignal(Constants.brakePark, Constants.vehicleBus, Hex(0x228), 39, 3, 1f, 0f)
+        insertCANSignal(Constants.brakePark, Constants.vehicleBus, Hex(0x228), 39, 3, 1f, 0f, sna=7f)
 
         insertCANSignal(Constants.brakeHold, Constants.vehicleBus, Hex(0x2B6), 10, 1, 1f, 0f)
         insertCANSignal(Constants.tpmsSoft, Constants.vehicleBus, Hex(0x123), 13, 1, 1f, 0f)
         insertCANSignal(Constants.tpmsHard, Constants.vehicleBus, Hex(0x123), 12, 1, 1f, 0f)
 
-        insertCANSignal(Constants.odometer, Constants.vehicleBus, Hex(0x3B6), 0, 32, 0.001f, 0f)
+        insertCANSignal(Constants.odometer, Constants.vehicleBus, Hex(0x3B6), 0, 32, 0.001f, 0f, sna=4294967.295f)
     }
 
     private fun addToMapList(map: MutableMap<Int, MutableMap<Hex, MutableList<CANSignal>>>, bus: Int, frameId: Hex, value: CANSignal) {

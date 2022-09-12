@@ -31,7 +31,6 @@ object Constants {
     const val uiSpeedUnits = "UISpeedUnits"
     const val fusedSpeedLimit = "fusedSpeedLimit"
     const val fusedSpeedNone = 31f
-    const val fusedSpeedSNA = 0f
     const val autopilotHands = "AutopilotHands"
     const val maxSpeedAP = "maxSpeedAP"
     const val cruiseControlSpeed = "CruiseControlSpeed"
@@ -49,7 +48,6 @@ object Constants {
     const val gearReverse = 2
     const val gearNeutral = 3
     const val gearDrive = 4
-    const val gearSNA = 7
     const val doorOpen = 1
     const val doorClosed = 2
     const val maxDischargePower = "maxDischargePower"
