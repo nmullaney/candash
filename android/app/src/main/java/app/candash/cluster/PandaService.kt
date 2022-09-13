@@ -32,6 +32,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private var lastHeartbeatTimestamp = 0L
     private val heartBeatIntervalMs = 4_000
     private val socketTimeoutMs = 1_000
+    private var socketTimeoutCounter = 0
     private val signalHelper = CANSignalHelper()
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var signalsToRequest: List<String> = arrayListOf()
@@ -54,7 +55,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private fun getSocket(): DatagramSocket {
         if (!this::socket.isInitialized) {
             socket = DatagramSocket(null)
-            socket.soTimeout = heartBeatIntervalMs
+            socket.soTimeout = socketTimeoutMs
             socket.reuseAddress = true
         }
         return socket
@@ -62,7 +63,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
 
     private fun createSocket(): DatagramSocket {
         socket = DatagramSocket(null)
-        socket.soTimeout = heartBeatIntervalMs
+        socket.soTimeout = socketTimeoutMs
         socket.reuseAddress = true
         return socket
     }
@@ -140,6 +141,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                             recentSignalsReceived.clear()
                             lastReceivedCheckTimestamp = System.currentTimeMillis()
                             pandaConnected = true
+                            socketTimeoutCounter = 0
                         }
                     } catch (socketTimeoutException: SocketTimeoutException) {
                         Log.w(
@@ -147,9 +149,13 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                             "Socket timed out without receiving a packet on thread: ${Thread.currentThread().name}"
                         )
                         pandaConnected = false
+                        socketTimeoutCounter += 1
+                        if (socketTimeoutCounter == 3) {
+                            // one-shot clear data on 3rd timeout
+                            carState.carData.clear()
+                            carStateFlow.value = CarState(HashMap(carState.carData))
+                        }
                         sendBye(getSocket())
-                        carState.carData.clear()
-                        carStateFlow.value = CarState(HashMap(carState.carData))
                         yield()
                         continue
                     }
@@ -188,9 +194,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                 Log.d(TAG, "Socket disconnected")
                 getSocket().close()
                 Log.d(TAG, "Socket closed")
-                // Don't clear carState when shutting down, because this happens when switching between apps and is very jarring
-                // carState.carData.clear()
-                // carStateFlow.value = CarState(HashMap(carState.carData))
                 inShutdown = false
             } catch (exception: Exception) {
                 inShutdown = false
@@ -288,11 +291,15 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
         try {
             socket.send(packet)
         } catch (ioException: IOException) {
-            Log.e(TAG, "IOException while sending data.", ioException)
-            if (!isBye) checkNetwork()
+            if (!isBye) {
+                Log.e(TAG, "IOException while sending data.", ioException)
+                checkNetwork()
+            }
         } catch (socketException: SocketException) {
-            Log.e(TAG, "SocketException while sending data.", socketException)
-            if (!isBye) checkNetwork()
+            if (!isBye) {
+                Log.e(TAG, "SocketException while sending data.", socketException)
+                checkNetwork()
+            }
         }
     }
 

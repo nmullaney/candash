@@ -46,7 +46,7 @@ class DashFragment : Fragment() {
     private var doorOpen = false
     private var l2Distance: Int = 200
     private var l1Distance: Int = 300
-    private var gearState: Int = Constants.gearSNA
+    private var gearState: Int = Constants.gearInvalid
     private var mapRegion: Float = 0f
     private lateinit var prefs: SharedPreferences
 
@@ -573,7 +573,7 @@ class DashFragment : Fragment() {
                 var gearStartIndex = 0
                 var gearEndIndex = 0
                 gearState = gearStateVal.toInt()
-                if (gearStateVal.toInt() == Constants.gearInvalid || gearStateVal.toInt() == Constants.gearSNA) {
+                if (gearStateVal.toInt() == Constants.gearInvalid) {
                     binding.autopilotInactive.visibility = View.INVISIBLE
                     binding.PRND.visibility = View.INVISIBLE
                     gearStartIndex = 0
@@ -608,7 +608,7 @@ class DashFragment : Fragment() {
                 binding.PRND.text = (ss)
             } ?: run {
                 binding.PRND.visibility = View.INVISIBLE
-                gearState = Constants.gearSNA
+                gearState = Constants.gearInvalid
             }
             /*
             it.getValue(Constants.maxSpeedAP)?.let { maxSpeedAPVal ->
@@ -892,7 +892,7 @@ class DashFragment : Fragment() {
 
             if (!isSplitScreen() && !prefs.getBooleanPref(Constants.hideSpeedLimit) && gearState == Constants.gearDrive) {
                 it.getValue(Constants.fusedSpeedLimit)?.let { speedLimitVal ->
-                    if (speedLimitVal.toFloat() != Constants.fusedSpeedNone && speedLimitVal.toFloat() != Constants.fusedSpeedSNA) {
+                    if (speedLimitVal.toFloat() != Constants.fusedSpeedNone) {
                         if (mapRegion == Constants.mapUS) {
                             // There's no CA map region from the dbc, assuming that CA uses US map region and sign
                             binding.speedLimitValueUs.text = speedLimitVal.toInt().toString()
@@ -1052,7 +1052,7 @@ class DashFragment : Fragment() {
                 binding.telltaleFogFront.visibility = View.INVISIBLE
             }
 
-            if ( gearState != Constants.gearSNA && gearState != Constants.gearInvalid &&
+            if (gearState != Constants.gearInvalid &&
                 ((it.getValue(Constants.driverUnbuckled) == 1f) or
                 (it.getValue(Constants.passengerUnbuckled) == 1f))) {
                 binding.telltaleSeatbelt.visibility = View.VISIBLE
