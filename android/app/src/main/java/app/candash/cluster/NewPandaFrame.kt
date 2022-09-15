@@ -49,11 +49,12 @@ class NewPandaFrame(wholeByteArray: ByteArray) {
             totalLength -= bitLengthForByte
             previousByteBitLength += bitLengthForByte
         }
-        return if (canSignal.signed) {
+        val result = if (canSignal.signed) {
             (valueToSigned(value, canSignal.bitLength) * canSignal.factor) + canSignal.offset
         } else {
             (value * canSignal.factor) + canSignal.offset
         }
+        return if (result == canSignal.sna) null else result
     }
 
     private fun valueToSigned(value: Long, bits: Int): Long {
