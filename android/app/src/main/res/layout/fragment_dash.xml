@@ -680,15 +680,15 @@
 
     <TextView
         android:id="@+id/odometer"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
         android:layout_marginStart="16dp"
         android:fontFamily="@font/interbold"
 
         android:gravity="start|center_vertical"
         android:paddingRight="5dp"
         android:paddingBottom="0dp"
-        android:text="10000 km"
+        android:text="100000 km"
 
 
         android:textSize="14dp"

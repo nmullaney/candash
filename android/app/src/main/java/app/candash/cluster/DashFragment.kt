@@ -42,6 +42,7 @@ class DashFragment : Fragment() {
     private var uiSpeedUnitsMPH: Boolean = true
     private var power: Float = 0f
     private var battAmps: Float = 0f
+    private var battAmpsHistory: MutableList<Float> = mutableListOf<Float>()
     private var battVolts: Float = 0f
     private var doorOpen = false
     private var l2Distance: Int = 200
@@ -49,11 +50,6 @@ class DashFragment : Fragment() {
     private var gearState: Int = Constants.gearInvalid
     private var mapRegion: Float = 0f
     private lateinit var prefs: SharedPreferences
-
-    // Ugly debug test
-    private var battAmps1: Float = 0f
-    private var battAmps2: Float = 0f
-    private var battAmps3: Float = 0f
 
 
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
@@ -510,15 +506,19 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
-                //batt amps and batt volts are on the same signal so if amps are there so are volts
-                battAmps = battAmpsVal.toFloat()
 
+                // Simple smoothing of amps using average of last 10 values (100 ms)
+                battAmpsHistory.add(battAmpsVal.toFloat())
+                while (battAmpsHistory.count() > 10) {
+                    battAmpsHistory.removeAt(0)
+                }
+                battAmps = battAmpsHistory.average().toFloat()
             }
             it.getValue(Constants.battVolts)?.let { battVoltsVal ->
-                //batt amps and batt volts are on the same signal so if amps are there so are volts
                 battVolts = battVoltsVal.toFloat()
             }
             if (it.getValue(Constants.battVolts) != null) {
+                //batt amps and batt volts are on the same signal so if amps are there so are volts
                 power = (battAmps * battVolts)
                 if (power > prefs.getPref("maxPower")) prefs.setPref("maxPower", power)
                 if (viewModel.getValue(Constants.chargeStatus)
@@ -527,7 +527,6 @@ class DashFragment : Fragment() {
                     // do not store minpower if car is charging
                     if (power < prefs.getPref("minPower")) prefs.setPref("minPower", power)
                 }
-                //binding.power.text = "%.2f".format(power)
                 if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
                     binding.minpower.visibility = View.VISIBLE
                     binding.maxpower.visibility = View.VISIBLE
@@ -559,12 +558,12 @@ class DashFragment : Fragment() {
             }
 
             viewModel.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
-                if (autopilotStateVal.toInt() > 2) {
-                    gearColorSelected = requireContext().getColor(R.color.autopilot_blue)
+                gearColorSelected = if (autopilotStateVal.toInt() in 3..7) {
+                    requireContext().getColor(R.color.autopilot_blue)
                 } else if (isSunUp(viewModel) == 1 && !prefs.getBooleanPref(Constants.forceNightMode)) {
-                    gearColorSelected = Color.DKGRAY
+                    Color.DKGRAY
                 } else {
-                    gearColorSelected = Color.LTGRAY
+                    Color.LTGRAY
                 }
             }
             it.getValue(Constants.gearSelected)?.let { gearStateVal ->
@@ -832,7 +831,6 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
                 if (uiSpeedUnitsVal.toInt() == 0) {
-
                     uiSpeedUnitsMPH = true
                     prefs.setBooleanPref("uiSpeedUnitsMPH", true)
                     binding.unit.text = "MPH"
@@ -844,29 +842,26 @@ class DashFragment : Fragment() {
             } ?: run {
                 binding.unit.text = ""
             }
+            var battText = ""
             if (showSOC == true) {
                 it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                    binding.batterypercent.text = stateOfChargeVal.toInt().toString() + " %"
-                } ?: run {
-                    binding.batterypercent.text = ""
+                    battText = stateOfChargeVal.toInt().toString() + " %"
                 }
             } else {
                 if (uiSpeedUnitsMPH == true) {
                     it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                        binding.batterypercent.text =
-                            stateOfChargeVal.toInt().toString() + " mi"
-                    } ?: run {
-                        binding.batterypercent.text = ""
+                        battText = stateOfChargeVal.toInt().toString() + " mi"
                     }
                 } else {
                     it.getValue(Constants.uiRange)?.let { stateOfChargeVal ->
-                        binding.batterypercent.text =
-                            ((stateOfChargeVal.toInt()) / .62).toInt().toString() + " km"
-                    } ?: run {
-                        binding.batterypercent.text = ""
+                        battText = ((stateOfChargeVal.toInt()) / .62).toInt().toString() + " km"
                     }
                 }
             }
+            if (binding.batterypercent.text != battText) {
+                binding.batterypercent.text = battText
+            }
+
             processDoors(it)
 
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
@@ -1123,13 +1118,12 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.odometer)?.let { odometerVal ->
-                if (prefs.getBooleanPref(Constants.hideOdometer) == false) {
+                if (!prefs.getBooleanPref(Constants.hideOdometer)) {
                     binding.odometer.visibility = View.VISIBLE
-                    if (uiSpeedUnitsMPH == true) {
-                        binding.odometer.text =
-                            odometerVal.toFloat().kmToMi.toInt().toString() + " mi"
+                    binding.odometer.text = if (uiSpeedUnitsMPH) {
+                        odometerVal.toFloat().kmToMi.toInt().toString() + " mi"
                     } else {
-                        binding.odometer.text = odometerVal.toInt().toString() + " km"
+                        odometerVal.toInt().toString() + " km"
                     }
                 }
                 else {
