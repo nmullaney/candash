@@ -72,7 +72,8 @@ class CANSignalHelper {
     }
     fun createCANSignals() {
 
-        insertCANSignal(Constants.stateOfCharge, Constants.vehicleBus, Hex(0x33A), 48, 7, 1f, 0f)
+        // Technically uSOE (usable State Of Energy), this better matches what the car shows.
+        insertCANSignal(Constants.stateOfCharge, Constants.vehicleBus, Hex(0x33A), 56, 7, 1f, 0f)
         insertCANSignal(Constants.battVolts, Constants.vehicleBus, Hex(0x132), 0, 16, 0.01f, 0f)
         insertCANSignal(Constants.battAmps, Constants.vehicleBus, Hex(0x132), 16, 16, -.1f, 0f, signed=true, sna=3276.7f)
 
