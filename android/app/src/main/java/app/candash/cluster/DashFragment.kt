@@ -105,6 +105,9 @@ class DashFragment : Fragment() {
             binding.rightTurnSignalDark,
             binding.autopilot,
             binding.autopilotInactive,
+        )
+    private fun telltaleUIViews(): List<View> =
+        listOf(
             binding.telltaleDrl,
             binding.telltaleLb,
             binding.telltaleHb,
@@ -115,7 +118,6 @@ class DashFragment : Fragment() {
             binding.odometer,
             binding.battCharge
         )
-
     private fun sideUIViews(): List<View> =
         listOf(
             binding.fronttorque,
@@ -352,6 +354,10 @@ class DashFragment : Fragment() {
                 savedLayoutParams[topUIView] =
                     ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
             }
+        } else {
+            for (telltaleUIView in telltaleUIViews()){
+                telltaleUIView.visibility = View.INVISIBLE
+            }
         }
 
 
@@ -443,7 +449,7 @@ class DashFragment : Fragment() {
                             val savedParams = savedLayoutParams[topUIView]
                             params.setMargins(
                                 savedParams!!.leftMargin,
-                                savedParams.topMargin - 40.px,
+                                savedParams.topMargin - 30.px,
                                 savedParams.rightMargin,
                                 savedParams.bottomMargin
                             )
@@ -500,6 +506,7 @@ class DashFragment : Fragment() {
             }
 
             it.getValue(Constants.battAmps)?.let { battAmpsVal ->
+
                 // Simple smoothing of amps using average of last 10 values (100 ms)
                 battAmpsHistory.add(battAmpsVal.toFloat())
                 while (battAmpsHistory.count() > 10) {
