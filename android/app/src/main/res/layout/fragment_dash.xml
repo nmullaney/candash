@@ -1656,7 +1656,24 @@
 
 
         />
+    <TextView
+        android:id="@+id/instefficiency"
+        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center|center_vertical"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
 
+
+        app:autoSizeMaxTextSize="15dp"
+        app:autoSizeMinTextSize="10dp"
+        app:autoSizeStepGranularity="5dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintStart_toStartOf="@id/power"
+        app:layout_constraintBottom_toTopOf="@id/power"
+        app:layout_constraintWidth_percent=".2"
+        tools:text="3.4 W/Mi" />
     <TextView
         android:id="@+id/power"
         android:layout_height="30dp"

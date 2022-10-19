@@ -130,7 +130,14 @@
         android:text="Blackout Screen w/ Center Display"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
         app:layout_constraintTop_toBottomOf="@id/showSpeedLimit" />
-
+    <CheckBox
+        android:id="@+id/showInstefficiency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Show Instantaneous Efficiency"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/blankDisplaySync" />
     <TextView
         android:id="@+id/blankDisplayHint"
         android:layout_width="wrap_content"
@@ -139,7 +146,7 @@
         android:text="Long-press left side of screen to return\nto settings while display is off.\nRecommended only with OLED screens."
         android:textSize="12dp"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
-        app:layout_constraintTop_toBottomOf="@id/blankDisplaySync" />
+        app:layout_constraintTop_toBottomOf="@id/showInstefficiency" />
 
 
     <androidx.constraintlayout.widget.Guideline

@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
 import android.view.*
@@ -19,9 +18,7 @@ import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import app.candash.cluster.databinding.FragmentDashBinding
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
@@ -530,14 +527,16 @@ class DashFragment : Fragment() {
                 if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
                     binding.minpower.visibility = View.VISIBLE
                     binding.maxpower.visibility = View.VISIBLE
-                    binding.minpower.text = formatWatts(prefs.getPref("minPower"))
-                    binding.maxpower.text = formatWatts(prefs.getPref("maxPower"))
+                    binding.minpower.text = formatPower(prefs.getPref("minPower"))
+                    binding.maxpower.text = formatPower(prefs.getPref("maxPower"))
 
                 } else {
                     binding.minpower.visibility = View.INVISIBLE
                     binding.maxpower.visibility = View.INVISIBLE
                 }
-                binding.power.text = formatWatts(power)
+                binding.power.text = formatPower(power)
+
+
                 if (power >= 0) {
                     binding.powerBar.setGauge(((power / prefs.getPref("maxPower")).pow(0.75f)))
                 } else {
@@ -815,6 +814,18 @@ class DashFragment : Fragment() {
                 binding.speed.scaleY = .9f
 
                 binding.speed.text = vehicleSpeedVal.toInt().toString()
+                if (vehicleSpeedVal.toInt() > 0 && power > 0 && !prefs.getBooleanPref(Constants.hideInstEfficiency)){
+                    binding.instefficiency.visibility = View.VISIBLE
+                    if (prefs.getBooleanPref("uiSpeedUnitsMPH")){
+                        binding.instefficiency.text = formatWatts(power/vehicleSpeedVal.toFloat()) + "h/Mi"
+                    }
+                    else {
+                        binding.instefficiency.text = formatWatts(power/vehicleSpeedVal.toFloat()) + "h/km"
+                    }
+                }
+                else {
+                    binding.instefficiency.visibility = View.INVISIBLE
+                }
 
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f) {
                     sensingSpeedLimit = 35f.miToKm.toInt()
@@ -1253,7 +1264,7 @@ class DashFragment : Fragment() {
                                 binding.chargemeter.invalidate()
                                 binding.bigsoc.visibility = View.VISIBLE
                                 binding.bigsocpercent.visibility = View.VISIBLE
-                                binding.chargerate.text = formatWatts(abs(battAmps * battVolts), convert = false)
+                                binding.chargerate.text = formatPower(abs(battAmps * battVolts), convert = false)
                                 binding.chargerate.visibility = View.VISIBLE
 
                             }
@@ -1522,6 +1533,8 @@ class DashFragment : Fragment() {
             binding.modelyCenter.setColorFilter(Color.LTGRAY)
 
             binding.power.setTextColor(Color.WHITE)
+            binding.instefficiency.setTextColor(Color.WHITE)
+
             binding.minpower.setTextColor(Color.WHITE)
             binding.maxpower.setTextColor(Color.WHITE)
             binding.fronttorque.setTextColor(Color.WHITE)
@@ -1597,6 +1610,7 @@ class DashFragment : Fragment() {
             binding.modelyCenter.setColorFilter(Color.GRAY)
 
             binding.power.setTextColor(Color.DKGRAY)
+            binding.instefficiency.setTextColor(Color.DKGRAY)
             binding.minpower.setTextColor(Color.DKGRAY)
             binding.maxpower.setTextColor(Color.DKGRAY)
             binding.fronttorque.setTextColor(Color.DKGRAY)
@@ -1634,7 +1648,7 @@ class DashFragment : Fragment() {
 
     }
 
-    fun formatWatts(power: Float, convert: Boolean = true): String {
+    fun formatPower(power: Float, convert: Boolean = true): String {
         if (prefs.getPref(Constants.powerUnits) == Constants.powerUnitHp && convert) {
             val hp = power.wToHp
             return if ((abs(hp) < 10)) {
@@ -1652,7 +1666,10 @@ class DashFragment : Fragment() {
                 ps.toInt().toString() + " PS"
             }
         }
+        return formatWatts(power)
+    }
 
+    fun formatWatts(power: Float): String {
         val kw = power / 1000f
         return if ((abs(kw) < 10)) {
             "%.1f".format(kw) + " kW"
@@ -1660,7 +1677,6 @@ class DashFragment : Fragment() {
             kw.toInt().toString() + " kW"
         }
     }
-
     fun updateCarStateUI(doorOpen: Boolean) {
         val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
         val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)

@@ -131,4 +131,5 @@ object Constants {
     const val powerUnitHp = 1f
     const val powerUnitPs = 2f
     const val torqueInLbfFt = "torqueInLbfFt"
+    const val hideInstEfficiency = "hideInstEfficiency"
 }

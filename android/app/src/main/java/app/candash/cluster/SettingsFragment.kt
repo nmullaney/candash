@@ -55,7 +55,7 @@ class SettingsFragment() : Fragment() {
         binding.showSpeedLimit.isChecked = !prefs.getBooleanPref(Constants.hideSpeedLimit)
         // This is not inverted, because defaulting to blank display makes the app appear broken on first launch
         binding.blankDisplaySync.isChecked = prefs.getBooleanPref(Constants.blankDisplaySync)
-
+        binding.showInstefficiency.isChecked = !prefs.getBooleanPref(Constants.hideInstEfficiency)
         if (prefs.getBooleanPref(Constants.tempInF)) {
             binding.tempUnitF.isChecked = true
         } else {
@@ -106,6 +106,12 @@ class SettingsFragment() : Fragment() {
             prefs.setBooleanPref(Constants.blankDisplaySync, true)
         } else {
             prefs.setBooleanPref(Constants.blankDisplaySync, false)
+        }
+
+        if (binding.showInstefficiency.isChecked) {
+            prefs.setBooleanPref(Constants.hideInstEfficiency, false)
+        } else {
+            prefs.setBooleanPref(Constants.hideInstEfficiency, true)
         }
         when (binding.tempUnits.checkedRadioButtonId) {
             R.id.tempUnitC -> prefs.setBooleanPref(Constants.tempInF, false)
