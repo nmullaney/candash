@@ -13,7 +13,10 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -244,33 +247,7 @@ class DashFragment : Fragment() {
             else -> requireContext().getColor(R.color.night_background)
         }
     }
-/*
-    private fun prefs.setPref(name: String, value: Float) {
-        with(prefs.edit()) {
-            putFloat(name, value)
-            apply()
-        }
-    }
 
-    private fun prefs.setBooleanPref(name: String, value: Boolean) {
-        with(prefs.edit()) {
-            putBoolean(name, value)
-            apply()
-        }
-    }
-
-    private fun prefs.prefContains(name: String): Boolean {
-        return prefs.contains(name)
-    }
-
-    private fun prefs.getPref(name: String): Float {
-        return prefs.getFloat(name, 0f)
-    }
-
-    private fun prefs.getBooleanPref(name: String): Boolean {
-        return prefs.getBoolean(name, false)
-    }
-*/
     private fun getScreenWidth(): Int {
         val displayMetrics = DisplayMetrics()
         activity?.windowManager
@@ -443,6 +420,16 @@ class DashFragment : Fragment() {
             return@setOnLongClickListener true
         }
 
+        val efficiencyCalculator = EfficiencyCalculator(viewModel, prefs)
+
+        binding.efficiency.setOnClickListener {
+            binding.infoToast.text = efficiencyCalculator.changeLookBack(uiSpeedUnitsMPH)
+            binding.infoToast.visibility = View.VISIBLE
+            val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+            fadeOut.duration = 5000
+            binding.infoToast.startAnimation(fadeOut)
+        }
+
         viewModel.getSplitScreen().observe(viewLifecycleOwner) {
             val window: Window? = activity?.window
 
@@ -499,15 +486,15 @@ class DashFragment : Fragment() {
                     binding.blackout.visibility = View.VISIBLE
 
                     if (!blackoutToastToggle) {
-                        binding.blackoutToast.visibility = View.VISIBLE
+                        binding.infoToast.text = "Display sleeping with car.\nLong-press left edge for settings."
+                        binding.infoToast.visibility = View.VISIBLE
                         val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                         fadeOut.duration = 5000
-                        binding.blackoutToast.startAnimation(fadeOut)
+                        binding.infoToast.startAnimation(fadeOut)
                     }
                     blackoutToastToggle = true
                 } else {
                     binding.blackout.visibility = View.GONE
-                    binding.blackoutToast.visibility = View.GONE
                     blackoutToastToggle = false
                 }
             }
@@ -824,18 +811,10 @@ class DashFragment : Fragment() {
                 var sensingSpeedLimit = 35
                 binding.speed.scaleY = .9f
 
-                binding.speed.text = vehicleSpeedVal.toInt().toString()
-                if (vehicleSpeedVal.toInt() > 0 && power > 0 && !prefs.getBooleanPref(Constants.hideInstEfficiency)){
-                    binding.instefficiency.visibility = View.VISIBLE
-                    if (prefs.getBooleanPref("uiSpeedUnitsMPH")){
-                        binding.instefficiency.text = formatWatts(power/vehicleSpeedVal.toFloat()) + "h/Mi"
-                    }
-                    else {
-                        binding.instefficiency.text = formatWatts(power/vehicleSpeedVal.toFloat()) + "h/km"
-                    }
-                }
-                else {
-                    binding.instefficiency.visibility = View.INVISIBLE
+                if (it.getValue(Constants.brakeHold) == 1f) {
+                    binding.speed.text = ""
+                } else {
+                    binding.speed.text = vehicleSpeedVal.toInt().toString()
                 }
 
                 if (viewModel.getValue(Constants.uiSpeedUnits) != 0f) {
@@ -852,7 +831,9 @@ class DashFragment : Fragment() {
                 binding.speed.text = ""
             }
             it.getValue(Constants.uiSpeedUnits)?.let { uiSpeedUnitsVal ->
-                if (uiSpeedUnitsVal.toInt() == 0) {
+                if (it.getValue(Constants.brakeHold) == 1f) {
+                    binding.unit.text = "HOLD"
+                } else if (uiSpeedUnitsVal.toInt() == 0) {
                     uiSpeedUnitsMPH = true
                     prefs.setBooleanPref("uiSpeedUnitsMPH", true)
                     binding.unit.text = "MPH"
@@ -1115,12 +1096,12 @@ class DashFragment : Fragment() {
 
             it.getValue(Constants.brakeHold)?.let { brakeHoldVal ->
                 if (brakeHoldVal == 1f) {
-                    binding.telltaleBrakeHold.visibility = View.VISIBLE
+                    binding.speedoBrakeHold.visibility = View.VISIBLE
                 } else {
-                    binding.telltaleBrakeHold.visibility = View.INVISIBLE
+                    binding.speedoBrakeHold.visibility = View.INVISIBLE
                 }
             } ?: run {
-                binding.telltaleBrakeHold.visibility = View.INVISIBLE
+                binding.speedoBrakeHold.visibility = View.INVISIBLE
             }
 
             it.getValue(Constants.tpmsHard)?.let { tpmsHardVal ->
@@ -1151,8 +1132,20 @@ class DashFragment : Fragment() {
                 else {
                     binding.odometer.visibility = View.INVISIBLE
                 }
+                efficiencyCalculator.updateKwhHistory(odometerVal.toFloat())
             } ?: run {
                 binding.odometer.visibility = View.INVISIBLE
+            }
+
+            efficiencyCalculator.getEfficiencyText(uiSpeedUnitsMPH, power)?.let { efficiencyText ->
+                if (!prefs.getBooleanPref(Constants.hideEfficiency)) {
+                    binding.efficiency.text = efficiencyText
+                    binding.efficiency.visibility = View.VISIBLE
+                } else {
+                    binding.efficiency.visibility = View.INVISIBLE
+                }
+            } ?: run {
+                binding.efficiency.visibility = View.INVISIBLE
             }
 
             // Check if AP is not engaged, otherwise blindspot alerts are disabled
@@ -1586,7 +1579,7 @@ class DashFragment : Fragment() {
             binding.modelyCenter.setColorFilter(Color.LTGRAY)
 
             binding.power.setTextColor(Color.WHITE)
-            binding.instefficiency.setTextColor(Color.WHITE)
+            binding.efficiency.setTextColor(Color.WHITE)
 
             binding.minpower.setTextColor(Color.WHITE)
             binding.maxpower.setTextColor(Color.WHITE)
@@ -1646,7 +1639,6 @@ class DashFragment : Fragment() {
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.speed.setTextColor(Color.BLACK)
-            binding.speed.setTextColor(Color.BLACK)
             binding.bigsoc.setTextColor(Color.BLACK)
             binding.bigsocpercent.setTextColor(Color.BLACK)
             binding.chargerate.setTextColor(Color.DKGRAY)
@@ -1663,7 +1655,7 @@ class DashFragment : Fragment() {
             binding.modelyCenter.setColorFilter(Color.GRAY)
 
             binding.power.setTextColor(Color.DKGRAY)
-            binding.instefficiency.setTextColor(Color.DKGRAY)
+            binding.efficiency.setTextColor(Color.DKGRAY)
             binding.minpower.setTextColor(Color.DKGRAY)
             binding.maxpower.setTextColor(Color.DKGRAY)
             binding.fronttorque.setTextColor(Color.DKGRAY)
@@ -1722,12 +1714,13 @@ class DashFragment : Fragment() {
         return formatWatts(power)
     }
 
-    fun formatWatts(power: Float): String {
-        val kw = power / 1000f
-        return if ((abs(kw) < 10)) {
-            "%.1f".format(kw) + " kW"
+    fun formatWatts(power: Float, kW: Boolean = true): String {
+        val tag = if (kW) {" kW"} else {" W"}
+        val p = if (kW) {power / 1000f} else {power}
+        return if ((abs(p) < 10)) {
+            "%.1f".format(p) + tag
         } else {
-            kw.toInt().toString() + " kW"
+            p.toInt().toString() + tag
         }
     }
     fun updateCarStateUI(doorOpen: Boolean) {

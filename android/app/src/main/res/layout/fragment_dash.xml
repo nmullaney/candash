@@ -295,17 +295,17 @@
         app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
 
     <ImageView
-        android:id="@+id/telltale_brake_hold"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:id="@+id/speedo_brake_hold"
+        android:layout_width="140dp"
+        android:layout_height="150dp"
+        android:paddingTop="18dp"
 
         android:src="@drawable/ic_brake_hold"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintTop_toTopOf="@+id/speed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits"
-        tools:visibility="visible" />
+        app:layout_constraintBottom_toBottomOf="@+id/speed" />
 
     <ImageView
         android:id="@+id/telltale_brake_park_fault"
@@ -1607,7 +1607,7 @@
 
         />
     <TextView
-        android:id="@+id/instefficiency"
+        android:id="@+id/efficiency"
         android:layout_height="30dp"
         android:layout_width="0dp"
         android:layout_marginBottom="0dp"
@@ -1797,18 +1797,21 @@
         tools:visibility="gone" />
 
     <TextView
-        android:id="@+id/blackoutToast"
+        android:id="@+id/infoToast"
         android:drawablePadding="5dp"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:fontFamily="@font/interbold"
         android:textColor="#cccccc"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
-        android:text="Display sleeping with car.\nLong-press left edge for settings."
+        android:text="Some info goes here"
         android:textAlignment="center"
-        android:textSize="15dp"
+        app:autoSizeMinTextSize="15dp"
+        app:autoSizeMaxTextSize="25dp"
+        app:autoSizeStepGranularity="1dp"
+        app:autoSizeTextType="uniform"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
