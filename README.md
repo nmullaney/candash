@@ -18,11 +18,20 @@ Clone the repo and make sure you open the project from the android subdirectory.
 
 # Setup
 
-First, you must purchase and install a CANserver in your tesla, if you want blind spot monitoring you will need the dual bus Tesla version. http://www.jwardell.com/canserver/
-Please update your CANserver to Version 2.1 of the firmware. Easiest way is to connect your canserver to your home wifi and using a desktop browser to "check for updates" in the CANserver webui.
+First, you must purchase and install a CANserver in your tesla, if you want blind spot monitoring you will need a dual bus version. http://www.jwardell.com/canserver/
+
+The recommended installation is through the EVOffer diagnostic harness that installs in the passenger footwell. The connectors are easy to reach and there is ample space to store the CANserver. https://evoffer.com/product/model-3-y-can-diagnostic-cable/
+
+Ensure that your CANserver is on Version 2.1 of the firmware. Easiest way is to connect your canserver to your home wifi and using a desktop browser to "check for updates" in the CANserver webui.
+
+Another option for using CANdash is via the 'S3XY Buttons' device that has native CANdash support. Please note that this option limits you from using your CANdash in split screen mode with any app like Google Maps that requires internet connectivity. https://abstractocean.com/products/s3xy-buttons
+
 Two options for running this app, either connect to the hotspot on the CANserver (you will lose internet connectivity, even with mobile service) or create a hotspot on your phone and connect the CANserver to it via the network settings tab.
-Turning on hotspot functionality on your phone is preferred if you want to use cloud connected apps like music and nav simultaneously
-Sideload the app to your phone, it will appear as ‘CAN Dash’
+
+Turning on hotspot functionality on your phone is preferred if you want to use cloud connected apps like music and nav simultaneously, but you will need a SIM card with an active subscription in your CANdash Android Phone for this to work.
+
+Install the app from Google Play https://play.google.com/store/apps/details?id=app.candash.cluster&hl=en_US&gl=US
+
 Launch the CAN Dash and long press any blank area on the screen to bring up the info pane. 
 Once you are sure you are connected to the CANserver, click ‘scan’ and if the phone and CANserver are on the same network, the IP address should auto populate and you should start seeing data appear on the right side of the screen. Once you see this, press the ‘DASH’ button to start the dashboard.
 If you do not plug in the phone it will follow your display preferences for sleep and time out. If the device has power then it will keep the display on with any auto-brightness you have enabled.

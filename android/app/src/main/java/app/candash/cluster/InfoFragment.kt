@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.core.content.FileProvider.getUriForFile
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -44,19 +45,15 @@ class InfoFragment() : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
-
-        binding.toggleServerGroup.check(if (viewModel.useMockServer()) R.id.mock_server_button else R.id.real_server_button)
+        val options = viewModel.getCANServiceOptions(requireContext())
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, options)
+        binding.chooseService.adapter = adapter
+        binding.chooseService.setSelection(viewModel.getCurrentCANServiceIndex())
 
         binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
 
         binding.saveButton.setOnClickListener {
-            viewModel.saveSettings(binding.toggleServerGroup.checkedButtonId == R.id.mock_server_button, binding.editIpAddress.text.toString())
-        }
-        binding.scanButton.setOnClickListener {
-            if (viewModel.getZeroConfIpAddress() != "0.0.0.0"){
-                viewModel.saveSettings(false, viewModel.getZeroConfIpAddress())
-            }
-            binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
+            viewModel.saveSettings(getSelectedCANServiceIndex(), binding.editIpAddress.text.toString())
         }
         binding.startButton.setOnClickListener {
             if (!viewModel.isRunning()){
@@ -70,7 +67,9 @@ class InfoFragment() : Fragment() {
                 viewModel.shutdown()
             }
         }
-
+        binding.settings.setOnClickListener(){
+            switchToSettings()
+        }
         binding.root.setOnLongClickListener {
             switchToDash()
         }
@@ -108,9 +107,21 @@ class InfoFragment() : Fragment() {
         }
     }
 
+    fun getSelectedCANServiceIndex() : Int {
+        return binding.chooseService.selectedItemPosition
+    }
+    private fun setupZeroConfListener() {
+        viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
+            if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
+                viewModel.saveSettings(ipAddress)
+            }
+        }
+    }
+
+
     override fun onResume() {
         super.onResume()
-
+        setupZeroConfListener()
         viewModel.startDiscoveryService()
     }
 
@@ -120,7 +131,6 @@ class InfoFragment() : Fragment() {
 
     override fun onPause() {
         super.onPause()
-
         viewModel.stopDiscoveryService()
 
     }
@@ -130,6 +140,10 @@ class InfoFragment() : Fragment() {
         return true
     }
 
+    fun switchToSettings() : Boolean {
+        viewModel.switchToSettingsFragment()
+        return true
+    }
     fun logCarState(carState: CarState) {
         Log.d(TAG, "Car state size: " + carState.carData.size)
         carState.carData.forEach {

@@ -53,8 +53,10 @@ class LinearGauge @JvmOverloads constructor(
         var startX : Float = 0f
         var stopX: Float = 0f
         paint.strokeWidth = 20f
+        paint.strokeCap = Paint.Cap.ROUND
+
         paint.setColorFilter(backgroundLineColor)
-        canvas?.drawLine(50f, 0f, screenWidth.toFloat() - 50f, 0f, paint)
+        canvas?.drawLine(50f, 10f, screenWidth.toFloat() - 50f, 10f, paint)
 
         if (percentWidth < 0f){
             paint.setColorFilter(PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP))
@@ -66,7 +68,7 @@ class LinearGauge @JvmOverloads constructor(
             paint.setColorFilter(lineColor)
         }
         Log.d(TAG, "ScreenWidth $screenWidth RenderWidth $renderWidth")
-        canvas?.drawLine(startX, 0f, stopX, 0f, paint)
+        canvas?.drawLine(startX, 10f, stopX, 10f, paint)
         paint.setColorFilter(PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP))
 
 

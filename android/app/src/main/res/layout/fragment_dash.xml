@@ -8,7 +8,6 @@
 
     <TextView
         android:id="@+id/speed"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="25dp"
@@ -49,9 +48,8 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/chargemeter"
-        android:visibility="invisible"
-
         android:layout_width="350dp"
+        android:visibility="invisible"
         android:layout_height="350dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -63,13 +61,12 @@
         android:id="@+id/bigsoc"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:fontFamily="@font/interextralight"
+        android:fontFamily="@font/intermedium"
         android:gravity="center"
-        android:visibility="invisible"
         android:letterSpacing="-.07"
         android:textColor="@color/black"
         android:textSize="30dp"
-        android:layout_marginBottom="0dp"
+        android:visibility="invisible"
         app:autoSizeMaxTextSize="220dp"
         app:autoSizeMinTextSize="30dp"
         app:autoSizeStepGranularity="10dp"
@@ -81,7 +78,7 @@
 
         tools:layout_editor_absoluteX="362dp"
         tools:layout_editor_absoluteY="117dp"
-        tools:text="5" />
+        tools:text="100" />
 
     <TextView
         android:id="@+id/bigsocpercent"
@@ -89,7 +86,7 @@
 
         android:layout_width="100dp"
         android:layout_height="200dp"
-        android:fontFamily="@font/interlight"
+        android:fontFamily="@font/interbold"
         android:gravity="center|left"
         android:textColor="@color/black"
         android:textSize="40dp"
@@ -122,37 +119,37 @@
         android:id="@+id/autopilot"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginTop="9dp"
         android:gravity="center"
-        android:visibility="invisible"
 
         android:src="@drawable/ic_autopilot"
-        android:layout_marginTop="9dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/autopilot_inactive"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginTop="9dp"
         android:gravity="center"
-        android:visibility="invisible"
 
         android:src="@drawable/ic_autopilot_inactive"
-        android:layout_marginTop="9dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/displaymaxspeed"
         android:layout_width="80dp"
         android:layout_height="30dp"
+        android:fontFamily="@font/interbold"
         android:gravity="right"
         android:textSize="15dp"
-        android:fontFamily="@font/interbold"
-        app:layout_constraintStart_toEndOf="@id/autopilot_inactive"
-        />
+        app:layout_constraintStart_toEndOf="@id/autopilot_inactive" />
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
     <!--        android:layout_width="60dp"-->
@@ -200,75 +197,401 @@
 
     <ImageView
         android:id="@+id/left_turn_signal"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginLeft="48dp"
 
-        android:layout_marginTop="45dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/ic_turnleftbright"
+        android:visibility="invisible"
+
+        app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
         android:id="@+id/right_turn_signal"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="45dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginRight="48dp"
 
-        android:layout_marginEnd="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+
+
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <ImageView
         android:id="@+id/left_turn_signal_dark"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginLeft="48dp"
+
+        android:src="@drawable/ic_turnleftdark"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_drl"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="48dp"
 
-        android:src="@drawable/ic_turnleftdark"
-        android:visibility="gone"
+        android:src="@drawable/ic_telltale_drl"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_seatbelt"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="20dp"
+
+        android:src="@drawable/ic_seatbelt"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_park"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginStart="41dp"
+        android:src="@drawable/ic_brake_park"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_esp_active"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginStart="81dp"
+        android:src="@drawable/ic_esp_active"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_esp_active2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="121dp"
+        android:src="@drawable/ic_esp_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_hold"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:src="@drawable/ic_brake_hold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_park_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="41dp"
+        android:src="@drawable/ic_brake_park_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_TPMS_fault_hard"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_TPMS_fault_soft"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginStart="121dp"
+        android:src="@drawable/ic_tpms_warn_soft"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_TPMS_fault_hard"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:src="@drawable/ic_tpms_warn_hard"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_fog_rear"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="41dp"
+        android:src="@drawable/ic_brake_sys_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_boost_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="41dp"
+        android:src="@drawable/ic_brake_boost_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_brake_abs_fault"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="81dp"
+        android:src="@drawable/ic_brake_abs_fault"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintEnd_toEndOf="@+id/telltale_brake_park_fault"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+
+    <ImageView
+        android:id="@+id/telltale_fog_rear"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="48dp"
+
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_telltale_fog_rear"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_fog_front"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="48dp"
+
+        android:layout_marginEnd="49dp"
+        android:src="@drawable/ic_telltale_fog_front"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_lb"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_lb"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_hb"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_hb"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_ahb_active"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_ahb_active"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_ahb_stdby"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_ahb_stdby"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/left_turn_signal_light"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="45dp"
-
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="48dp"
         android:src="@drawable/ic_turnleftbright"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+
+        android:visibility="invisible"
+
+        app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/right_turn_signal_dark"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginRight="48dp"
+
         android:gravity="center"
 
         android:src="@drawable/ic_turnrightdark"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
+
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/right_turn_signal_light"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginRight="48dp"
         android:gravity="center"
+        android:visibility="invisible"
 
         android:src="@drawable/ic_turnrightbright"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/speed_limit_us"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:constraint_referenced_ids="speed_limit_sign_us,speed_limit_title_us,speed_limit_value_us"
+        />
+
+    <ImageView
+        android:id="@+id/speed_limit_sign_us"
+        android:layout_width="60dp"
+        android:layout_height="72dp"
+        android:gravity="center"
+        android:visibility="visible"
+        android:src="@drawable/shadow"
+
+        app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/speed_limit_title_us"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:visibility="visible"
+
+        android:text="SPEED LIMIT"
+        android:fontFamily="@font/montserratbold"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="10dp"
+        android:lineSpacingMultiplier=".78"
+
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
+        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_us" />
+
+    <TextView
+        android:id="@+id/speed_limit_value_us"
+        android:layout_width="46dp"
+        android:layout_height="51dp"
+        android:gravity="center"
+        android:visibility="visible"
+
+        android:text="45"
+        android:fontFamily="@font/intersemibold"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="24dp"
+
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
+        app:layout_constraintBottom_toBottomOf="@id/speed_limit_sign_us" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/speed_limit_round"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:constraint_referenced_ids="speed_limit_sign_round,speed_limit_value_round"
+        />
+
+    <ImageView
+        android:id="@+id/speed_limit_sign_round"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:visibility="visible"
+
+        android:src="@drawable/speed_limit_sign_round"
+
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_round"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_round"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/speed_limit_value_round"
+        android:layout_width="62dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:visibility="visible"
+
+        android:text="100"
+        android:fontFamily="@font/intersemibold"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="32dp"
+
+        app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_round"
+        app:layout_constraintRight_toRightOf="@id/speed_limit_sign_round"
+        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_round"
+        app:layout_constraintBottom_toBottomOf="@id/speed_limit_sign_round" />
 
     <TextView
         android:id="@+id/PRND"
@@ -336,44 +659,91 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
+
     <TextView
         android:id="@+id/batterypercent"
-        android:layout_width="100dp"
-        android:layout_height="27dp"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="@font/interbold"
-        android:paddingBottom="0dp"
-        android:paddingRight="5dp"
 
-        android:text="50 %"
         android:gravity="end|top"
-        app:layout_constraintBottom_toBottomOf="@id/deadbattery"
-        android:layout_marginTop="4dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="0dp"
+        android:text="377 km"
+
+
         android:textSize="20dp"
-
-
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@id/deadbattery"
         app:layout_constraintEnd_toStartOf="@id/deadbattery" />
+
+    <TextView
+        android:id="@+id/odometer"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/interbold"
+
+        android:gravity="start|center_vertical"
+        android:paddingRight="5dp"
+        android:paddingBottom="0dp"
+        android:text="100000 km"
+
+
+        android:textSize="14dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@+id/PRND"
+        app:layout_constraintStart_toEndOf="@+id/PRND"
+        app:layout_constraintTop_toTopOf="@+id/PRND" />
 
     <ImageView
         android:id="@+id/deadbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_deadbattery"
         android:layout_marginTop="16.5dp"
-        android:paddingRight="20dp"
-        android:paddingTop="0dp"
         android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:paddingRight="20dp"
+        android:src="@drawable/ic_deadbattery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/batt_charge"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:src="@drawable/ic_batt_charging"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/batterypercent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/batt_heat"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:src="@drawable/ic_batt_heating"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/batt_charge"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <app.candash.cluster.BatteryGauge
         android:id="@+id/fullbattery"
         android:layout_width="70dp"
         android:layout_height="25dp"
-        android:src="@drawable/ic_fullbattery"
-        android:paddingRight="20dp"
-        android:paddingTop="0dp"
         android:layout_marginTop="16.5dp"
         android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:paddingRight="20dp"
+        android:src="@drawable/ic_fullbattery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -480,11 +850,10 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent=".6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent=".5"
-        app:layout_constraintHeight_percent=".6"
-        />
+        app:layout_constraintWidth_percent=".5" />
 
 
     <ImageView
@@ -579,16 +948,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_gravity="start"
+        android:layout_marginLeft="20dp"
         android:adjustViewBounds="true"
         android:scaleType="fitStart"
-        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_bsl1_big"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
-        android:src="@drawable/ic_bsl1_big" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
@@ -1275,18 +1644,36 @@
 
     <app.candash.cluster.LinearGauge
         android:id="@+id/power_bar"
-        android:layout_height="5dp"
         android:layout_width="match_parent"
-        android:layout_marginBottom="25dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="0dp"
+        android:layout_gravity="center"
+        android:gravity="center|center_vertical"
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 
 
         />
+    <TextView
+        android:id="@+id/instefficiency"
+        android:layout_height="30dp"
+        android:layout_width="0dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center|center_vertical"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
 
+
+        app:autoSizeMaxTextSize="15dp"
+        app:autoSizeMinTextSize="10dp"
+        app:autoSizeStepGranularity="5dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintStart_toStartOf="@id/power"
+        app:layout_constraintBottom_toTopOf="@id/power"
+        app:layout_constraintWidth_percent=".2"
+        tools:text="3.4 W/Mi" />
     <TextView
         android:id="@+id/power"
         android:layout_height="30dp"
@@ -1372,5 +1759,36 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+<!--These must always be last to cover all objects-->
+    <View
+        android:id="@+id/blackout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/blackoutToast"
+        android:drawablePadding="5dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:fontFamily="@font/interbold"
+        android:textColor="#cccccc"
+        android:visibility="gone"
+        android:background="@drawable/rounded_corner"
+        android:gravity="center|center_vertical"
+        android:text="Display sleeping with car.\nLong-press left edge for settings."
+        android:textAlignment="center"
+        android:textSize="15dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

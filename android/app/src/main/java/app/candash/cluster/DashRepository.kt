@@ -1,38 +1,39 @@
 package app.candash.cluster
 
-import android.content.SharedPreferences
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DashRepository @ExperimentalCoroutinesApi
-@Inject constructor(private val pandaService: PandaServiceImpl, val mockPandaService: MockPandaService, val sharedPreferences: SharedPreferences) {
+@Inject constructor(private val canServiceFactory: CANServiceFactory) {
 
-    fun useMockService() : Boolean {
-        return sharedPreferences.getBoolean(Constants.useMockServerPrefKey, false)
+    private fun getCANService() : CANService {
+        return canServiceFactory.getService()
     }
 
-    fun getPandaService() : PandaService {
-        return if (useMockService()) mockPandaService else pandaService
+    fun getCANServiceType() : CANServiceType {
+        return canServiceFactory.getService().getType()
+    }
+
+    fun setCANServiceType(type: CANServiceType) {
+        canServiceFactory.setServiceType(type)
     }
 
     suspend fun startRequests(signalNamesToRequest: List<String>) {
-        getPandaService().startRequests(signalNamesToRequest)
+        getCANService().startRequests(signalNamesToRequest)
     }
 
     fun isRunning() : Boolean {
-        return getPandaService().isRunning()
+        return getCANService().isRunning()
     }
 
     @ExperimentalCoroutinesApi
     suspend fun shutdown() {
-        getPandaService().shutdown()
+        getCANService().shutdown()
     }
 
     @ExperimentalCoroutinesApi
     fun carState() : Flow<CarState> {
-        return getPandaService().carState();
+        return getCANService().carState();
     }
-
-
 }

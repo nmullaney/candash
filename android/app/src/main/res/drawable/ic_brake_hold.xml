@@ -1,0 +1,21 @@
+<vector android:height="53.728054dp" android:viewportHeight="625"
+    android:viewportWidth="744.49" android:width="64dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#00000000"
+        android:pathData="M374.25,312.5m-223.5,0a223.5,223.5 0,1 1,447 0a223.5,223.5 0,1 1,-447 0"
+        android:strokeColor="@color/telltale_inactive" android:strokeWidth="40"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M150.75,94c-191.5,222 0,432 0,432"
+        android:strokeColor="@color/telltale_inactive" android:strokeLineCap="round" android:strokeWidth="40"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M597.75,94c191.5,222 0,432 0,432"
+        android:strokeColor="@color/telltale_inactive" android:strokeLineCap="round" android:strokeWidth="40"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M310.25,393.32L310.25,225.65"
+        android:strokeColor="@color/telltale_inactive" android:strokeLineCap="square" android:strokeWidth="40"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M438.25,394.35L438.25,226.68"
+        android:strokeColor="@color/telltale_inactive" android:strokeLineCap="square" android:strokeWidth="40"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M320.25,309.49L428.25,310.51"
+        android:strokeColor="@color/telltale_inactive" android:strokeLineCap="square" android:strokeWidth="40"/>
+</vector>

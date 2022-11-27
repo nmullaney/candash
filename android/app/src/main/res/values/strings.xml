@@ -5,8 +5,8 @@
     <string name="panda_data_received">Panda Data Received</string>
     <string name="mph">MPH</string>
     <string name="settings">Settings</string>
-    <string name="real_server">Real Server</string>
     <string name="mock_server">Mock Server</string>
+    <string name="can_server">CANserver</string>
     <string name="ip_address">IP Address</string>
     <string name="save">Save</string>
     <string name="start">Start</string>
