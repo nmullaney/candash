@@ -809,6 +809,29 @@ class DashFragment : Fragment() {
                 }
             }
 
+            it.getValue(Constants.PINenabled)?.let { PINenabled ->
+                if (PINenabled == 1f) {
+                    if (viewModel.getValue(Constants.PINpassed) == 0f &&
+                        binding.PINWarning.visibility != View.VISIBLE &&
+                        viewModel.getValue(Constants.brakeApplied) == 2f) {
+                        binding.PINWarning.clearAnimation()
+                        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                        binding.PINWarning.startAnimation(fadeInWarning)
+                        binding.PINWarning.visibility = View.VISIBLE
+                    } else if(viewModel.getValue(Constants.PINpassed) == 1f) {
+                        binding.PINWarning.clearAnimation()
+                        val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                        if (binding.PINWarning.visibility != View.GONE) {
+                            binding.PINWarning.startAnimation(fadeOutWarning)
+                            binding.PINWarning.visibility = View.GONE
+                        }
+                    }
+                } else {
+                    binding.PINWarning.clearAnimation()
+                    binding.PINWarning.visibility = View.GONE
+                }
+            }
+
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
                 var sensingSpeedLimit = 35
                 binding.speed.scaleY = .9f
