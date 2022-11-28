@@ -906,21 +906,31 @@ class DashFragment : Fragment() {
                             binding.speedLimitRound.visibility = View.INVISIBLE
                         } else {
                             // Apologies if I wrongly assumed the rest of the world uses the round sign
-                            binding.speedLimitValueRound.text = speedLimitVal.toInt().toString()
-                            binding.speedLimitRound.visibility = View.VISIBLE
-                            binding.speedLimitUs.visibility = View.INVISIBLE
+                            if (speedLimitVal.toInt() != 155) {
+                                binding.speedLimitNolimitRound.visibility = View.INVISIBLE
+                                binding.speedLimitValueRound.text = speedLimitVal.toInt().toString()
+                                binding.speedLimitRound.visibility = View.VISIBLE
+                                binding.speedLimitUs.visibility = View.INVISIBLE
+                            } else {
+                                binding.speedLimitNolimitRound.visibility = View.VISIBLE
+                                binding.speedLimitUs.visibility = View.INVISIBLE
+                                binding.speedLimitRound.visibility = View.INVISIBLE
+                            }
                         }
                     } else {
                         binding.speedLimitUs.visibility = View.INVISIBLE
                         binding.speedLimitRound.visibility = View.INVISIBLE
+                        binding.speedLimitNolimitRound.visibility = View.INVISIBLE
                     }
                 } ?: run {
                     binding.speedLimitUs.visibility = View.INVISIBLE
                     binding.speedLimitRound.visibility = View.INVISIBLE
+                    binding.speedLimitNolimitRound.visibility = View.INVISIBLE
                 }
             } else {
                 binding.speedLimitUs.visibility = View.INVISIBLE
                 binding.speedLimitRound.visibility = View.INVISIBLE
+                binding.speedLimitNolimitRound.visibility = View.INVISIBLE
             }
 
 
