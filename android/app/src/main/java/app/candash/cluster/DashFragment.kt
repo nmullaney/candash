@@ -772,9 +772,10 @@ class DashFragment : Fragment() {
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
-                    if (autopilotHandsVal.toInt() == 3) {
-                        // 3 is basic warning that has a delay between toast and flash
-                        autopilotAnimation.startDelay = 2050L
+                    if (autopilotHandsVal.toInt() in 3..4) {
+                        // 3 and 4 start with a delay between toast and flash
+                        // Delay is really 2 seconds, but subtract a bit of lag
+                        autopilotAnimation.startDelay = 1900L
                     } else {
                         // other warnings flash immediately
                         autopilotAnimation.startDelay = 0L
@@ -795,7 +796,7 @@ class DashFragment : Fragment() {
                         }
                         autopilotAnimation.doOnEnd {
                             // Duration is from low to high, a full cycle is duration * 2
-                            it.duration = max(250L, (it.duration * 0.905).toLong())
+                            it.duration = max(250L, (it.duration * 0.9).toLong())
                             it.startDelay = 0L
                             it.start()
                         }
