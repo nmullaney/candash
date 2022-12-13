@@ -10,7 +10,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 class MockCANService : CANService {
-    private val MS_BETWEEN_REQUESTS = 3_000L
+    private val MS_BETWEEN_REQUESTS = 2_000L
     private val carStateFlow = MutableStateFlow(CarState())
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var shutdown = false
@@ -74,7 +74,7 @@ class MockCANService : CANService {
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
                 Constants.isSunUp to 1f,
-                Constants.autopilotHands to 3f,
+                Constants.autopilotHands to 1f,
                 Constants.driveConfig to 0f,
                 Constants.gearSelected to Constants.gearDrive.toFloat(),
                 Constants.stateOfCharge to 70f,
@@ -96,8 +96,6 @@ class MockCANService : CANService {
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
-                Constants.autopilotHands to 1f,
-                Constants.blindSpotLeft to 1f,
                 Constants.driveConfig to 1f,
                 Constants.stateOfCharge to 70f,
                 Constants.battAmps to -10f,
@@ -115,7 +113,6 @@ class MockCANService : CANService {
             CarState(mutableMapOf(
                 Constants.autopilotState to 1f,
                 Constants.isSunUp to 1f,
-                Constants.blindSpotLeft to 0f,
                 Constants.uiSpeed to 65.0f,
                 Constants.uiSpeedUnits to 0f,
                 Constants.frontLeftDoorState to 1f,
