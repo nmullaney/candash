@@ -339,7 +339,7 @@ class DashFragment : Fragment() {
 
         val colorFrom = requireContext().getColor(R.color.transparent_blank)
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
-        val bsColorTo = requireContext().getColor(R.color.telltale_red)
+        val bsColorTo = requireContext().getColor(R.color.very_red)
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
         val overlayGradient = GradientDrawable().apply {
