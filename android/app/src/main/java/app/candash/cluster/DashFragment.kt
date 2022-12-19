@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
@@ -16,6 +17,7 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
@@ -34,6 +36,7 @@ class DashFragment : Fragment() {
     private var lastAutopilotState: Int = 0
     private var autopilotHandsToggle: Boolean = false
     private var bsWarningToggle: Boolean = false
+    private var fcwToggle: Boolean = false
     private var blackoutToastToggle: Boolean = false
     private var showSOC: Boolean = true
     private var uiSpeedUnitsMPH: Boolean = true
@@ -301,16 +304,12 @@ class DashFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        var colorFrom: Int
         if (!prefs.prefContains(Constants.gaugeMode)) {
             prefs.setPref(Constants.gaugeMode, Constants.showFullGauges)
         }
         if (prefs.getBooleanPref(Constants.forceNightMode)) {
-            colorFrom = getBackgroundColor(0)
             // Go ahead and load dark mode instead of waiting on a signal
             setColors(0)
-        } else {
-            colorFrom = getBackgroundColor(isSunUp(viewModel))
         }
         uiSpeedUnitsMPH = prefs.getBooleanPref("uiSpeedUnitsMPH")
 
@@ -338,10 +337,21 @@ class DashFragment : Fragment() {
 
         // Power unit labels handled in formatWatts()
 
+        val colorFrom = requireContext().getColor(R.color.transparent_blank)
         val colorTo = requireContext().getColor(R.color.autopilot_blue)
-        val bsColorTo = Color.parseColor("#FFFF0000")
+        val bsColorTo = requireContext().getColor(R.color.very_red)
         val autopilotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         val blindspotAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, bsColorTo)
+        val overlayGradient = GradientDrawable().apply {
+            colors = intArrayOf(
+                colorFrom,
+                colorFrom,
+            )
+            orientation = GradientDrawable.Orientation.TOP_BOTTOM
+            gradientType = GradientDrawable.LINEAR_GRADIENT
+        }
+        binding.warningGradientOverlay.setImageDrawable(overlayGradient)
+        binding.warningGradientOverlay.visibility = View.GONE
 
         binding.blackout.visibility = View.GONE
 
@@ -761,50 +771,51 @@ class DashFragment : Fragment() {
                 binding.batttempgauge.invalidate()
             }
             it.getValue(Constants.autopilotHands)?.let { autopilotHandsVal ->
-                if (prefs.getBooleanPref(Constants.forceNightMode)) {
-                    colorFrom = getBackgroundColor(0)
-                } else {
-                    colorFrom = getBackgroundColor(isSunUp(viewModel))
-                }
                 if ((autopilotHandsVal.toInt() > 2) and (autopilotHandsVal.toInt() < 15)) {
-                    binding.APWarning.clearAnimation()
-                    if (prefs.getBooleanPref(Constants.forceNightMode)) {
-                        colorFrom = getBackgroundColor(0)
+                    if (autopilotHandsVal.toInt() in 3..4) {
+                        // 3 and 4 start with a delay between toast and flash
+                        // Delay is really 2 seconds, but subtract a bit of lag
+                        autopilotAnimation.startDelay = 1900L
                     } else {
-                        colorFrom = getBackgroundColor(isSunUp(viewModel))
+                        // other warnings flash immediately
+                        autopilotAnimation.startDelay = 0L
                     }
-                    autopilotAnimation.setObjectValues(colorFrom, colorTo)
-                    autopilotAnimation.duration = 1000
-
-                    autopilotAnimation.addUpdateListener { animator ->
-                        binding.root.setBackgroundColor(
-                            animator.animatedValue as Int
-                        )
-                    }
-                    autopilotAnimation.repeatCount = ValueAnimator.INFINITE
-                    autopilotAnimation.repeatMode = ValueAnimator.REVERSE
                     if (autopilotHandsToggle == false) {
-                        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                        binding.APWarning.startAnimation(fadeInWarning)
+                        // Warning toast:
                         binding.APWarning.visibility = View.VISIBLE
 
+                        // Gradient overlay:
+                        // autopilotAnimation is repeated in .doOnEnd
+                        // set repeatCount to 1 so that it reverses before ending
+                        autopilotAnimation.repeatCount = 1
+                        autopilotAnimation.repeatMode = ValueAnimator.REVERSE
+                        overlayGradient.orientation = GradientDrawable.Orientation.TOP_BOTTOM
+                        autopilotAnimation.addUpdateListener { animator ->
+                            overlayGradient.colors =
+                                intArrayOf(animator.animatedValue as Int, colorFrom)
+                        }
+                        autopilotAnimation.doOnEnd {
+                            // Duration is from low to high, a full cycle is duration * 2
+                            it.duration = max(250L, (it.duration * 0.9).toLong())
+                            it.startDelay = 0L
+                            it.start()
+                        }
+                        autopilotAnimation.duration = 750L
                         autopilotAnimation.start()
+                        binding.warningGradientOverlay.visibility = View.VISIBLE
                         autopilotHandsToggle = true
-                    } else {
-                        binding.APWarning.clearAnimation()
-                        binding.APWarning.visibility = View.VISIBLE
-                        binding.root.setBackgroundColor(requireContext().getColor(R.color.autopilot_blue))
                     }
                 } else {
-                    autopilotAnimation.cancel()
-                    binding.APWarning.clearAnimation()
-                    binding.root.clearAnimation()
-                    binding.root.setBackgroundColor(colorFrom)
-                    autopilotHandsToggle = false
-                    val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-                    if (binding.APWarning.visibility != View.GONE) {
-                        binding.APWarning.startAnimation(fadeOutWarning)
+                    if (autopilotHandsToggle) {
+                        // Warning toast:
                         binding.APWarning.visibility = View.GONE
+
+                        // Gradient overlay:
+                        binding.warningGradientOverlay.visibility = View.GONE
+                        autopilotAnimation.removeAllListeners()
+                        autopilotAnimation.cancel()
+                        overlayGradient.colors = intArrayOf(colorFrom, colorFrom)
+                        autopilotHandsToggle = false
                     }
                 }
             }
@@ -1177,69 +1188,111 @@ class DashFragment : Fragment() {
                 binding.odometer.visibility = View.INVISIBLE
             }
 
-            // check if AP is not engaged, otherwise blind spot supersedes the AP
-
-            if (viewModel.getValue(Constants.autopilotState) != 3f) {
+            // Check if AP is not engaged, otherwise blindspot alerts are disabled
+            if (viewModel.getValue(Constants.autopilotState)?.toInt() !in 3..7) {
                 var bsBinding = binding.BSWarningLeft
-                var colorFrom = getBackgroundColor(1)
-                if (prefs.getBooleanPref(Constants.forceNightMode)) {
-                    colorFrom = getBackgroundColor(0)
-                } else if (viewModel.getValue(Constants.isSunUp) != null) {
-                    colorFrom = getBackgroundColor(viewModel.getValue(Constants.isSunUp)!!.toInt())
-                }
+                var bsLevel = 0f
                 if (it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)) {
                     bsBinding = binding.BSWarningLeft
+                    bsLevel = it.getValue(Constants.blindSpotLeft) as Float
+                    overlayGradient.orientation = GradientDrawable.Orientation.LEFT_RIGHT
                 } else if (it.getValue(Constants.blindSpotRight) in setOf(1f, 2f)) {
                     bsBinding = binding.BSWarningRight
+                    bsLevel = it.getValue(Constants.blindSpotLeft) as Float
+                    overlayGradient.orientation = GradientDrawable.Orientation.RIGHT_LEFT
+                } else {
+                    overlayGradient.orientation = GradientDrawable.Orientation.TOP_BOTTOM
                 }
-                if (binding.BSWarningLeft.visibility == View.VISIBLE) {
-                    bsBinding = binding.BSWarningLeft
-                } else if (binding.BSWarningRight.visibility == View.VISIBLE) {
-                    bsBinding = binding.BSWarningRight
+                // Set speed based on severity
+                if (bsLevel == 2f) {
+                    // Duration is milliseconds from low to high, a full cycle is duration * 2
+                    blindspotAnimation.duration = 150
+                } else {
+                    blindspotAnimation.duration = 300
                 }
 
-                if ((it.getValue(Constants.blindSpotLeft) in setOf(1f, 2f)) or (it.getValue(
-                        Constants.blindSpotRight
-                    ) in setOf(1f, 2f))
-                ) {
+                if (bsLevel in setOf(1f, 2f)) {
                     if (bsWarningToggle == false) {
-                        blindspotAnimation.setObjectValues(colorFrom, bsColorTo)
-                        blindspotAnimation.duration = 500
-                        // milliseconds
+                        // Warning toast:
+                        bsBinding.clearAnimation()
+                        bsBinding.visibility = View.VISIBLE
 
+                        // Gradient overlay:
                         blindspotAnimation.addUpdateListener { animator ->
-                            binding.root.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
+                            overlayGradient.colors =
+                                intArrayOf(animator.animatedValue as Int, colorFrom)
                         }
                         blindspotAnimation.repeatCount = ValueAnimator.INFINITE
                         blindspotAnimation.repeatMode = ValueAnimator.REVERSE
                         blindspotAnimation.start()
-
-                        val bsFadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                        bsBinding.visibility = View.VISIBLE
-                        bsBinding.startAnimation(bsFadeIn)
+                        binding.warningGradientOverlay.visibility = View.VISIBLE
 
                         bsWarningToggle = true
                     }
 
                 } else {
+                    if (binding.BSWarningLeft.visibility == View.VISIBLE) {
+                        bsBinding = binding.BSWarningLeft
+                    } else if (binding.BSWarningRight.visibility == View.VISIBLE) {
+                        bsBinding = binding.BSWarningRight
+                    }
                     if (bsWarningToggle == true) {
-                        // reset the animation to start from it's current value and go to colorFrom
-                        blindspotAnimation.setObjectValues(blindspotAnimation.animatedValue, colorFrom)
-                        blindspotAnimation.repeatCount = 0
-                        blindspotAnimation.start()
-                        // it will end after reaching colorFrom, no need to stop/cancel it
-
+                        // Warning toast:
                         val bsFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
                         bsBinding.startAnimation(bsFadeOut)
                         bsBinding.visibility = View.GONE
 
+                        // Gradient overlay:
+                        // let it fade out naturally by setting repeat to 1 (so it reverses) then change visibility on end
+                        blindspotAnimation.doOnEnd {
+                            binding.warningGradientOverlay.visibility = View.GONE
+                            overlayGradient.colors = intArrayOf(colorFrom, colorFrom)
+                        }
+                        blindspotAnimation.repeatCount = 1
+
                         bsWarningToggle = false
                     }
                 }
-
             }
+
+            it.getValue(Constants.forwardCollisionWarning)?.let {fcwVal ->
+                if (fcwVal.toFloat() == 1f) {
+                    overlayGradient.orientation = GradientDrawable.Orientation.TOP_BOTTOM
+                    // Duration is milliseconds from low to high, a full cycle is duration * 2
+                    blindspotAnimation.duration = 125
+                    if (fcwToggle == false) {
+                        // Warning toast:
+                        binding.FCWarning.clearAnimation()
+                        binding.FCWarning.visibility = View.VISIBLE
+
+                        // Gradient overlay:
+                        // Reuse blindspot animation as it's basically the same
+                        blindspotAnimation.addUpdateListener { animator ->
+                            overlayGradient.colors =
+                                intArrayOf(animator.animatedValue as Int, colorFrom)
+                        }
+                        blindspotAnimation.doOnEnd {
+                            binding.warningGradientOverlay.visibility = View.GONE
+                            overlayGradient.colors = intArrayOf(colorFrom, colorFrom)
+                        }
+                        blindspotAnimation.repeatCount = 4
+                        blindspotAnimation.repeatMode = ValueAnimator.RESTART
+                        blindspotAnimation.reverse()
+                        binding.warningGradientOverlay.visibility = View.VISIBLE
+                        fcwToggle = true
+                    }
+                } else {
+                    if (fcwToggle == true) {
+                        // Warning toast:
+                        val fcwFadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                        binding.FCWarning.startAnimation(fcwFadeOut)
+                        binding.FCWarning.visibility = View.GONE
+                        // Gradient overlay stops by itself after a fixed repeat count
+                        fcwToggle = false
+                    }
+                }
+            }
+
             if (gearState in setOf(Constants.gearDrive, Constants.gearNeutral, Constants.gearReverse) && !prefs.getBooleanPref(Constants.hideBs)) {
                 it.getValue(Constants.leftVehicle)?.let { sensorVal ->
                     if ((sensorVal.toInt() < l1Distance) and (sensorVal.toInt() >= l2Distance)) {

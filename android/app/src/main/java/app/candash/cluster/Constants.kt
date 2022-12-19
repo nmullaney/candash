@@ -10,6 +10,7 @@ object Constants {
     const val stateOfCharge = "UI_SOC"
     const val blindSpotLeft = "BSL"
     const val blindSpotRight = "BSR"
+    const val forwardCollisionWarning = "FCW"
     const val displayBrightnessLev = "displayBrightnessLev"
     const val uiRange = "UI_Range"
     const val isSunUp = "isSunUp"

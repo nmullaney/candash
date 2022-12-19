@@ -31,4 +31,6 @@
     <color name="telltale_red">#ff3a3a</color>
     <color name="telltale_blue">#006cff</color>
     <color name="telltale_inactive">#909090</color>
+    <color name="very_red">#ff0000</color>
+    <color name="transparent_blank">#00000000</color>
 </resources>
