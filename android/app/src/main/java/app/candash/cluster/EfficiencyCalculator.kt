@@ -39,24 +39,75 @@ class EfficiencyCalculator(
         }
     }
 
-    fun updateKwhHistory(odoKm: Float) {
-        loadHistoryFromPrefs()
-        val kwhDischargeTotal = viewModel.getValue(Constants.kwhDischargeTotal)
-        val kwhChargeTotal = viewModel.getValue(Constants.kwhChargeTotal)
-        if (kwhDischargeTotal == null || kwhChargeTotal == null) {
-            return
-        }
-        updateParkedHistory(odoKm, kwhDischargeTotal, kwhChargeTotal)
-        updateHistory(odoKm, kwhDischargeTotal, kwhChargeTotal)
-    }
-
     fun getEfficiencyText(inMiles: Boolean, power: Float): String? {
+        updateKwhHistory()
         val lookBackKm = prefs.getPref(Constants.efficiencyLookBack)
         return if (lookBackKm == 0f) {
             getInstantEfficiencyText(inMiles, power)
         } else {
             getRecentEfficiencyText(inMiles, lookBackKm)
         }
+    }
+
+    private fun updateKwhHistory() {
+        loadHistoryFromPrefs()
+        val odo = viewModel.getValue(Constants.odometer)
+        val kwhDischargeTotal = viewModel.getValue(Constants.kwhDischargeTotal)
+        val kwhChargeTotal = viewModel.getValue(Constants.kwhChargeTotal)
+        if (odo == null || kwhDischargeTotal == null || kwhChargeTotal == null) {
+            return
+        }
+        updateParkedHistory(odo, kwhDischargeTotal, kwhChargeTotal)
+        updateHistory(odo, kwhDischargeTotal, kwhChargeTotal)
+    }
+
+    private fun updateParkedHistory(odo: Float, discharge: Float, charge: Float) {
+        val gear = viewModel.getValue(Constants.gearSelected) ?: Constants.gearInvalid
+        // Switching from D/R/N to Park
+        if (gear in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh == null) {
+            parkedStartKwh = Pair(discharge, charge)
+            saveHistoryToPrefs()
+            return
+        }
+
+        // Switching from Park to D/R/N
+        if (gear !in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh != null) {
+            parkedKwhHistory.add(
+                Triple(
+                    odo,
+                    discharge - parkedStartKwh!!.first,
+                    charge - parkedStartKwh!!.second
+                )
+            )
+            while (parkedKwhHistory.firstOrNull { it.first < odo - 51f } != null) {
+                parkedKwhHistory.removeFirst()
+            }
+            parkedStartKwh = null
+            saveHistoryToPrefs()
+            return
+        }
+    }
+
+    private fun updateHistory(odo: Float, discharge: Float, charge: Float) {
+        val histEndOdo = kwhHistory.lastOrNull()?.first ?: 0f
+        val newTriple = Triple(odo, discharge, charge)
+        if (odo - histEndOdo >= 1.0 || odo - histEndOdo < 0f) {
+            // We're missing too much data, start over
+            kwhHistory.clear()
+            kwhHistory.add(newTriple)
+        } else if (odo - histEndOdo >= 0.1) {
+            // We have travelled far enough, add to history
+            kwhHistory.add(newTriple)
+        } else {
+            // We haven't travelled far enough yet, return because
+            // there is no need to cleanup or save to prefs
+            return
+        }
+        // Cleanup history from more than 51 km ago
+        while (kwhHistory.firstOrNull { it.first < odo - 51f } != null) {
+            kwhHistory.removeFirst()
+        }
+        saveHistoryToPrefs()
     }
 
     private fun getInstantEfficiencyText(inMiles: Boolean, power: Float): String? {
@@ -71,8 +122,9 @@ class EfficiencyCalculator(
 
     private fun getRecentEfficiencyText(inMiles: Boolean, lookBackKm: Float): String? {
         val newOdo = viewModel.getValue(Constants.odometer)
-        val newDischarge = viewModel.getValue(Constants.kwhDischargeTotal)
-        val newCharge = viewModel.getValue(Constants.kwhChargeTotal)
+        // If parked, use the (dis)charge values from the start of park so display doesn't change
+        val newDischarge = parkedStartKwh?.first ?: viewModel.getValue(Constants.kwhDischargeTotal)
+        val newCharge = parkedStartKwh?.second ?: viewModel.getValue(Constants.kwhChargeTotal)
         if (newOdo == null || newDischarge == null || newCharge == null) {
             return null
         }
@@ -119,6 +171,8 @@ class EfficiencyCalculator(
     private fun saveHistoryToPrefs() {
         prefs.setStringPref(Constants.kwhHistory, gson.toJson(kwhHistory))
         prefs.setStringPref(Constants.parkedKwhHistory, gson.toJson(parkedKwhHistory))
+        prefs.setPref(Constants.parkedStartKwhDischarge, parkedStartKwh?.first ?: 0f)
+        prefs.setPref(Constants.parkedStartKwhCharge, parkedStartKwh?.second ?: 0f)
     }
 
     private fun loadHistoryFromPrefs() {
@@ -136,62 +190,5 @@ class EfficiencyCalculator(
                 prefs.getPref(Constants.parkedStartKwhCharge)
             )
         }
-    }
-
-    private fun updateParkedHistory(odo: Float, discharge: Float, charge: Float) {
-        val gear = viewModel.getValue(Constants.gearSelected) ?: Constants.gearInvalid
-        // Edge from Drive to Park
-        if (gear in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh == null) {
-            parkedStartKwh = Pair(discharge, charge)
-            prefs.setPref(Constants.parkedStartKwhDischarge, discharge)
-            prefs.setPref(Constants.parkedStartKwhCharge, charge)
-        }
-
-        // Edge from Park to Drive
-        if (gear !in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh != null) {
-            parkedKwhHistory.add(
-                Triple(
-                    odo,
-                    discharge - parkedStartKwh!!.first,
-                    charge - parkedStartKwh!!.second
-                )
-            )
-            while (parkedKwhHistory.firstOrNull { it.first < odo - 51f } != null) {
-                parkedKwhHistory.removeFirst()
-            }
-            saveHistoryToPrefs()
-            parkedStartKwh = null
-            prefs.setPref(Constants.parkedStartKwhDischarge, 0f)
-            prefs.setPref(Constants.parkedStartKwhCharge, 0f)
-        }
-    }
-
-    private fun updateHistory(odo: Float, discharge: Float, charge: Float) {
-        val histEndOdo = kwhHistory.lastOrNull()?.first ?: 0f
-        if (odo - histEndOdo >= 1.0 || odo - histEndOdo < 0f) {
-            // We're missing too much data, reset
-            kwhHistory.clear()
-            kwhHistory.add(
-                Triple(
-                    odo,
-                    discharge,
-                    charge
-                )
-            )
-        } else if (odo - histEndOdo >= 0.1) {
-            kwhHistory.add(
-                Triple(
-                    odo,
-                    discharge,
-                    charge
-                )
-            )
-        } else {
-            return
-        }
-        while (kwhHistory.firstOrNull { it.first < odo - 51f } != null) {
-            kwhHistory.removeFirst()
-        }
-        saveHistoryToPrefs()
     }
 }

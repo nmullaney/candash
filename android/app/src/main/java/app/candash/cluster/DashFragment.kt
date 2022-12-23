@@ -1132,7 +1132,6 @@ class DashFragment : Fragment() {
                 else {
                     binding.odometer.visibility = View.INVISIBLE
                 }
-                efficiencyCalculator.updateKwhHistory(odometerVal.toFloat())
             } ?: run {
                 binding.odometer.visibility = View.INVISIBLE
             }
