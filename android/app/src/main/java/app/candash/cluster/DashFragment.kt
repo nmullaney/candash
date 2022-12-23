@@ -1137,7 +1137,11 @@ class DashFragment : Fragment() {
             }
 
             efficiencyCalculator.getEfficiencyText(uiSpeedUnitsMPH, power)?.let { efficiencyText ->
-                if (!prefs.getBooleanPref(Constants.hideEfficiency)) {
+                if (!prefs.getBooleanPref(Constants.hideEfficiency) && gearState !in setOf(
+                        Constants.gearInvalid,
+                        Constants.gearPark
+                    )
+                ) {
                     binding.efficiency.text = efficiencyText
                     binding.efficiency.visibility = View.VISIBLE
                 } else {
