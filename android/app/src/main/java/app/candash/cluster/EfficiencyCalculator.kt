@@ -62,7 +62,7 @@ class EfficiencyCalculator(
     }
 
     private fun updateParkedHistory(odo: Float, discharge: Float, charge: Float) {
-        val gear = viewModel.getValue(Constants.gearSelected) ?: Constants.gearInvalid
+        val gear = viewModel.getValue(Constants.gearSelected)?.toInt() ?: Constants.gearInvalid
         // Switching from D/R/N to Park
         if (gear in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh == null) {
             parkedStartKwh = Pair(discharge, charge)
@@ -79,10 +79,10 @@ class EfficiencyCalculator(
                     charge - parkedStartKwh!!.second
                 )
             )
+            parkedStartKwh = null
             while (parkedKwhHistory.firstOrNull { it.first < odo - 51f } != null) {
                 parkedKwhHistory.removeFirst()
             }
-            parkedStartKwh = null
             saveHistoryToPrefs()
             return
         }
