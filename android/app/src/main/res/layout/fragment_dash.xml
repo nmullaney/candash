@@ -10,7 +10,7 @@
         android:id="@+id/speed"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="20dp"
         android:fontFamily="@font/interextralight"
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
@@ -29,6 +29,7 @@
         app:layout_constraintWidth_percent=".5"
 
         tools:text="266" />
+
     <TextView
         android:id="@+id/unit"
 
@@ -36,14 +37,14 @@
         android:layout_height="40dp"
         android:fontFamily="@font/interregular"
         android:gravity="center_horizontal|top"
-        tools:text="KM/H"
         android:textSize="30dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/speed"
         app:layout_constraintCircle="@id/speed"
         app:layout_constraintCircleAngle="180"
         app:layout_constraintCircleRadius="120dp"
-        />
+        tools:layout_editor_absoluteX="311dp"
+        tools:text="KM/H" />
 
 
     <app.candash.cluster.CircularGauge
@@ -123,10 +124,11 @@
         android:gravity="center"
 
         android:src="@drawable/ic_autopilot"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/autopilot_inactive"
@@ -136,7 +138,7 @@
         android:gravity="center"
 
         android:src="@drawable/ic_autopilot_inactive"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -562,7 +564,7 @@
         android:id="@+id/speed_limit_sign_round"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
 
         android:gravity="center"
         android:src="@drawable/speed_limit_sign_round"
@@ -594,7 +596,7 @@
         android:id="@+id/speed_limit_nolimit_round"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
 
         android:gravity="center"
         android:src="@drawable/ic_speedlimit_round_nolimit"
@@ -1824,6 +1826,5 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
