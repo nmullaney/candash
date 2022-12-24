@@ -83,6 +83,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.uiSpeedUnits, Constants.vehicleBus, Hex(0x257), 33, 1, 1f, 0f)
         insertCANSignal(Constants.blindSpotLeft, Constants.chassisBus, Hex(0x399), 4, 2, 1f, 0f, sna=3f)
         insertCANSignal(Constants.blindSpotRight, Constants.chassisBus, Hex(0x399), 6, 2, 1f, 0f, sna=3f)
+        insertCANSignal(Constants.forwardCollisionWarning, Constants.chassisBus, Hex(0x399), 22, 2, 1f, 0f, sna=3f)
         //insertCANSignal(Constants.displayBrightnessLev, Constants.vehicleBus, Hex(0x273), 32, 8, .5f, 0)
         insertCANSignal(Constants.uiRange, Constants.vehicleBus, Hex(0x33A), 0, 10, 1f, 0f)
         insertCANSignal(Constants.turnSignalLeft, Constants.vehicleBus, Hex(0x3F5), 0, 2, 1f, 0f)
