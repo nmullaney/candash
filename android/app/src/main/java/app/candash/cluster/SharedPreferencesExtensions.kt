@@ -16,6 +16,13 @@ fun SharedPreferences.setBooleanPref(name: String, value: Boolean) {
     }
 }
 
+fun SharedPreferences.setStringPref(name: String, value: String) {
+    with(this.edit()) {
+        putString(name, value)
+        apply()
+    }
+}
+
 fun SharedPreferences.prefContains(name: String): Boolean {
     return this.contains(name)
 }
@@ -26,4 +33,8 @@ fun SharedPreferences.getPref(name: String): Float {
 
 fun SharedPreferences.getBooleanPref(name: String): Boolean {
     return this.getBoolean(name, false)
+}
+
+fun SharedPreferences.getStringPref(name: String): String? {
+    return this.getString(name, null)
 }
