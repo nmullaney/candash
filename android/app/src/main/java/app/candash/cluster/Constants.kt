@@ -108,6 +108,9 @@ object Constants {
     const val tpmsSoft = "tpmsSoft"
     const val tpmsHard = "tpmsHard"
     const val odometer = "odometer"
+    const val PINenabled = "PINenabled"
+    const val PINpassed = "PINpassed"
+    const val brakeApplied = "brakeApplied"
     const val kwhDischargeTotal = "kwhDischargeTotal"
     const val kwhChargeTotal = "kwhChargeTotal"
     const val heatBattery = "heatBattery"
@@ -117,6 +120,12 @@ object Constants {
     const val brakeTempRL = "brakeTempRL"
     const val brakeTempRR = "brakeTempRR"
     const val displayOn = "displayOn"
+    const val lightSwitch = "lightSwitch"
+    const val lightsOff = 3f
+    const val lightsPark = 2f
+    const val lightsOn = 1f
+    const val lightsAuto = 0f
+    const val limRegen = "limRegen"
 
     // Prefs
     const val forceNightMode = "forceNightMode"
