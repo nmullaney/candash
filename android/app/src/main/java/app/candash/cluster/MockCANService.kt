@@ -73,6 +73,7 @@ class MockCANService : CANService {
                 )),
             CarState(mutableMapOf(
                 Constants.autopilotState to 3f,
+                Constants.turnSignalLeft to 1.0f,
                 Constants.isSunUp to 1f,
                 Constants.autopilotHands to 1f,
                 Constants.driveConfig to 0f,
@@ -89,6 +90,8 @@ class MockCANService : CANService {
                 Constants.frontLeftDoorState to 2f,
                 Constants.drlMode to Constants.drlModeDrl,
                 Constants.passengerUnbuckled to 1f,
+                Constants.limRegen to 1f,
+                Constants.brakePark to 1f,
                 Constants.chargeStatus to Constants.chargeStatusInactive,
                 Constants.mapRegion to Constants.mapEU,
                 Constants.fusedSpeedLimit to 100f

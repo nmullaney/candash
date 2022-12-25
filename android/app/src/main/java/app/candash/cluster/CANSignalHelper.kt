@@ -89,6 +89,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.turnSignalLeft, Constants.vehicleBus, Hex(0x3F5), 0, 2, 1f, 0f)
         insertCANSignal(Constants.turnSignalRight, Constants.vehicleBus, Hex(0x3F5), 2, 2, 1f, 0f)
 
+        insertCANSignal(Constants.lightSwitch, Constants.vehicleBus, Hex(0x3B3), 9, 3, 1f, 0f, sna=4f)
         insertCANSignal(Constants.lowBeamLeft, Constants.vehicleBus, Hex(0x3F5), 28, 2, 1f, 0f, sna=3f)
         insertCANSignal(Constants.highBeamRequest, Constants.vehicleBus, Hex(0x3F5), 58, 1, 1f, 0f)
         insertCANSignal(Constants.autoHighBeamEnabled, Constants.vehicleBus, Hex(0x273), 41, 1, 1f, 0f)
@@ -145,9 +146,11 @@ class CANSignalHelper {
         insertCANSignal(Constants.tpmsHard, Constants.vehicleBus, Hex(0x123), 12, 1, 1f, 0f)
 
         insertCANSignal(Constants.odometer, Constants.vehicleBus, Hex(0x3B6), 0, 32, 0.001f, 0f, sna=4294967.295f)
-        insertCANSignal(Constants.PINenabled, 0, Hex(0x3B3), 6, 1, 1f, 0f)
-        insertCANSignal(Constants.PINpassed, 0, Hex(0x3B3), 7, 1, 1f, 0f)
-        insertCANSignal(Constants.brakeApplied, 1, Hex(0x39D), 16, 2, 1f, 0f)
+        insertCANSignal(Constants.PINenabled, Constants.vehicleBus, Hex(0x3B3), 6, 1, 1f, 0f)
+        insertCANSignal(Constants.PINpassed, Constants.vehicleBus, Hex(0x3B3), 7, 1, 1f, 0f)
+        insertCANSignal(Constants.brakeApplied, Constants.chassisBus, Hex(0x39D), 16, 2, 1f, 0f)
+
+        insertCANSignal(Constants.limRegen, Constants.vehicleBus, Hex(0x36E), 8, 1, 1f, 0f)
     }
 
     private fun addToMapList(map: MutableMap<Int, MutableMap<Hex, MutableList<CANSignal>>>, bus: Int, frameId: Hex, value: CANSignal) {

@@ -116,7 +116,9 @@ class DashFragment : Fragment() {
             binding.telltaleFogFront,
             binding.telltaleFogRear,
             binding.odometer,
-            binding.battCharge
+            binding.battCharge,
+            binding.batterypercent,
+            binding.battHeat
         )
     private fun sideUIViews(): List<View> =
         listOf(
@@ -618,12 +620,7 @@ class DashFragment : Fragment() {
                 binding.PRND.visibility = View.INVISIBLE
                 gearState = Constants.gearInvalid
             }
-            /*
-            it.getValue(Constants.maxSpeedAP)?.let { maxSpeedAPVal ->
-                binding.displaymaxspeed.text = maxSpeedAPVal.toInt().toString() + " MPH"
-            }
 
-             */
             // hide performance gauges if user has elected to hide them or if splitscreen mode
             if ((prefs.getPref(Constants.gaugeMode) < Constants.showFullGauges) || isSplitScreen()) {
                 for (leftSideUIView in leftSideUIViews()) {
@@ -820,29 +817,6 @@ class DashFragment : Fragment() {
                 }
             }
 
-            it.getValue(Constants.PINenabled)?.let { PINenabled ->
-                if (PINenabled == 1f) {
-                    if (viewModel.getValue(Constants.PINpassed) == 0f &&
-                        binding.PINWarning.visibility != View.VISIBLE &&
-                        viewModel.getValue(Constants.brakeApplied) == 2f) {
-                        binding.PINWarning.clearAnimation()
-                        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
-                        binding.PINWarning.startAnimation(fadeInWarning)
-                        binding.PINWarning.visibility = View.VISIBLE
-                    } else if(viewModel.getValue(Constants.PINpassed) == 1f) {
-                        binding.PINWarning.clearAnimation()
-                        val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-                        if (binding.PINWarning.visibility != View.GONE) {
-                            binding.PINWarning.startAnimation(fadeOutWarning)
-                            binding.PINWarning.visibility = View.GONE
-                        }
-                    }
-                } else {
-                    binding.PINWarning.clearAnimation()
-                    binding.PINWarning.visibility = View.GONE
-                }
-            }
-
             it.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
                 var sensingSpeedLimit = 35
                 binding.speed.scaleY = .9f
@@ -1007,27 +981,29 @@ class DashFragment : Fragment() {
                 binding.rightTurnSignalLight.visibility = View.INVISIBLE
             }
 
-            it.getValue(Constants.drlMode)?.let { drlModeVal ->
-                if ((drlModeVal != Constants.drlModePosition) or
-                    ((gearState == Constants.gearPark) and
-                     (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOff))) {
-                    binding.telltaleDrl.visibility = View.INVISIBLE
-                } else {
+            /*
+            it.getValue(Constants.lightSwitch)?.let { lightSwitchVal ->
+                if ((lightSwitchVal == Constants.lightsPark) or
+                    (lightSwitchVal == Constants.lightsOn) or
+                    (lightSwitchVal == Constants.lightsAuto)) {
                     binding.telltaleDrl.visibility = View.VISIBLE
+                } else {
+                    binding.telltaleDrl.visibility = View.INVISIBLE
                 }
             } ?: run {
                 binding.telltaleDrl.visibility = View.INVISIBLE
             }
 
-            it.getValue(Constants.lowBeamLeft)?.let { lowBeamVal ->
-                if (lowBeamVal == Constants.lowBeamLeftOn) {
+            it.getValue(Constants.lightSwitch)?.let { lightSwitchVal ->
+                if ((lightSwitchVal == Constants.lightsOn) or
+                    (lightSwitchVal == Constants.lightsAuto)) {
                     binding.telltaleLb.visibility = View.VISIBLE
                 } else {
                     binding.telltaleLb.visibility = View.INVISIBLE
                 }
             } ?: run {
                 binding.telltaleLb.visibility = View.INVISIBLE
-            }
+            }*/
 
             it.getValue(Constants.autoHighBeamEnabled)?.let { ahbEnabledVal ->
                 if (ahbEnabledVal == 1f) {
@@ -1048,7 +1024,8 @@ class DashFragment : Fragment() {
                                 binding.telltaleHb.visibility = View.VISIBLE
                             } else {
                                 // Stalk idle, business as usual
-                                if (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOn) {
+                                if ((viewModel.getValue(Constants.lightSwitch) == Constants.lightsOn) or
+                                    (viewModel.getValue(Constants.lightSwitch) == Constants.lightsAuto)) {
                                     binding.telltaleLb.visibility = View.VISIBLE
                                 }
                                 binding.telltaleHb.visibility = View.INVISIBLE
@@ -1071,7 +1048,8 @@ class DashFragment : Fragment() {
                         binding.telltaleLb.visibility = View.INVISIBLE
                         binding.telltaleHb.visibility = View.VISIBLE
                     } else {
-                        if (viewModel.getValue(Constants.lowBeamLeft) == Constants.lowBeamLeftOn) {
+                        if ((viewModel.getValue(Constants.lightSwitch) == Constants.lightsOn) or
+                            (viewModel.getValue(Constants.lightSwitch) == Constants.lightsAuto)) {
                             binding.telltaleLb.visibility = View.VISIBLE
                         }
                         binding.telltaleHb.visibility = View.INVISIBLE
@@ -1110,24 +1088,46 @@ class DashFragment : Fragment() {
                 binding.telltaleSeatbelt.visibility = View.INVISIBLE
             }
 
-            it.getValue(Constants.heatBattery)?.let { heatBatteryVal ->
-                if (heatBatteryVal == 1f) {
-                    binding.battHeat.visibility = View.VISIBLE
-                } else {
+            if (!isSplitScreen()) {
+                it.getValue(Constants.heatBattery)?.let { heatBatteryVal ->
+                    if (heatBatteryVal == 1f) {
+                        binding.battHeat.visibility = View.VISIBLE
+                    } else {
+                        binding.battHeat.visibility = View.GONE
+                    }
+                } ?: run {
                     binding.battHeat.visibility = View.GONE
                 }
-            } ?: run {
-                binding.battHeat.visibility = View.GONE
-            }
 
-            it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
-                if (chargeStatusVal == Constants.chargeStatusActive) {
-                    binding.battCharge.visibility = View.VISIBLE
-                } else {
+                it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
+                    if (chargeStatusVal == Constants.chargeStatusActive) {
+                        binding.battCharge.visibility = View.VISIBLE
+                    } else {
+                        binding.battCharge.visibility = View.GONE
+                    }
+                } ?: run {
                     binding.battCharge.visibility = View.GONE
                 }
-            } ?: run {
+
+                binding.batterypercent.visibility = View.VISIBLE
+            } else {
+                binding.battHeat.visibility = View.GONE
                 binding.battCharge.visibility = View.GONE
+                binding.batterypercent.visibility = View.GONE
+            }
+
+            if (!isSplitScreen()) {
+                it.getValue(Constants.limRegen)?.let { limRegenVal ->
+                    if (limRegenVal == 1f) {
+                        binding.telltaleLimRegen.visibility = View.VISIBLE
+                    } else {
+                        binding.telltaleLimRegen.visibility = View.GONE
+                    }
+                } ?: run {
+                    binding.telltaleLimRegen.visibility = View.GONE
+                }
+            } else {
+                binding.telltaleLimRegen.visibility = View.GONE
             }
 
             it.getValue(Constants.brakePark)?.let { brakeParkVal ->
@@ -1156,23 +1156,28 @@ class DashFragment : Fragment() {
                 binding.telltaleBrakeHold.visibility = View.INVISIBLE
             }
 
-            it.getValue(Constants.tpmsHard)?.let { tpmsHardVal ->
-                if (tpmsHardVal == 1f) {
-                    binding.telltaleTPMSFaultHard.visibility = View.VISIBLE
-                } else {
-                    binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
-                    if(viewModel.getValue(Constants.tpmsSoft) == 1f) {
-                        binding.telltaleTPMSFaultSoft.visibility = View.VISIBLE
+            if (!isSplitScreen()) {
+                it.getValue(Constants.tpmsHard)?.let { tpmsHardVal ->
+                    if (tpmsHardVal == 1f) {
+                        binding.telltaleTPMSFaultHard.visibility = View.VISIBLE
                     } else {
-                        binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
+                        binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
+                        if (viewModel.getValue(Constants.tpmsSoft) == 1f) {
+                            binding.telltaleTPMSFaultSoft.visibility = View.VISIBLE
+                        } else {
+                            binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
+                        }
                     }
+                } ?: run {
+                    binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
+                    binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
                 }
-            } ?: run {
-                binding.telltaleTPMSFaultSoft.visibility = View.INVISIBLE
-                binding.telltaleTPMSFaultHard.visibility = View.INVISIBLE
+            } else {
+                binding.telltaleTPMSFaultSoft.visibility = View.GONE
+                binding.telltaleTPMSFaultHard.visibility = View.GONE
             }
 
-            it.getValue(Constants.odometer)?.let { odometerVal ->
+            /*it.getValue(Constants.odometer)?.let { odometerVal ->
                 if (!prefs.getBooleanPref(Constants.hideOdometer)) {
                     binding.odometer.visibility = View.VISIBLE
                     binding.odometer.text = if (uiSpeedUnitsMPH) {
@@ -1186,7 +1191,7 @@ class DashFragment : Fragment() {
                 }
             } ?: run {
                 binding.odometer.visibility = View.INVISIBLE
-            }
+            }*/
 
             // Check if AP is not engaged, otherwise blindspot alerts are disabled
             if (viewModel.getValue(Constants.autopilotState)?.toInt() !in 3..7) {
@@ -1330,6 +1335,28 @@ class DashFragment : Fragment() {
                 binding.blindSpotRight2a.visibility = View.INVISIBLE
             }
 
+            it.getValue(Constants.PINenabled)?.let { PINenabled ->
+                if (PINenabled == 1f) {
+                    if (viewModel.getValue(Constants.PINpassed) == 0f &&
+                        binding.PINWarning.visibility != View.VISIBLE &&
+                        viewModel.getValue(Constants.brakeApplied) == 2f) {
+                        binding.PINWarning.clearAnimation()
+                        val fadeInWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
+                        binding.PINWarning.startAnimation(fadeInWarning)
+                        binding.PINWarning.visibility = View.VISIBLE
+                    } else if(viewModel.getValue(Constants.PINpassed) == 1f) {
+                        binding.PINWarning.clearAnimation()
+                        val fadeOutWarning = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
+                        if (binding.PINWarning.visibility != View.GONE) {
+                            binding.PINWarning.startAnimation(fadeOutWarning)
+                            binding.PINWarning.visibility = View.GONE
+                        }
+                    }
+                } else {
+                    binding.PINWarning.clearAnimation()
+                    binding.PINWarning.visibility = View.GONE
+                }
+            }
 
             it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
                 if (!isSplitScreen()) {
@@ -1650,9 +1677,6 @@ class DashFragment : Fragment() {
             binding.coolantflowlabel.setTextColor(Color.WHITE)
             binding.coolantflowunits.setTextColor(Color.WHITE)
 
-            binding.displaymaxspeed.setTextColor(Color.WHITE)
-
-
         } else {
             binding.powerBar.setDayValue(1)
             binding.fullbattery.setDayValue(1)
@@ -1726,8 +1750,6 @@ class DashFragment : Fragment() {
             binding.coolantflow.setTextColor(Color.DKGRAY)
             binding.coolantflowlabel.setTextColor(Color.DKGRAY)
             binding.coolantflowunits.setTextColor(Color.DKGRAY)
-
-            binding.displaymaxspeed.setTextColor(Color.BLACK)
 
         }
         val wm = activity?.windowManager

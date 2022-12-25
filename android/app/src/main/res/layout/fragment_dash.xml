@@ -118,40 +118,30 @@
 
     <ImageView
         android:id="@+id/autopilot"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="9dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:gravity="center"
 
         android:src="@drawable/ic_autopilot"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/PRND"
+        app:layout_constraintStart_toStartOf="@+id/autopilot_inactive"
+        app:layout_constraintTop_toTopOf="@+id/PRND"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/autopilot_inactive"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="9dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:gravity="center"
 
         android:src="@drawable/ic_autopilot_inactive"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/PRND"
+        app:layout_constraintStart_toEndOf="@+id/PRND"
+        app:layout_constraintTop_toTopOf="@+id/PRND"
         tools:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/displaymaxspeed"
-        android:layout_width="80dp"
-        android:layout_height="30dp"
-        android:fontFamily="@font/interbold"
-        android:gravity="right"
-        android:textSize="15dp"
-        app:layout_constraintStart_toEndOf="@id/autopilot_inactive" />
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
     <!--        android:layout_width="60dp"-->
@@ -201,12 +191,12 @@
         android:id="@+id/left_turn_signal"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginLeft="48dp"
+        android:layout_marginStart="70dp"
 
+        android:layout_marginTop="14dp"
         android:src="@drawable/ic_turnleftbright"
-        android:visibility="invisible"
 
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -215,12 +205,12 @@
         android:id="@+id/right_turn_signal"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginTop="14dp"
+
+        android:layout_marginEnd="70dp"
+
 
         android:gravity="center"
-
-
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -228,9 +218,9 @@
         android:id="@+id/left_turn_signal_dark"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginLeft="48dp"
+        android:layout_marginStart="70dp"
 
+        android:layout_marginTop="14dp"
         android:src="@drawable/ic_turnleftdark"
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/guideline3"
@@ -258,7 +248,8 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/telltale_brake_park"
@@ -270,14 +261,28 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
         app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
-        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/telltale_lim_regen"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+
+        android:layout_marginStart="81dp"
+        android:src="@drawable/telltale_lim_regen"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/power_bar"
+        app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
+        app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/telltale_esp_active"
         android:layout_width="35dp"
         android:layout_height="35dp"
 
-        android:layout_marginStart="81dp"
+        android:layout_marginStart="121dp"
         android:src="@drawable/ic_esp_active"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
@@ -326,7 +331,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
 
-        android:layout_marginStart="121dp"
+        android:layout_marginStart="161dp"
         android:src="@drawable/ic_tpms_warn_soft"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
@@ -456,12 +461,12 @@
         android:id="@+id/left_turn_signal_light"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="14dp"
+
         android:src="@drawable/ic_turnleftbright"
 
         android:visibility="invisible"
-
         app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -469,14 +474,14 @@
         android:id="@+id/right_turn_signal_dark"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginTop="14dp"
+
+        android:layout_marginEnd="70dp"
 
         android:gravity="center"
-
         android:src="@drawable/ic_turnrightdark"
-        android:visibility="invisible"
 
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -484,13 +489,13 @@
         android:id="@+id/right_turn_signal_light"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="70dp"
         android:gravity="center"
-        android:visibility="invisible"
 
         android:src="@drawable/ic_turnrightbright"
 
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -499,84 +504,87 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
-        app:layout_constraintTop_toTopOf="parent"
-
         app:constraint_referenced_ids="speed_limit_sign_us,speed_limit_title_us,speed_limit_value_us"
-        />
+        app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
+
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/speed_limit_sign_us"
         android:layout_width="60dp"
         android:layout_height="72dp"
-        android:gravity="center"
-        android:visibility="visible"
-        android:src="@drawable/shadow"
+        android:layout_marginTop="4dp"
 
-        app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center"
+        android:src="@drawable/shadow"
+        app:layout_constraintEnd_toEndOf="@+id/speed"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/speed"
+        app:layout_constraintTop_toTopOf="@+id/speed"
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/speed_limit_title_us"
         android:layout_width="46dp"
         android:layout_height="40dp"
-        android:gravity="center"
-        android:visibility="visible"
-
-        android:text="SPEED LIMIT"
         android:fontFamily="@font/montserratbold"
+        android:gravity="center"
+
+        android:lineSpacingMultiplier=".78"
+        android:text="SPEED LIMIT"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="10dp"
-        android:lineSpacingMultiplier=".78"
 
         app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
         app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
-        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_us" />
+        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_us"
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/speed_limit_value_us"
         android:layout_width="46dp"
         android:layout_height="51dp"
+        android:fontFamily="@font/intersemibold"
         android:gravity="center"
-        android:visibility="visible"
 
         android:text="45"
-        android:fontFamily="@font/intersemibold"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="24dp"
 
+        app:layout_constraintBottom_toBottomOf="@id/speed_limit_sign_us"
         app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_us"
         app:layout_constraintRight_toRightOf="@id/speed_limit_sign_us"
-        app:layout_constraintBottom_toBottomOf="@id/speed_limit_sign_us" />
+        tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/speed_limit_round"
         android:layout_width="0dp"
         android:layout_height="0dp"
 
-        android:visibility="visible"
         app:constraint_referenced_ids="speed_limit_sign_round,speed_limit_value_round"
-        tools:layout_editor_absoluteX="445dp" />
+        tools:layout_editor_absoluteX="445dp"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/speed_limit_sign_round"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="2dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
 
         android:gravity="center"
         android:src="@drawable/speed_limit_sign_round"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/autopilot"
-        app:layout_constraintStart_toStartOf="@+id/autopilot"
-        app:layout_constraintTop_toBottomOf="@+id/autopilot" />
+        app:layout_constraintEnd_toEndOf="@+id/speed"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="@+id/speed"
+        app:layout_constraintTop_toTopOf="@+id/speed"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/speed_limit_value_round"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:fontFamily="@font/intersemibold"
         android:gravity="center"
 
@@ -585,25 +593,25 @@
         android:textAlignment="center"
         android:textColor="@color/black"
 
-        android:textSize="20dp"
-        android:visibility="visible"
+        android:textSize="23dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/speed_limit_sign_round"
         app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_round"
         app:layout_constraintRight_toRightOf="@id/speed_limit_sign_round"
-        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_round" />
+        app:layout_constraintTop_toTopOf="@id/speed_limit_sign_round"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/speed_limit_nolimit_round"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="2dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
 
         android:gravity="center"
         android:src="@drawable/ic_speedlimit_round_nolimit"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/autopilot"
-        app:layout_constraintStart_toStartOf="@+id/autopilot"
-        app:layout_constraintTop_toBottomOf="@+id/autopilot" />
+        app:layout_constraintEnd_toEndOf="@+id/speed"
+        app:layout_constraintStart_toStartOf="@+id/speed"
+        app:layout_constraintTop_toTopOf="@+id/speed" />
 
     <TextView
         android:id="@+id/PRND"
@@ -654,6 +662,7 @@
 
 
         android:textSize="14dp"
+        android:visibility="gone"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/PRND"
         app:layout_constraintStart_toEndOf="@+id/PRND"
