@@ -111,6 +111,8 @@ object Constants {
     const val PINenabled = "PINenabled"
     const val PINpassed = "PINpassed"
     const val brakeApplied = "brakeApplied"
+    const val kwhDischargeTotal = "kwhDischargeTotal"
+    const val kwhChargeTotal = "kwhChargeTotal"
     const val heatBattery = "heatBattery"
     const val conditionalSpeedLimit = "conditionalSpeedLimit"
     const val brakeTempFL = "brakeTempFL"
@@ -141,5 +143,12 @@ object Constants {
     const val powerUnitHp = 1f
     const val powerUnitPs = 2f
     const val torqueInLbfFt = "torqueInLbfFt"
-    const val hideInstEfficiency = "hideInstEfficiency"
+    const val hideEfficiency = "hideEfficiency"
+    const val efficiencyLookBack = "efficiencyLookBack"
+
+    // For efficiency history in prefs
+    const val kwhHistory = "kwhHistory"
+    const val parkedKwhHistory = "parkedKwhHistory"
+    const val parkedStartKwhDischarge = "parkedStartKwhDischarge"
+    const val parkedStartKwhCharge = "parkedStartKwhCharge"
 }
