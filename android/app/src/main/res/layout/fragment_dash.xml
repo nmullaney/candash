@@ -125,22 +125,9 @@
         android:src="@drawable/ic_autopilot"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/PRND"
-        app:layout_constraintStart_toStartOf="@+id/autopilot_inactive"
-        app:layout_constraintTop_toTopOf="@+id/PRND"
-        tools:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/autopilot_inactive"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:gravity="center"
-
-        android:src="@drawable/ic_autopilot_inactive"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/PRND"
         app:layout_constraintStart_toEndOf="@+id/PRND"
         app:layout_constraintTop_toTopOf="@+id/PRND"
-        tools:visibility="invisible" />
+        tools:visibility="visible" />
 
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
@@ -621,32 +608,14 @@
         android:fontFamily="@font/interbold"
         android:gravity="center|center_vertical"
         android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="P  R  N  D"
         android:textAlignment="center"
         android:textColor="@color/prnd_not_selected"
         android:textSize="20dp"
 
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/batterypercent"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="@font/interbold"
-
-        android:gravity="end|top"
-        android:paddingRight="5dp"
-        android:paddingBottom="0dp"
-        android:text="377 km"
-
-
-        android:textSize="20dp"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toBottomOf="@id/deadbattery"
-        app:layout_constraintEnd_toStartOf="@id/deadbattery" />
 
     <TextView
         android:id="@+id/odometer"
@@ -665,20 +634,28 @@
         android:visibility="gone"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@+id/PRND"
-        app:layout_constraintStart_toEndOf="@+id/PRND"
+        app:layout_constraintStart_toEndOf="@+id/autopilot"
         app:layout_constraintTop_toTopOf="@+id/PRND" />
 
-    <ImageView
-        android:id="@+id/deadbattery"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="16.5dp"
-        android:gravity="center|center"
-        android:paddingTop="0dp"
-        android:paddingRight="20dp"
-        android:src="@drawable/ic_deadbattery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/batterypercent"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/interbold"
+
+        android:gravity="end|top"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="0dp"
+        android:text="377 km"
+
+
+        android:textSize="20dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@id/battery"
+        app:layout_constraintEnd_toStartOf="@id/battery" />
 
     <ImageView
         android:id="@+id/batt_charge"
@@ -688,7 +665,7 @@
         android:gravity="center|center"
         android:paddingTop="0dp"
         android:src="@drawable/ic_batt_charging"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/batterypercent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -697,25 +674,35 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginTop="16.5dp"
-        android:layout_marginEnd="8dp"
         android:gravity="center|center"
         android:paddingTop="0dp"
         android:src="@drawable/ic_batt_heating"
-        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/batt_charge"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <app.candash.cluster.BatteryGauge
-        android:id="@+id/fullbattery"
-        android:layout_width="70dp"
+    <ImageView
+        android:id="@+id/battery"
+        android:layout_width="50dp"
         android:layout_height="25dp"
         android:layout_marginTop="16.5dp"
         android:gravity="center|center"
         android:paddingTop="0dp"
-        android:paddingRight="20dp"
-        android:src="@drawable/ic_fullbattery"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_deadbattery"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <app.candash.cluster.BatteryGauge
+        android:id="@+id/batteryOverlay"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:gravity="center|center"
+        android:paddingTop="0dp"
+        android:src="@drawable/ic_fullbattery"
+        app:layout_constraintEnd_toEndOf="@id/battery"
         app:layout_constraintTop_toTopOf="parent" />
 
 
