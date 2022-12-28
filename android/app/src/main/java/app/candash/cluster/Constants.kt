@@ -70,6 +70,7 @@ object Constants {
     const val mapME = 8f
     const val mapHK = 9f
     const val mapMO = 10f
+    const val driverOrientation = "driverOrientation"
     const val awd = 1f
     const val rwd = 0f
     const val frontTemp = "frontTemp"

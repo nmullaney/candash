@@ -665,7 +665,7 @@
         android:gravity="center|center"
         android:paddingTop="0dp"
         android:src="@drawable/ic_batt_charging"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/batterypercent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -677,9 +677,9 @@
         android:gravity="center|center"
         android:paddingTop="0dp"
         android:src="@drawable/ic_batt_heating"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/batt_charge"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/battery"
@@ -729,7 +729,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
 
@@ -742,7 +742,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
 
@@ -755,7 +755,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
 
@@ -768,7 +768,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
 
@@ -782,7 +782,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
 
@@ -795,7 +795,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_percent=".5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/modely"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent=".4" />
 

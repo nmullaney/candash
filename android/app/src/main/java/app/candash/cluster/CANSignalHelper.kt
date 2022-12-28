@@ -123,6 +123,7 @@ class CANSignalHelper {
         insertCANSignal(Constants.battBrickMin, Constants.vehicleBus, Hex(0x332), 24, 8, .5f, -40f, 2, 0)
         insertCANSignal(Constants.driveConfig, Constants.vehicleBus, Hex(0x7FF), 10, 1, 1f, 0f, 8, 1)
         insertCANSignal(Constants.mapRegion, Constants.vehicleBus, Hex(0x7FF), 8, 4, 1f, 0f, 8, 3)
+        insertCANSignal(Constants.driverOrientation, Constants.vehicleBus, Hex(0x211), 40, 3, 1f, 0f, sna=7f)
         insertCANSignal(Constants.frontTemp, Constants.vehicleBus, Hex(0x396), 24, 8, 1f, -40f)
         insertCANSignal(Constants.rearTemp, Constants.vehicleBus, Hex(0x395), 24, 8, 1f, -40f)
         insertCANSignal(Constants.coolantFlow, Constants.vehicleBus, Hex(0x241), 22, 9, .1f, 0f)

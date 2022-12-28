@@ -52,6 +52,7 @@ class DashFragment : Fragment() {
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearInvalid
     private var mapRegion: Float = 0f
+    private var driverOrientRHD: Boolean = false
     private lateinit var prefs: SharedPreferences
 
 
@@ -283,19 +284,6 @@ class DashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
-        // TODO mirror these if RHD market
-        setHorizontalConstraints(
-            listOf(
-                binding.PRND,
-                binding.autopilot,
-                null,
-                binding.battHeat,
-                binding.battCharge,
-                binding.batterypercent,
-                binding.battery
-            )
-        )
-
         if (!prefs.prefContains(Constants.gaugeMode)) {
             prefs.setPref(Constants.gaugeMode, Constants.showFullGauges)
         }
@@ -359,6 +347,11 @@ class DashFragment : Fragment() {
             }
         }
 
+        // Mirror some layout elements if RHD market vehicle
+        viewModel.getValue(Constants.driverOrientation)?.let { driverOrientVal ->
+            driverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+        }
+        setLayoutOrder(driverOrientRHD)
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
@@ -489,6 +482,15 @@ class DashFragment : Fragment() {
             }
         }
         viewModel.carState().observe(viewLifecycleOwner) { it ->
+            // Mirror some layout elements if RHD market vehicle
+            it.getValue(Constants.driverOrientation)?.let { driverOrientVal ->
+                val newDriverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+                if (newDriverOrientRHD != driverOrientRHD) {
+                    driverOrientRHD = newDriverOrientRHD
+                    setLayoutOrder(driverOrientRHD)
+                }
+            }
+
             // set display night/day mode based on reported car status
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
@@ -631,14 +633,15 @@ class DashFragment : Fragment() {
                 }
             } else {
                 //do not pop up left side gauges even if enabled if any door is open or if is a
-                if (!doorOpen) {
+                if (!doorOpen || driverOrientRHD) {
                     for (leftSideUIView in leftSideUIViews()) {
                         leftSideUIView.visibility = View.VISIBLE
                     }
                 }
-
-                for (rightSideUIView in rightSideUIViews()) {
-                    rightSideUIView.visibility = View.VISIBLE
+                if (!doorOpen || !driverOrientRHD) {
+                    for (rightSideUIView in rightSideUIViews()) {
+                        rightSideUIView.visibility = View.VISIBLE
+                    }
                 }
             }
 
@@ -1610,6 +1613,21 @@ class DashFragment : Fragment() {
         }
     }
 
+    private fun setLayoutOrder(RHD: Boolean) {
+        val topBar = listOf(
+            binding.PRND,
+            binding.autopilot,
+            null,
+            binding.battHeat,
+            binding.battCharge,
+            binding.batterypercent,
+            binding.battery
+        )
+        val doors = listOf(binding.modely, null)
+        setHorizontalConstraints(topBar, RHD)
+        setHorizontalConstraints(doors, RHD)
+    }
+
     /**
      * This sets the constraints of a list of views to order them from left to right.
      *
@@ -1619,12 +1637,13 @@ class DashFragment : Fragment() {
      *
      * @param views The list of views (with optional null) to order horizontally
      */
-    fun setHorizontalConstraints(views: List<View?>) {
-        var after_break = false
-        for (i in views.indices) {
-            val view = views[i]
+    private fun setHorizontalConstraints(views: List<View?>, reverse: Boolean = false) {
+        var afterBreak = false
+        val viewsList = if (reverse) {views.reversed()} else {views}
+        for (i in viewsList.indices) {
+            val view = viewsList[i]
             if (view == null) {
-                after_break = true
+                afterBreak = true
                 continue
             }
             // First clear existing start and end constraints
@@ -1639,20 +1658,20 @@ class DashFragment : Fragment() {
                 view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
                     startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                 }
-            } else if (i == views.size - 1 && after_break) {
+            } else if (i == viewsList.size - 1 && afterBreak) {
                 // Set the end constraint of the last view to the parent layout
                 view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
                     endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                 }
-            } else if (after_break) {
+            } else if (afterBreak) {
                 // Set the end constraint of the current view to the start constraint of the next view
                 view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
-                    endToStart = views[i + 1]!!.id
+                    endToStart = viewsList[i + 1]!!.id
                 }
             } else {
                 // Set the start constraint of the current view to the end constraint of the previous view
                 view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
-                    startToEnd = views[i - 1]!!.id
+                    startToEnd = viewsList[i - 1]!!.id
                 }
             }
         }
@@ -1850,8 +1869,9 @@ class DashFragment : Fragment() {
         fadeIn.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 if (prefs.getPref(Constants.gaugeMode) == Constants.showFullGauges) {
-                    for (leftSideUIView in leftSideUIViews()) {
-                        leftSideUIView.visibility = View.INVISIBLE
+                    val viewsToHide = if (driverOrientRHD) {rightSideUIViews()} else {leftSideUIViews()}
+                    for (view in viewsToHide) {
+                        view.visibility = View.INVISIBLE
                     }
 
                 }
@@ -1929,8 +1949,9 @@ class DashFragment : Fragment() {
                         binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
                         if (prefs.getPref(Constants.gaugeMode) == Constants.showFullGauges) {
-                            for (leftSideUIView in leftSideUIViews()) {
-                                leftSideUIView.visibility = View.VISIBLE
+                            val viewsToShow = if (driverOrientRHD) {rightSideUIViews()} else {leftSideUIViews()}
+                            for (view in viewsToShow) {
+                                view.visibility = View.VISIBLE
                             }
                         }
                     }
