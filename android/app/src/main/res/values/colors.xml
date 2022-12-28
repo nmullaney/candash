@@ -20,6 +20,7 @@
     <color name="day_background">#FFEEEEEE</color>
     <color name="night_background">#FF000000</color>
     <color name="autopilot_blue">#FF0048FF</color>
+    <color name="autopilot_inactive">#FF808080</color>
     <color name="start_color">#4CAF50</color>
     <color name="stop_color">#F44336</color>
     <color name="light_gray">#EEEEEE</color>

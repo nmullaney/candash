@@ -72,7 +72,16 @@ class CircularGauge @JvmOverloads constructor(
         paint.style = Paint.Style.STROKE
         rect.inset(0f,-paint.strokeWidth/2);
         paint.setColorFilter(backgroundLineColor)
-        canvas?.drawArc(0f+paint.strokeWidth/2,  0f + paint.strokeWidth/2, width.toFloat() - paint.strokeWidth/2, height.toFloat() - paint.strokeWidth/2 , 90f, 360f, false, paint)
+        canvas.drawArc(
+            0f + paint.strokeWidth / 2,
+            0f + paint.strokeWidth / 2,
+            width - paint.strokeWidth / 2,
+            height - paint.strokeWidth / 2,
+            90f,
+            360f,
+            false,
+            paint
+        )
 
         if (powerWidth < 0f) {
             paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
@@ -84,18 +93,18 @@ class CircularGauge @JvmOverloads constructor(
             paint.strokeCap = Paint.Cap.ROUND
         }
         if (powerWidth != 0f) {
-            canvas?.drawArc(
+            canvas.drawArc(
                 0f + paint.strokeWidth / 2,
                 0f + paint.strokeWidth / 2,
-                width.toFloat() - paint.strokeWidth / 2,
-                height.toFloat() - paint.strokeWidth / 2,
+                width - paint.strokeWidth / 2,
+                height - paint.strokeWidth / 2,
                 90f,
                 powerWidth,
                 false,
                 paint
             )
         }
-        //canvas?.drawArc(rect, 0f, 360f, true, paint)
+        //canvas.drawArc(rect, 0f, 360f, true, paint)
 
 
     }
@@ -104,6 +113,7 @@ class CircularGauge @JvmOverloads constructor(
         charging = charge
         strokeWidthPct = sWidthPct
 
+        this.invalidate()
     }
 
 
@@ -115,8 +125,7 @@ class CircularGauge @JvmOverloads constructor(
         } else {
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-
-
         }
+        this.invalidate()
     }
 }

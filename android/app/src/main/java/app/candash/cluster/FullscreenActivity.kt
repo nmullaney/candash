@@ -101,7 +101,7 @@ class FullscreenActivity : AppCompatActivity() {
             val batteryPct: Float? = batteryStatus?.let { intent ->
                 val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
                 val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-                level * 100 / scale.toFloat()
+                level * 100f / scale
             }
             val lowBattery: Boolean = batteryPct == null || batteryPct <= 20f
 

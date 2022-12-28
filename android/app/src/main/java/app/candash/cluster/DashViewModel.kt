@@ -7,29 +7,22 @@ import android.net.nsd.NsdServiceInfo
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.net.InetAddress
-import java.sql.Timestamp
-import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 @HiltViewModel
 class DashViewModel @Inject constructor(private val dashRepository: DashRepository, private val sharedPreferences: SharedPreferences, @ApplicationContext context: Context) : ViewModel() {
     private val TAG = DashViewModel::class.java.simpleName
 
-    private var carStateData: MutableLiveData<CarState> = MutableLiveData()
+    var carState = dashRepository.carState()
+    var liveCarState = dashRepository.liveCarState()
     private var viewToShowData: MutableLiveData<String> = MutableLiveData()
     private var zeroconfHost = MutableLiveData<String>()
     private var nsdManager = (context?.getSystemService(Context.NSD_SERVICE) as NsdManager?)!!
-    private var carStateHistory: ConcurrentHashMap<String, TimestampedValue> = ConcurrentHashMap()
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var isSplitScreen = MutableLiveData<Boolean>()
     private var renderWidth : Float = 100f
@@ -39,14 +32,6 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         get() = _zeroConfIpAddress
     private var discoveryListener : NsdManager.DiscoveryListener? = null
     private var signalsToRequest : List <String> = arrayListOf()
-
-    private lateinit var carStateJob: Job
-
-    fun useMockServer() : Boolean = sharedPreferences.getBoolean(Constants.useMockServerPrefKey, false)
-
-    fun setUseMockServer(useMockServer: Boolean) {
-        sharedPreferences.edit().putBoolean(Constants.useMockServerPrefKey, useMockServer).apply()
-    }
 
     fun getCurrentCANServiceIndex() : Int {
         return dashRepository.getCANServiceType().ordinal
@@ -73,15 +58,15 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     fun saveSettings(selectedServicePosition: Int, ipAddress: String) {
         shutdown()
-        cancelCarStateJob()
         setCANServiceByIndex(selectedServicePosition)
         setServerIpAddress(ipAddress)
-        startUp(arrayListOf())
-        startCarStateJob()
+        restart()
     }
 
     // An empty list will return all defined signals
     fun startUp(signalNamesToRequest: List<String> = arrayListOf()) {
+        carState = dashRepository.carState()
+        liveCarState = dashRepository.liveCarState()
         signalsToRequest = signalNamesToRequest
         viewModelScope.launch {
             dashRepository.startRequests(signalNamesToRequest)
@@ -89,9 +74,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     fun restart(){
-        viewModelScope.launch {
-            dashRepository.startRequests(signalsToRequest)
+        if (isRunning()) {
+            shutdown()
         }
+        startUp(signalsToRequest)
     }
 
     fun isRunning() : Boolean{
@@ -99,75 +85,31 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     fun shutdown() {
-
         viewModelScope.launch {
             dashRepository.shutdown()
         }
     }
 
-    fun carState() : LiveData<CarState> {
-        startCarStateJob()
-        return carStateData
-    }
-
     fun clearCarState() {
-        if (carStateData.value != null) {
-            carStateData.value = CarState()
+        dashRepository.clearCarState()
+    }
+
+    fun onSignal(owner: LifecycleOwner, signal: String, onChanged: (value: Float?) -> Unit) {
+        liveCarState[signal]!!.observe(owner) { onChanged(it) }
+    }
+
+    fun onSomeSignals(owner: LifecycleOwner, signals: List<String>, onChanged: (carState: CarState) -> Unit) {
+        signals.forEach { signal ->
+            liveCarState[signal]!!.observe(owner) { onChanged(carState) }
         }
     }
 
-    fun getValue(key: String): Float? {
-        if (carStateHistory[key] != null){
-            return carStateHistory[key]?.value
-        }else {
-            return null
+    fun onAllSignals(owner: LifecycleOwner, onChanged: (carState: CarState) -> Unit) {
+        liveCarState.forEach {
+            it.value.observe(owner) { onChanged(carState) }
         }
     }
 
-    fun getTimestamp(key: String): Timestamp? {
-        if (carStateHistory[key] != null){
-            return carStateHistory[key]?.timestamp
-        }else {
-            return null
-        }
-    }
-
-    fun cancelCarStateJob() {
-        if (::carStateJob.isInitialized) {
-            carStateJob.cancel()
-        }
-    }
-
-    fun startCarStateJob() {
-        carStateJob = viewModelScope.launch {
-            dashRepository.carState().collect {
-                //var oldTimestamp = Timestamp(System.currentTimeMillis())
-                //var oldValue = 0f
-                for ((k, v) in it.carData){
-                    /*
-                    carStateHistory()[k]?.let { carStateItemVal ->
-                        oldTimestamp = carStateItemVal.timestamp
-                        oldValue = carStateItemVal.value
-                    }
-
-                     */
-                    var ts = TimestampedValue(k, v.toFloat(), Timestamp(System.currentTimeMillis()) )
-                    carStateHistory()[k] = ts
-                    //Log.d(TAG, "Appending to history:"+k + v.toString())
-                    /*
-                    if (k == Constants.turnSignalLeft && v != oldValue) {
-                        var timeDiff = ts.timestamp.time - oldTimestamp.time
-                        Log.d(TAG, "leftTurnSignal: " + v.toString() + "interval (ms): " + timeDiff.toString())
-
-                    }
-
-                     */
-                }
-                carStateData.postValue(it)
-
-            }
-        }
-    }
     fun getScreenWidth(): Int {
         var displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -191,9 +133,6 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         return isSplitScreen
     }
 
-    fun carStateHistory() : ConcurrentHashMap<String, TimestampedValue> {
-        return carStateHistory
-    }
     fun fragmentNameToShow() : LiveData<String> = viewToShowData
 
     fun switchToDashFragment() {

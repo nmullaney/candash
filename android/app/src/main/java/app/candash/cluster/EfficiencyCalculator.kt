@@ -17,12 +17,8 @@ class EfficiencyCalculator(
     private val tripleFloatListType =
         object : TypeToken<MutableList<Triple<Float, Float, Float>>>() {}.type
 
-    private val Float.miToKm: Float
-        get() = (this / .621371).toFloat()
-    private val Float.kmToMi: Float
-        get() = (this * .621371).toFloat()
-
-    fun changeLookBack(inMiles: Boolean): String {
+    fun changeLookBack(): String {
+        val inMiles = prefs.getBooleanPref(Constants.uiSpeedUnitsMPH)
         val old = prefs.getPref(Constants.efficiencyLookBack)
         val options = if (inMiles) {
             listOf(0f, 5f.miToKm, 15f.miToKm, 30f.miToKm)
@@ -39,8 +35,9 @@ class EfficiencyCalculator(
         }
     }
 
-    fun getEfficiencyText(inMiles: Boolean, power: Float): String? {
-        updateKwhHistory()
+    fun getEfficiencyText(): String? {
+        val inMiles = prefs.getBooleanPref(Constants.uiSpeedUnitsMPH)
+        val power = viewModel.carState[SName.power] ?: 0f
         val lookBackKm = prefs.getPref(Constants.efficiencyLookBack)
         return if (lookBackKm == 0f) {
             getInstantEfficiencyText(inMiles, power)
@@ -49,11 +46,11 @@ class EfficiencyCalculator(
         }
     }
 
-    private fun updateKwhHistory() {
+    fun updateKwhHistory() {
         loadHistoryFromPrefs()
-        val odo = viewModel.getValue(Constants.odometer)
-        val kwhDischargeTotal = viewModel.getValue(Constants.kwhDischargeTotal)
-        val kwhChargeTotal = viewModel.getValue(Constants.kwhChargeTotal)
+        val odo = viewModel.carState.get(SName.odometer)
+        val kwhDischargeTotal = viewModel.carState.get(SName.kwhDischargeTotal)
+        val kwhChargeTotal = viewModel.carState.get(SName.kwhChargeTotal)
         if (odo == null || kwhDischargeTotal == null || kwhChargeTotal == null) {
             return
         }
@@ -62,16 +59,16 @@ class EfficiencyCalculator(
     }
 
     private fun updateParkedHistory(odo: Float, discharge: Float, charge: Float) {
-        val gear = viewModel.getValue(Constants.gearSelected)?.toInt() ?: Constants.gearInvalid
+        val gear = viewModel.carState.get(SName.gearSelected)?.toInt() ?: SVal.gearInvalid
         // Switching from D/R/N to Park
-        if (gear in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh == null) {
+        if (gear in setOf(SVal.gearPark, SVal.gearInvalid) && parkedStartKwh == null) {
             parkedStartKwh = Pair(discharge, charge)
             saveHistoryToPrefs()
             return
         }
 
         // Switching from Park to D/R/N
-        if (gear !in setOf(Constants.gearPark, Constants.gearInvalid) && parkedStartKwh != null) {
+        if (gear !in setOf(SVal.gearPark, SVal.gearInvalid) && parkedStartKwh != null) {
             parkedKwhHistory.add(
                 Triple(
                     odo,
@@ -111,7 +108,7 @@ class EfficiencyCalculator(
     }
 
     private fun getInstantEfficiencyText(inMiles: Boolean, power: Float): String? {
-        val speed = viewModel.getValue(Constants.uiSpeed) ?: return null
+        val speed = viewModel.carState.get(SName.uiSpeed) ?: return null
         val instantEfficiency = power / speed / 1000f
         return if (inMiles) {
             "%.2f kWh/mi".format(instantEfficiency)
@@ -121,10 +118,10 @@ class EfficiencyCalculator(
     }
 
     private fun getRecentEfficiencyText(inMiles: Boolean, lookBackKm: Float): String? {
-        val newOdo = viewModel.getValue(Constants.odometer)
+        val newOdo = viewModel.carState.get(SName.odometer)
         // If parked, use the (dis)charge values from the start of park so display doesn't change
-        val newDischarge = parkedStartKwh?.first ?: viewModel.getValue(Constants.kwhDischargeTotal)
-        val newCharge = parkedStartKwh?.second ?: viewModel.getValue(Constants.kwhChargeTotal)
+        val newDischarge = parkedStartKwh?.first ?: viewModel.carState.get(SName.kwhDischargeTotal)
+        val newCharge = parkedStartKwh?.second ?: viewModel.carState.get(SName.kwhChargeTotal)
         if (newOdo == null || newDischarge == null || newCharge == null) {
             return null
         }

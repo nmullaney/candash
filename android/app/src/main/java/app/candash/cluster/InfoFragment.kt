@@ -17,7 +17,9 @@ import androidx.core.text.buildSpannedString
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentInfoBinding
+import kotlinx.coroutines.yield
 import java.io.File
+import java.lang.Thread.sleep
 
 
 class InfoFragment() : Fragment() {
@@ -57,9 +59,8 @@ class InfoFragment() : Fragment() {
         }
         binding.startButton.setOnClickListener {
             if (!viewModel.isRunning()){
-                viewModel.startUp(signalNames())
+                viewModel.startUp()
             }
-
         }
 
         binding.stopButton.setOnClickListener {
@@ -89,12 +90,10 @@ class InfoFragment() : Fragment() {
             viewModel.clearCarState()
         }
 
-        viewModel.carState().observe(viewLifecycleOwner) { carState ->
+        viewModel.onAllSignals(viewLifecycleOwner) {
             //logCarState(carState)
-
-
             binding.infoText.text = buildSpannedString {
-                val sortedMap = carState.carData.toSortedMap()
+                val sortedMap = it.toSortedMap()
                 sortedMap.forEach() { entry ->
                     bold {
                         append(entry.key)
@@ -107,9 +106,10 @@ class InfoFragment() : Fragment() {
         }
     }
 
-    fun getSelectedCANServiceIndex() : Int {
+    private fun getSelectedCANServiceIndex() : Int {
         return binding.chooseService.selectedItemPosition
     }
+
     private fun setupZeroConfListener() {
         viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
             if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
@@ -118,15 +118,10 @@ class InfoFragment() : Fragment() {
         }
     }
 
-
     override fun onResume() {
         super.onResume()
         setupZeroConfListener()
         viewModel.startDiscoveryService()
-    }
-
-    fun signalNames() : List<String> {
-        return arrayListOf()
     }
 
     override fun onPause() {
@@ -135,18 +130,18 @@ class InfoFragment() : Fragment() {
 
     }
 
-    fun switchToDash() : Boolean {
+    private fun switchToDash() : Boolean {
         viewModel.switchToDashFragment()
         return true
     }
 
-    fun switchToSettings() : Boolean {
+    private fun switchToSettings() : Boolean {
         viewModel.switchToSettingsFragment()
         return true
     }
     fun logCarState(carState: CarState) {
-        Log.d(TAG, "Car state size: " + carState.carData.size)
-        carState.carData.forEach {
+        Log.d(TAG, "Car state size: " + carState.size)
+        carState.forEach {
             Log.d(TAG, "Name: " + it.key + ", Value: " + it.value)
         }
     }

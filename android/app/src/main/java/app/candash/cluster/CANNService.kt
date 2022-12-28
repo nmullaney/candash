@@ -3,9 +3,6 @@ package app.candash.cluster
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import okhttp3.*
 import okio.ByteString
@@ -15,24 +12,12 @@ import kotlin.random.Random
 class CANNService @Inject constructor(val okHttpClient: OkHttpClient) {
     private val TAG = CANNService::class.java.simpleName
 
-    private lateinit var speedFlow : Flow<Int>
-    private val random = Random
     private var shutdown = false
 
     init {
         GlobalScope.launch(Dispatchers.IO) {
             setup()
         }
-    }
-
-    fun speed() : Flow<Int> {
-        speedFlow = flow {
-            while(true) {
-                emit(random.nextInt(0, 60))
-                delay(1000)
-            }
-        }
-        return speedFlow
     }
 
     fun setup() {
