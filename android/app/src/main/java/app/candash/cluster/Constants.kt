@@ -146,6 +146,8 @@ object Constants {
     const val torqueInLbfFt = "torqueInLbfFt"
     const val hideEfficiency = "hideEfficiency"
     const val efficiencyLookBack = "efficiencyLookBack"
+    const val detectedRHD = "detectedRHD"
+    const val forceRHD = "forceRHD"
 
     // For efficiency history in prefs
     const val kwhHistory = "kwhHistory"

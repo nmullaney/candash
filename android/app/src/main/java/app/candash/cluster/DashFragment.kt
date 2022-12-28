@@ -350,8 +350,14 @@ class DashFragment : Fragment() {
         // Mirror some layout elements if RHD market vehicle
         viewModel.getValue(Constants.driverOrientation)?.let { driverOrientVal ->
             driverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+            prefs.setBooleanPref(Constants.detectedRHD, driverOrientRHD)
+        } ?: run {
+            driverOrientRHD = prefs.getBooleanPref(Constants.detectedRHD)
         }
-        setLayoutOrder(driverOrientRHD)
+        if (prefs.getBooleanPref(Constants.forceRHD)) {
+            driverOrientRHD = true
+        }
+        setLayoutOrder()
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
@@ -422,6 +428,16 @@ class DashFragment : Fragment() {
             }
         }
 
+        binding.PRND.setOnLongClickListener {
+            prefs.setBooleanPref(Constants.forceRHD, !prefs.getBooleanPref(Constants.forceRHD))
+            driverOrientRHD = if (prefs.getBooleanPref(Constants.forceRHD)) {
+                true
+            } else {
+                prefs.getBooleanPref(Constants.detectedRHD)
+            }
+            setLayoutOrder()
+            return@setOnLongClickListener true
+        }
 
         binding.speed.setOnLongClickListener {
             prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
@@ -484,10 +500,14 @@ class DashFragment : Fragment() {
         viewModel.carState().observe(viewLifecycleOwner) { it ->
             // Mirror some layout elements if RHD market vehicle
             it.getValue(Constants.driverOrientation)?.let { driverOrientVal ->
-                val newDriverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+                var newDriverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+                prefs.setBooleanPref(Constants.detectedRHD, newDriverOrientRHD)
+                if (prefs.getBooleanPref(Constants.forceRHD)) {
+                    newDriverOrientRHD = true
+                }
                 if (newDriverOrientRHD != driverOrientRHD) {
                     driverOrientRHD = newDriverOrientRHD
-                    setLayoutOrder(driverOrientRHD)
+                    setLayoutOrder()
                 }
             }
 
@@ -1613,7 +1633,8 @@ class DashFragment : Fragment() {
         }
     }
 
-    private fun setLayoutOrder(RHD: Boolean) {
+    private fun setLayoutOrder() {
+        val reverse = driverOrientRHD
         val topBar = listOf(
             binding.PRND,
             binding.autopilot,
@@ -1624,8 +1645,8 @@ class DashFragment : Fragment() {
             binding.battery
         )
         val doors = listOf(binding.modely, null)
-        setHorizontalConstraints(topBar, RHD)
-        setHorizontalConstraints(doors, RHD)
+        setHorizontalConstraints(topBar, reverse)
+        setHorizontalConstraints(doors, reverse)
     }
 
     /**

@@ -48,7 +48,6 @@ class MockCANService : CANService {
     private fun mockCarStates() : List<CarState> =
         listOf(
             CarState(mutableMapOf(
-                Constants.driverOrientation to 1f,
                 Constants.autopilotState to 2f,
                 Constants.isSunUp to 1f,
                 Constants.autopilotHands to 1f,
