@@ -52,6 +52,7 @@ class DashFragment : Fragment() {
     private var l1Distance: Int = 300
     private var gearState: Int = Constants.gearInvalid
     private var mapRegion: Float = 0f
+    private var driverOrientRHD: Boolean = false
     private lateinit var prefs: SharedPreferences
 
 
@@ -98,8 +99,8 @@ class DashFragment : Fragment() {
         listOf(
             binding.PRND,
             binding.batterypercent,
-            binding.deadbattery,
-            binding.fullbattery,
+            binding.battery,
+            binding.batteryOverlay,
             binding.leftTurnSignal,
             binding.rightTurnSignal,
             binding.leftTurnSignalLight,
@@ -107,7 +108,6 @@ class DashFragment : Fragment() {
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
             binding.autopilot,
-            binding.autopilotInactive,
         )
     private fun telltaleUIViews(): List<View> =
         listOf(
@@ -283,6 +283,7 @@ class DashFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
+
         if (!prefs.prefContains(Constants.gaugeMode)) {
             prefs.setPref(Constants.gaugeMode, Constants.showFullGauges)
         }
@@ -346,6 +347,17 @@ class DashFragment : Fragment() {
             }
         }
 
+        // Mirror some layout elements if RHD market vehicle
+        viewModel.getValue(Constants.driverOrientation)?.let { driverOrientVal ->
+            driverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+            prefs.setBooleanPref(Constants.detectedRHD, driverOrientRHD)
+        } ?: run {
+            driverOrientRHD = prefs.getBooleanPref(Constants.detectedRHD)
+        }
+        if (prefs.getBooleanPref(Constants.forceRHD)) {
+            driverOrientRHD = true
+        }
+        setLayoutOrder()
 
         // set initial speedometer value
         viewModel.getValue(Constants.uiSpeed)?.let { vehicleSpeedVal ->
@@ -368,12 +380,12 @@ class DashFragment : Fragment() {
 
         viewModel.getValue(Constants.stateOfCharge)?.let {
             binding.batterypercent.text = it.toInt().toString() + " %"
-            binding.fullbattery.setGauge(it)
-            binding.fullbattery.invalidate()
+            binding.batteryOverlay.setGauge(it)
+            binding.batteryOverlay.invalidate()
         } ?: run {
             binding.batterypercent.text = ""
-            binding.fullbattery.setGauge(0f)
-            binding.fullbattery.invalidate()
+            binding.batteryOverlay.setGauge(0f)
+            binding.batteryOverlay.invalidate()
         }
         viewModel.getValue(Constants.isSunUp)?.let { sunUpVal ->
             if (!prefs.prefContains("sunUp")) {
@@ -416,6 +428,16 @@ class DashFragment : Fragment() {
             }
         }
 
+        binding.PRND.setOnLongClickListener {
+            prefs.setBooleanPref(Constants.forceRHD, !prefs.getBooleanPref(Constants.forceRHD))
+            driverOrientRHD = if (prefs.getBooleanPref(Constants.forceRHD)) {
+                true
+            } else {
+                prefs.getBooleanPref(Constants.detectedRHD)
+            }
+            setLayoutOrder()
+            return@setOnLongClickListener true
+        }
 
         binding.speed.setOnLongClickListener {
             prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
@@ -476,6 +498,19 @@ class DashFragment : Fragment() {
             }
         }
         viewModel.carState().observe(viewLifecycleOwner) { it ->
+            // Mirror some layout elements if RHD market vehicle
+            it.getValue(Constants.driverOrientation)?.let { driverOrientVal ->
+                var newDriverOrientRHD = (driverOrientVal.toInt() in setOf(2, 4))
+                prefs.setBooleanPref(Constants.detectedRHD, newDriverOrientRHD)
+                if (prefs.getBooleanPref(Constants.forceRHD)) {
+                    newDriverOrientRHD = true
+                }
+                if (newDriverOrientRHD != driverOrientRHD) {
+                    driverOrientRHD = newDriverOrientRHD
+                    setLayoutOrder()
+                }
+            }
+
             // set display night/day mode based on reported car status
             it.getValue(Constants.isSunUp)?.let { sunUpVal ->
                 setColors(sunUpVal.toInt())
@@ -571,7 +606,7 @@ class DashFragment : Fragment() {
                 var gearEndIndex = 0
                 gearState = gearStateVal.toInt()
                 if (gearStateVal.toInt() == Constants.gearInvalid) {
-                    binding.autopilotInactive.visibility = View.INVISIBLE
+                    binding.autopilot.visibility = View.INVISIBLE
                     binding.PRND.visibility = View.INVISIBLE
                     gearStartIndex = 0
                     gearEndIndex = 0
@@ -580,7 +615,7 @@ class DashFragment : Fragment() {
                     binding.PRND.visibility = View.VISIBLE
                 }
                 if (gearStateVal.toInt() == Constants.gearPark) {
-                    binding.autopilotInactive.visibility = View.INVISIBLE
+                    binding.autopilot.visibility = View.INVISIBLE
                     gearStartIndex = 0
                     gearEndIndex = 1
                 }
@@ -618,14 +653,15 @@ class DashFragment : Fragment() {
                 }
             } else {
                 //do not pop up left side gauges even if enabled if any door is open or if is a
-                if (!doorOpen) {
+                if (!doorOpen || driverOrientRHD) {
                     for (leftSideUIView in leftSideUIViews()) {
                         leftSideUIView.visibility = View.VISIBLE
                     }
                 }
-
-                for (rightSideUIView in rightSideUIViews()) {
-                    rightSideUIView.visibility = View.VISIBLE
+                if (!doorOpen || !driverOrientRHD) {
+                    for (rightSideUIView in rightSideUIViews()) {
+                        rightSideUIView.visibility = View.VISIBLE
+                    }
                 }
             }
 
@@ -865,11 +901,11 @@ class DashFragment : Fragment() {
             processDoors(it)
 
             it.getValue(Constants.stateOfCharge)?.let { stateOfChargeVal ->
-                binding.fullbattery.setGauge(stateOfChargeVal.toFloat())
-                binding.fullbattery.invalidate()
+                binding.batteryOverlay.setGauge(stateOfChargeVal.toFloat())
+                binding.batteryOverlay.invalidate()
             } ?: run {
-                binding.fullbattery.setGauge(0f)
-                binding.fullbattery.invalidate()
+                binding.batteryOverlay.setGauge(0f)
+                binding.batteryOverlay.invalidate()
             }
 
             it.getValue(Constants.autopilotState)?.let { autopilotStateVal ->
@@ -1357,7 +1393,7 @@ class DashFragment : Fragment() {
             it.getValue(Constants.chargeStatus)?.let { chargeStatusVal ->
                 if (!isSplitScreen()) {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
-                        binding.fullbattery.setChargeMode(1)
+                        binding.batteryOverlay.setChargeMode(1)
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.GONE
                         }
@@ -1378,7 +1414,7 @@ class DashFragment : Fragment() {
 
                             }
                     } else {
-                        binding.fullbattery.setChargeMode(0)
+                        binding.batteryOverlay.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
                         binding.bigsoc.visibility = View.INVISIBLE
                         binding.bigsocpercent.visibility = View.INVISIBLE
@@ -1396,7 +1432,7 @@ class DashFragment : Fragment() {
                     }
                 } else {
                     if (chargeStatusVal != Constants.chargeStatusInactive) {
-                        binding.fullbattery.setChargeMode(1)
+                        binding.batteryOverlay.setChargeMode(1)
                         for (chargingHiddenView in chargingHiddenViews()) {
                             chargingHiddenView.visibility = View.GONE
                         }
@@ -1417,7 +1453,7 @@ class DashFragment : Fragment() {
                             binding.chargerate.visibility = View.VISIBLE
                         }
                     } else {
-                        binding.fullbattery.setChargeMode(0)
+                        binding.batteryOverlay.setChargeMode(0)
                         binding.chargemeter.visibility = View.INVISIBLE
                         binding.bigsoc.visibility = View.INVISIBLE
                         binding.bigsocpercent.visibility = View.INVISIBLE
@@ -1436,7 +1472,7 @@ class DashFragment : Fragment() {
                     }
                 }
             } ?: run {
-                binding.fullbattery.setChargeMode(0)
+                binding.batteryOverlay.setChargeMode(0)
                 binding.chargemeter.visibility = View.INVISIBLE
                 binding.bigsoc.visibility = View.INVISIBLE
                 binding.bigsocpercent.visibility = View.INVISIBLE
@@ -1597,13 +1633,78 @@ class DashFragment : Fragment() {
         }
     }
 
+    private fun setLayoutOrder() {
+        val reverse = driverOrientRHD
+        val topBar = listOf(
+            binding.PRND,
+            binding.autopilot,
+            null,
+            binding.battHeat,
+            binding.battCharge,
+            binding.batterypercent,
+            binding.battery
+        )
+        val doors = listOf(binding.modely, null)
+        setHorizontalConstraints(topBar, reverse)
+        setHorizontalConstraints(doors, reverse)
+    }
+
+    /**
+     * This sets the constraints of a list of views to order them from left to right.
+     *
+     * A null may be used once to create a break between left-aligned and right-aligned items.
+     * Starting the list with a null will make all the items right-aligned. No null will make
+     * all items left aligned. More than 1 null is not supported.
+     *
+     * @param views The list of views (with optional null) to order horizontally
+     */
+    private fun setHorizontalConstraints(views: List<View?>, reverse: Boolean = false) {
+        var afterBreak = false
+        val viewsList = if (reverse) {views.reversed()} else {views}
+        for (i in viewsList.indices) {
+            val view = viewsList[i]
+            if (view == null) {
+                afterBreak = true
+                continue
+            }
+            // First clear existing start and end constraints
+            view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
+                startToEnd = ConstraintLayout.LayoutParams.UNSET
+                startToStart = ConstraintLayout.LayoutParams.UNSET
+                endToStart = ConstraintLayout.LayoutParams.UNSET
+                endToEnd = ConstraintLayout.LayoutParams.UNSET
+            }
+            if (i == 0) {
+                // Set the start constraint of the first view to the parent layout
+                view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+                }
+            } else if (i == viewsList.size - 1 && afterBreak) {
+                // Set the end constraint of the last view to the parent layout
+                view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                }
+            } else if (afterBreak) {
+                // Set the end constraint of the current view to the start constraint of the next view
+                view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    endToStart = viewsList[i + 1]!!.id
+                }
+            } else {
+                // Set the start constraint of the current view to the end constraint of the previous view
+                view.layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    startToEnd = viewsList[i - 1]!!.id
+                }
+            }
+        }
+    }
+
     fun setColors(sunUpVal: Int) {
         val window: Window? = activity?.window
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
         if (sunUpVal == 0 || prefs.getBooleanPref(Constants.forceNightMode)) {
             binding.powerBar.setDayValue(0)
-            binding.fullbattery.setDayValue(0)
+            binding.batteryOverlay.setDayValue(0)
             binding.fronttorquegauge.setDayValue(0)
             binding.reartorquegauge.setDayValue(0)
             binding.batttempgauge.setDayValue(0)
@@ -1613,7 +1714,7 @@ class DashFragment : Fragment() {
             binding.rearbraketempgauge.setDayValue(0)
             binding.coolantflowgauge.setDayValue(0)
             binding.powerBar.invalidate()
-            binding.fullbattery.invalidate()
+            binding.batteryOverlay.invalidate()
             binding.fronttorquegauge.invalidate()
             binding.reartorquegauge.invalidate()
             binding.batttempgauge.invalidate()
@@ -1634,7 +1735,7 @@ class DashFragment : Fragment() {
             binding.unit.setTextColor(Color.LTGRAY)
             binding.batterypercent.setTextColor(Color.LTGRAY)
             binding.odometer.setTextColor(Color.DKGRAY)
-            binding.deadbattery.setColorFilter(Color.DKGRAY)
+            binding.battery.setColorFilter(Color.DKGRAY)
             gearColorSelected = Color.LTGRAY
             gearColor = Color.DKGRAY
             binding.PRND.setTextColor(Color.DKGRAY)
@@ -1675,7 +1776,7 @@ class DashFragment : Fragment() {
 
         } else {
             binding.powerBar.setDayValue(1)
-            binding.fullbattery.setDayValue(1)
+            binding.batteryOverlay.setDayValue(1)
             binding.fronttorquegauge.setDayValue(1)
             binding.reartorquegauge.setDayValue(1)
             binding.batttempgauge.setDayValue(1)
@@ -1686,7 +1787,7 @@ class DashFragment : Fragment() {
             binding.rearbraketempgauge.setDayValue(1)
             binding.coolantflowgauge.setDayValue(1)
             binding.powerBar.invalidate()
-            binding.fullbattery.invalidate()
+            binding.batteryOverlay.invalidate()
             binding.fronttorquegauge.invalidate()
             binding.reartorquegauge.invalidate()
             binding.batttempgauge.invalidate()
@@ -1707,7 +1808,7 @@ class DashFragment : Fragment() {
             binding.unit.setTextColor(Color.GRAY)
             binding.batterypercent.setTextColor(Color.DKGRAY)
             binding.odometer.setTextColor(Color.LTGRAY)
-            binding.deadbattery.clearColorFilter()
+            binding.battery.clearColorFilter()
             gearColorSelected = Color.DKGRAY
             gearColor = Color.parseColor("#FFDDDDDD")
             binding.PRND.setTextColor(Color.parseColor("#FFDDDDDD"))
@@ -1789,8 +1890,9 @@ class DashFragment : Fragment() {
         fadeIn.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {
                 if (prefs.getPref(Constants.gaugeMode) == Constants.showFullGauges) {
-                    for (leftSideUIView in leftSideUIViews()) {
-                        leftSideUIView.visibility = View.INVISIBLE
+                    val viewsToHide = if (driverOrientRHD) {rightSideUIViews()} else {leftSideUIViews()}
+                    for (view in viewsToHide) {
+                        view.visibility = View.INVISIBLE
                     }
 
                 }
@@ -1868,8 +1970,9 @@ class DashFragment : Fragment() {
                         binding.speed.visibility = View.VISIBLE
                         binding.unit.visibility = View.VISIBLE
                         if (prefs.getPref(Constants.gaugeMode) == Constants.showFullGauges) {
-                            for (leftSideUIView in leftSideUIViews()) {
-                                leftSideUIView.visibility = View.VISIBLE
+                            val viewsToShow = if (driverOrientRHD) {rightSideUIViews()} else {leftSideUIViews()}
+                            for (view in viewsToShow) {
+                                view.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -1911,35 +2014,26 @@ class DashFragment : Fragment() {
         }
     }
 
-    fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
+    private fun updateAutopilotUI(autopilotStateVal: Int, steeringAngleVal: Int?) {
+        val steeringAngle: Int = steeringAngleVal ?: 0
 
-        var steeringAngle: Int
-
-        if (steeringAngleVal == null) {
-            steeringAngle = 0
-        } else {
-            steeringAngle = steeringAngleVal
-        }
         if (lastAutopilotState != autopilotStateVal) {
-
             val fadeIn = AnimationUtils.loadAnimation(activity, R.anim.fade_in)
             val fadeOut = AnimationUtils.loadAnimation(activity, R.anim.fade_out)
-            when {
-                lastAutopilotState == 1 -> fadeOut.cancel()
-                lastAutopilotState == 2 -> fadeIn.cancel()
-                lastAutopilotState > 2 -> binding.autopilot.visibility = View.INVISIBLE
+            when (autopilotStateVal) {
+                in 3..7 -> binding.autopilot.setImageResource(R.drawable.ic_autopilot)
+                else -> binding.autopilot.setImageResource(R.drawable.ic_autopilot_inactive)
             }
-            binding.autopilotInactive.clearAnimation()
-            binding.autopilotInactive.visibility =
-                if (autopilotStateVal > 2 ) View.INVISIBLE else View.VISIBLE
-            when  {
-                autopilotStateVal < 2 -> binding.autopilotInactive.startAnimation(fadeOut)
-                autopilotStateVal > 7 -> binding.autopilotInactive.startAnimation(fadeOut)
-                autopilotStateVal == 2 -> binding.autopilotInactive.startAnimation(fadeIn)
-                autopilotStateVal > 2 -> binding.autopilot.visibility = View.VISIBLE
+            when {
+                autopilotStateVal in 2..7 && lastAutopilotState !in 2..7 -> binding.autopilot.startAnimation(
+                    fadeIn
+                )
+                autopilotStateVal !in 2..7 && lastAutopilotState in 2..7 -> binding.autopilot.startAnimation(
+                    fadeOut
+                )
             }
         }
-        if (autopilotStateVal > 2) {
+        if (autopilotStateVal in 3..7) {
             // set pivot to center of image
             binding.autopilot.pivotX = (binding.autopilot.width / 2).toFloat()
             binding.autopilot.pivotY = (binding.autopilot.height / 2).toFloat()

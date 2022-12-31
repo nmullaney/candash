@@ -70,6 +70,7 @@ object Constants {
     const val mapME = 8f
     const val mapHK = 9f
     const val mapMO = 10f
+    const val driverOrientation = "driverOrientation"
     const val awd = 1f
     const val rwd = 0f
     const val frontTemp = "frontTemp"
@@ -145,6 +146,8 @@ object Constants {
     const val torqueInLbfFt = "torqueInLbfFt"
     const val hideEfficiency = "hideEfficiency"
     const val efficiencyLookBack = "efficiencyLookBack"
+    const val detectedRHD = "detectedRHD"
+    const val forceRHD = "forceRHD"
 
     // For efficiency history in prefs
     const val kwhHistory = "kwhHistory"
