@@ -6,7 +6,7 @@ class CANSignalHelper {
     private val TAG = CANSignalHelper::class.java.simpleName
 
     companion object {
-        const val MAX_FILTERS = 43
+        const val MAX_FILTERS = 42
 
         const val CLEAR_FILTERS_BYTE : Byte = 0x18
         const val ADD_FILTERS_BYTE : Byte = 0x0F
