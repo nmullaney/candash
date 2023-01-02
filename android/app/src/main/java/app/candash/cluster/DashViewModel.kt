@@ -123,12 +123,13 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     }
 
     fun isSplitScreen(): Boolean {
-
         return getRealScreenWidth() > getScreenWidth() * 2
     }
-    fun setSplitScreen(ss: Boolean){
-        with(isSplitScreen) { postValue(ss)}
+
+    fun setSplitScreen(){
+        with(isSplitScreen) { postValue(isSplitScreen())}
     }
+
     fun getSplitScreen(): LiveData<Boolean>{
         return isSplitScreen
     }

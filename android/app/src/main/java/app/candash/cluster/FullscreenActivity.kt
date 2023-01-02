@@ -41,25 +41,23 @@ class FullscreenActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-
         // Checks the orientation of the screen
         if (isInMultiWindowMode) {
             viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // isInMultiWindowMode is always true in versions > R, so only do this for R
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
                 window.insetsController?.show(WindowInsets.Type.statusBars())
             }
-            viewModel.setSplitScreen(true)
+            viewModel.setSplitScreen()
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
                 window.insetsController?.hide(WindowInsets.Type.statusBars())
             }
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION xor View.SYSTEM_UI_FLAG_FULLSCREEN xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY xor View.SYSTEM_UI_FLAG_LAYOUT_STABLE xor View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
-            viewModel.setSplitScreen(false)
-
+            viewModel.setSplitScreen()
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

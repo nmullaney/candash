@@ -347,11 +347,10 @@ class DashFragment : Fragment() {
             binding.infoToast.startAnimation(fadeOut(5000))
         }
 
-        viewModel.getSplitScreen().observe(viewLifecycleOwner) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        viewModel.getSplitScreen().observe(viewLifecycleOwner) { isSplit ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
             // only needed for Android 11+
-                if (view.windowToken != null) {
-                    if (isSplitScreen()) {
+                if (isSplit) {
                         for (topUIView in topUIViews()) {
                             val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                             val savedParams = savedLayoutParams[topUIView]
@@ -364,7 +363,7 @@ class DashFragment : Fragment() {
                             topUIView.layoutParams = params
                         }
                     } else {
-                        //no splitscreen
+                    //no split screen
                         for (topUIView in topUIViews()) {
                             val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                             val savedParams = savedLayoutParams[topUIView]
@@ -377,14 +376,13 @@ class DashFragment : Fragment() {
                             topUIView.layoutParams = params
                         }
                     }
-                    // Update views which are affected by splitscreen changes
+            }
+            // Update views which are affected by split screen changes
                     setGaugeVisibility()
                     updateDoorStateUI()
-                    updateTellTales()
+            updateSplitScreenTellTales()
                     updateSpeedLimitSign()
                 }
-            }
-        }
 
         viewModel.onSignal(viewLifecycleOwner, SName.driverOrientation) {
             prefs.setBooleanPref(
