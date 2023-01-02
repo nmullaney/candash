@@ -14,15 +14,12 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
@@ -45,16 +42,8 @@ class DashFragment : Fragment() {
     private lateinit var overlayGradient: GradientDrawable
     private var gradientColorFrom: Int = 0
 
-    // Conversions
-    val Int.dp: Int
-        get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-    val Int.px: Int
+    private val Int.px: Int
         get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-    val Float.dp: Float
-        get() = (this / Resources.getSystem().displayMetrics.density)
-    val Float.px: Float
-        get() = (this * Resources.getSystem().displayMetrics.density)
 
     /**
      * This rounds a float to the provided decimal places and returns a string
@@ -93,6 +82,9 @@ class DashFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * These views are bumped up when in split screen closer to the status bar
+     */
     private fun topUIViews(): Set<View> =
         setOf(
             binding.PRND,
@@ -106,7 +98,11 @@ class DashFragment : Fragment() {
             binding.autopilot,
             binding.TACC
         )
-    private fun nonSplitscreenTelltaleUIViews(): Set<View> =
+
+    /**
+     * These are telltales which should be hidden when in split screen
+     */
+    private fun nonSplitScreenTelltaleUIViews(): Set<View> =
         setOf(
             binding.telltaleDrl,
             binding.telltaleLb,
@@ -117,7 +113,6 @@ class DashFragment : Fragment() {
             binding.telltaleFogRear,
             binding.odometer,
             binding.battCharge,
-            binding.batterypercent,
             binding.battHeat,
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
@@ -218,11 +213,11 @@ class DashFragment : Fragment() {
             binding.frontrightdoorCenter,
             binding.rearleftdoorCenter,
             binding.rearrightdoorCenter,
-            binding.hood,
-            binding.hatch
+            binding.hoodCenter,
+            binding.hatchCenter
         )
 
-    private fun minMaxchargingHiddenViews(): Set<View> =
+    private fun minMaxChargingHiddenViews(): Set<View> =
         setOf(
             binding.maxpower,
             binding.minpower,
@@ -236,7 +231,7 @@ class DashFragment : Fragment() {
     }
 
     private fun getRealScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
+        val displayMetrics = DisplayMetrics()
         activity?.windowManager
             ?.defaultDisplay?.getRealMetrics(displayMetrics)
         return displayMetrics.widthPixels
@@ -349,40 +344,40 @@ class DashFragment : Fragment() {
 
         viewModel.getSplitScreen().observe(viewLifecycleOwner) { isSplit ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
-            // only needed for Android 11+
+                // only needed for Android 11+
                 if (isSplit) {
-                        for (topUIView in topUIViews()) {
-                            val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
-                            val savedParams = savedLayoutParams[topUIView]
-                            params.setMargins(
-                                savedParams!!.leftMargin,
-                                savedParams.topMargin - 30.px,
-                                savedParams.rightMargin,
-                                savedParams.bottomMargin
-                            )
-                            topUIView.layoutParams = params
-                        }
-                    } else {
-                    //no split screen
-                        for (topUIView in topUIViews()) {
-                            val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
-                            val savedParams = savedLayoutParams[topUIView]
-                            params.setMargins(
-                                savedParams!!.leftMargin,
-                                savedParams.topMargin,
-                                savedParams.rightMargin,
-                                savedParams.bottomMargin
-                            )
-                            topUIView.layoutParams = params
-                        }
+                    for (topUIView in topUIViews()) {
+                        val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                        val savedParams = savedLayoutParams[topUIView]
+                        params.setMargins(
+                            savedParams!!.leftMargin,
+                            savedParams.topMargin - 30.px,
+                            savedParams.rightMargin,
+                            savedParams.bottomMargin
+                        )
+                        topUIView.layoutParams = params
                     }
+                } else {
+                    //no split screen
+                    for (topUIView in topUIViews()) {
+                        val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
+                        val savedParams = savedLayoutParams[topUIView]
+                        params.setMargins(
+                            savedParams!!.leftMargin,
+                            savedParams.topMargin,
+                            savedParams.rightMargin,
+                            savedParams.bottomMargin
+                        )
+                        topUIView.layoutParams = params
+                    }
+                }
             }
             // Update views which are affected by split screen changes
-                    setGaugeVisibility()
-                    updateDoorStateUI()
+            setGaugeVisibility()
+            updateDoorStateUI()
             updateSplitScreenTellTales()
-                    updateSpeedLimitSign()
-                }
+            updateSpeedLimitSign()
+        }
 
         viewModel.onSignal(viewLifecycleOwner, SName.driverOrientation) {
             prefs.setBooleanPref(
@@ -456,7 +451,7 @@ class DashFragment : Fragment() {
             if (it != null) {
                 if (it > prefs.getPref("maxPower")) prefs.setPref("maxPower", it)
                 if (viewModel.carState[SName.chargeStatus] == SVal.chargeStatusInactive) {
-                    // do not store minpower if car is charging
+                    // do not store min power if car is charging
                     if (it < prefs.getPref("minPower")) prefs.setPref("minPower", it)
                 }
                 if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
@@ -623,7 +618,7 @@ class DashFragment : Fragment() {
 
         // Basic telltales all have the same logic:
         // If second == third: show first; else: hide first
-        val basicTellTalesInvis = setOf(
+        val basicTellTalesHide = setOf(
             Triple(binding.telltaleFogRear, SName.rearFogSwitch, SVal.rearFogSwitchOn),
             Triple(binding.telltaleFogFront, SName.frontFogSwitch, SVal.frontFogSwitchOn),
             Triple(binding.speedoBrakeHold, SName.brakeHold, 1f),
@@ -635,7 +630,7 @@ class DashFragment : Fragment() {
             Triple(binding.rightTurnSignalLight, SName.turnSignalRight, 2f),
         )
 
-        basicTellTalesInvis.forEach { triple ->
+        basicTellTalesHide.forEach { triple ->
             viewModel.onSignal(viewLifecycleOwner, triple.second) {
                 processBasicTellTale(triple)
             }
@@ -655,7 +650,7 @@ class DashFragment : Fragment() {
         }
 
         // If any telltales need more advanced logic add them below
-        // If any should be hidden when in splitscreen, add to nonSplitscreenTelltaleUIViews
+        // If any should be hidden when in split screen, add to nonSplitScreenTelltaleUIViews
 
         /*viewModel.onSignal(viewLifecycleOwner, SName.lightSwitch) {
             val lightSwitchVal = it ?: SVal.lightsOff
@@ -790,14 +785,14 @@ class DashFragment : Fragment() {
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotLeft) {
             // Don't show BS warning if in AP
             if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
-                updateBSWarning(it, binding.BSWarningLeft, GradientDrawable.Orientation.LEFT_RIGHT)
+                updateBSWarning(it, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
             // Don't show BS warning if in AP
             if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
-                updateBSWarning(it, binding.BSWarningRight, GradientDrawable.Orientation.RIGHT_LEFT)
+                updateBSWarning(it, binding.BSWarningRight, Orientation.RIGHT_LEFT)
             }
         }
 
@@ -859,15 +854,15 @@ class DashFragment : Fragment() {
             }
         }
 
-        viewModel.onSignal(viewLifecycleOwner, SName.chargeStatus) {
-            val chargeStatusVal = it ?: SVal.chargeStatusInactive
+        viewModel.onSignal(viewLifecycleOwner, SName.chargeStatus) { value ->
+            val chargeStatusVal = value ?: SVal.chargeStatusInactive
             if (chargeStatusVal != SVal.chargeStatusInactive) {
                 binding.batteryOverlay.setChargeMode(1)
-                minMaxchargingHiddenViews().forEach { it.visibility = View.GONE }
+                minMaxChargingHiddenViews().forEach { it.visibility = View.GONE }
             } else {
                 binding.batteryOverlay.setChargeMode(0)
                 if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
-                    minMaxchargingHiddenViews().forEach { it.visibility = View.VISIBLE }
+                    minMaxChargingHiddenViews().forEach { it.visibility = View.VISIBLE }
                 }
             }
             // All of the charging view visibility is handled here
@@ -898,7 +893,12 @@ class DashFragment : Fragment() {
         }
     }
 
+    /**
+     * This contains all the show/hide logic for various conflicting views.
+     * Call this when changing gauge mode, charging, doors, or split screen.
+     */
     private fun setGaugeVisibility() {
+        // subtract AWD only views from side views before showing them
         val leftSideUIViews = leftSideUIViews().toMutableSet()
         val rightSideUIViews = rightSideUIViews().toMutableSet()
         if (viewModel.carState[SName.driveConfig] == SVal.rwd) {
@@ -906,11 +906,11 @@ class DashFragment : Fragment() {
             rightSideUIViews -= awdOnlyViews()
             awdOnlyViews().forEach { it.visibility = View.INVISIBLE }
         }
-        // hide performance gauges if user has elected to hide them or if splitscreen mode
+        // hide performance gauges if user has elected to hide them or if split screen mode
         if ((prefs.getPref(Constants.gaugeMode) < Constants.showFullGauges) || isSplitScreen()) {
-            leftSideUIViews.forEach { it.visibility = View.INVISIBLE }
-            rightSideUIViews.forEach { it.visibility = View.INVISIBLE }
+            sideUIViews().forEach { it.visibility = View.INVISIBLE }
         } else {
+            // show them only if not covered by the door views
             if (!anyDoorOpen() || driverOrientRHD()) {
                 leftSideUIViews.forEach { it.visibility = View.VISIBLE }
             }
@@ -926,8 +926,9 @@ class DashFragment : Fragment() {
                 else -> leftSideUIViews
             }.forEach { it.visibility = View.INVISIBLE }
         }
-        // Show center views after door is closed or switch to fullscreen
+
         val charging = ((viewModel.carState[SName.chargeStatus] ?: SVal.chargeStatusInactive) != SVal.chargeStatusInactive)
+        // Show center views after door is closed or switch to fullscreen
         if (!isSplitScreen() || !anyDoorOpen()) {
             (if (charging) chargingViews() else (centerDoorHiddenViews() - chargingViews())).forEach {
                 it.visibility = View.VISIBLE
@@ -937,10 +938,12 @@ class DashFragment : Fragment() {
         (if (charging) chargingHiddenViews() else chargingViews()).forEach {
             it.visibility = View.INVISIBLE
         }
-        // Always hide unused doors in case of splitscreen change
+        // Always hide unused doors in case of split screen change
         (if (isSplitScreen()) doorViews() else doorViewsCenter()).forEach {
             it.visibility = View.GONE
         }
+        // Battery percent is always hidden in split screen
+        binding.batterypercent.visibility = if (isSplitScreen()) View.GONE else View.VISIBLE
     }
 
     private fun driverOrientRHD(): Boolean {
@@ -1016,19 +1019,31 @@ class DashFragment : Fragment() {
             }
         }
     }
-    
-    private fun updateTellTales() {
+
+    /**
+     * Call this changing split screen, it shows/hides each of `nonSplitScreenTelltaleUIViews` by
+     * changing the View's alpha, so it doesn't conflict with visibility changes from signal logic.
+     */
+    private fun updateSplitScreenTellTales() {
+        // To keep from conflicting with the different visibilities of TellTales, especially as some
+        // use INVISIBLE and some use GONE, for split screen we make them transparent instead of
+        // changing the visibility.
         if (isSplitScreen()) {
-            nonSplitscreenTelltaleUIViews().forEach { it.visibility = View.GONE }
-            return
+            nonSplitScreenTelltaleUIViews().forEach { it.alpha = 0f }
+        } else {
+            nonSplitScreenTelltaleUIViews().forEach { it.alpha = 1f }
         }
-        binding.batterypercent.visibility = View.VISIBLE
-        // TODO re-show telltales if not splitscreen
     }
 
+    /**
+     * Sets a view visible if signal matches value, otherwise sets it invisible or gone
+     * 
+     * @param tt Specify a Triple with first: the view to change, second: the signal to use, and
+     * third: the value which makes the view visible
+     * @param remove If true, instead of making the view INVISIBLE, it will set it to GONE
+     */
     private fun processBasicTellTale(tt: Triple<View, String, Float>, remove: Boolean = false) {
-        val show = (tt.first !in nonSplitscreenTelltaleUIViews() || !isSplitScreen())
-        if (viewModel.carState[tt.second] == tt.third && show) {
+        if (viewModel.carState[tt.second] == tt.third) {
             tt.first.visibility = View.VISIBLE
         } else if (remove) {
             tt.first.visibility = View.GONE
@@ -1036,7 +1051,10 @@ class DashFragment : Fragment() {
             tt.first.visibility = View.INVISIBLE
         }
     }
-    
+
+    /**
+     * Provides the current gearSelected value with a default of gearInvalid
+     */
     private fun gearState(): Float {
         return viewModel.carState[SName.gearSelected] ?: SVal.gearInvalid
     }
@@ -1045,7 +1063,7 @@ class DashFragment : Fragment() {
         val apState = viewModel.carState[SName.autopilotState] ?: 0f
         val gearColorSelected = when {
             apState in 3f..7f -> requireContext().getColor(R.color.autopilot_blue)
-            useDarkMode() -> Color.LTGRAY
+            shouldUseDarkMode() -> Color.LTGRAY
             else -> Color.DKGRAY
         }
         val gearLetterIndex = when (gearState()) {
@@ -1073,13 +1091,13 @@ class DashFragment : Fragment() {
         }
     }
     
-    private fun useDarkMode(): Boolean {
+    private fun shouldUseDarkMode(): Boolean {
         return (viewModel.carState[SName.isSunUp] == 0f || prefs.getBooleanPref(Constants.forceNightMode))
     }
 
     private fun setColors() {
         val window: Window? = activity?.window
-        val circleGauges = setOf<CircularGauge>(
+        val circleGauges = setOf(
             binding.fronttorquegauge,
             binding.reartorquegauge,
             binding.batttempgauge,
@@ -1090,7 +1108,7 @@ class DashFragment : Fragment() {
             binding.coolantflowgauge,
             binding.chargemeter
         )
-        val textViewsPrimary = setOf<TextView>(
+        val textViewsPrimary = setOf(
             binding.speed,
             binding.bigsoc,
             binding.bigsocpercent,
@@ -1126,25 +1144,25 @@ class DashFragment : Fragment() {
             binding.coolantflowlabel,
             binding.coolantflowunits,
         )
-        val textViewsSecondary = setOf<TextView>(
+        val textViewsSecondary = setOf(
             binding.chargerate,
             binding.unit,
             binding.batterypercent
         )
-        val textViewsDisabled = setOf<TextView>(
+        val textViewsDisabled = setOf(
             binding.odometer,
             binding.PRND
         )
-        val imageViewsSecondary = setOf<ImageView>(
+        val imageViewsSecondary = setOf(
             binding.modely,
             binding.modelyCenter
         )
-        val imageViewsDisabled = setOf<ImageView>(
+        val imageViewsDisabled = setOf(
             binding.battery
         )
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
-        if (useDarkMode()) {
+        if (shouldUseDarkMode()) {
             window?.statusBarColor = Color.BLACK
             binding.root.setBackgroundColor(Color.BLACK)
             textViewsPrimary.forEach { it.setTextColor(Color.WHITE) }
@@ -1176,23 +1194,7 @@ class DashFragment : Fragment() {
 
     private fun updateDoorStateUI() {
         val carBody = if (isSplitScreen()) binding.modelyCenter else binding.modely
-        // If a door was just opened
-        if (anyDoorOpen() && carBody.visibility != View.VISIBLE) {
-            setGaugeVisibility()
-            carBody.startAnimation(fadeIn())
-            carBody.visibility = View.VISIBLE
-            displayOpenDoors()
-            return
-        }
-        // If a door was just closed
-        if (!anyDoorOpen() && carBody.visibility == View.VISIBLE) {
-            displayOpenDoors()
-            carBody.startAnimation(fadeOut())
-            carBody.visibility = View.GONE
-            setGaugeVisibility()
-            return
-        }
-        // Even if no changes, refresh:
+        carBody.visibility = if (anyDoorOpen()) View.VISIBLE else View.GONE
         displayOpenDoors()
         setGaugeVisibility()
     }
@@ -1330,7 +1332,7 @@ class DashFragment : Fragment() {
                 gradientColorFrom,
                 gradientColorFrom,
             )
-            orientation = GradientDrawable.Orientation.TOP_BOTTOM
+            orientation = Orientation.TOP_BOTTOM
             gradientType = GradientDrawable.LINEAR_GRADIENT
         }
         binding.warningGradientOverlay.setImageDrawable(overlayGradient)
@@ -1373,7 +1375,7 @@ class DashFragment : Fragment() {
                 binding.APWarning.visibility = View.VISIBLE
 
                 // Gradient overlay:
-                overlayGradient.orientation = GradientDrawable.Orientation.TOP_BOTTOM
+                overlayGradient.orientation = Orientation.TOP_BOTTOM
                 autopilotAnimation.addUpdateListener { animator ->
                     overlayGradient.colors =
                         intArrayOf(animator.animatedValue as Int, gradientColorFrom)
@@ -1430,7 +1432,7 @@ class DashFragment : Fragment() {
 
     private fun updateFCWWarning(fcwVal: Float?) {
         if (fcwVal == 1f) {
-            overlayGradient.orientation = GradientDrawable.Orientation.TOP_BOTTOM
+            overlayGradient.orientation = Orientation.TOP_BOTTOM
             blindspotAnimation.duration = 125
 
             // Warning toast:

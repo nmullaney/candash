@@ -19,14 +19,11 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private val TAG = DashViewModel::class.java.simpleName
 
     var carState = dashRepository.carState()
-    var liveCarState = dashRepository.liveCarState()
+    private var liveCarState = dashRepository.liveCarState()
     private var viewToShowData: MutableLiveData<String> = MutableLiveData()
-    private var zeroconfHost = MutableLiveData<String>()
-    private var nsdManager = (context?.getSystemService(Context.NSD_SERVICE) as NsdManager?)!!
+    private var nsdManager = (context.getSystemService(Context.NSD_SERVICE) as NsdManager?)!!
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var isSplitScreen = MutableLiveData<Boolean>()
-    private var renderWidth : Float = 100f
-    private var discoveryStarted = false
     private val _zeroConfIpAddress = MutableLiveData("0.0.0.0")
     val zeroConfIpAddress : LiveData<String>
         get() = _zeroConfIpAddress
@@ -48,7 +45,7 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     fun serverIpAddress() : String? = sharedPreferences.getString(Constants.ipAddressPrefKey, Constants.ipAddressLocalNetwork)
 
-    fun setServerIpAddress(ipAddress: String) {
+    private fun setServerIpAddress(ipAddress: String) {
         sharedPreferences.edit().putString(Constants.ipAddressPrefKey, ipAddress).apply()
     }
 
@@ -94,30 +91,58 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         dashRepository.clearCarState()
     }
 
+    /**
+     * This observes a single CAN signal, running the provided unit when the signal values changes
+     * from it's previous value.
+     *
+     * @param owner Provide the view's lifecycle owner
+     * @param signal The signal name from `SName` to watch for changes
+     * @param onChanged The unit to execute when the signal value changes. The value of the observed
+     * signal is provided to the unit.
+     */
     fun onSignal(owner: LifecycleOwner, signal: String, onChanged: (value: Float?) -> Unit) {
         liveCarState[signal]!!.observe(owner) { onChanged(it) }
     }
 
+    /**
+     * This observes a list of CAN signals, running the provided unit when ANY of the signal values
+     * change from it's previous value.
+     *
+     * @param owner Provide the view's lifecycle owner
+     * @param signals A list of signal names from `SName` to watch for changes
+     * @param onChanged The unit to execute when a signal value changes. The carState with all
+     * signals is provided to the unit.
+     */
     fun onSomeSignals(owner: LifecycleOwner, signals: List<String>, onChanged: (carState: CarState) -> Unit) {
         signals.forEach { signal ->
             liveCarState[signal]!!.observe(owner) { onChanged(carState) }
         }
     }
 
+    /**
+     * This observes ALL CAN signals, running the provided unit when ANY of the signal values
+     * change from it's previous value.
+     *
+     * CAUTION: try to use `onSomeSignals` instead, `onAllSignals` will cause your unit to execute at ridiculous rates.
+     *
+     * @param owner Provide the view's lifecycle owner
+     * @param onChanged The unit to execute when a signal value changes. The carState with all
+     * signals is provided to the unit.
+     */
     fun onAllSignals(owner: LifecycleOwner, onChanged: (carState: CarState) -> Unit) {
         liveCarState.forEach {
             it.value.observe(owner) { onChanged(carState) }
         }
     }
 
-    fun getScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
+    private fun getScreenWidth(): Int {
+        val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         return displayMetrics.widthPixels
     }
 
-    fun getRealScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
+    private fun getRealScreenWidth(): Int {
+        val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getRealMetrics(displayMetrics)
         return displayMetrics.widthPixels
     }
@@ -139,6 +164,7 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun switchToDashFragment() {
         viewToShowData.value = "dash"
     }
+
     fun switchToSettingsFragment() {
         viewToShowData.value = "settings"
     }
@@ -154,7 +180,7 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     fun startDiscoveryService() {
         try {
-            nsdManager?.discoverServices(
+            nsdManager.discoverServices(
                 "_panda._udp",
                 NsdManager.PROTOCOL_DNS_SD,
                 createDiscoveryListener()
@@ -222,13 +248,13 @@ class NsdDiscoveryListener(
 
     override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
         Log.e(TAG, "Discovery failed: Error code:$errorCode")
-
-        when (errorCode) {
-            //do nothing if we're at the max limit, just wait it out
-            //NsdManager.FAILURE_MAX_LIMIT -> return
-        }
+        
+        //do nothing if we're at the max limit, just wait it out
+        /*when (errorCode) {
+            NsdManager.FAILURE_MAX_LIMIT -> return
+        }*/
         try {
-            nsdManager?.stopServiceDiscovery(this)
+            nsdManager.stopServiceDiscovery(this)
         }catch (iae: java.lang.IllegalArgumentException){
             Log.e(TAG, "Unable to stop discovery service", iae)
         }
@@ -237,7 +263,7 @@ class NsdDiscoveryListener(
     override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
         Log.e(TAG, "Discovery failed: Error code:$errorCode")
         try {
-            nsdManager?.stopServiceDiscovery(this)
+            nsdManager.stopServiceDiscovery(this)
         }catch (iae: java.lang.IllegalArgumentException){
             Log.e(TAG, "Unable to stop discovery service", iae)
         }

@@ -70,27 +70,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
         return socket
     }
 
-    private fun twosComplement(s: String): Long {
-        if (s[0].equals('0'))
-            return s.toLong(radix = 2)
-        var seenOne: Boolean = false
-        val chars = s.toCharArray()
-        for (i in s.length - 1 downTo 0) {
-            if (seenOne == false) {
-                if (chars[i].equals('1')) {
-                    seenOne = true;
-                }
-            } else {
-                if (chars[i].equals('1')) {
-                    chars[i] = '0'
-                } else {
-                    chars[i] = '1'
-                }
-            }
-        }
-        return (String(chars).toLong(radix = 2)) * -1
-    }
-
     override fun isRunning() : Boolean {
         return !shutdown
     }
