@@ -469,17 +469,12 @@ class DashFragment : Fragment() {
                 if (it >= 0) {
                     binding.powerBar.setGauge(((it / prefs.getPref("maxPower")).pow(0.75f)))
                 } else {
-                    binding.powerBar.setGauge(
-                        -((abs(it) / abs(prefs.getPref("minPower"))).pow(
-                            0.75f
-                        ))
-                    )
+                    binding.powerBar.setGauge(-((it / prefs.getPref("minPower")).pow(0.75f)))
                 }
-                binding.powerBar.visibility = View.VISIBLE
-                binding.chargerate.text = it.wToKw.roundToString() + " kW"
+                // Negate for charge rate view (not using absolute so that power loss can be observed)
+                binding.chargerate.text = (it * -1f).wToKw.roundToString() + " kW"
             } else {
                 binding.powerBar.setGauge(0f)
-                binding.powerBar.visibility = View.INVISIBLE
                 binding.power.text = ""
                 binding.minpower.text = ""
                 binding.maxpower.text = ""
@@ -899,49 +894,41 @@ class DashFragment : Fragment() {
      */
     private fun setGaugeVisibility() {
         // subtract AWD only views from side views before showing them
-        val leftSideUIViews = leftSideUIViews().toMutableSet()
-        val rightSideUIViews = rightSideUIViews().toMutableSet()
+        val sideUIViews = sideUIViews().toMutableSet()
         if (viewModel.carState[SName.driveConfig] == SVal.rwd) {
-            leftSideUIViews -= awdOnlyViews()
-            rightSideUIViews -= awdOnlyViews()
+            sideUIViews -= awdOnlyViews()
             awdOnlyViews().forEach { it.visibility = View.INVISIBLE }
         }
         // hide performance gauges if user has elected to hide them or if split screen mode
         if ((prefs.getPref(Constants.gaugeMode) < Constants.showFullGauges) || isSplitScreen()) {
-            sideUIViews().forEach { it.visibility = View.INVISIBLE }
+            sideUIViews.forEach { it.visibility = View.INVISIBLE }
         } else {
-            // show them only if not covered by the door views
-            if (!anyDoorOpen() || driverOrientRHD()) {
-                leftSideUIViews.forEach { it.visibility = View.VISIBLE }
-            }
-            if (!anyDoorOpen() || !driverOrientRHD()) {
-                rightSideUIViews.forEach { it.visibility = View.VISIBLE }
-            }
+            sideUIViews.forEach { it.visibility = View.VISIBLE }
         }
+
+        // Show and hide center views based on charging
+        val chargeState = viewModel.carState[SName.chargeStatus] ?: SVal.chargeStatusInactive
+        if (chargeState != SVal.chargeStatusInactive) {
+            chargingViews().forEach { it.visibility = View.VISIBLE }
+            chargingHiddenViews().forEach { it.visibility = View.INVISIBLE }
+        } else {
+            chargingHiddenViews().forEach { it.visibility = View.VISIBLE }
+            chargingViews().forEach { it.visibility = View.INVISIBLE }
+        }
+
         // Hide some gauges when doors are open
         if (anyDoorOpen()) {
             when {
                 isSplitScreen() -> centerDoorHiddenViews()
-                driverOrientRHD() -> rightSideUIViews
-                else -> leftSideUIViews
+                driverOrientRHD() -> rightSideUIViews()
+                else -> leftSideUIViews()
             }.forEach { it.visibility = View.INVISIBLE }
-        }
-
-        val charging = ((viewModel.carState[SName.chargeStatus] ?: SVal.chargeStatusInactive) != SVal.chargeStatusInactive)
-        // Show center views after door is closed or switch to fullscreen
-        if (!isSplitScreen() || !anyDoorOpen()) {
-            (if (charging) chargingViews() else (centerDoorHiddenViews() - chargingViews())).forEach {
-                it.visibility = View.VISIBLE
-            }
-        }
-        // Always hide some views depending on charging state
-        (if (charging) chargingHiddenViews() else chargingViews()).forEach {
-            it.visibility = View.INVISIBLE
         }
         // Always hide unused doors in case of split screen change
         (if (isSplitScreen()) doorViews() else doorViewsCenter()).forEach {
             it.visibility = View.GONE
         }
+
         // Battery percent is always hidden in split screen
         binding.batterypercent.visibility = if (isSplitScreen()) View.GONE else View.VISIBLE
     }
@@ -1157,9 +1144,6 @@ class DashFragment : Fragment() {
             binding.modely,
             binding.modelyCenter
         )
-        val imageViewsDisabled = setOf(
-            binding.battery
-        )
 
         // Not using dark-mode for compatibility with older version of Android (pre-29)
         if (shouldUseDarkMode()) {
@@ -1169,9 +1153,9 @@ class DashFragment : Fragment() {
             textViewsSecondary.forEach { it.setTextColor(Color.LTGRAY) }
             textViewsDisabled.forEach { it.setTextColor(Color.DKGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.LTGRAY) }
-            imageViewsDisabled.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(0) }
             binding.powerBar.setDayValue(0)
+            binding.battery.setColorFilter(Color.DKGRAY)
             binding.batteryOverlay.setDayValue(0)
         } else {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
@@ -1180,9 +1164,9 @@ class DashFragment : Fragment() {
             textViewsSecondary.forEach { it.setTextColor(Color.DKGRAY) }
             textViewsDisabled.forEach { it.setTextColor(Color.LTGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
-            imageViewsDisabled.forEach { it.setColorFilter(Color.LTGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
             binding.powerBar.setDayValue(1)
+            binding.battery.clearColorFilter()
             binding.batteryOverlay.setDayValue(1)
         }
         updateGearView()
