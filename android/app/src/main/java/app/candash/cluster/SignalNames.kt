@@ -99,6 +99,7 @@ object SGroup {
         SName.highBeamStatus,
         SName.autoHighBeamEnabled,
         SName.frontFogStatus,
-        SName.rearFogStatus
+        SName.rearFogStatus,
+        SName.mapRegion
     )
 }

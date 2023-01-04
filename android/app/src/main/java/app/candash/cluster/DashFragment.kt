@@ -102,7 +102,7 @@ class DashFragment : Fragment() {
     /**
      * These are telltales which should be hidden when in split screen
      */
-    private fun nonSplitScreenTelltaleUIViews(): Set<View> =
+    private fun splitScreenHiddenTelltales(): Set<View> =
         setOf(
             binding.telltaleDrl,
             binding.telltaleLb,
@@ -115,6 +115,21 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen
+        )
+
+    /**
+     * These are telltales which should be set to View.GONE when hidden, vs View.INVISIBLE
+     */
+    private fun stackedTelltales(): Set<View> =
+        setOf(
+            binding.telltaleDrl,
+            binding.telltaleLb,
+            binding.telltaleHb,
+            binding.telltaleFogFront,
+            binding.telltaleFogRear,
+            binding.battHeat,
+            binding.battCharge,
+            binding.telltaleLimRegen,
         )
 
     private fun leftSideUIViews(): Set<View> =
@@ -283,7 +298,8 @@ class DashFragment : Fragment() {
                     ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
             }
         }
-        
+
+        // This is executed now to kick-start some logic even before we get car state data
         setColors()
         setGaugeVisibility()
         setLayoutOrder()
@@ -376,6 +392,12 @@ class DashFragment : Fragment() {
             updateSplitScreenTellTales()
             updateSpeedLimitSign()
         }
+
+        /**
+         * Add signal observers and logic below.
+         * Use one of viewModel.onSignal or onSomeSignals
+         * Remember that it will only run when the value of the signal(s) change
+         */
 
         viewModel.onSignal(viewLifecycleOwner, SName.driverOrientation) {
             prefs.setBooleanPref(
@@ -611,7 +633,7 @@ class DashFragment : Fragment() {
 
         // Basic telltales all have the same logic:
         // If second == third: show first; else: hide first
-        val basicTellTalesHide = setOf(
+        setOf(
             Triple(binding.speedoBrakeHold, SName.brakeHold, 1f),
             Triple(binding.telltaleTPMSFaultHard, SName.tpmsHard, 1f),
             Triple(binding.telltaleTPMSFaultSoft, SName.tpmsSoft, 1f),
@@ -619,33 +641,20 @@ class DashFragment : Fragment() {
             Triple(binding.leftTurnSignalLight, SName.turnSignalLeft, 2f),
             Triple(binding.rightTurnSignalDark, SName.turnSignalRight, 1f),
             Triple(binding.rightTurnSignalLight, SName.turnSignalRight, 2f),
-        )
-
-        basicTellTalesHide.forEach { triple ->
+            Triple(binding.battHeat, SName.heatBattery, 1f),
+            Triple(binding.battCharge, SName.chargeStatus, SVal.chargeStatusActive),
+            Triple(binding.telltaleLimRegen, SName.limRegen, 1f),
+        ).forEach { triple ->
             viewModel.onSignal(viewLifecycleOwner, triple.second) {
                 processBasicTellTale(triple)
             }
         }
 
-        // Same as above but sets vis to GONE instead of INVISIBLE
-        val basicTellTalesGone = setOf(
-            Triple(binding.battHeat, SName.heatBattery, 1f),
-            Triple(binding.battCharge, SName.chargeStatus, SVal.chargeStatusActive),
-            Triple(binding.telltaleLimRegen, SName.limRegen, 1f),
-        )
-
-        basicTellTalesGone.forEach { triple ->
-            viewModel.onSignal(viewLifecycleOwner, triple.second) {
-                processBasicTellTale(triple, remove=true)
-            }
-        }
-
         // If any telltales need more advanced logic add them below
-        // If any should be hidden when in split screen, add to nonSplitScreenTelltaleUIViews
+        // If any should be hidden when in split screen, add to splitScreenHiddenTelltales
 
         viewModel.onSomeSignals(viewLifecycleOwner, SGroup.lights) {
-            if (it[SName.mapRegion] == SVal.mapUS) { updateUSDMLightTellTales() }
-            // add other regions if you dare :)
+            processLightTellTales()
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.gearSelected, SName.driverUnbuckled, SName.passengerUnbuckled)) {
@@ -934,7 +943,7 @@ class DashFragment : Fragment() {
     }
 
     /**
-     * Call this changing split screen, it shows/hides each of `nonSplitScreenTelltaleUIViews` by
+     * Call this changing split screen, it shows/hides each of `splitScreenHiddenTelltales` by
      * changing the View's alpha, so it doesn't conflict with visibility changes from signal logic.
      */
     private fun updateSplitScreenTellTales() {
@@ -942,9 +951,9 @@ class DashFragment : Fragment() {
         // use INVISIBLE and some use GONE, for split screen we make them transparent instead of
         // changing the visibility.
         if (isSplitScreen()) {
-            nonSplitScreenTelltaleUIViews().forEach { it.alpha = 0f }
+            splitScreenHiddenTelltales().forEach { it.alpha = 0f }
         } else {
-            nonSplitScreenTelltaleUIViews().forEach { it.alpha = 1f }
+            splitScreenHiddenTelltales().forEach { it.alpha = 1f }
         }
     }
 
@@ -953,16 +962,20 @@ class DashFragment : Fragment() {
      * 
      * @param tt Specify a Triple with first: the view to change, second: the signal to use, and
      * third: the value which makes the view visible
-     * @param remove If true, instead of making the view INVISIBLE, it will set it to GONE
      */
-    private fun processBasicTellTale(tt: Triple<View, String, Float>, remove: Boolean = false) {
+    private fun processBasicTellTale(tt: Triple<View, String, Float>) {
         if (viewModel.carState[tt.second] == tt.third) {
             tt.first.visibility = View.VISIBLE
-        } else if (remove) {
+        } else if (tt.first in stackedTelltales()) {
             tt.first.visibility = View.GONE
         } else {
             tt.first.visibility = View.INVISIBLE
         }
+    }
+
+    private fun processLightTellTales() {
+        if (viewModel.carState[SName.mapRegion] == SVal.mapUS) { updateUSDMLightTellTales() }
+        // add other regions if you dare :)
     }
 
     /**
@@ -970,8 +983,8 @@ class DashFragment : Fragment() {
      * If any of the code in here is the same for other markets, feel free to reuse the functions
      */
     private fun updateUSDMLightTellTales() {
-        processBasicTellTale(Triple(binding.telltaleFogFront, SName.frontFogStatus, 1f), remove = true)
-        processBasicTellTale(Triple(binding.telltaleFogRear, SName.rearFogStatus, 1f), remove = true)
+        processBasicTellTale(Triple(binding.telltaleFogFront, SName.frontFogStatus, 1f))
+        processBasicTellTale(Triple(binding.telltaleFogRear, SName.rearFogStatus, 1f))
 
         // Pos and DRL look the same
         processBasicTellTale(Triple(binding.telltaleDrl, SName.lightingState, SVal.lightsPos))
