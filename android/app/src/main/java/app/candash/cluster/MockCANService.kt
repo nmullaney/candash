@@ -88,7 +88,7 @@ class MockCANService : CANService {
                 SName.frontRightDoorState to 2f,
                 SName.rearLeftDoorState to 2f,
                 SName.rearRightDoorState to 2f,
-                SName.drlMode to SVal.drlModeOff,
+                SName.lightingState to SVal.lightsOff,
                 SName.chargeStatus to SVal.chargeStatusInactive,
                 SName.mapRegion to SVal.mapUS,
                 SName.fusedSpeedLimit to 65f
@@ -112,7 +112,7 @@ class MockCANService : CANService {
                 SName.displayOn to 0f,
 
                 SName.frontLeftDoorState to 2f,
-                SName.drlMode to SVal.drlModeDrl,
+                SName.lightingState to SVal.lightDRL,
                 SName.passengerUnbuckled to 1f,
                 SName.limRegen to 1f,
                 SName.brakePark to 1f,
@@ -134,7 +134,7 @@ class MockCANService : CANService {
                 SName.displayOn to 1f,
 
                 SName.frontLeftDoorState to 2f,
-                SName.drlMode to SVal.drlModePosition,
+                SName.lightingState to SVal.lightsPos,
                 SName.passengerUnbuckled to 0f,
                 SName.chargeStatus to SVal.chargeStatusActive,
                 SName.fusedSpeedLimit to SVal.fusedSpeedNone
@@ -145,7 +145,7 @@ class MockCANService : CANService {
                 SName.uiSpeed to 65.0f,
                 SName.uiSpeedUnits to 0f,
                 SName.frontLeftDoorState to 1f,
-                SName.drlMode to SVal.drlModePosition,
+                SName.lightingState to SVal.lightsOn,
                 SName.chargeStatus to SVal.chargeStatusActive,
                 SName.power to 45000f,
                 SName.stateOfCharge to 55f,

@@ -27,9 +27,8 @@ object SName {
     const val driveConfig = "driveConfig"
     const val driverOrientation = "driverOrientation"
     const val driverUnbuckled = "driverUnbuckled"
-    const val drlMode = "drlMode"
     const val forwardCollisionWarning = "FCW"
-    const val frontFogSwitch = "frontFogSwitch"
+    const val frontFogStatus = "frontFogStatus"
     const val frontLeftDoorState = "FrontLeftDoor"
     const val frontRightDoorState = "FrontRightDoor"
     const val frontTemp = "frontTemp"
@@ -39,18 +38,14 @@ object SName {
     const val gearSelected = "GearSelected"
     const val heatBattery = "heatBattery"
     const val highBeamRequest = "highBeamRequest"
-    const val highBeamStalkStatus = "highBeamStalkStatus"
-    const val highLowBeamDecision = "highLowBeamDecision"
-    const val indicatorLeft = "indicatorLeft"
-    const val indicatorRight = "indicatorRight"
+    const val highBeamStatus = "highBeamStatus"
     const val isSunUp = "isSunUp"
     const val kwhChargeTotal = "kwhChargeTotal"
     const val kwhDischargeTotal = "kwhDischargeTotal"
     const val leftVehicle = "leftVehDetected"
     const val liftgateState = "liftgateState"
-    const val lightSwitch = "lightSwitch"
+    const val lightingState = "lightingState"
     const val limRegen = "limRegen"
-    const val lowBeamLeft = "lowBeamLeft"
     const val mapRegion = "mapRegion"
     const val maxDischargePower = "maxDischargePower"
     const val maxHeatPower = "maxHeatPower"
@@ -60,7 +55,7 @@ object SName {
     const val passengerUnbuckled = "passengerUnbuckled"
     const val PINenabled = "PINenabled"
     const val PINpassed = "PINpassed"
-    const val rearFogSwitch = "rearFogSwitch"
+    const val rearFogStatus = "rearFogStatus"
     const val rearLeftDoorState = "RearLeftDoor"
     const val rearLeftVehicle = "rearLeftVehDetected"
     const val rearRightDoorState = "RearRightDoor"
@@ -96,5 +91,14 @@ object SGroup {
         SName.rearRightDoorState,
         SName.liftgateState,
         SName.frunkState
+    )
+
+    val lights = listOf(
+        SName.lightingState,
+        SName.highBeamRequest,
+        SName.highBeamStatus,
+        SName.autoHighBeamEnabled,
+        SName.frontFogStatus,
+        SName.rearFogStatus
     )
 }

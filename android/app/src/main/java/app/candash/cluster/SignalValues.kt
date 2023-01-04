@@ -30,25 +30,21 @@ object SVal {
     const val chargeStatusActive = 1f
     const val chargeStatusInactive = 0f
 
-    const val lowBeamLeftOff = 0f
-    const val lowBeamLeftOn = 1f
-
-    const val frontFogSwitchOff = 0f
-    const val frontFogSwitchOn = 1f
-
     const val rearFogSwitchOff = 0f
     const val rearFogSwitchOn = 1f
 
-    const val drlModeOff = 0f
-    const val drlModePosition = 1f
-    const val drlModeDrl = 2f
+    const val lightsOff = 0f
+    const val lightsPos = 1f
+    const val lightDRL = 2f
+    const val lightDRLPlusPos = 3f
+    const val lightsOn = 4f
+
+    const val highBeamIdle = 0f
+    const val highBeamInt = 1f
+    const val highBeamLatched = 2f
+    const val highBeamAuto = 3f
 
     const val brakeParkOff = 0f
     const val brakeParkRed = 1f
     const val brakeParkAmber = 2f
-
-    const val lightsOff = 3f
-    const val lightsPark = 2f
-    const val lightsOn = 1f
-    const val lightsAuto = 0f
 }

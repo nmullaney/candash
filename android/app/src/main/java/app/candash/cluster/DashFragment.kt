@@ -107,8 +107,6 @@ class DashFragment : Fragment() {
             binding.telltaleDrl,
             binding.telltaleLb,
             binding.telltaleHb,
-            binding.telltaleAhbStdby,
-            binding.telltaleAhbActive,
             binding.telltaleFogFront,
             binding.telltaleFogRear,
             binding.odometer,
@@ -614,8 +612,6 @@ class DashFragment : Fragment() {
         // Basic telltales all have the same logic:
         // If second == third: show first; else: hide first
         val basicTellTalesHide = setOf(
-            Triple(binding.telltaleFogRear, SName.rearFogSwitch, SVal.rearFogSwitchOn),
-            Triple(binding.telltaleFogFront, SName.frontFogSwitch, SVal.frontFogSwitchOn),
             Triple(binding.speedoBrakeHold, SName.brakeHold, 1f),
             Triple(binding.telltaleTPMSFaultHard, SName.tpmsHard, 1f),
             Triple(binding.telltaleTPMSFaultSoft, SName.tpmsSoft, 1f),
@@ -647,79 +643,9 @@ class DashFragment : Fragment() {
         // If any telltales need more advanced logic add them below
         // If any should be hidden when in split screen, add to nonSplitScreenTelltaleUIViews
 
-        /*viewModel.onSignal(viewLifecycleOwner, SName.lightSwitch) {
-            val lightSwitchVal = it ?: SVal.lightsOff
-            if ((lightSwitchVal == SVal.lightsPark) or
-                (lightSwitchVal == SVal.lightsOn) or
-                (lightSwitchVal == SVal.lightsAuto)) {
-                binding.telltaleDrl.visibility = View.VISIBLE
-            } else {
-                binding.telltaleDrl.visibility = View.INVISIBLE
-            }
-            if ((lightSwitchVal == SVal.lightsOn) or
-                (lightSwitchVal == SVal.lightsAuto)) {
-                binding.telltaleLb.visibility = View.VISIBLE
-            } else {
-                binding.telltaleLb.visibility = View.INVISIBLE
-            }
-        }*/
-
-        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.autoHighBeamEnabled, SName.highBeamRequest, SName.highLowBeamDecision)) {
-            val ahbEnabledVal = it[SName.autoHighBeamEnabled]
-            if (ahbEnabledVal == null) {
-                binding.telltaleAhbStdby.visibility = View.INVISIBLE
-                binding.telltaleAhbActive.visibility = View.INVISIBLE
-            } else {
-                if (ahbEnabledVal == 1f) {
-                    binding.telltaleHb.visibility = View.INVISIBLE
-                    if (it[SName.highBeamRequest] == 1f) {
-                        if (it[SName.highLowBeamDecision] == 2f) {
-                            // Auto High Beam is on, AHB decision is ON
-                            binding.telltaleAhbStdby.visibility = View.INVISIBLE
-                            binding.telltaleAhbActive.visibility = View.VISIBLE
-                            binding.telltaleLb.visibility = View.INVISIBLE
-                        } else {
-                            // Auto High Beam is on, AHB decision is OFF
-                            binding.telltaleAhbStdby.visibility = View.VISIBLE
-                            binding.telltaleAhbActive.visibility = View.INVISIBLE
-                            if (it[SName.highBeamStalkStatus] == 1f) {
-                                // Pulled on left stalk, flash HB
-                                binding.telltaleLb.visibility = View.INVISIBLE
-                                binding.telltaleHb.visibility = View.VISIBLE
-                            } else {
-                                // Stalk idle, business as usual
-                                if ((it[SName.lightSwitch] == SVal.lightsOn) or
-                                    (it[SName.lightSwitch] == SVal.lightsAuto)) {
-                                    binding.telltaleLb.visibility = View.VISIBLE
-                                }
-                                binding.telltaleHb.visibility = View.INVISIBLE
-                            }
-                        }
-                    } else {
-                        binding.telltaleAhbStdby.visibility = View.INVISIBLE
-                        binding.telltaleAhbActive.visibility = View.INVISIBLE
-                        if (it[SName.highBeamStalkStatus] == 1f) {
-                            // Pulled on left stalk, flash HB
-                            binding.telltaleLb.visibility = View.INVISIBLE
-                            binding.telltaleHb.visibility = View.VISIBLE
-                        }
-                    }
-                } else {
-                    binding.telltaleAhbStdby.visibility = View.INVISIBLE
-                    binding.telltaleAhbActive.visibility = View.INVISIBLE
-                    if ((it[SName.highBeamRequest] == 1f) or
-                        (it[SName.highBeamStalkStatus] == 1f)) {
-                        binding.telltaleLb.visibility = View.INVISIBLE
-                        binding.telltaleHb.visibility = View.VISIBLE
-                    } else {
-                        if ((it[SName.lightSwitch] == SVal.lightsOn) or
-                            (it[SName.lightSwitch] == SVal.lightsAuto)) {
-                            binding.telltaleLb.visibility = View.VISIBLE
-                        }
-                        binding.telltaleHb.visibility = View.INVISIBLE
-                    }
-                }
-            }
+        viewModel.onSomeSignals(viewLifecycleOwner, SGroup.lights) {
+            if (it[SName.mapRegion] == SVal.mapUS) { updateUSDMLightTellTales() }
+            // add other regions if you dare :)
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.gearSelected, SName.driverUnbuckled, SName.passengerUnbuckled)) {
@@ -1036,6 +962,51 @@ class DashFragment : Fragment() {
             tt.first.visibility = View.GONE
         } else {
             tt.first.visibility = View.INVISIBLE
+        }
+    }
+
+    /**
+     * This logic is designed to match US domestic market telltale behavior.
+     * If any of the code in here is the same for other markets, feel free to reuse the functions
+     */
+    private fun updateUSDMLightTellTales() {
+        processBasicTellTale(Triple(binding.telltaleFogFront, SName.frontFogStatus, 1f), remove = true)
+        processBasicTellTale(Triple(binding.telltaleFogRear, SName.rearFogStatus, 1f), remove = true)
+
+        // Pos and DRL look the same
+        processBasicTellTale(Triple(binding.telltaleDrl, SName.lightingState, SVal.lightsPos))
+
+        updateLowBeam()
+        updateHighBeam()
+    }
+
+    private fun updateLowBeam() {
+        // Low beam only shows when high beam is off
+        if (viewModel.carState[SName.lightingState] == SVal.lightsOn && viewModel.carState[SName.highBeamStatus] == 0f) {
+            binding.telltaleLb.visibility = View.VISIBLE
+        } else {
+            binding.telltaleLb.visibility = View.GONE
+        }
+    }
+
+    private fun updateHighBeam() {
+        if (viewModel.carState[SName.autoHighBeamEnabled] == 1f) {
+            if (viewModel.carState[SName.highBeamStatus] == 1f) {
+                binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_active)
+                binding.telltaleHb.visibility = View.VISIBLE
+            } else if (viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
+                binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_stdby)
+                binding.telltaleHb.visibility = View.VISIBLE
+            } else {
+                binding.telltaleHb.visibility = View.GONE
+            }
+        } else {
+            if (viewModel.carState[SName.highBeamStatus] == 1f) {
+                binding.telltaleHb.setImageResource(R.drawable.ic_telltale_hb)
+                binding.telltaleHb.visibility = View.VISIBLE
+            } else  {
+                binding.telltaleHb.visibility = View.GONE
+            }
         }
     }
 

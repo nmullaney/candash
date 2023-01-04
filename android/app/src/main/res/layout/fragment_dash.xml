@@ -161,18 +161,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/telltale_drl"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="48dp"
-
-        android:src="@drawable/ic_telltale_drl"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
         android:id="@+id/telltale_seatbelt"
         android:layout_width="35dp"
         android:layout_height="35dp"
@@ -325,9 +313,9 @@
         android:layout_height="35dp"
         android:layout_marginTop="48dp"
 
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="20dp"
         android:src="@drawable/ic_telltale_fog_rear"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -337,58 +325,46 @@
         android:layout_height="35dp"
         android:layout_marginTop="48dp"
 
-        android:layout_marginEnd="49dp"
+        android:layout_marginEnd="6dp"
         android:src="@drawable/ic_telltale_fog_front"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/telltale_fog_rear"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/telltale_drl"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="48dp"
+
+        android:src="@drawable/ic_telltale_drl"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/telltale_lb"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="61dp"
+        android:layout_marginStart="6dp"
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_lb"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/telltale_drl"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/telltale_hb"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="61dp"
+        android:layout_marginStart="6dp"
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_hb"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/telltale_ahb_active"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="48dp"
-
-        android:src="@drawable/ic_telltale_ahb_active"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/telltale_ahb_stdby"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="48dp"
-
-        android:src="@drawable/ic_telltale_ahb_stdby"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/telltale_lb"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

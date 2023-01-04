@@ -135,14 +135,13 @@ class CANSignalHelper {
         insertCANSignal(SName.turnSignalLeft, Constants.vehicleBus, Hex(0x3F5), 0, 2, 1f, 0f)
         insertCANSignal(SName.turnSignalRight, Constants.vehicleBus, Hex(0x3F5), 2, 2, 1f, 0f)
 
-        insertCANSignal(SName.lightSwitch, Constants.vehicleBus, Hex(0x3B3), 9, 3, 1f, 0f, sna=4f)
-        insertCANSignal(SName.lowBeamLeft, Constants.vehicleBus, Hex(0x3F5), 28, 2, 1f, 0f, sna=3f)
-        insertCANSignal(SName.highBeamRequest, Constants.vehicleBus, Hex(0x3F5), 58, 1, 1f, 0f)
+        // Lights updated for 2022.44.25
+        insertCANSignal(SName.lightingState, Constants.vehicleBus, Hex(0x3F5), 32, 4, 1f, 0f, sna=15f)
+        insertCANSignal(SName.highBeamRequest, Constants.vehicleBus, Hex(0x3F5), 28, 2, 1f, 0f)
         insertCANSignal(SName.autoHighBeamEnabled, Constants.vehicleBus, Hex(0x273), 41, 1, 1f, 0f)
-        insertCANSignal(SName.highLowBeamDecision, Constants.vehicleBus, Hex(0x3E9), 11, 2, 1f, 0f, sna=3f)
-        insertCANSignal(SName.highBeamStalkStatus, Constants.vehicleBus, Hex(0x249), 12, 2, 1f, 0f, sna=3f)
-        insertCANSignal(SName.frontFogSwitch, Constants.vehicleBus, Hex(0x273), 3, 1, 1f, 0f)
-        insertCANSignal(SName.rearFogSwitch, Constants.vehicleBus, Hex(0x273), 23, 1, 1f, 0f)
+        insertCANSignal(SName.highBeamStatus, Constants.vehicleBus, Hex(0x3F6), 4, 2, 1f, 0f, sna=3f)
+        insertCANSignal(SName.frontFogStatus, Constants.vehicleBus, Hex(0x3F5), 38, 1, 1f, 0f)
+        insertCANSignal(SName.rearFogStatus, Constants.vehicleBus, Hex(0x3e3), 8, 2, 1f, 0f, sna=3f)
 
         insertCANSignal(SName.isSunUp, Constants.chassisBus, Hex(0x2D3), 25, 2, 1f, 0f, sna=3f)
         //insertCANSignal(SName.rearLeftVehicle, Constants.chassisBus, Hex(0x22E), 36, 9, 1f, 0f)
@@ -183,7 +182,6 @@ class CANSignalHelper {
         insertCANSignal(SName.brakeTempRR, Constants.vehicleBus, Hex(0x3FE), 42, 10, 1f, -40f, sna=983f)
         insertCANSignal(SName.displayOn, Constants.vehicleBus, Hex(0x353), 5, 1, 1f, 0f)
 
-        insertCANSignal(SName.drlMode, Constants.vehicleBus, Hex(0x381), 5, 2, 1f, 0f, 5, 18 )
         insertCANSignal(SName.driverUnbuckled, Constants.vehicleBus, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0, sna=2f)
         insertCANSignal(SName.passengerUnbuckled, Constants.vehicleBus, Hex(0x3A1), 34, 2, 1f, 0f, 1, 0, sna=2f)
         insertCANSignal(SName.heatBattery, Constants.vehicleBus, Hex(0x2E1), 63, 1, 1f, 0f, 3, 0 )
