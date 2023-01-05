@@ -72,6 +72,31 @@ class DashFragment : Fragment() {
         return unitConverter.convertToPreferredUnit(nativeUnit, this).roundToString(dp)
     }
 
+    /**
+     * Get or set the view's visibility as a Boolean.
+     * Returns true if visibility == View.VISIBLE
+     *
+     * Set true/false to show/hide the view.
+     * If set to false, it will set the view to INVISIBLE unless this view is in
+     * viewsToSetGone() in which case it will set it to GONE.
+     */
+    private var View.visible: Boolean
+        get() = (this.visibility == View.VISIBLE)
+        set(visible) {
+            this.visibility = when {
+                visible -> View.VISIBLE
+                this in viewsToSetGone() -> View.GONE
+                else -> View.INVISIBLE
+            }
+        }
+
+    /**
+     * Shows the view if the signal equals a value, hides it otherwise
+     */
+    private fun View.showWhen(signalName: String, isValue: Float?) {
+        this.visible = (viewModel.carState[signalName] == isValue)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -81,6 +106,34 @@ class DashFragment : Fragment() {
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         return binding.root
     }
+
+    /**
+     * These are views which should be set to View.GONE when hidden.
+     * If not in this list, will be set to View.INVISIBLE.
+     * Note that this should only be used when you want Views to shift based on constraints
+     * to other views.
+     *
+     * Don't use for rapidly changing Views
+     */
+    private fun viewsToSetGone(): Set<View> =
+        setOf(
+            binding.telltaleDrl,
+            binding.telltaleLb,
+            binding.telltaleHb,
+            binding.telltaleFogFront,
+            binding.telltaleFogRear,
+            binding.battHeat,
+            binding.battCharge,
+            binding.batterypercent,
+            binding.telltaleLimRegen,
+            binding.blackout,
+            binding.PINWarning,
+            binding.APWarning,
+            binding.BSWarningLeft,
+            binding.BSWarningRight,
+            binding.FCWarning,
+            binding.warningGradientOverlay,
+        ) + minMaxPowerViews() + doorViewsCenter() + doorViews()
 
     /**
      * These views are bumped up when in split screen closer to the status bar
@@ -115,21 +168,6 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen
-        )
-
-    /**
-     * These are telltales which should be set to View.GONE when hidden, vs View.INVISIBLE
-     */
-    private fun stackedTelltales(): Set<View> =
-        setOf(
-            binding.telltaleDrl,
-            binding.telltaleLb,
-            binding.telltaleHb,
-            binding.telltaleFogFront,
-            binding.telltaleFogRear,
-            binding.battHeat,
-            binding.battCharge,
-            binding.telltaleLimRegen,
         )
 
     private fun leftSideUIViews(): Set<View> =
@@ -230,7 +268,7 @@ class DashFragment : Fragment() {
             binding.hatchCenter
         )
 
-    private fun minMaxChargingHiddenViews(): Set<View> =
+    private fun minMaxPowerViews(): Set<View> =
         setOf(
             binding.maxpower,
             binding.minpower,
@@ -290,7 +328,7 @@ class DashFragment : Fragment() {
 
         setupGradientOverlays()
 
-        binding.blackout.visibility = View.GONE
+        binding.blackout.visible = false
 
         if (!isSplitScreen()) {
             for (topUIView in topUIViews()) {
@@ -352,7 +390,7 @@ class DashFragment : Fragment() {
 
         binding.efficiency.setOnClickListener {
             binding.infoToast.text = efficiencyCalculator.changeLookBack()
-            binding.infoToast.visibility = View.VISIBLE
+            binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
         }
 
@@ -409,14 +447,7 @@ class DashFragment : Fragment() {
 
         viewModel.onSignal(viewLifecycleOwner, SName.driveConfig) {
             if (it == SVal.rwd) {
-                binding.fronttorquegauge.visibility = View.INVISIBLE
-                binding.fronttorquelabel.visibility = View.INVISIBLE
-                binding.fronttorque.visibility = View.INVISIBLE
-                binding.fronttorqueunits.visibility = View.INVISIBLE
-                binding.fronttempgauge.visibility = View.INVISIBLE
-                binding.fronttemplabel.visibility = View.INVISIBLE
-                binding.fronttemp.visibility = View.INVISIBLE
-                binding.fronttempunits.visibility = View.INVISIBLE
+                awdOnlyViews().forEach { view -> view.visible = false }
             }
         }
 
@@ -430,13 +461,13 @@ class DashFragment : Fragment() {
                 && it[SName.displayOn] == 0f
                 && prefs.getBooleanPref(Constants.blankDisplaySync)
             ) {
-                binding.blackout.visibility = View.VISIBLE
+                binding.blackout.visible = true
                 binding.infoToast.text =
                     "Display sleeping with car.\nLong-press left edge for settings."
-                binding.infoToast.visibility = View.VISIBLE
+                binding.infoToast.visible = true
                 binding.infoToast.startAnimation(fadeOut(5000))
             } else {
-                binding.blackout.visibility = View.GONE
+                binding.blackout.visible = false
             }
         }
 
@@ -470,19 +501,14 @@ class DashFragment : Fragment() {
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             if (it != null) {
                 if (it > prefs.getPref("maxPower")) prefs.setPref("maxPower", it)
-                if (viewModel.carState[SName.chargeStatus] == SVal.chargeStatusInactive) {
+                if (!carIsCharging()) {
                     // do not store min power if car is charging
                     if (it < prefs.getPref("minPower")) prefs.setPref("minPower", it)
                 }
-                if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
-                    binding.minpower.visibility = View.VISIBLE
-                    binding.maxpower.visibility = View.VISIBLE
-                    binding.minpower.text = formatPower(prefs.getPref("minPower"))
-                    binding.maxpower.text = formatPower(prefs.getPref("maxPower"))
-
-                } else {
-                    binding.minpower.visibility = View.INVISIBLE
-                    binding.maxpower.visibility = View.INVISIBLE
+                binding.minpower.text = formatPower(prefs.getPref("minPower"))
+                binding.maxpower.text = formatPower(prefs.getPref("maxPower"))
+                minMaxPowerViews().forEach { view ->
+                    view.visible = (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges)
                 }
                 binding.power.text = formatPower(it)
 
@@ -644,9 +670,11 @@ class DashFragment : Fragment() {
             Triple(binding.battHeat, SName.heatBattery, 1f),
             Triple(binding.battCharge, SName.chargeStatus, SVal.chargeStatusActive),
             Triple(binding.telltaleLimRegen, SName.limRegen, 1f),
+            Triple(binding.telltaleBrakePark, SName.brakePark, SVal.brakeParkRed),
+            Triple(binding.telltaleBrakeParkFault, SName.brakePark, SVal.brakeParkAmber),
         ).forEach { triple ->
             viewModel.onSignal(viewLifecycleOwner, triple.second) {
-                processBasicTellTale(triple)
+                triple.first.showWhen(triple.second, triple.third)
             }
         }
 
@@ -658,42 +686,21 @@ class DashFragment : Fragment() {
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.gearSelected, SName.driverUnbuckled, SName.passengerUnbuckled)) {
-            if (gearState() != SVal.gearInvalid &&
-                ((it[SName.driverUnbuckled] == 1f) or
-                        (it[SName.passengerUnbuckled] == 1f))) {
-                binding.telltaleSeatbelt.visibility = View.VISIBLE
-            } else {
-                binding.telltaleSeatbelt.visibility = View.INVISIBLE
-            }
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.brakePark) {
-            when (it) {
-                SVal.brakeParkRed -> {
-                    binding.telltaleBrakePark.visibility = View.VISIBLE
-                    binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
-                }
-                SVal.brakeParkAmber -> {
-                    binding.telltaleBrakePark.visibility = View.INVISIBLE
-                    binding.telltaleBrakeParkFault.visibility = View.VISIBLE
-                }
-                else -> {
-                    binding.telltaleBrakePark.visibility = View.INVISIBLE
-                    binding.telltaleBrakeParkFault.visibility = View.INVISIBLE
-                }
-            }
+            binding.telltaleSeatbelt.visible = gearState() != SVal.gearInvalid &&
+                    ((it[SName.driverUnbuckled] == 1f) or
+                            (it[SName.passengerUnbuckled] == 1f))
         }
 
         /*viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.odometer, SName.uiSpeedUnits)) {
             val odometerVal = it[SName.odometer]
             if (!prefs.getBooleanPref(Constants.hideOdometer) && odometerVal != null) {
-                binding.odometer.visibility = View.VISIBLE
+                binding.odometer.visible = true
                 binding.odometer.text = odometerVal.convertAndRoundToString(
                     Units.DISTANCE_KM,
                     1
                 ) + unitConverter.prefDistanceUnit().tag
             } else {
-                binding.odometer.visibility = View.INVISIBLE
+                binding.odometer.visible = false
             }
         }*/
 
@@ -705,10 +712,10 @@ class DashFragment : Fragment() {
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
             if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency)) {
-                binding.efficiency.visibility = View.INVISIBLE
+                binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
-                binding.efficiency.visibility = View.VISIBLE
+                binding.efficiency.visible = true
             }
         }
 
@@ -734,17 +741,12 @@ class DashFragment : Fragment() {
             val distance = it ?: 99999f
             val l1Distance = viewModel.carState[SName.l1Distance] ?: Constants.l1DistanceLowSpeed
             val l2Distance = viewModel.carState[SName.l2Distance] ?: Constants.l2DistanceLowSpeed
-            if (distance > l1Distance || gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
-                binding.blindSpotLeft1.visibility = View.INVISIBLE
-                binding.blindSpotLeft2.visibility = View.INVISIBLE
+            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
+                binding.blindSpotLeft1.visible = false
+                binding.blindSpotLeft2.visible = false
             } else {
-                if (distance in l2Distance..l1Distance) {
-                    binding.blindSpotLeft1.visibility = View.VISIBLE
-                    binding.blindSpotLeft2.visibility = View.INVISIBLE
-                } else {
-                    binding.blindSpotLeft1.visibility = View.INVISIBLE
-                    binding.blindSpotLeft2.visibility = View.VISIBLE
-                }
+                binding.blindSpotLeft1.visible = (distance in l2Distance..l1Distance)
+                binding.blindSpotLeft2.visible = (distance < l2Distance)
             }
         }
 
@@ -752,47 +754,41 @@ class DashFragment : Fragment() {
             val distance = it ?: 99999f
             val l1Distance = viewModel.carState[SName.l1Distance] ?: Constants.l1DistanceLowSpeed
             val l2Distance = viewModel.carState[SName.l2Distance] ?: Constants.l2DistanceLowSpeed
-            if (distance > l1Distance || gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
-                binding.blindSpotRight1.visibility = View.INVISIBLE
-                binding.blindSpotRight2.visibility = View.INVISIBLE
+            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
+                binding.blindSpotRight1.visible = false
+                binding.blindSpotRight2.visible = false
             } else {
-                if (distance in l2Distance..l1Distance) {
-                    binding.blindSpotRight1.visibility = View.VISIBLE
-                    binding.blindSpotRight2.visibility = View.INVISIBLE
-                } else {
-                    binding.blindSpotRight1.visibility = View.INVISIBLE
-                    binding.blindSpotRight2.visibility = View.VISIBLE
-                }
+                binding.blindSpotRight1.visible = (distance in l2Distance..l1Distance)
+                binding.blindSpotRight2.visible = (distance < l2Distance)
             }
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.PINpassed, SName.brakeApplied)) {
             if (it[SName.PINenabled] == 1f) {
                 if (it[SName.PINpassed] == 0f &&
-                    binding.PINWarning.visibility != View.VISIBLE &&
+                    !binding.PINWarning.visible &&
                     it[SName.brakeApplied] == 2f) {
                     binding.PINWarning.clearAnimation()
                     binding.PINWarning.startAnimation(fadeIn())
-                    binding.PINWarning.visibility = View.VISIBLE
+                    binding.PINWarning.visible = true
                 } else if(it[SName.PINpassed] == 1f) {
                     binding.PINWarning.clearAnimation()
-                    if (binding.PINWarning.visibility != View.GONE) {
+                    if (binding.PINWarning.visible) {
                         binding.PINWarning.startAnimation(fadeOut())
-                        binding.PINWarning.visibility = View.GONE
+                        binding.PINWarning.visible = false
                     }
                 }
             }
         }
 
-        viewModel.onSignal(viewLifecycleOwner, SName.chargeStatus) { value ->
-            val chargeStatusVal = value ?: SVal.chargeStatusInactive
-            if (chargeStatusVal != SVal.chargeStatusInactive) {
+        viewModel.onSignal(viewLifecycleOwner, SName.chargeStatus) {
+            if (carIsCharging()) {
                 binding.batteryOverlay.setChargeMode(1)
-                minMaxChargingHiddenViews().forEach { it.visibility = View.GONE }
+                minMaxPowerViews().forEach { it.visible = false }
             } else {
                 binding.batteryOverlay.setChargeMode(0)
                 if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
-                    minMaxChargingHiddenViews().forEach { it.visibility = View.VISIBLE }
+                    minMaxPowerViews().forEach { it.visible = true }
                 }
             }
             // All of the charging view visibility is handled here
@@ -814,7 +810,7 @@ class DashFragment : Fragment() {
             binding.batterypercent.text = if (socVal != null) socVal.roundToString(0) + " %" else ""
         }
         binding.batteryOverlay.setGauge(socVal ?: 0f)
-        binding.battery.visibility = if (socVal == null) View.INVISIBLE else View.VISIBLE
+        binding.battery.visible = (socVal != null)
 
         // Set charge meter stuff too, although they may be hidden
         if (socVal != null) {
@@ -832,24 +828,17 @@ class DashFragment : Fragment() {
         val sideUIViews = sideUIViews().toMutableSet()
         if (viewModel.carState[SName.driveConfig] == SVal.rwd) {
             sideUIViews -= awdOnlyViews()
-            awdOnlyViews().forEach { it.visibility = View.INVISIBLE }
+            awdOnlyViews().forEach { it.visible = false }
         }
         // hide performance gauges if user has elected to hide them or if split screen mode
-        if ((prefs.getPref(Constants.gaugeMode) < Constants.showFullGauges) || isSplitScreen()) {
-            sideUIViews.forEach { it.visibility = View.INVISIBLE }
-        } else {
-            sideUIViews.forEach { it.visibility = View.VISIBLE }
+        sideUIViews.forEach {
+            it.visible =
+                (prefs.getPref(Constants.gaugeMode) == Constants.showFullGauges && !isSplitScreen())
         }
 
         // Show and hide center views based on charging
-        val chargeState = viewModel.carState[SName.chargeStatus] ?: SVal.chargeStatusInactive
-        if (chargeState != SVal.chargeStatusInactive) {
-            chargingViews().forEach { it.visibility = View.VISIBLE }
-            chargingHiddenViews().forEach { it.visibility = View.INVISIBLE }
-        } else {
-            chargingHiddenViews().forEach { it.visibility = View.VISIBLE }
-            chargingViews().forEach { it.visibility = View.INVISIBLE }
-        }
+        chargingViews().forEach { it.visible = carIsCharging() }
+        chargingHiddenViews().forEach { it.visible = !carIsCharging() }
 
         // Hide some gauges when doors are open
         if (anyDoorOpen()) {
@@ -857,15 +846,15 @@ class DashFragment : Fragment() {
                 isSplitScreen() -> centerDoorHiddenViews()
                 driverOrientRHD() -> rightSideUIViews()
                 else -> leftSideUIViews()
-            }.forEach { it.visibility = View.INVISIBLE }
+            }.forEach { it.visible = false }
         }
         // Always hide unused doors in case of split screen change
         (if (isSplitScreen()) doorViews() else doorViewsCenter()).forEach {
-            it.visibility = View.GONE
+            it.visible = false
         }
 
         // Battery percent is always hidden in split screen
-        binding.batterypercent.visibility = if (isSplitScreen()) View.GONE else View.VISIBLE
+        binding.batterypercent.visible = !isSplitScreen()
     }
 
     private fun driverOrientRHD(): Boolean {
@@ -957,22 +946,6 @@ class DashFragment : Fragment() {
         }
     }
 
-    /**
-     * Sets a view visible if signal matches value, otherwise sets it invisible or gone
-     * 
-     * @param tt Specify a Triple with first: the view to change, second: the signal to use, and
-     * third: the value which makes the view visible
-     */
-    private fun processBasicTellTale(tt: Triple<View, String, Float>) {
-        if (viewModel.carState[tt.second] == tt.third) {
-            tt.first.visibility = View.VISIBLE
-        } else if (tt.first in stackedTelltales()) {
-            tt.first.visibility = View.GONE
-        } else {
-            tt.first.visibility = View.INVISIBLE
-        }
-    }
-
     private fun processLightTellTales() {
         if (viewModel.carState[SName.mapRegion] == SVal.mapUS) { updateUSDMLightTellTales() }
         // add other regions if you dare :)
@@ -983,11 +956,11 @@ class DashFragment : Fragment() {
      * If any of the code in here is the same for other markets, feel free to reuse the functions
      */
     private fun updateUSDMLightTellTales() {
-        processBasicTellTale(Triple(binding.telltaleFogFront, SName.frontFogStatus, 1f))
-        processBasicTellTale(Triple(binding.telltaleFogRear, SName.rearFogStatus, 1f))
+        binding.telltaleFogFront.showWhen(SName.frontFogStatus, 1f)
+        binding.telltaleFogRear.showWhen(SName.rearFogStatus, 1f)
 
         // Pos and DRL look the same
-        processBasicTellTale(Triple(binding.telltaleDrl, SName.lightingState, SVal.lightsPos))
+        binding.telltaleDrl.showWhen(SName.lightingState, SVal.lightsPos)
 
         updateLowBeam()
         updateHighBeam()
@@ -995,30 +968,26 @@ class DashFragment : Fragment() {
 
     private fun updateLowBeam() {
         // Low beam only shows when high beam is off
-        if (viewModel.carState[SName.lightingState] == SVal.lightsOn && viewModel.carState[SName.highBeamStatus] == 0f) {
-            binding.telltaleLb.visibility = View.VISIBLE
-        } else {
-            binding.telltaleLb.visibility = View.GONE
-        }
+        binding.telltaleLb.visible = (viewModel.carState[SName.lightingState] == SVal.lightsOn && viewModel.carState[SName.highBeamStatus] == 0f)
     }
 
     private fun updateHighBeam() {
         if (viewModel.carState[SName.autoHighBeamEnabled] == 1f) {
             if (viewModel.carState[SName.highBeamStatus] == 1f) {
                 binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_active)
-                binding.telltaleHb.visibility = View.VISIBLE
+                binding.telltaleHb.visible = true
             } else if (viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
                 binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_stdby)
-                binding.telltaleHb.visibility = View.VISIBLE
+                binding.telltaleHb.visible = true
             } else {
-                binding.telltaleHb.visibility = View.GONE
+                binding.telltaleHb.visible = false
             }
         } else {
             if (viewModel.carState[SName.highBeamStatus] == 1f) {
                 binding.telltaleHb.setImageResource(R.drawable.ic_telltale_hb)
-                binding.telltaleHb.visibility = View.VISIBLE
+                binding.telltaleHb.visible = true
             } else  {
-                binding.telltaleHb.visibility = View.GONE
+                binding.telltaleHb.visible = false
             }
         }
     }
@@ -1045,21 +1014,18 @@ class DashFragment : Fragment() {
             else -> null
         }
 
-        if (gearState() == SVal.gearInvalid) {
-            binding.PRND.visibility = View.INVISIBLE
-        } else {
-            val ss = SpannableString(binding.PRND.text.toString())
-            if (gearLetterIndex != null) {
-                ss.setSpan(
-                    ForegroundColorSpan(gearColorSelected),
-                    gearLetterIndex,
-                    gearLetterIndex + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            binding.PRND.text = (ss)
-            binding.PRND.visibility = View.VISIBLE
+        val ss = SpannableString(binding.PRND.text.toString())
+        if (gearLetterIndex != null) {
+            ss.setSpan(
+                ForegroundColorSpan(gearColorSelected),
+                gearLetterIndex,
+                gearLetterIndex + 1,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
+        binding.PRND.text = (ss)
+
+        binding.PRND.visible = (gearState() != SVal.gearInvalid)
     }
     
     private fun shouldUseDarkMode(): Boolean {
@@ -1160,9 +1126,14 @@ class DashFragment : Fragment() {
         return power.convertAndRoundToString(Units.POWER_W) + unitConverter.prefPowerUnit().tag
     }
 
+    private fun carIsCharging(): Boolean {
+        val chargeStatus = viewModel.carState[SName.chargeStatus] ?: SVal.chargeStatusInactive
+        return chargeStatus != SVal.chargeStatusInactive
+    }
+
     private fun updateDoorStateUI() {
         val carBody = if (isSplitScreen()) binding.modelyCenter else binding.modely
-        carBody.visibility = if (anyDoorOpen()) View.VISIBLE else View.GONE
+        carBody.visible = anyDoorOpen()
         displayOpenDoors()
         setGaugeVisibility()
     }
@@ -1192,11 +1163,7 @@ class DashFragment : Fragment() {
             SName.rearRightDoorState to binding.rearrightdoorCenter
         )
         sigToBinding.forEach {
-            if (closureIsOpen(it.key)) {
-                it.value.visibility = View.VISIBLE
-            } else {
-                it.value.visibility = View.GONE
-            }
+            it.value.visible = closureIsOpen(it.key)
         }
     }
 
@@ -1210,15 +1177,14 @@ class DashFragment : Fragment() {
             else -> binding.autopilot.setImageResource(R.drawable.ic_autopilot_inactive)
         }
 
-        val visible = (binding.autopilot.visibility == View.VISIBLE)
         when {
-            autopilotState in 2f..7f && !visible -> {
+            autopilotState in 2f..7f && !binding.autopilot.visible -> {
                 binding.autopilot.startAnimation(fadeIn(200))
-                binding.autopilot.visibility = View.VISIBLE
+                binding.autopilot.visible = true
             }
-            autopilotState !in 2f..7f && visible -> {
+            autopilotState !in 2f..7f && binding.autopilot.visible -> {
                 binding.autopilot.startAnimation(fadeOut(200))
-                binding.autopilot.visibility = View.INVISIBLE
+                binding.autopilot.visible = false
             }
         }
     }
@@ -1247,16 +1213,15 @@ class DashFragment : Fragment() {
         val inDrive = (viewModel.carState[SName.gearSelected] == SVal.gearDrive)
 
         val taccAvailable = (viewModel.carState[SName.accState] == 4f && !brakeApplied && inDrive)
-        val visible = (binding.TACC.visibility == View.VISIBLE)
-        if (visible != taccAvailable) {
+        if (binding.TACC.visible != taccAvailable) {
             when (taccAvailable) {
                 true -> {
                     binding.TACC.startAnimation(fadeIn(200))
-                    binding.TACC.visibility = View.VISIBLE
+                    binding.TACC.visible = true
                 }
                 false -> {
                     binding.TACC.startAnimation(fadeOut(200))
-                    binding.TACC.visibility = View.INVISIBLE
+                    binding.TACC.visible = false
                 }
             }
         }
@@ -1267,28 +1232,17 @@ class DashFragment : Fragment() {
         if (speedLimitVal == SVal.fusedSpeedNone || gearState() != SVal.gearDrive
             || prefs.getBooleanPref(Constants.hideSpeedLimit) || isSplitScreen()
         ) {
-            binding.speedLimitUs.visibility = View.INVISIBLE
-            binding.speedLimitRound.visibility = View.INVISIBLE
-            binding.speedLimitNolimitRound.visibility = View.INVISIBLE
+            binding.speedLimitUs.visible = false
+            binding.speedLimitRound.visible = false
+            binding.speedLimitNolimitRound.visible = false
         } else {
-            if ((viewModel.carState[SName.mapRegion] ?: SVal.mapUS) == SVal.mapUS) {
-                // There's no CA map region from the dbc, assuming that CA uses US map region and sign
-                binding.speedLimitValueUs.text = speedLimitVal.roundToString(0)
-                binding.speedLimitUs.visibility = View.VISIBLE
-                binding.speedLimitRound.visibility = View.INVISIBLE
-            } else {
-                // Apologies if I wrongly assumed the rest of the world uses the round sign
-                if (speedLimitVal != 155f) {
-                    binding.speedLimitNolimitRound.visibility = View.INVISIBLE
-                    binding.speedLimitValueRound.text = speedLimitVal.roundToString(0)
-                    binding.speedLimitRound.visibility = View.VISIBLE
-                    binding.speedLimitUs.visibility = View.INVISIBLE
-                } else {
-                    binding.speedLimitNolimitRound.visibility = View.VISIBLE
-                    binding.speedLimitUs.visibility = View.INVISIBLE
-                    binding.speedLimitRound.visibility = View.INVISIBLE
-                }
-            }
+            val usMap = ((viewModel.carState[SName.mapRegion] ?: SVal.mapUS) == SVal.mapUS)
+            binding.speedLimitValueUs.text = speedLimitVal.roundToString(0)
+            binding.speedLimitValueRound.text = speedLimitVal.roundToString(0)
+
+            binding.speedLimitUs.visible = usMap
+            binding.speedLimitRound.visible = (!usMap && speedLimitVal != 155f)
+            binding.speedLimitNolimitRound.visible = (!usMap && speedLimitVal == 155f)
         }
     }
 
@@ -1304,7 +1258,7 @@ class DashFragment : Fragment() {
             gradientType = GradientDrawable.LINEAR_GRADIENT
         }
         binding.warningGradientOverlay.setImageDrawable(overlayGradient)
-        binding.warningGradientOverlay.visibility = View.GONE
+        binding.warningGradientOverlay.visible = false
 
         // init ap animation
         autopilotAnimation = ValueAnimator.ofObject(
@@ -1328,7 +1282,7 @@ class DashFragment : Fragment() {
                 intArrayOf(animator.animatedValue as Int, gradientColorFrom)
         }
         blindspotAnimation.doOnEnd {
-            binding.warningGradientOverlay.visibility = View.GONE
+            binding.warningGradientOverlay.visible = false
             overlayGradient.colors = intArrayOf(gradientColorFrom, gradientColorFrom)
         }
     }
@@ -1338,9 +1292,9 @@ class DashFragment : Fragment() {
             // 3 and 4 have a ~2 second delay before starting to flash
             autopilotAnimation.startDelay = if (autopilotHandsVal in 3f..4f) 1900L else 0L
 
-            if (binding.APWarning.visibility != View.VISIBLE) {
+            if (!binding.APWarning.visible) {
                 // Warning toast:
-                binding.APWarning.visibility = View.VISIBLE
+                binding.APWarning.visible = true
 
                 // Gradient overlay:
                 overlayGradient.orientation = Orientation.TOP_BOTTOM
@@ -1356,14 +1310,14 @@ class DashFragment : Fragment() {
                 }
                 autopilotAnimation.duration = 750L
                 autopilotAnimation.start()
-                binding.warningGradientOverlay.visibility = View.VISIBLE
+                binding.warningGradientOverlay.visible = true
             }
         } else {
             // Warning toast:
-            binding.APWarning.visibility = View.GONE
+            binding.APWarning.visible = false
 
             // Gradient overlay:
-            binding.warningGradientOverlay.visibility = View.GONE
+            binding.warningGradientOverlay.visible = false
             autopilotAnimation.removeAllListeners()
             autopilotAnimation.cancel()
             overlayGradient.colors = intArrayOf(gradientColorFrom, gradientColorFrom)
@@ -1378,19 +1332,19 @@ class DashFragment : Fragment() {
         if (bsValue in setOf(1f, 2f)) {
             // Warning toast:
             bsBinding.clearAnimation()
-            bsBinding.visibility = View.VISIBLE
+            bsBinding.visible = true
 
             // Gradient overlay:
             overlayGradient.orientation = orientation
             blindspotAnimation.repeatCount = ValueAnimator.INFINITE
             blindspotAnimation.repeatMode = ValueAnimator.REVERSE
             blindspotAnimation.start()
-            binding.warningGradientOverlay.visibility = View.VISIBLE
+            binding.warningGradientOverlay.visible = true
         } else {
             // Warning toast:
-            if (bsBinding.visibility != View.GONE) {
+            if (bsBinding.visible) {
                 bsBinding.startAnimation(fadeOut())
-                bsBinding.visibility = View.GONE
+                bsBinding.visible = false
             }
             // Gradient overlay:
             // let it fade out naturally by setting repeat to 1 (so it reverses) then change visibility on end
@@ -1405,19 +1359,19 @@ class DashFragment : Fragment() {
 
             // Warning toast:
             binding.FCWarning.clearAnimation()
-            binding.FCWarning.visibility = View.VISIBLE
+            binding.FCWarning.visible = true
 
             // Gradient overlay:
             // Reuse blindspot animation as it's basically the same
             blindspotAnimation.repeatCount = 4
             blindspotAnimation.repeatMode = ValueAnimator.RESTART
             blindspotAnimation.reverse()
-            binding.warningGradientOverlay.visibility = View.VISIBLE
+            binding.warningGradientOverlay.visible = true
         } else {
             // Warning toast:
-            if (binding.FCWarning.visibility != View.GONE) {
+            if (binding.FCWarning.visible) {
                 binding.FCWarning.startAnimation(fadeOut())
-                binding.FCWarning.visibility = View.GONE
+                binding.FCWarning.visible = false
             }
             // Gradient overlay stops by itself after a fixed repeat count
         }
