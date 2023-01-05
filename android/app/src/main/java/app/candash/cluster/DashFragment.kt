@@ -507,9 +507,6 @@ class DashFragment : Fragment() {
                 }
                 binding.minpower.text = formatPower(prefs.getPref("minPower"))
                 binding.maxpower.text = formatPower(prefs.getPref("maxPower"))
-                minMaxPowerViews().forEach { view ->
-                    view.visible = (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges)
-                }
                 binding.power.text = formatPower(it)
 
                 if (it >= 0) {
