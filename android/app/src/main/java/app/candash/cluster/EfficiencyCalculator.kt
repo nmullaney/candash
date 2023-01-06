@@ -35,6 +35,12 @@ class EfficiencyCalculator(
         }
     }
 
+    fun clearHistory() {
+        kwhHistory.clear()
+        parkedKwhHistory.clear()
+        saveHistoryToPrefs()
+    }
+
     fun getEfficiencyText(): String? {
         val inMiles = prefs.getBooleanPref(Constants.uiSpeedUnitsMPH)
         val power = viewModel.carState[SName.power] ?: 0f
@@ -59,7 +65,7 @@ class EfficiencyCalculator(
     }
 
     private fun updateParkedHistory(odo: Float, discharge: Float, charge: Float) {
-        val gear = viewModel.carState[SName.gearSelected]?.toInt() ?: SVal.gearInvalid
+        val gear = viewModel.carState[SName.gearSelected] ?: SVal.gearInvalid
         // Switching from D/R/N to Park
         if (gear in setOf(SVal.gearPark, SVal.gearInvalid) && parkedStartKwh == null) {
             parkedStartKwh = Pair(discharge, charge)

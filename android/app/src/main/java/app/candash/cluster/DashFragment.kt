@@ -394,6 +394,14 @@ class DashFragment : Fragment() {
             binding.infoToast.startAnimation(fadeOut(5000))
         }
 
+        binding.efficiency.setOnLongClickListener {
+            efficiencyCalculator.clearHistory()
+            binding.infoToast.text = "Cleared efficiency history"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
+            return@setOnLongClickListener true
+        }
+
         viewModel.getSplitScreen().observe(viewLifecycleOwner) { isSplit ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
                 // only needed for Android 11+

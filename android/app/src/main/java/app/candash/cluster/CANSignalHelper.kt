@@ -143,7 +143,7 @@ class CANSignalHelper {
         insertCANSignal(SName.frontFogStatus, Constants.vehicleBus, Hex(0x3F5), 38, 1, 1f, 0f)
         insertCANSignal(SName.rearFogStatus, Constants.vehicleBus, Hex(0x3e3), 8, 2, 1f, 0f, sna=3f)
 
-        insertCANSignal(SName.isSunUp, Constants.chassisBus, Hex(0x2D3), 25, 2, 1f, 0f, sna=3f)
+        insertCANSignal(SName.isSunUp, Constants.anyBus, Hex(0x2D3), 25, 2, 1f, 0f, sna=3f)
         //insertCANSignal(SName.rearLeftVehicle, Constants.chassisBus, Hex(0x22E), 36, 9, 1f, 0f)
         //insertCANSignal(SName.rearRightVehicle, Constants.chassisBus, Hex(0x22E), 9, 9, 1f, 0f)
         insertCANSignal(SName.leftVehicle, Constants.chassisBus, Hex(0x22E), 45, 9, 1f, 0f, sna=511f)
