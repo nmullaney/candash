@@ -671,8 +671,6 @@ class DashFragment : Fragment() {
         // If second == third: show first; else: hide first
         setOf(
             Triple(binding.speedoBrakeHold, SName.brakeHold, 1f),
-            Triple(binding.telltaleTPMSFaultHard, SName.tpmsHard, 1f),
-            Triple(binding.telltaleTPMSFaultSoft, SName.tpmsSoft, 1f),
             Triple(binding.leftTurnSignalDark, SName.turnSignalLeft, 1f),
             Triple(binding.leftTurnSignalLight, SName.turnSignalLeft, 2f),
             Triple(binding.rightTurnSignalDark, SName.turnSignalRight, 1f),
@@ -1133,7 +1131,7 @@ class DashFragment : Fragment() {
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
             binding.powerBar.setDayValue(1)
-            binding.battery.clearColorFilter()
+            binding.battery.setColorFilter(Color.parseColor("#FFAAAAAA"))
             binding.batteryOverlay.setDayValue(1)
         }
         updateGearView()
@@ -1330,14 +1328,16 @@ class DashFragment : Fragment() {
                 binding.warningGradientOverlay.visible = true
             }
         } else {
-            // Warning toast:
-            binding.APWarning.visible = false
+            if (binding.APWarning.visible) {
+                // Warning toast:
+                binding.APWarning.visible = false
 
-            // Gradient overlay:
-            binding.warningGradientOverlay.visible = false
-            autopilotAnimation.removeAllListeners()
-            autopilotAnimation.cancel()
-            overlayGradient.colors = intArrayOf(gradientColorFrom, gradientColorFrom)
+                // Gradient overlay:
+                binding.warningGradientOverlay.visible = false
+                autopilotAnimation.removeAllListeners()
+                autopilotAnimation.cancel()
+                overlayGradient.colors = intArrayOf(gradientColorFrom, gradientColorFrom)
+            }
         }
     }
 
@@ -1362,17 +1362,18 @@ class DashFragment : Fragment() {
             if (bsBinding.visible) {
                 bsBinding.startAnimation(fadeOut())
                 bsBinding.visible = false
+
+                // Gradient overlay:
+                // let it fade out naturally by setting repeat to 1 (so it reverses) then change visibility on end
+                blindspotAnimation.repeatCount = 1
             }
-            // Gradient overlay:
-            // let it fade out naturally by setting repeat to 1 (so it reverses) then change visibility on end
-            blindspotAnimation.repeatCount = 1
         }
     }
 
     private fun updateFCWWarning(fcwVal: Float?) {
         if (fcwVal == 1f) {
             overlayGradient.orientation = Orientation.TOP_BOTTOM
-            blindspotAnimation.duration = 125
+            blindspotAnimation.duration = 200
 
             // Warning toast:
             binding.FCWarning.clearAnimation()

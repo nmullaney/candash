@@ -129,7 +129,7 @@ class CANSignalHelper {
         insertCANSignal(SName.uiSpeedUnits, Constants.vehicleBus, Hex(0x257), 33, 1, 1f, 0f)
         insertCANSignal(SName.blindSpotLeft, Constants.chassisBus, Hex(0x399), 4, 2, 1f, 0f, sna=3f)
         insertCANSignal(SName.blindSpotRight, Constants.chassisBus, Hex(0x399), 6, 2, 1f, 0f, sna=3f)
-        insertCANSignal(SName.forwardCollisionWarning, Constants.chassisBus, Hex(0x399), 22, 2, 1f, 0f, sna=3f)
+        insertCANSignal(SName.forwardCollisionWarning, Constants.chassisBus, Hex(0x449), 3, 1, 1f, 0f)
         //insertCANSignal(SName.displayBrightnessLev, Constants.vehicleBus, Hex(0x273), 32, 8, .5f, 0)
         insertCANSignal(SName.uiRange, Constants.vehicleBus, Hex(0x33A), 0, 10, 1f, 0f)
         insertCANSignal(SName.turnSignalLeft, Constants.vehicleBus, Hex(0x3F5), 0, 2, 1f, 0f)
@@ -190,8 +190,9 @@ class CANSignalHelper {
         insertCANSignal(SName.brakePark, Constants.vehicleBus, Hex(0x228), 39, 3, 1f, 0f, sna=7f)
 
         insertCANSignal(SName.brakeHold, Constants.vehicleBus, Hex(0x2B6), 10, 1, 1f, 0f)
-        insertCANSignal(SName.tpmsSoft, Constants.vehicleBus, Hex(0x123), 13, 1, 1f, 0f)
-        insertCANSignal(SName.tpmsHard, Constants.vehicleBus, Hex(0x123), 12, 1, 1f, 0f)
+        // TPMS changed in 2022.36, dbc still shows them at this address but they don't work
+        // insertCANSignal(SName.tpmsSoft, Constants.vehicleBus, Hex(0x123), 13, 1, 1f, 0f)
+        // insertCANSignal(SName.tpmsHard, Constants.vehicleBus, Hex(0x123), 12, 1, 1f, 0f)
 
         insertCANSignal(SName.odometer, Constants.vehicleBus, Hex(0x3B6), 0, 32, 0.001f, 0f, sna=4294967.295f)
         insertCANSignal(SName.PINenabled, Constants.vehicleBus, Hex(0x3B3), 6, 1, 1f, 0f)

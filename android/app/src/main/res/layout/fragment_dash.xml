@@ -255,7 +255,7 @@
 
         android:layout_marginStart="161dp"
         android:src="@drawable/ic_tpms_warn_soft"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
         app:layout_constraintStart_toStartOf="@+id/telltale_seatbelt"
         app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
@@ -266,7 +266,7 @@
         android:layout_height="35dp"
 
         android:src="@drawable/ic_tpms_warn_hard"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/power_bar"
         app:layout_constraintEnd_toEndOf="@+id/telltale_fog_rear"
         app:layout_constraintTop_toBottomOf="@+id/rearbraketempunits" />
@@ -313,7 +313,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="48dp"
 
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_telltale_fog_rear"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -325,7 +325,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="48dp"
 
-        android:layout_marginEnd="6dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_telltale_fog_front"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/telltale_fog_rear"
@@ -335,7 +335,7 @@
         android:id="@+id/telltale_drl"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_drl"
@@ -347,7 +347,7 @@
         android:id="@+id/telltale_lb"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_lb"
@@ -359,7 +359,7 @@
         android:id="@+id/telltale_hb"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="48dp"
 
         android:src="@drawable/ic_telltale_hb"
