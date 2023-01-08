@@ -97,7 +97,7 @@ class DashFragment : Fragment() {
         this.visible = (viewModel.carState[signalName] == isValue)
     }
 
-    private fun View.showWhen(signalName: String, isValue: Array<*>) {
+    private fun View.showWhen(signalName: String, isValue: Array<Float?>) {
         this.visible = (viewModel.carState[signalName] in isValue)
     }
 
@@ -986,21 +986,18 @@ class DashFragment : Fragment() {
     }
 
     private fun updateHighBeam() {
-        if (viewModel.carState[SName.autoHighBeamEnabled] == 1f) {
-            if (viewModel.carState[SName.highBeamStatus] == 1f) {
+        if (viewModel.carState[SName.highBeamStatus] == 1f) {
+            if (viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
                 binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_active)
-                binding.telltaleHb.visible = true
-            } else if (viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
+            } else {
+                binding.telltaleHb.setImageResource(R.drawable.ic_telltale_hb)
+            }
+            binding.telltaleHb.visible = true
+        } else {
+            if (viewModel.carState[SName.autoHighBeamEnabled] == 1f && viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
                 binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_stdby)
                 binding.telltaleHb.visible = true
             } else {
-                binding.telltaleHb.visible = false
-            }
-        } else {
-            if (viewModel.carState[SName.highBeamStatus] == 1f) {
-                binding.telltaleHb.setImageResource(R.drawable.ic_telltale_hb)
-                binding.telltaleHb.visible = true
-            } else  {
                 binding.telltaleHb.visible = false
             }
         }
