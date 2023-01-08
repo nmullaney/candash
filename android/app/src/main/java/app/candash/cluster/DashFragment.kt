@@ -25,7 +25,6 @@ import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
-import java.security.InvalidParameterException
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
