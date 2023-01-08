@@ -25,6 +25,7 @@ import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
+import java.security.InvalidParameterException
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
@@ -95,6 +96,10 @@ class DashFragment : Fragment() {
      */
     private fun View.showWhen(signalName: String, isValue: Float?) {
         this.visible = (viewModel.carState[signalName] == isValue)
+    }
+
+    private fun View.showWhen(signalName: String, isValue: Array<*>) {
+        this.visible = (viewModel.carState[signalName] in isValue)
     }
 
     override fun onCreateView(
@@ -952,8 +957,17 @@ class DashFragment : Fragment() {
     }
 
     private fun processLightTellTales() {
+        binding.telltaleFogFront.showWhen(SName.frontFogStatus, 1f)
+        binding.telltaleFogRear.showWhen(SName.rearFogStatus, 1f)
+
         if (viewModel.carState[SName.mapRegion] == SVal.mapUS) { updateUSDMLightTellTales() }
+        else if (viewModel.carState[SName.mapRegion] in arrayOf(SVal.mapEU, SVal.mapTW)) {
+            updateEULightTellTales()
+        }
         // add other regions if you dare :)
+
+        updateLowBeam()
+        updateHighBeam()
     }
 
     /**
@@ -961,14 +975,12 @@ class DashFragment : Fragment() {
      * If any of the code in here is the same for other markets, feel free to reuse the functions
      */
     private fun updateUSDMLightTellTales() {
-        binding.telltaleFogFront.showWhen(SName.frontFogStatus, 1f)
-        binding.telltaleFogRear.showWhen(SName.rearFogStatus, 1f)
-
         // Pos and DRL look the same
         binding.telltaleDrl.showWhen(SName.lightingState, SVal.lightsPos)
+    }
 
-        updateLowBeam()
-        updateHighBeam()
+    private fun updateEULightTellTales() {
+        binding.telltaleDrl.showWhen(SName.lightingState, arrayOf(SVal.lightsPos, SVal.lightsOn))
     }
 
     private fun updateLowBeam() {
