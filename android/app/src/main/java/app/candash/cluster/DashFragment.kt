@@ -469,6 +469,10 @@ class DashFragment : Fragment() {
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.displayOn, SName.gearSelected)) {
+            if (it[SName.displayOn] == null) {
+                // Don't change the visibility if we lost the signal, maintain the last state
+                return@onSomeSignals
+            }
             if (it[SName.gearSelected] !in setOf(SVal.gearDrive, SVal.gearReverse)
                 && it[SName.displayOn] == 0f
                 && prefs.getBooleanPref(Constants.blankDisplaySync)
@@ -1040,7 +1044,12 @@ class DashFragment : Fragment() {
     }
     
     private fun shouldUseDarkMode(): Boolean {
-        return (viewModel.carState[SName.isSunUp] == 0f || prefs.getBooleanPref(Constants.forceNightMode))
+        // Save/use the last known value to prevent a light/dark flash upon launching
+        val sunUp = viewModel.carState[SName.isSunUp]
+        if (sunUp != null) {
+            prefs.setPref(Constants.lastSunUp, sunUp)
+        }
+        return (prefs.getPref(Constants.lastSunUp) == 0f || prefs.getBooleanPref(Constants.forceNightMode))
     }
 
     private fun setColors() {

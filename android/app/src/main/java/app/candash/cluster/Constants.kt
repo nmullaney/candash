@@ -33,6 +33,7 @@ object Constants {
     const val efficiencyLookBack = "efficiencyLookBack"
     const val detectedRHD = "detectedRHD"
     const val forceRHD = "forceRHD"
+    const val lastSunUp = "lastSunUp"
 
     // For efficiency history in prefs
     const val kwhHistory = "kwhHistory"
