@@ -1,6 +1,7 @@
 package app.candash.cluster
 
 object SName {
+    const val accActive = "accActive"
     const val accSpeedLimit = "accSpeedLimit"
     const val accState = "accState"
     const val autoHighBeamEnabled = "autoHighBeamEnabled"

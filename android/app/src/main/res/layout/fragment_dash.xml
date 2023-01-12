@@ -123,30 +123,24 @@
         android:gravity="center"
 
         android:src="@drawable/ic_autopilot_inactive"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/PRND"
         app:layout_constraintStart_toEndOf="@+id/PRND"
-        app:layout_constraintTop_toTopOf="@+id/PRND"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="@+id/PRND" />
 
-    <TextView
+    <ImageView
         android:id="@+id/TACC"
-        android:layout_width="68dp"
+        android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:fontFamily="@font/interbold"
-        android:gravity="center|center_vertical"
-        android:text="TACC"
-        android:backgroundTint="@color/autopilot_blue"
-        android:textAlignment="center"
-        android:textColor="@color/autopilot_inactive"
-        android:textSize="20dp"
-        android:visibility="invisible"
+        android:gravity="center"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
 
+        android:src="@drawable/ic_tacc_inactive"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/PRND"
         app:layout_constraintStart_toEndOf="@id/autopilot"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/PRND" />
 
     <ImageView
         android:id="@+id/left_turn_signal_dark"

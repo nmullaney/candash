@@ -17,6 +17,7 @@ class CANSignalHelper {
     private val augSigDepToName: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
     private val battAmpsHistory = mutableListOf<Float>()
+    private var accActive = 0f
 
     fun clearFiltersPacket() : ByteArray {
         return byteArrayOf(CLEAR_FILTERS_BYTE)
@@ -245,6 +246,17 @@ class CANSignalHelper {
             } else {
                 return@insertAugmentedCANSignal Constants.l2DistanceLowSpeed
             }
+        }
+        insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit)) {
+            // accSpeedLimit is 204.6f (SNA) while TACC is active
+            if (it[SName.accState] == 4f && it[SName.accSpeedLimit] == 204.6f) {
+                accActive = 1f
+            }
+            // accActive stays latched on until accState is cancelled
+            if (it[SName.accState] in setOf(null, 0f, 13f, 15f)) {
+                accActive = 0f
+            }
+            return@insertAugmentedCANSignal accActive
         }
     }
 

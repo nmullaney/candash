@@ -232,6 +232,9 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
             if (sigVal != null && sigVal != carState[signal.name]){
                 carState[signal.name] = sigVal
                 liveCarState[signal.name]!!.postValue(sigVal)
+            }
+            if (sigVal != null) {
+                recentSignalsReceived.add(signal.name)
                 // Calculate augmented signals which depend on this signal
                 signalHelper.getAugmentsForDep(signal.name).forEach {
                     val value = it.second(carState)
@@ -239,9 +242,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                     liveCarState[it.first]!!.postValue(value)
                     recentSignalsReceived.add(it.first)
                 }
-            }
-            if (sigVal != null) {
-                recentSignalsReceived.add(signal.name)
             }
         }
     }
