@@ -662,7 +662,7 @@ class DashFragment : Fragment() {
             updateTaccUI()
         }*/
 
-        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.gearSelected, SName.fusedSpeedLimit)) {
+        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.gearSelected, SName.fusedSpeedLimit, SName.mapRegion)) {
             updateSpeedLimitSign()
         }
 
@@ -957,27 +957,27 @@ class DashFragment : Fragment() {
         binding.telltaleFogFront.showWhen(SName.frontFogStatus, 1f)
         binding.telltaleFogRear.showWhen(SName.rearFogStatus, 1f)
 
-        if (viewModel.carState[SName.mapRegion] == SVal.mapUS) { updateUSDMLightTellTales() }
-        else if (viewModel.carState[SName.mapRegion] in arrayOf(SVal.mapEU, SVal.mapTW)) {
-            updateEULightTellTales()
+        // If courtesy lights are on and light switch is not on, hide the DRL telltale to match the center display
+        if (viewModel.carState[SName.courtesyLightRequest] == 1f && viewModel.carState[SName.lightSwitch] in setOf(
+                SVal.lightSwitchAuto,
+                SVal.lightSwitchOff
+            )
+        ) {
+            binding.telltaleDrl.visible = false
+        } else {
+            if (viewModel.carState[SName.mapRegion] == SVal.mapUS) {
+                binding.telltaleDrl.showWhen(SName.lightingState, SVal.lightsPos)
+            } else if (viewModel.carState[SName.mapRegion] in arrayOf(SVal.mapEU, SVal.mapTW)) {
+                binding.telltaleDrl.showWhen(
+                    SName.lightingState,
+                    arrayOf(SVal.lightsPos, SVal.lightsOn)
+                )
+            }
+            // add other regions if you dare :)
         }
-        // add other regions if you dare :)
 
         updateLowBeam()
         updateHighBeam()
-    }
-
-    /**
-     * This logic is designed to match US domestic market telltale behavior.
-     * If any of the code in here is the same for other markets, feel free to reuse the functions
-     */
-    private fun updateUSDMLightTellTales() {
-        // Pos and DRL look the same
-        binding.telltaleDrl.showWhen(SName.lightingState, SVal.lightsPos)
-    }
-
-    private fun updateEULightTellTales() {
-        binding.telltaleDrl.showWhen(SName.lightingState, arrayOf(SVal.lightsPos, SVal.lightsOn))
     }
 
     private fun updateLowBeam() {
@@ -1240,14 +1240,15 @@ class DashFragment : Fragment() {
 
     private fun updateSpeedLimitSign() {
         val speedLimitVal = viewModel.carState[SName.fusedSpeedLimit] ?: SVal.fusedSpeedNone
-        if (speedLimitVal == SVal.fusedSpeedNone || gearState() != SVal.gearDrive
+        val map = viewModel.carState[SName.mapRegion]
+        if (speedLimitVal == SVal.fusedSpeedNone || map == null || gearState() != SVal.gearDrive
             || prefs.getBooleanPref(Constants.hideSpeedLimit) || isSplitScreen()
         ) {
             binding.speedLimitUs.visible = false
             binding.speedLimitRound.visible = false
             binding.speedLimitNolimitRound.visible = false
         } else {
-            val usMap = ((viewModel.carState[SName.mapRegion] ?: SVal.mapUS) == SVal.mapUS)
+            val usMap = (map == SVal.mapUS)
             binding.speedLimitValueUs.text = speedLimitVal.roundToString(0)
             binding.speedLimitValueRound.text = speedLimitVal.roundToString(0)
 

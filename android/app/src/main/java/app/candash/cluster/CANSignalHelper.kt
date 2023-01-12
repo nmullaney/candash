@@ -137,11 +137,13 @@ class CANSignalHelper {
 
         // Lights updated for 2022.44.25
         insertCANSignal(SName.lightingState, Constants.vehicleBus, Hex(0x3F5), 32, 4, 1f, 0f, sna=15f)
+        insertCANSignal(SName.lightSwitch, Constants.vehicleBus, Hex(0x3B3), 9, 3, 1f, 0f, sna=4f)
         insertCANSignal(SName.highBeamRequest, Constants.vehicleBus, Hex(0x3F5), 28, 2, 1f, 0f)
         insertCANSignal(SName.autoHighBeamEnabled, Constants.vehicleBus, Hex(0x273), 41, 1, 1f, 0f)
         insertCANSignal(SName.highBeamStatus, Constants.vehicleBus, Hex(0x3F6), 4, 2, 1f, 0f, sna=3f)
         insertCANSignal(SName.frontFogStatus, Constants.vehicleBus, Hex(0x3F5), 38, 1, 1f, 0f)
-        insertCANSignal(SName.rearFogStatus, Constants.vehicleBus, Hex(0x3e3), 8, 2, 1f, 0f, sna=3f)
+        insertCANSignal(SName.rearFogStatus, Constants.vehicleBus, Hex(0x3E3), 8, 2, 1f, 0f, sna=3f)
+        insertCANSignal(SName.courtesyLightRequest, Constants.vehicleBus, Hex(0x3F5), 24, 1, 1f, 0f)
 
         insertCANSignal(SName.isSunUp, Constants.anyBus, Hex(0x2D3), 25, 2, 1f, 0f, sna=3f)
         //insertCANSignal(SName.rearLeftVehicle, Constants.chassisBus, Hex(0x22E), 36, 9, 1f, 0f)

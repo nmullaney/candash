@@ -39,6 +39,11 @@ object SVal {
     const val lightDRLPlusPos = 3f
     const val lightsOn = 4f
 
+    const val lightSwitchAuto = 0f
+    const val lightSwitchOn = 1f
+    const val lightSwitchPos = 2f
+    const val lightSwitchOff = 3f
+
     const val highBeamIdle = 0f
     const val highBeamInt = 1f
     const val highBeamLatched = 2f

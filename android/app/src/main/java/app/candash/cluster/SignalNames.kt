@@ -21,6 +21,7 @@ object SName {
     const val chargeStatus = "chargeStatus"
     const val conditionalSpeedLimit = "conditionalSpeedLimit"
     const val coolantFlow = "coolantFlow"
+    const val courtesyLightRequest = "courtesyLightRequest"
     const val cruiseControlSpeed = "CruiseControlSpeed"
     const val displayBrightnessLev = "displayBrightnessLev"
     const val displayOn = "displayOn"
@@ -45,6 +46,7 @@ object SName {
     const val leftVehicle = "leftVehDetected"
     const val liftgateState = "liftgateState"
     const val lightingState = "lightingState"
+    const val lightSwitch = "lightSwitch"
     const val limRegen = "limRegen"
     const val mapRegion = "mapRegion"
     const val maxDischargePower = "maxDischargePower"
@@ -95,11 +97,13 @@ object SGroup {
 
     val lights = listOf(
         SName.lightingState,
+        SName.lightSwitch,
         SName.highBeamRequest,
         SName.highBeamStatus,
         SName.autoHighBeamEnabled,
         SName.frontFogStatus,
         SName.rearFogStatus,
+        SName.courtesyLightRequest,
         SName.mapRegion
     )
 }
