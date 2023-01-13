@@ -1,7 +1,6 @@
 package app.candash.cluster
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DashRepository @ExperimentalCoroutinesApi
@@ -27,13 +26,19 @@ class DashRepository @ExperimentalCoroutinesApi
         return getCANService().isRunning()
     }
 
-    @ExperimentalCoroutinesApi
     suspend fun shutdown() {
         getCANService().shutdown()
     }
 
-    @ExperimentalCoroutinesApi
-    fun carState() : Flow<CarState> {
-        return getCANService().carState();
+    fun clearCarState() {
+        getCANService().clearCarState()
+    }
+
+    fun carState() : CarState {
+        return getCANService().carState()
+    }
+
+    fun liveCarState() : LiveCarState {
+        return getCANService().liveCarState();
     }
 }

@@ -38,6 +38,6 @@ class AppModule {
     @Singleton
     @Provides
     fun provideSharedPreferences(@ApplicationContext context: Context) : SharedPreferences {
-        return context.getSharedPreferences("pref", Context.MODE_PRIVATE)
+        return context.getSharedPreferences("dash", Context.MODE_PRIVATE)
     }
 }

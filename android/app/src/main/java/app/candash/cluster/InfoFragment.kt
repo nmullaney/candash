@@ -3,7 +3,6 @@ package app.candash.cluster
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
-import android.net.nsd.NsdServiceInfo
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.util.Log
@@ -20,14 +19,10 @@ import app.candash.cluster.databinding.FragmentInfoBinding
 import java.io.File
 
 
-class InfoFragment() : Fragment() {
+class InfoFragment : Fragment() {
     private val TAG = InfoFragment::class.java.simpleName
-    private lateinit var binding : FragmentInfoBinding
-    private lateinit var pandaInfo: NsdServiceInfo
+    private lateinit var binding: FragmentInfoBinding
     private lateinit var viewModel: DashViewModel
-
-    private var zeroconfHost : String = ""
-
 
 
     override fun onCreateView(
@@ -53,35 +48,38 @@ class InfoFragment() : Fragment() {
         binding.editIpAddress.text = SpannableStringBuilder(viewModel.serverIpAddress())
 
         binding.saveButton.setOnClickListener {
-            viewModel.saveSettings(getSelectedCANServiceIndex(), binding.editIpAddress.text.toString())
+            viewModel.saveSettings(
+                getSelectedCANServiceIndex(),
+                binding.editIpAddress.text.toString()
+            )
+            reload()
         }
         binding.startButton.setOnClickListener {
-            if (!viewModel.isRunning()){
-                viewModel.startUp(signalNames())
+            if (!viewModel.isRunning()) {
+                viewModel.startUp()
             }
-
         }
 
         binding.stopButton.setOnClickListener {
-            if (viewModel.isRunning()){
+            if (viewModel.isRunning()) {
                 viewModel.shutdown()
             }
         }
-        binding.settings.setOnClickListener(){
+        binding.settings.setOnClickListener {
             switchToSettings()
         }
         binding.root.setOnLongClickListener {
             switchToDash()
         }
-        binding.startDashButton.setOnClickListener(){
+        binding.startDashButton.setOnClickListener {
             switchToDash()
         }
 
-        binding.emailLogs.setOnClickListener() {
+        binding.emailLogs.setOnClickListener {
             sendEmailLogs()
         }
 
-        binding.scrollView.setOnLongClickListener{
+        binding.scrollView.setOnLongClickListener {
             switchToDash()
         }
 
@@ -89,13 +87,15 @@ class InfoFragment() : Fragment() {
             viewModel.clearCarState()
         }
 
-        viewModel.carState().observe(viewLifecycleOwner) { carState ->
-            //logCarState(carState)
-
-
+        viewModel.onAllSignals(viewLifecycleOwner) {
             binding.infoText.text = buildSpannedString {
-                val sortedMap = carState.carData.toSortedMap()
-                sortedMap.forEach() { entry ->
+                // This might fail when hitting the trashcan button due to a race condition
+                val sortedMap = try {
+                    it.toSortedMap()
+                } catch (exception: ConcurrentModificationException) {
+                    sortedMapOf()
+                }
+                sortedMap.forEach { entry ->
                     bold {
                         append(entry.key)
                         append(": ")
@@ -107,9 +107,10 @@ class InfoFragment() : Fragment() {
         }
     }
 
-    fun getSelectedCANServiceIndex() : Int {
+    private fun getSelectedCANServiceIndex(): Int {
         return binding.chooseService.selectedItemPosition
     }
+
     private fun setupZeroConfListener() {
         viewModel.zeroConfIpAddress.observe(viewLifecycleOwner) { ipAddress ->
             if (viewModel.serverIpAddress() != ipAddress && !ipAddress.equals("0.0.0.0")) {
@@ -118,15 +119,10 @@ class InfoFragment() : Fragment() {
         }
     }
 
-
     override fun onResume() {
         super.onResume()
         setupZeroConfListener()
         viewModel.startDiscoveryService()
-    }
-
-    fun signalNames() : List<String> {
-        return arrayListOf()
     }
 
     override fun onPause() {
@@ -135,20 +131,19 @@ class InfoFragment() : Fragment() {
 
     }
 
-    fun switchToDash() : Boolean {
+    private fun reload(): Boolean {
+        viewModel.switchToInfoFragment()
+        return true
+    }
+
+    private fun switchToDash(): Boolean {
         viewModel.switchToDashFragment()
         return true
     }
 
-    fun switchToSettings() : Boolean {
+    private fun switchToSettings(): Boolean {
         viewModel.switchToSettingsFragment()
         return true
-    }
-    fun logCarState(carState: CarState) {
-        Log.d(TAG, "Car state size: " + carState.carData.size)
-        carState.carData.forEach {
-            Log.d(TAG, "Name: " + it.key + ", Value: " + it.value)
-        }
     }
 
     private fun sendEmailLogs() {

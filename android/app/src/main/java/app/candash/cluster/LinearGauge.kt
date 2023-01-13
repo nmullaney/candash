@@ -79,6 +79,7 @@ class LinearGauge @JvmOverloads constructor(
         renderWidth = (screenWidth - 100f)/2f * (percent.absoluteValue)
         Log.d(TAG, "percentWidth $screenWidth RenderWidth $renderWidth")
 
+        this.invalidate()
     }
     fun setDayValue(isSunUpVal: Int = 1){
         isSunUp = isSunUpVal
@@ -88,8 +89,7 @@ class LinearGauge @JvmOverloads constructor(
         } else {
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-
-
         }
+        this.invalidate()
     }
 }
