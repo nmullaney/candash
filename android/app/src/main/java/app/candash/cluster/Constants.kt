@@ -127,9 +127,6 @@ object Constants {
     const val lightsOn = 1f
     const val lightsAuto = 0f
     const val limRegen = "limRegen"
-    const val trackMode = "trackMode"
-    const val lateralAccel = "lateralAccel"
-    const val longAccel = "longAccel"
 
     // Prefs
     const val forceNightMode = "forceNightMode"

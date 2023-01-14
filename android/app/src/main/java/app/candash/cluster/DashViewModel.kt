@@ -197,9 +197,9 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     fun fragmentNameToShow() : LiveData<String> = viewToShowData
 
     fun switchToDashFragment() {
-        //viewToShowData.value = "dash"
-        viewToShowData.value = "track"
+        viewToShowData.value = "dash"
     }
+
     fun switchToSettingsFragment() {
         viewToShowData.value = "settings"
     }

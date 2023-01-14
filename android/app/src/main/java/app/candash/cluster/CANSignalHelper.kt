@@ -155,9 +155,6 @@ class CANSignalHelper {
         insertCANSignal(Constants.kwhDischargeTotal, Constants.vehicleBus, Hex(0x3D2), 0, 32, 0.001f, 0f, sna=4294967.295f)
         insertCANSignal(Constants.kwhChargeTotal, Constants.vehicleBus, Hex(0x3D2), 32, 32, 0.001f, 0f, sna=4294967.295f)
 
-        insertCANSignal(Constants.trackMode, Constants.vehicleBus, Hex(0x313), 0, 2, 1f, 0f)
-        insertCANSignal(Constants.lateralAccel, Constants.chassisBus, Hex(0x111), 16, 16, 0.00125f, 0f, signed=true)
-        insertCANSignal(Constants.longAccel, Constants.chassisBus, Hex(0x111), 0, 16, 0.00125f, 0f, signed=true)
     }
 
     private fun addToMapList(map: MutableMap<Int, MutableMap<Hex, MutableList<CANSignal>>>, bus: Int, frameId: Hex, value: CANSignal) {
