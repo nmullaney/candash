@@ -127,6 +127,9 @@ object Constants {
     const val lightsOn = 1f
     const val lightsAuto = 0f
     const val limRegen = "limRegen"
+    const val trackMode = "trackMode"
+    const val lateralAccel = "lateralAccel"
+    const val longAccel = "longAccel"
 
     // Prefs
     const val forceNightMode = "forceNightMode"
@@ -138,6 +141,7 @@ object Constants {
     const val hideBs = "hideBs"
     const val hideSpeedLimit = "hideSpeedLimit"
     const val blankDisplaySync = "blankDisplaySync"
+    const val StartOnBoot = "StartOnBoot"
     const val tempInF = "tempInF"
     const val powerUnits = "powerUnits"
     const val powerUnitKw = 0f

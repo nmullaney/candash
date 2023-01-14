@@ -12,8 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <!-- Customize your theme here. -->
-        <item name = "windowActionBar">false</item>
-        <item name = "windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -25,6 +25,11 @@
 
     <style name="Theme.TeslaDashboard.Fullscreen" parent="Theme.TeslaDashboard">
 
+    </style>
+
+    <style name="ThemeOverlay.CANDash.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
 
 </resources>

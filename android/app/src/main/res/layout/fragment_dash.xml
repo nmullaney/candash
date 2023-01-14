@@ -116,19 +116,6 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:text="250 kW"/>
 
-    <ImageView
-        android:id="@+id/autopilot"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:gravity="center"
-
-        android:src="@drawable/ic_autopilot"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/PRND"
-        app:layout_constraintStart_toEndOf="@+id/PRND"
-        app:layout_constraintTop_toTopOf="@+id/PRND"
-        tools:visibility="visible" />
-
     <!--    <ImageView-->
     <!--        android:id="@+id/autopilot_max_speed"-->
     <!--        android:layout_width="60dp"-->
@@ -173,6 +160,21 @@
     <!--        app:layout_constraintCircleRadius="180dp" />-->
     <!--    />-->
 
+
+    <ImageView
+        android:id="@+id/autopilot"
+        android:layout_width="53dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+
+        android:gravity="center"
+        android:src="@drawable/ic_autopilot"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/PRND"
+        app:layout_constraintStart_toEndOf="@+id/PRND"
+        app:layout_constraintTop_toTopOf="@+id/PRND"
+        app:layout_constraintVertical_bias="0.777"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/left_turn_signal"
