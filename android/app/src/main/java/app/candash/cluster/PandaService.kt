@@ -8,8 +8,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.util.Log
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.IOException
 import java.net.*
 import java.util.concurrent.Executors
@@ -22,8 +20,9 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
 
     @ExperimentalCoroutinesApi
     private var flipBus = false
-    private val carStateFlow = MutableStateFlow(CarState())
-    private val carState: CarState = CarState()
+    private val carState = createCarState()
+    private val liveCarState = createLiveCarState()
+    private var clearRequest = false
     private val port = 1338
     private var shutdown = false
     private var inShutdown = false
@@ -43,13 +42,16 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private var pandaConnected = false
 
 
+    override fun clearCarState() {
+        clearRequest = true
+    }
 
+    override fun carState(): CarState {
+        return carState
+    }
 
-
-
-@ExperimentalCoroutinesApi
-    override fun carState(): Flow<CarState> {
-        return carStateFlow
+    override fun liveCarState(): LiveCarState {
+        return liveCarState
     }
 
     private fun getSocket(): DatagramSocket {
@@ -66,27 +68,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
         socket.soTimeout = socketTimeoutMs
         socket.reuseAddress = true
         return socket
-    }
-
-    private fun twosComplement(s: String): Long {
-        if (s[0].equals('0'))
-            return s.toLong(radix = 2)
-        var seenOne: Boolean = false
-        val chars = s.toCharArray()
-        for (i in s.length - 1 downTo 0) {
-            if (seenOne == false) {
-                if (chars[i].equals('1')) {
-                    seenOne = true;
-                }
-            } else {
-                if (chars[i].equals('1')) {
-                    chars[i] = '0'
-                } else {
-                    chars[i] = '1'
-                }
-            }
-        }
-        return (String(chars).toLong(radix = 2)) * -1
     }
 
     override fun isRunning() : Boolean {
@@ -118,13 +99,21 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                     // Warning for missing signals
                     if (pandaConnected && now > lastReceivedCheckTimestamp + signalsReceivedCheckIntervalMs) {
                         val deltaSeconds = ((now-lastReceivedCheckTimestamp) / 1000).toInt()
-                        for (name in signalHelper.getALLCANSignals().keys){
+                        for (name in signalHelper.getAllCANSignalNames()){
                             if (!recentSignalsReceived.contains(name)){
                                 Log.w(
                                     TAG,"Did not receive signal '$name' in the last $deltaSeconds seconds"
                                 )
-                                carState.carData.remove(name)
-                                carStateFlow.value = CarState(HashMap(carState.carData))
+                                if (carState[name] != null) {
+                                    carState[name] = null
+                                    liveCarState[name]!!.postValue(null)
+                                    // Calculate augmented signals which depend on this signal (even when null)
+                                    signalHelper.getAugmentsForDep(name).forEach {
+                                        val value = it.second(carState)
+                                        carState[it.first] = value
+                                        liveCarState[it.first]!!.postValue(value)
+                                    }
+                                }
                             }
                         }
                         recentSignalsReceived.clear()
@@ -152,8 +141,8 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                         socketTimeoutCounter += 1
                         if (socketTimeoutCounter == 3) {
                             // one-shot clear data on 3rd timeout
-                            carState.carData.clear()
-                            carStateFlow.value = CarState(HashMap(carState.carData))
+                            carState.clear()
+                            liveCarState.clear()
                         }
                         sendBye(getSocket())
                         yield()
@@ -183,6 +172,12 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                      */
 
                     yield()
+
+                    if (clearRequest) {
+                        carState.clear()
+                        liveCarState.clear()
+                        clearRequest = false
+                    }
                 }
                 pandaConnected = false
                 sendBye(getSocket())
@@ -204,8 +199,6 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     }
 
     private fun handleFrame(frame: NewPandaFrame) {
-        var binaryPayloadString = ""
-        val updateState = CarState(HashMap())
         // 0x399 is a different length on each bus, so we use it to auto-detect the buses
         // Length of 3 only on vehicle bus
         if (frame.frameIdHex == Hex(0x399) && (frame.frameLength == 3L)){
@@ -234,9 +227,20 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
         }
 
         signalHelper.getSignalsForFrame(busId, frame.frameIdHex).forEach { signal ->
-            if (frame.getCANValue(signal) != null){
-                carState.updateValue(signal.name, frame.getCANValue(signal)!!)
-                carStateFlow.value = CarState(HashMap(carState.carData))
+            val sigVal = frame.getCANValue(signal)
+            // Only send the value if it changed from last time
+            if (sigVal != null && sigVal != carState[signal.name]){
+                carState[signal.name] = sigVal
+                liveCarState[signal.name]!!.postValue(sigVal)
+                // Calculate augmented signals which depend on this signal
+                signalHelper.getAugmentsForDep(signal.name).forEach {
+                    val value = it.second(carState)
+                    carState[it.first] = value
+                    liveCarState[it.first]!!.postValue(value)
+                    recentSignalsReceived.add(it.first)
+                }
+            }
+            if (sigVal != null) {
                 recentSignalsReceived.add(signal.name)
             }
         }

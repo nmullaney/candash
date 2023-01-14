@@ -1,9 +1,6 @@
 package app.candash.cluster
 
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import java.util.concurrent.Executors
@@ -11,23 +8,38 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MockCANService : CANService {
     private val MS_BETWEEN_REQUESTS = 2_000L
-    private val carStateFlow = MutableStateFlow(CarState())
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var shutdown = false
     private var count: AtomicInteger = AtomicInteger(0)
+    private val carState = createCarState()
+    private val liveCarState = createLiveCarState()
+    private var clearRequest = false
 
     override suspend fun startRequests(signalNamesToRequest: List<String>) {
         withContext(pandaContext) {
             shutdown = false
             while (!shutdown) {
-                carStateFlow.value = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
+                val newState = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
+                carState.clear()
+                liveCarState.clear()
+                for (state in newState) {
+                    carState[state.key] = state.value
+                    liveCarState[state.key]!!.postValue(state.value)
+                }
                 Thread.sleep(MS_BETWEEN_REQUESTS)
                 yield()
+                if (clearRequest) {
+                    carState.clear()
+                    liveCarState.clear()
+                    clearRequest = false
+                }
             }
             // Clear carState after stopping
-            carStateFlow.value = CarState()
+            carState.clear()
+            liveCarState.clear()
         }
     }
+
     override fun isRunning() : Boolean {
         return !shutdown
     }
@@ -42,92 +54,108 @@ class MockCANService : CANService {
         }
     }
 
-    override fun carState(): Flow<CarState> {
-        return carStateFlow
+    override fun clearCarState() {
+        clearRequest = true
     }
+
+    override fun carState(): CarState {
+        return carState
+    }
+
+    override fun liveCarState(): LiveCarState {
+        return liveCarState
+    }
+    
     private fun mockCarStates() : List<CarState> =
         listOf(
-            CarState(mutableMapOf(
-                Constants.autopilotState to 2f,
-                Constants.isSunUp to 1f,
-                Constants.autopilotHands to 1f,
-                Constants.driveConfig to 0f,
-                Constants.gearSelected to Constants.gearDrive.toFloat(),
-                Constants.stateOfCharge to 70f,
-                Constants.turnSignalLeft to 1.0f,
-                Constants.battAmps to -20f,
-                Constants.battVolts to 390f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.displayOn to 1f,
+            createCarState(mutableMapOf(
+                SName.autopilotState to 2f,
+                SName.accSpeedLimit to 50f,
+                SName.accState to 4f,
+                SName.isSunUp to 1f,
+                SName.autopilotHands to 1f,
+                SName.gearSelected to SVal.gearDrive,
+                SName.stateOfCharge to 70f,
+                SName.turnSignalLeft to 1.0f,
+                SName.battAmps to -20f,
+                SName.battVolts to 390f,
+                SName.uiSpeedUnits to 0f,
+                SName.displayOn to 1f,
 
-                Constants.liftgateState to 2f,
-                Constants.frunkState to 2f,
-                Constants.frontLeftDoorState to 2f,
-                Constants.frontRightDoorState to 2f,
-                Constants.rearLeftDoorState to 2f,
-                Constants.rearRightDoorState to 2f,
-                Constants.drlMode to Constants.drlModeOff,
-                Constants.chargeStatus to Constants.chargeStatusInactive,
-                Constants.mapRegion to Constants.mapUS,
-                Constants.fusedSpeedLimit to 65f
+                SName.liftgateState to 2f,
+                SName.frunkState to 2f,
+                SName.frontLeftDoorState to 2f,
+                SName.frontRightDoorState to 2f,
+                SName.rearLeftDoorState to 2f,
+                SName.rearRightDoorState to 2f,
+                SName.lightingState to SVal.lightsOff,
+                SName.chargeStatus to SVal.chargeStatusInactive,
+                SName.mapRegion to SVal.mapUS,
+                SName.fusedSpeedLimit to 65f
                 )),
-            CarState(mutableMapOf(
-                Constants.autopilotState to 3f,
-                Constants.turnSignalLeft to 1.0f,
-                Constants.isSunUp to 1f,
-                Constants.autopilotHands to 1f,
-                Constants.driveConfig to 0f,
-                Constants.gearSelected to Constants.gearDrive.toFloat(),
-                Constants.stateOfCharge to 70f,
-                Constants.battAmps to -23f,
-                Constants.uiSpeedUnits to 0f,
+            createCarState(mutableMapOf(
+                SName.autopilotState to 3f,
+                SName.accSpeedLimit to 204.6f,
+                SName.accState to 4f,
+                SName.turnSignalLeft to 1.0f,
+                SName.isSunUp to 1f,
+                SName.autopilotHands to 1f,
+                SName.driveConfig to 0f,
+                SName.gearSelected to SVal.gearDrive,
+                SName.stateOfCharge to 70f,
+                SName.battAmps to -23f,
+                SName.uiSpeedUnits to 0f,
 
-                Constants.battVolts to 390f,
-                Constants.uiSpeed to 0.0f,
+                SName.battVolts to 390f,
+                SName.uiSpeed to 0.0f,
                 // display should stay on because gear is in drive
-                Constants.displayOn to 0f,
+                SName.displayOn to 0f,
 
-                Constants.frontLeftDoorState to 2f,
-                Constants.drlMode to Constants.drlModeDrl,
-                Constants.passengerUnbuckled to 1f,
-                Constants.limRegen to 1f,
-                Constants.brakePark to 1f,
-                Constants.chargeStatus to Constants.chargeStatusInactive,
-                Constants.mapRegion to Constants.mapEU,
-                Constants.fusedSpeedLimit to 100f
+                SName.frontLeftDoorState to 2f,
+                SName.lightingState to SVal.lightDRL,
+                SName.passengerUnbuckled to 1f,
+                SName.limRegen to 1f,
+                SName.brakePark to 1f,
+                SName.chargeStatus to SVal.chargeStatusInactive,
+                SName.mapRegion to SVal.mapEU,
+                SName.fusedSpeedLimit to 100f
             )),
-            CarState(mutableMapOf(
-                Constants.autopilotState to 1f,
-                Constants.isSunUp to 1f,
-                Constants.driveConfig to 1f,
-                Constants.stateOfCharge to 70f,
-                Constants.battAmps to -10f,
-                Constants.battVolts to 390f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.uiSpeed to 22.0f,
-                Constants.displayOn to 1f,
+            createCarState(mutableMapOf(
+                SName.autopilotState to 1f,
+                SName.accSpeedLimit to 0f,
+                SName.accState to 2f,
+                SName.isSunUp to 1f,
+                SName.driveConfig to 1f,
+                SName.stateOfCharge to 70f,
+                SName.battAmps to -10f,
+                SName.battVolts to 390f,
+                SName.uiSpeedUnits to 0f,
+                SName.uiSpeed to 22.0f,
+                SName.displayOn to 1f,
 
-                Constants.frontLeftDoorState to 2f,
-                Constants.drlMode to Constants.drlModePosition,
-                Constants.passengerUnbuckled to 0f,
-                Constants.chargeStatus to Constants.chargeStatusActive,
-                Constants.fusedSpeedLimit to Constants.fusedSpeedNone
+                SName.frontLeftDoorState to 2f,
+                SName.lightingState to SVal.lightsPos,
+                SName.passengerUnbuckled to 0f,
+                SName.chargeStatus to SVal.chargeStatusActive,
+                SName.fusedSpeedLimit to SVal.fusedSpeedNone
             )),
-            CarState(mutableMapOf(
-                Constants.autopilotState to 1f,
-                Constants.isSunUp to 1f,
-                Constants.uiSpeed to 65.0f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.frontLeftDoorState to 1f,
-                Constants.drlMode to Constants.drlModePosition,
-                Constants.chargeStatus to Constants.chargeStatusActive,
-                Constants.gearSelected to Constants.gearInvalid.toFloat(),
-                Constants.displayOn to 1f,
+            createCarState(mutableMapOf(
+                SName.autopilotState to 1f,
+                SName.isSunUp to 1f,
+                SName.uiSpeed to 65.0f,
+                SName.uiSpeedUnits to 0f,
+                SName.frontLeftDoorState to 1f,
+                SName.lightingState to SVal.lightsOn,
+                SName.chargeStatus to SVal.chargeStatusActive,
+                SName.power to 45000f,
+                SName.stateOfCharge to 55f,
+                SName.gearSelected to SVal.gearInvalid,
+                SName.displayOn to 1f,
             )),
-            CarState(mutableMapOf(
+            createCarState(mutableMapOf(
                 // display will turn off if the pref is enabled
-                Constants.gearSelected to Constants.gearPark.toFloat(),
-                Constants.displayOn to 0f,
+                SName.gearSelected to SVal.gearPark,
+                SName.displayOn to 0f,
             ))
         )
 
@@ -136,109 +164,109 @@ class MockCANService : CANService {
 /*
     private fun mockCarStates() : List<CarState> =
         listOf(
-            CarState(mutableMapOf(
-                Constants.battVolts to 390.1f,
-                Constants.frontLeftDoorState to 1.0f,
-                Constants.displayBrightnessLev to 11.5f,
-                Constants.stateOfCharge to 1.0f,
-                Constants.uiRange to 273.0f,
-                Constants.uiSpeed to 0.0f,
-                //Constants.blindSpotLeft to 3.0f,
-                Constants.blindSpotRight to 0.0f,
-                Constants.turnSignalLeft to 1.0f,
-                Constants.isSunUp to 1.0f,
-                Constants.autopilotState to 2f,
-                Constants.rearLeftVehicle to 100f,
-                Constants.autopilotHands to 1f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.gearSelected to Constants.gearPark.toFloat(),
-                Constants.battAmps to 20.0f,
-                Constants.displayOn to 1f
+            createCarState(mutableMapOf(
+                SName.battVolts to 390.1f,
+                SName.frontLeftDoorState to 1.0f,
+                SName.displayBrightnessLev to 11.5f,
+                SName.stateOfCharge to 1.0f,
+                SName.uiRange to 273.0f,
+                SName.uiSpeed to 0.0f,
+                //SName.blindSpotLeft to 3.0f,
+                SName.blindSpotRight to 0.0f,
+                SName.turnSignalLeft to 1.0f,
+                SName.isSunUp to 1.0f,
+                SName.autopilotState to 2f,
+                SName.rearLeftVehicle to 100f,
+                SName.autopilotHands to 1f,
+                SName.uiSpeedUnits to 0f,
+                SName.gearSelected to SVal.gearPark,
+                SName.battAmps to 20.0f,
+                SName.displayOn to 1f
 
             )),
-            CarState(mutableMapOf(
-                Constants.battVolts to 390.0f,
-                Constants.frontLeftDoorState to 1.0f,
+            createCarState(mutableMapOf(
+                SName.battVolts to 390.0f,
+                SName.frontLeftDoorState to 1.0f,
 
-                Constants.displayBrightnessLev to 10.5f,
-                Constants.stateOfCharge to 79.0f,
-                Constants.uiRange to 270.0f,
-                Constants.uiSpeed to 20.0f,
-                //Constants.blindSpotLeft to 3.0f,
-                Constants.blindSpotRight to 0.0f,
-                Constants.turnSignalLeft to 2.0f,
-                Constants.turnSignalRight to 1.0f,
-                Constants.isSunUp to 1.0f,
-                Constants.autopilotState to 1f,
-                Constants.autopilotHands to 3f,
-                Constants.cruiseControlSpeed to 45.0f,
-                Constants.rearLeftVehicle to 100f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.gearSelected to Constants.gearPark.toFloat(),
-                Constants.battAmps to 140.0f,
-                Constants.displayOn to 1f
+                SName.displayBrightnessLev to 10.5f,
+                SName.stateOfCharge to 79.0f,
+                SName.uiRange to 270.0f,
+                SName.uiSpeed to 20.0f,
+                //SName.blindSpotLeft to 3.0f,
+                SName.blindSpotRight to 0.0f,
+                SName.turnSignalLeft to 2.0f,
+                SName.turnSignalRight to 1.0f,
+                SName.isSunUp to 1.0f,
+                SName.autopilotState to 1f,
+                SName.autopilotHands to 3f,
+                SName.cruiseControlSpeed to 45.0f,
+                SName.rearLeftVehicle to 100f,
+                SName.uiSpeedUnits to 0f,
+                SName.gearSelected to SVal.gearPark,
+                SName.battAmps to 140.0f,
+                SName.displayOn to 1f
             )),
-            CarState(mutableMapOf(
-                Constants.battVolts to 389.9f,
-                //Constants.blindSpotLeft to 1.0f,
-                //Constants.blindSpotRight to 1.0f,
-                Constants.displayBrightnessLev to 9.5f,
-                Constants.stateOfCharge to 50.0f,
-                Constants.uiRange to 268.0f,
-                Constants.uiSpeed to 21.0f,
-                Constants.blindSpotLeft to 0.0f,
-                //Constants.blindSpotRight to 2.0f,
-                Constants.turnSignalLeft to 1.0f,
-                Constants.turnSignalRight to 1.0f,
-                Constants.isSunUp to 1.0f,
-                Constants.autopilotState to 3f,
-                Constants.autopilotHands to 3f,
-                Constants.maxSpeedAP to 45.0f,
-                Constants.cruiseControlSpeed to 45.0f,
-                Constants.rearLeftVehicle to 100f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.gearSelected to Constants.gearDrive.toFloat(),
-                Constants.battAmps to 3.0f,
-                Constants.displayOn to 1f
+            createCarState(mutableMapOf(
+                SName.battVolts to 389.9f,
+                //SName.blindSpotLeft to 1.0f,
+                //SName.blindSpotRight to 1.0f,
+                SName.displayBrightnessLev to 9.5f,
+                SName.stateOfCharge to 50.0f,
+                SName.uiRange to 268.0f,
+                SName.uiSpeed to 21.0f,
+                SName.blindSpotLeft to 0.0f,
+                //SName.blindSpotRight to 2.0f,
+                SName.turnSignalLeft to 1.0f,
+                SName.turnSignalRight to 1.0f,
+                SName.isSunUp to 1.0f,
+                SName.autopilotState to 3f,
+                SName.autopilotHands to 3f,
+                SName.maxSpeedAP to 45.0f,
+                SName.cruiseControlSpeed to 45.0f,
+                SName.rearLeftVehicle to 100f,
+                SName.uiSpeedUnits to 0f,
+                SName.gearSelected to SVal.gearDrive,
+                SName.battAmps to 3.0f,
+                SName.displayOn to 1f
             )),
-            CarState(mutableMapOf(
-                Constants.battVolts to 389.8f,
-                Constants.displayBrightnessLev to 8.5f,
-                Constants.stateOfCharge to 25.0f,
-                Constants.uiRange to 265.0f,
-                Constants.uiSpeed to 25.0f,
+            createCarState(mutableMapOf(
+                SName.battVolts to 389.8f,
+                SName.displayBrightnessLev to 8.5f,
+                SName.stateOfCharge to 25.0f,
+                SName.uiRange to 265.0f,
+                SName.uiSpeed to 25.0f,
 
-                Constants.turnSignalLeft to 0.0f,
-                Constants.turnSignalRight to 1.0f,
-                Constants.isSunUp to 1.0f,
-                Constants.autopilotState to 3f,
-                Constants.autopilotHands to 3f,
-                Constants.maxSpeedAP to 45.0f,
-                Constants.rearLeftVehicle to 200f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.cruiseControlSpeed to 45.0f,
-                Constants.battAmps to 750.0f,
-                Constants.displayOn to 1f
+                SName.turnSignalLeft to 0.0f,
+                SName.turnSignalRight to 1.0f,
+                SName.isSunUp to 1.0f,
+                SName.autopilotState to 3f,
+                SName.autopilotHands to 3f,
+                SName.maxSpeedAP to 45.0f,
+                SName.rearLeftVehicle to 200f,
+                SName.uiSpeedUnits to 0f,
+                SName.cruiseControlSpeed to 45.0f,
+                SName.battAmps to 750.0f,
+                SName.displayOn to 1f
             )),
-            CarState(mutableMapOf(
-                Constants.battVolts to 389.7f,
+            createCarState(mutableMapOf(
+                SName.battVolts to 389.7f,
 
-                Constants.displayBrightnessLev to 7.5f,
-                Constants.stateOfCharge to 76.0f,
-                Constants.uiRange to 264.0f,
-                Constants.uiSpeed to 29.0f,
+                SName.displayBrightnessLev to 7.5f,
+                SName.stateOfCharge to 76.0f,
+                SName.uiRange to 264.0f,
+                SName.uiSpeed to 29.0f,
 
-                Constants.turnSignalLeft to 0.0f,
-                Constants.turnSignalRight to 1.0f,
-                Constants.isSunUp to 0.0f,
-                Constants.autopilotState to 3f,
-                Constants.autopilotHands to 1f,
-                Constants.uiSpeedUnits to 0f,
-                Constants.rearLeftVehicle to 100f,
-                Constants.maxSpeedAP to 25.0f,
-                Constants.cruiseControlSpeed to 23.0f,
-                Constants.battAmps to -200.0f,
-                Constants.displayOn to 1f
+                SName.turnSignalLeft to 0.0f,
+                SName.turnSignalRight to 1.0f,
+                SName.isSunUp to 0.0f,
+                SName.autopilotState to 3f,
+                SName.autopilotHands to 1f,
+                SName.uiSpeedUnits to 0f,
+                SName.rearLeftVehicle to 100f,
+                SName.maxSpeedAP to 25.0f,
+                SName.cruiseControlSpeed to 23.0f,
+                SName.battAmps to -200.0f,
+                SName.displayOn to 1f
             )))
 }
 

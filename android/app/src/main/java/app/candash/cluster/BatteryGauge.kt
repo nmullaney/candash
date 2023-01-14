@@ -68,6 +68,7 @@ class BatteryGauge @JvmOverloads constructor(
     fun setGauge(percent:Float){
         powerWidth = percent/100 * 41f
 
+        this.invalidate()
     }
 
     fun setColor() {
@@ -80,6 +81,7 @@ class BatteryGauge @JvmOverloads constructor(
                 lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
             }
         }
+        this.invalidate()
     }
 
     fun setDayValue(isSunUpVal: Int = 1){
