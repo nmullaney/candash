@@ -358,7 +358,7 @@ class DashFragment : Fragment() {
             return@setOnLongClickListener true
         }
         binding.batterypercent.setOnClickListener {
-            prefs.setBooleanPref(Constants.showBattRange, prefs.getBooleanPref(Constants.showBattRange))
+            prefs.setBooleanPref(Constants.showBattRange, !prefs.getBooleanPref(Constants.showBattRange))
             processBattery()
         }
         binding.unit.setOnClickListener {
