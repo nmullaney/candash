@@ -32,7 +32,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
     private val heartBeatIntervalMs = 4_000
     private val socketTimeoutMs = 1_000
     private var socketTimeoutCounter = 0
-    private val signalHelper = CANSignalHelper()
+    private val signalHelper = CANSignalHelper(sharedPreferences)
     private val pandaContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     private var signalsToRequest: List<String> = arrayListOf()
     private var recentSignalsReceived: MutableSet<String> = mutableSetOf()
@@ -108,11 +108,7 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
                                     carState[name] = null
                                     liveCarState[name]!!.postValue(null)
                                     // Calculate augmented signals which depend on this signal (even when null)
-                                    signalHelper.getAugmentsForDep(name).forEach {
-                                        val value = it.second(carState)
-                                        carState[it.first] = value
-                                        liveCarState[it.first]!!.postValue(value)
-                                    }
+                                    calculateAugments(name)
                                 }
                             }
                         }
@@ -236,12 +232,22 @@ class PandaService(val sharedPreferences: SharedPreferences, val context: Contex
             if (sigVal != null) {
                 recentSignalsReceived.add(signal.name)
                 // Calculate augmented signals which depend on this signal
-                signalHelper.getAugmentsForDep(signal.name).forEach {
-                    val value = it.second(carState)
-                    carState[it.first] = value
-                    liveCarState[it.first]!!.postValue(value)
-                    recentSignalsReceived.add(it.first)
-                }
+                calculateAugments(signal.name)
+            }
+        }
+    }
+
+    private fun calculateAugments(signalName: String) {
+        signalHelper.getAugmentsForDep(signalName).forEach {
+            val value = it.second(carState)
+            if (value != null && value != carState[it.first]) {
+                carState[it.first] = value
+                liveCarState[it.first]!!.postValue(value)
+                // Recursively calculate deeper augments:
+                calculateAugments(it.first)
+            }
+            if (value != null) {
+                recentSignalsReceived.add(it.first)
             }
         }
     }

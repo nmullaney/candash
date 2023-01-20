@@ -12,15 +12,6 @@ import android.view.WindowManager
 class CircularGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    val Int.dp: Int
-        get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-    val Int.px: Int
-        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-    val Float.dp: Float
-        get() = (this / Resources.getSystem().displayMetrics.density)
-    val Float.px: Float
-        get() = (this * Resources.getSystem().displayMetrics.density)
     private val TAG = DashViewModel::class.java.simpleName
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var screenWidth : Int = 100

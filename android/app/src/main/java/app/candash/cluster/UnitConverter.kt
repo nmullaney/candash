@@ -82,20 +82,21 @@ class UnitConverter(private val prefs: SharedPreferences) {
         return if (prefs.getBooleanPref(Constants.uiSpeedUnitsMPH)) Units.SPEED_MPH else Units.SPEED_KPH
     }
 
-    fun prefTempUnit(): Units {
-        return if (prefs.getBooleanPref(Constants.tempInF)) Units.TEMPERATURE_F else Units.TEMPERATURE_C
+    fun prefTempUnit(party: Boolean = false): Units {
+        val tempInF = if (party) prefs.getBooleanPref(Constants.partyTempInF) else prefs.getBooleanPref(Constants.tempInF)
+        return if (tempInF) Units.TEMPERATURE_F else Units.TEMPERATURE_C
     }
 
     fun prefTorqueUnit(): Units {
         return if (prefs.getBooleanPref(Constants.torqueInLbfFt)) Units.TORQUE_LB_FT else Units.TORQUE_NM
     }
 
-    fun convertToPreferredUnit(nativeUnit: Units, value: Float): Float {
+    fun convertToPreferredUnit(nativeUnit: Units, value: Float, party: Boolean = false): Float {
         return when (nativeUnit) {
             in distanceUnits -> convertDistance(value, nativeUnit)
             in powerUnits -> convertPower(value, nativeUnit)
             in speedUnits -> convertSpeed(value, nativeUnit)
-            in tempUnits -> convertTemperature(value, nativeUnit)
+            in tempUnits -> convertTemperature(value, nativeUnit, party)
             in torqueUnits -> convertTorque(value, nativeUnit)
             else -> value
         }
@@ -145,8 +146,8 @@ class UnitConverter(private val prefs: SharedPreferences) {
         }
     }
 
-    private fun convertTemperature(value: Float, fromUnit: Units): Float {
-        return when (prefTempUnit()) {
+    private fun convertTemperature(value: Float, fromUnit: Units, party: Boolean = false): Float {
+        return when (prefTempUnit(party)) {
             fromUnit -> value
             Units.TEMPERATURE_C -> value.fToC
             else -> value.cToF

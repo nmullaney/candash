@@ -52,4 +52,11 @@ object SVal {
     const val brakeParkOff = 0f
     const val brakeParkRed = 1f
     const val brakeParkAmber = 2f
+
+    const val keepClimateOff = 0f
+    const val keepClimateOn = 1f
+    const val keepClimateDog = 2f
+    const val keepClimateParty = 3f
+
+    const val hvacAirDistributionAuto = 0f
 }

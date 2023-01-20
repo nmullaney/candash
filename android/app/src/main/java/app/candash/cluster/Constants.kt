@@ -24,6 +24,7 @@ object Constants {
     const val hideSpeedLimit = "hideSpeedLimit"
     const val blankDisplaySync = "blankDisplaySync"
     const val tempInF = "tempInF"
+    const val partyTempInF = "partyTempInF"
     const val powerUnits = "powerUnits"
     const val powerUnitKw = 0f
     const val powerUnitHp = 1f
@@ -34,6 +35,7 @@ object Constants {
     const val detectedRHD = "detectedRHD"
     const val forceRHD = "forceRHD"
     const val lastSunUp = "lastSunUp"
+    const val partyTimeTarget = "partyTimeTarget"
 
     // For efficiency history in prefs
     const val kwhHistory = "kwhHistory"
@@ -46,4 +48,7 @@ object Constants {
     const val l2DistanceLowSpeed = 200f
     const val l1DistanceHighSpeed = 400f
     const val l2DistanceHighSpeed = 250f
+
+    const val blackoutOverrideSeconds = 10
+    const val partyBlackoutDelaySeconds = 600
 }

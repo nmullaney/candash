@@ -1,25 +1,29 @@
 package app.candash.cluster
 
+import android.content.SharedPreferences
 import android.util.Log
+import java.lang.Float.max
 
-class CANSignalHelper {
+class CANSignalHelper(val sharedPreferences: SharedPreferences) {
     private val TAG = CANSignalHelper::class.java.simpleName
 
     companion object {
         const val MAX_FILTERS = 42
-        const val CLEAR_FILTERS_BYTE : Byte = 0x18
-        const val ADD_FILTERS_BYTE : Byte = 0x0F
+        const val CLEAR_FILTERS_BYTE: Byte = 0x18
+        const val ADD_FILTERS_BYTE: Byte = 0x0F
     }
 
     private val nameToSignal = HashMap<String, CANSignal>()
-    private val busToFrameToSignal : MutableMap<Int, MutableMap<Hex, MutableList<CANSignal>>>  = mutableMapOf()
+    private val busToFrameToSignal: MutableMap<Int, MutableMap<Hex, MutableList<CANSignal>>>  = mutableMapOf()
     private val nameToAugSignal: MutableMap<String, AugmentedCANSignal> = mutableMapOf()
     private val augSigDepToName: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
     private val battAmpsHistory = mutableListOf<Float>()
+    private val slowPowerHistory = mutableListOf<Float>()
     private var accActive = 0f
+    private var lastPartyHours = 0f
 
-    fun clearFiltersPacket() : ByteArray {
+    fun clearFiltersPacket(): ByteArray {
         return byteArrayOf(CLEAR_FILTERS_BYTE)
     }
 
@@ -121,8 +125,12 @@ class CANSignalHelper {
     private fun createCANSignals() {
         // Technically uSOE (usable State Of Energy), this better matches what the car shows.
         insertCANSignal(SName.stateOfCharge, Constants.vehicleBus, Hex(0x33A), 56, 7, 1f, 0f)
+        insertCANSignal(SName.nominalFullPackEnergy, Constants.vehicleBus, Hex(0x352), 16, 16, 0.02f, 0f, 2, 0, sna = 1310.7f)
         insertCANSignal(SName.battVolts, Constants.vehicleBus, Hex(0x132), 0, 16, 0.01f, 0f)
         insertCANSignal(SName.battAmps, Constants.vehicleBus, Hex(0x132), 16, 16, -.1f, 0f, signed=true, sna=3276.7f)
+
+        insertCANSignal(SName.dc12vVolts, Constants.vehicleBus, Hex(0x2B4), 0, 10, 0.0390625f, 0f)
+        insertCANSignal(SName.dc12vAmps, Constants.vehicleBus, Hex(0x2B4), 24, 12, 0.1f, 0f)
 
         insertCANSignal(SName.uiSpeed, Constants.vehicleBus, Hex(0x257), 24, 9, 1f, 0f, sna=511f)
         //insertCANSignal(SName.uiSpeedHighSpeed, Constants.vehicleBus, Hex(0x257), 34, 9, 1f, 0f)
@@ -184,9 +192,16 @@ class CANSignalHelper {
         insertCANSignal(SName.brakeTempRL, Constants.vehicleBus, Hex(0x3FE), 32, 10, 1f, -40f, sna=983f)
         insertCANSignal(SName.brakeTempRR, Constants.vehicleBus, Hex(0x3FE), 42, 10, 1f, -40f, sna=983f)
         insertCANSignal(SName.displayOn, Constants.vehicleBus, Hex(0x353), 5, 1, 1f, 0f)
+        insertCANSignal(SName.keepClimateReq, Constants.vehicleBus, Hex(0x2F3), 33, 2, 1f, 0f)
+        insertCANSignal(SName.outsideTemp, Constants.vehicleBus, Hex(0x321), 40, 8, 0.5f, -40f)
+        insertCANSignal(SName.insideTemp, Constants.vehicleBus, Hex(0x243), 30, 11, 0.1f, -40f, 2, 0)
+        insertCANSignal(SName.insideTempReq, Constants.vehicleBus, Hex(0x2F3), 0, 5, 0.5f, 15f)
+        insertCANSignal(SName.hvacAirDistribution, Constants.vehicleBus, Hex(0x2F3), 13, 3, 1f, 0f)
+        insertCANSignal(SName.lockStatus, Constants.vehicleBus, Hex(0x339), 54, 2, 1f, 0f, sna = 0f)
 
         insertCANSignal(SName.driverUnbuckled, Constants.vehicleBus, Hex(0x3A1), 32, 2, 1f, 0f, 1, 0, sna=2f)
         insertCANSignal(SName.passengerUnbuckled, Constants.vehicleBus, Hex(0x3A1), 34, 2, 1f, 0f, 1, 0, sna=2f)
+        insertCANSignal(SName.frontOccupancy, Constants.vehicleBus, Hex(0x3C2), 50, 2, 1f, 0f, 1, 0, sna=0f)
         insertCANSignal(SName.heatBattery, Constants.vehicleBus, Hex(0x2E1), 63, 1, 1f, 0f, 3, 0 )
 
         // EPBR_telltaleLocal: 0 "LAMP_OFF" 1 "LAMP_RED_ON" 2 "LAMP_AMBER_ON" 3 "LAMP_RED_FLASH" 7 "SNA"
@@ -231,6 +246,20 @@ class CANSignalHelper {
                 return@insertAugmentedCANSignal null
             }
         }
+        insertAugmentedCANSignal(SName.slowPower, listOf(SName.power)) {
+            val power = it[SName.power]
+            if (power != null) {
+                slowPowerHistory.add(power)
+                // Smooth to last 100 of power signal
+                while (slowPowerHistory.size > 1000) {
+                    slowPowerHistory.removeFirst()
+                }
+                return@insertAugmentedCANSignal slowPowerHistory.average().toFloat()
+            } else {
+                slowPowerHistory.clear()
+                return@insertAugmentedCANSignal null
+            }
+        }
         insertAugmentedCANSignal(SName.l1Distance, listOf(SName.uiSpeed)) {
             val sensingSpeedLimit = if (it[SName.uiSpeedUnits] == 1f) 55f else 35f
             if ((it[SName.uiSpeed] ?: 0f) >= sensingSpeedLimit) {
@@ -257,6 +286,33 @@ class CANSignalHelper {
                 accActive = 0f
             }
             return@insertAugmentedCANSignal accActive
+        }
+        insertAugmentedCANSignal(SName.partyHoursLeft, listOf(SName.slowPower, SName.stateOfCharge, SName.nominalFullPackEnergy)) {
+            val socTarget = sharedPreferences.getPref(Constants.partyTimeTarget)
+            val power = it[SName.slowPower]
+            val soc = it[SName.stateOfCharge]
+            val totalKwh = it[SName.nominalFullPackEnergy]
+            if (power == null || soc == null || totalKwh == null) {
+                return@insertAugmentedCANSignal null
+            }
+            val currentKwh = totalKwh * soc / 100f
+            val kwhToTarget = currentKwh - (totalKwh * socTarget / 100f)
+            val hours = kwhToTarget / (power / 1000f)
+
+            // Use some hysteresis to prevent flickering
+            if (kotlin.math.abs(lastPartyHours - hours) > 0.05f) {
+                lastPartyHours = hours
+            }
+
+            return@insertAugmentedCANSignal max(0f, lastPartyHours)
+        }
+        insertAugmentedCANSignal(SName.dc12vPower, listOf(SName.dc12vAmps, SName.dc12vVolts)) {
+            val volts = it[SName.dc12vVolts]
+            val amps = it[SName.dc12vAmps]
+            if (volts == null || amps == null) {
+                return@insertAugmentedCANSignal null
+            }
+            return@insertAugmentedCANSignal volts * amps
         }
     }
 
