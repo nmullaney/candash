@@ -1,9 +1,6 @@
 package app.candash.cluster
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.os.BatteryManager
 
@@ -34,5 +31,21 @@ class PowerConnectionReceiver : BroadcastReceiver() {
 
         }
 
+    }
+}
+
+class RunOnStartup : BroadcastReceiver() {
+    private lateinit var prefs: SharedPreferences
+
+    override fun onReceive(context: Context, intent: Intent) {
+        val i = Intent(
+            context,
+            app.candash.cluster.FullscreenActivity::class.java
+        )
+        prefs = context.getSharedPreferences("dash", Context.MODE_PRIVATE)
+        if (prefs.getBooleanPref(Constants.StartOnBoot)) {
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(i)
+        }
     }
 }

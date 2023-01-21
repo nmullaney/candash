@@ -140,6 +140,16 @@
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
         app:layout_constraintTop_toBottomOf="@id/showEfficiency" />
 
+
+    <CheckBox
+        android:id="@+id/StartOnBoot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:text="Start App On Boot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/blankDisplayHint"
         android:layout_width="wrap_content"
@@ -149,8 +159,7 @@
         android:textSize="12dp"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
         app:layout_constraintTop_toBottomOf="@id/blankDisplaySync" />
-
-
+    
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelinevright"
         android:layout_width="wrap_content"
