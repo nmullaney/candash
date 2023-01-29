@@ -35,7 +35,7 @@
 
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:fontFamily="@font/interregular"
+        android:fontFamily="@font/interbold"
         android:gravity="center_horizontal|top"
         android:textSize="30dp"
         app:autoSizeTextType="uniform"
@@ -412,12 +412,12 @@
         app:layout_constraintRight_toLeftOf="@id/right_turn_signal_light"
 
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/speed_limit_sign_us"
         android:layout_width="60dp"
-        android:layout_height="72dp"
+        android:layout_height="78dp"
         android:layout_marginTop="4dp"
 
         android:gravity="center"
@@ -432,6 +432,8 @@
         android:id="@+id/speed_limit_title_us"
         android:layout_width="46dp"
         android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+
         android:fontFamily="@font/montserratbold"
         android:gravity="center"
 
@@ -470,7 +472,7 @@
 
         app:constraint_referenced_ids="speed_limit_sign_round,speed_limit_value_round"
         tools:layout_editor_absoluteX="445dp"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/speed_limit_sign_round"
@@ -483,7 +485,7 @@
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="@+id/speed"
         app:layout_constraintTop_toTopOf="@+id/speed"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/speed_limit_value_round"
@@ -503,7 +505,7 @@
         app:layout_constraintLeft_toLeftOf="@id/speed_limit_sign_round"
         app:layout_constraintRight_toRightOf="@id/speed_limit_sign_round"
         app:layout_constraintTop_toTopOf="@id/speed_limit_sign_round"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <ImageView
         android:id="@+id/speed_limit_nolimit_round"
@@ -514,6 +516,7 @@
         android:src="@drawable/ic_speedlimit_round_nolimit"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/speed"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/speed"
         app:layout_constraintTop_toTopOf="@+id/speed" />
 
