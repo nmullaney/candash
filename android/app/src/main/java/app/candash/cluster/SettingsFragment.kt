@@ -55,7 +55,6 @@ class SettingsFragment() : Fragment() {
         binding.showSpeedLimit.isChecked = !prefs.getBooleanPref(Constants.hideSpeedLimit)
         // This is not inverted, because defaulting to blank display makes the app appear broken on first launch
         binding.blankDisplaySync.isChecked = prefs.getBooleanPref(Constants.blankDisplaySync)
-        binding.StartOnBoot.isChecked = prefs.getBooleanPref(Constants.StartOnBoot)
         binding.showEfficiency.isChecked = !prefs.getBooleanPref(Constants.hideEfficiency)
         if (prefs.getBooleanPref(Constants.tempInF)) {
             binding.tempUnitF.isChecked = true
@@ -107,12 +106,6 @@ class SettingsFragment() : Fragment() {
             prefs.setBooleanPref(Constants.blankDisplaySync, true)
         } else {
             prefs.setBooleanPref(Constants.blankDisplaySync, false)
-        }
-
-        if (binding.StartOnBoot.isChecked) {
-            prefs.setBooleanPref(Constants.StartOnBoot, true)
-        } else {
-            prefs.setBooleanPref(Constants.StartOnBoot, false)
         }
 
         if (binding.showEfficiency.isChecked) {

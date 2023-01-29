@@ -23,7 +23,6 @@ object Constants {
     const val hideBs = "hideBs"
     const val hideSpeedLimit = "hideSpeedLimit"
     const val blankDisplaySync = "blankDisplaySync"
-    const val StartOnBoot = "StartOnBoot"
     const val tempInF = "tempInF"
     const val powerUnits = "powerUnits"
     const val powerUnitKw = 0f
