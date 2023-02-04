@@ -114,7 +114,11 @@ class EfficiencyCalculator(
     }
 
     private fun getInstantEfficiencyText(inMiles: Boolean, power: Float): String? {
-        val speed = viewModel.carState[SName.uiSpeed] ?: return null
+        val speed = viewModel.carState[SName.uiSpeed] ?: 0f
+        // If speed is 0 (or null) return to prevent "infinity kWh/mi"
+        if (speed == 0f) {
+            return null
+        }
         val instantEfficiency = power / speed / 1000f
         return if (inMiles) {
             "%.2f kWh/mi".format(instantEfficiency)
