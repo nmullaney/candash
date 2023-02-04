@@ -46,4 +46,10 @@ object Constants {
     const val l2DistanceLowSpeed = 200f
     const val l1DistanceHighSpeed = 400f
     const val l2DistanceHighSpeed = 250f
+    
+    // For camera arcs
+    const val l1DistanceLowSpeedCam = 200f
+    const val l2DistanceLowSpeedCam = 1500f
+    const val l1DistanceHighSpeedCam = 250f
+    const val l2DistanceHighSpeedCam = 200f
 }

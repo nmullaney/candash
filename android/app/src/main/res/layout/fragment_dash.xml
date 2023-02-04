@@ -35,9 +35,10 @@
 
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:fontFamily="@font/interbold"
+        android:fontFamily="@font/intersemibold"
         android:gravity="center_horizontal|top"
         android:textSize="30dp"
+        android:textColor="#777777"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/speed"
         app:layout_constraintCircle="@id/speed"
@@ -104,7 +105,7 @@
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:textSize="30dp"
-        android:fontFamily="@font/interbold"
+        android:fontFamily="@font/interregular"
 
         app:autoSizeMaxTextSize="40dp"
         app:autoSizeMinTextSize="20dp"

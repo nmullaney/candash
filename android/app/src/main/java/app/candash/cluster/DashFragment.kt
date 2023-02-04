@@ -773,6 +773,32 @@ class DashFragment : Fragment() {
             }
         }
 
+        viewModel.onSignal(viewLifecycleOwner, SName.rearLeftParkAssistCam) {
+            val distance = it ?: 99999f
+            val l1Distance = viewModel.carState[SName.l1DistanceCam] ?: Constants.l1DistanceLowSpeed
+            val l2Distance = viewModel.carState[SName.l2DistanceCam] ?: Constants.l2DistanceLowSpeed
+            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
+                binding.blindSpotLeft1.visible = false
+                binding.blindSpotLeft2.visible = false
+            } else {
+                binding.blindSpotLeft1.visible = (distance in l2Distance..l1Distance)
+                binding.blindSpotLeft2.visible = (distance < l2Distance)
+            }
+        }
+
+        viewModel.onSignal(viewLifecycleOwner, SName.rearRightParkAssistCam) {
+            val distance = it ?: 99999f
+            val l1Distance = viewModel.carState[SName.l1DistanceCam] ?: Constants.l1DistanceLowSpeedCam
+            val l2Distance = viewModel.carState[SName.l2DistanceCam] ?: Constants.l2DistanceLowSpeedCam
+            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
+                binding.blindSpotRight1.visible = false
+                binding.blindSpotRight2.visible = false
+            } else {
+                binding.blindSpotRight1.visible = (distance in l2Distance..l1Distance)
+                binding.blindSpotRight2.visible = (distance < l2Distance)
+            }
+        }
+
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.PINpassed, SName.brakeApplied)) {
             if (it[SName.PINenabled] == 1f) {
                 if (it[SName.PINpassed] == 0f &&

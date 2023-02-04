@@ -78,12 +78,18 @@ object SName {
     const val uiSpeedTestBus0 = "uiSpeedTestBus0"
     const val uiSpeedUnits = "UISpeedUnits"
     const val vehicleSpeed = "Vehicle Speed"
-
+    const val rearLeftParkAssistCam = "rearLeftParkAssistCam"
+    const val rearLeftMiddleParkAssistCam = "rearLeftMiddleParkAssistCam"
+    const val rearRightParkAssistCam = "rearRightParkAssistCam"
+    const val rearRightMiddleParkAssistCam = "rearRightMiddleParkAssistCam"
+    const val rearMiddleParkAssistCam = "rearMiddleParkAssistCam"
     // Augmented signals:
     const val power = "power"
     const val smoothBattAmps = "smoothBattAmps"
     const val l1Distance = "l1Distance"
     const val l2Distance = "l2Distance"
+    const val l1DistanceCam = "l1DistanceCam"
+    const val l2DistanceCam = "l2DistanceCam"
 }
 
 object SGroup {

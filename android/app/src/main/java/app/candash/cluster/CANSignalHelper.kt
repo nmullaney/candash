@@ -205,6 +205,11 @@ class CANSignalHelper {
         insertCANSignal(SName.limRegen, Constants.vehicleBus, Hex(0x36E), 8, 1, 1f, 0f)
         insertCANSignal(SName.kwhDischargeTotal, Constants.vehicleBus, Hex(0x3D2), 0, 32, 0.001f, 0f, sna=4294967.295f)
         insertCANSignal(SName.kwhChargeTotal, Constants.vehicleBus, Hex(0x3D2), 32, 32, 0.001f, 0f, sna=4294967.295f)
+        insertCANSignal(SName.rearLeftParkAssistCam, Constants.chassisBus, Hex(0x38B), 0, 8, 1f, 0f)
+        insertCANSignal(SName.rearLeftMiddleParkAssistCam, Constants.chassisBus, Hex(0x38B), 8, 8, 1f, 0f)
+        insertCANSignal(SName.rearRightParkAssistCam, Constants.chassisBus, Hex(0x38B), 32, 8, 1f, 0f)
+        insertCANSignal(SName.rearRightMiddleParkAssistCam, Constants.chassisBus, Hex(0x38B), 24, 8, 1f, 0f)
+        insertCANSignal(SName.rearMiddleParkAssistCam, Constants.chassisBus, Hex(0x38B), 16, 8, 1f, 0f)
 
 
         // Create augmented signals
@@ -245,6 +250,22 @@ class CANSignalHelper {
                 return@insertAugmentedCANSignal Constants.l2DistanceHighSpeed
             } else {
                 return@insertAugmentedCANSignal Constants.l2DistanceLowSpeed
+            }
+        }
+        insertAugmentedCANSignal(SName.l1DistanceCam, listOf(SName.uiSpeed)) {
+            val sensingSpeedLimit = if (it[SName.uiSpeedUnits] == 1f) 55f else 35f
+            if ((it[SName.uiSpeed] ?: 0f) >= sensingSpeedLimit) {
+                return@insertAugmentedCANSignal Constants.l1DistanceHighSpeedCam
+            } else {
+                return@insertAugmentedCANSignal Constants.l1DistanceLowSpeedCam
+            }
+        }
+        insertAugmentedCANSignal(SName.l2DistanceCam, listOf(SName.uiSpeed)) {
+            val sensingSpeedLimit = if (it[SName.uiSpeedUnits] == 1f) 55f else 35f
+            if ((it[SName.uiSpeed] ?: 0f) >= sensingSpeedLimit) {
+                return@insertAugmentedCANSignal Constants.l2DistanceHighSpeedCam
+            } else {
+                return@insertAugmentedCANSignal Constants.l2DistanceLowSpeedCam
             }
         }
         insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit)) {
