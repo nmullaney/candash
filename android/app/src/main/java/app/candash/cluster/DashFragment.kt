@@ -409,11 +409,15 @@ class DashFragment : Fragment() {
         }
 
         val efficiencyCalculator = EfficiencyCalculator(viewModel, prefs)
+        binding.efficiencyChart.setLookBack(prefs.getPref(Constants.efficiencyLookBack))
+        binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
 
         binding.efficiency.setOnClickListener {
             binding.infoToast.text = efficiencyCalculator.changeLookBack()
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
+            binding.efficiencyChart.setLookBack(prefs.getPref(Constants.efficiencyLookBack))
+            binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
         }
 
         binding.efficiency.setOnLongClickListener {
@@ -740,17 +744,20 @@ class DashFragment : Fragment() {
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.odometer, SName.gearSelected)) {
             efficiencyCalculator.updateKwhHistory()
+            binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
+
         }
 
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
-            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
+            if (efficiencyText == null || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
                 binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
                 binding.efficiency.visible = true
             }
+            binding.efficiencyChart.visible = !prefs.getBooleanPref(Constants.hideEfficiency)
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotLeft) {
@@ -1192,6 +1199,7 @@ class DashFragment : Fragment() {
             binding.battery.setColorFilter(Color.parseColor("#FFAAAAAA"))
             binding.batteryOverlay.setDayValue(1)
         }
+        binding.efficiencyChart.setDarkMode(shouldUseDarkMode())
         updateGearView()
     }
 

@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/day_background">
 
+    <app.candash.cluster.EfficiencyChart
+        android:id="@+id/efficiency_chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <TextView
         android:id="@+id/speed"
         android:layout_width="0dp"
