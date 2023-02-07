@@ -138,6 +138,7 @@ class FullscreenActivity : AppCompatActivity() {
                 "dash" -> switchToFragment(DashFragment())
                 "info" -> switchToFragment(InfoFragment())
                 "settings" -> switchToFragment(SettingsFragment())
+                "party" -> switchToFragment(PartyFragment())
                 else -> throw IllegalStateException("Attempting to switch to unknown fragment: $it")
             }
         }

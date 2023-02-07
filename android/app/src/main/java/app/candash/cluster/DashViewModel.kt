@@ -173,6 +173,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         viewToShowData.value = "info"
     }
 
+    fun switchToPartyFragment() {
+        viewToShowData.value = "party"
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d(TAG, "DashViewModel is cleared")

@@ -42,24 +42,6 @@ class DashFragment : Fragment() {
     private lateinit var overlayGradient: GradientDrawable
     private var gradientColorFrom: Int = 0
 
-    private val Int.px: Int
-        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-    /**
-     * This rounds a float to the provided decimal places and returns a string
-     * which is formatted to show that many decimal places.
-     *
-     * @param dp If null, decimal places are automatically determined by size of the Float
-     */
-    private fun Float.roundToString(dp: Int? = null): String {
-        return when {
-            dp != null -> "%.${dp}f".format(this)
-            abs(this) < 1f -> "%.2f".format(this)
-            abs(this) < 10f -> "%.1f".format(this)
-            else -> "%.0f".format(this)
-        }
-    }
-
     /**
      * This converts a float to the correct unit of measurement specified in sharedPreferences,
      * then rounds it to the provided decimal places and returns a string
@@ -236,7 +218,7 @@ class DashFragment : Fragment() {
             binding.chargemeter
         )
 
-    private fun chargingHiddenViews(): Set<View> =
+    private fun drivingViews(): Set<View> =
         setOf(
             binding.powerBar,
             binding.power,
@@ -354,7 +336,6 @@ class DashFragment : Fragment() {
         }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
-            viewModel.switchToInfoFragment()
             return@setOnLongClickListener true
         }
         binding.batterypercent.setOnClickListener {
@@ -388,6 +369,12 @@ class DashFragment : Fragment() {
             prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
             setColors()
             return@setOnLongClickListener true
+        }
+
+        binding.blackout.setOnClickListener {
+            // wake screen on tap, then eventually sleep again
+            binding.blackout.visible = false
+            view.postDelayed({updateBlackout()}, Constants.blackoutOverrideSeconds * 1000L)
         }
 
         val efficiencyCalculator = EfficiencyCalculator(viewModel, prefs)
@@ -449,6 +436,12 @@ class DashFragment : Fragment() {
          * Remember that it will only run when the value of the signal(s) change
          */
 
+        viewModel.onSignal(viewLifecycleOwner, SName.keepClimateReq) {
+            if (it == SVal.keepClimateParty) {
+                viewModel.switchToPartyFragment()
+            }
+        }
+
         viewModel.onSignal(viewLifecycleOwner, SName.driverOrientation) {
             prefs.setBooleanPref(
                 Constants.detectedRHD,
@@ -469,22 +462,7 @@ class DashFragment : Fragment() {
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.displayOn, SName.gearSelected)) {
-            if (it[SName.displayOn] == null) {
-                // Don't change the visibility if we lost the signal, maintain the last state
-                return@onSomeSignals
-            }
-            if (it[SName.gearSelected] !in setOf(SVal.gearDrive, SVal.gearReverse)
-                && it[SName.displayOn] == 0f
-                && prefs.getBooleanPref(Constants.blankDisplaySync)
-            ) {
-                binding.blackout.visible = true
-                binding.infoToast.text =
-                    "Display sleeping with car.\nLong-press left edge for settings."
-                binding.infoToast.visible = true
-                binding.infoToast.startAnimation(fadeOut(5000))
-            } else {
-                binding.blackout.visible = false
-            }
+            updateBlackout()
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.uiSpeed, SName.brakeHold)) {
@@ -649,7 +627,7 @@ class DashFragment : Fragment() {
             updateAPWarning(it ?: 0f)
         }
 
-        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.uiRange, SName.stateOfCharge)) { processBattery() }
+        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.uiRange, SName.stateOfCharge, SName.chargeStatus)) { processBattery() }
 
         viewModel.onSomeSignals(viewLifecycleOwner, SGroup.closures) { updateDoorStateUI() }
 
@@ -792,16 +770,11 @@ class DashFragment : Fragment() {
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.chargeStatus) {
-            if (carIsCharging()) {
-                binding.batteryOverlay.setChargeMode(1)
-                minMaxPowerViews().forEach { it.visible = false }
-            } else {
-                binding.batteryOverlay.setChargeMode(0)
-                if (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges) {
-                    minMaxPowerViews().forEach { it.visible = true }
-                }
+            minMaxPowerViews().forEach {
+                it.visible =
+                    (prefs.getPref(Constants.gaugeMode) > Constants.showSimpleGauges && !carIsCharging())
             }
-            // All of the charging view visibility is handled here
+            // All of the view visibility is handled here
             setGaugeVisibility()
         }
 
@@ -820,11 +793,12 @@ class DashFragment : Fragment() {
             binding.batterypercent.text = if (socVal != null) socVal.roundToString(0) + " %" else ""
         }
         binding.batteryOverlay.setGauge(socVal ?: 0f)
+        binding.batteryOverlay.setChargeMode(carIsCharging())
         binding.battery.visible = (socVal != null)
 
         // Set charge meter stuff too, although they may be hidden
         if (socVal != null) {
-            binding.chargemeter.setGauge(socVal / 100f, 4f, true)
+            binding.chargemeter.setGauge(socVal / 100f, 4f, carIsCharging())
             binding.bigsoc.text = socVal.roundToString(0)
         }
     }
@@ -846,9 +820,8 @@ class DashFragment : Fragment() {
                 (prefs.getPref(Constants.gaugeMode) == Constants.showFullGauges && !isSplitScreen())
         }
 
-        // Show and hide center views based on charging
+        drivingViews().forEach { it.visible = !carIsCharging() }
         chargingViews().forEach { it.visible = carIsCharging() }
-        chargingHiddenViews().forEach { it.visible = !carIsCharging() }
 
         // Hide some gauges when doors are open
         if (anyDoorOpen()) {
@@ -1041,6 +1014,28 @@ class DashFragment : Fragment() {
 
         binding.PRND.visible = (gearState() != SVal.gearInvalid)
     }
+
+    private fun updateBlackout() {
+        if (viewModel.carState[SName.displayOn] == null) {
+            // Don't change the visibility if we lost the signal, maintain the last state
+            return
+        }
+        if (prefs.getBooleanPref(Constants.blankDisplaySync)
+            && gearState() in setOf(SVal.gearPark, SVal.gearInvalid)
+            && viewModel.carState[SName.displayOn] == 0f
+        ) {
+            binding.blackout.visible = true
+            binding.infoToast.text =
+                "Display sleeping.\nTap screen to wake."
+            // workaround for race condition of potential simultaneous calls
+            if (activity != null) {
+                binding.infoToast.visible = true
+                binding.infoToast.startAnimation(fadeOut(5000))
+            }
+        } else {
+            binding.blackout.visible = false
+        }
+    }
     
     private fun shouldUseDarkMode(): Boolean {
         // Save/use the last known value to prevent a light/dark flash upon launching
@@ -1103,7 +1098,7 @@ class DashFragment : Fragment() {
         val textViewsSecondary = setOf(
             binding.chargerate,
             binding.unit,
-            binding.batterypercent
+            binding.batterypercent,
         )
         val textViewsDisabled = setOf(
             binding.odometer,

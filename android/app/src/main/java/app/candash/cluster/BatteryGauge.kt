@@ -11,21 +11,12 @@ import android.view.WindowManager
 class BatteryGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    val Int.dp: Int
-        get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-    val Int.px: Int
-        get() = (this * Resources.getSystem().displayMetrics.density).toInt()
-
-    val Float.dp: Float
-        get() = (this / Resources.getSystem().displayMetrics.density)
-    val Float.px: Float
-        get() = (this * Resources.getSystem().displayMetrics.density)
     private val TAG = DashViewModel::class.java.simpleName
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var screenWidth : Int = 100
     private var percentWidth : Float = 0f
     private var isSunUp : Int = 0
-    private var isChargeMode : Int = 0
+    private var isChargeMode : Boolean = false
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
 
@@ -72,13 +63,13 @@ class BatteryGauge @JvmOverloads constructor(
     }
 
     fun setColor() {
-        if (isChargeMode == 1) {
-            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
+        lineColor = if (isChargeMode) {
+            PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
         } else {
             if (isSunUp == 1){
-                lineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+                PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
             } else {
-                lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
+                PorterDuffColorFilter(resources.getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
             }
         }
         this.invalidate()
@@ -89,7 +80,7 @@ class BatteryGauge @JvmOverloads constructor(
         setColor()
     }
 
-    fun setChargeMode(isChargeModeVal: Int = 1) {
+    fun setChargeMode(isChargeModeVal: Boolean) {
         isChargeMode = isChargeModeVal
         setColor()
     }

@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/day_background">
+
+    <TextView
+        android:id="@+id/battery_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/interbold"
+
+        android:gravity="end|top"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="377 km"
+
+
+        android:textSize="20dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="@id/battery"
+        app:layout_constraintEnd_toStartOf="@id/battery" />
+
+    <ImageView
+        android:id="@+id/batt_charge"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:gravity="center|center"
+        android:src="@drawable/ic_batt_charging"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/battery_percent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/batt_heat"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:gravity="center|center"
+        android:src="@drawable/ic_batt_heating"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/batt_charge"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/battery"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16.5dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center|center"
+        android:src="@drawable/ic_deadbattery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <app.candash.cluster.BatteryGauge
+        android:id="@+id/battery_overlay"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:gravity="center|center"
+        android:src="@drawable/ic_fullbattery"
+        app:layout_constraintEnd_toEndOf="@id/battery"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/lock_closed"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:layout_marginEnd="6dp"
+        android:gravity="center|center"
+        android:src="@drawable/lock_closed"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/batt_heat"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/lock_open"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16.5dp"
+        android:layout_marginEnd="6dp"
+        android:gravity="center|center"
+        android:src="@drawable/lock_open"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/batt_heat"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/soc_gauge"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/big_soc"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:fontFamily="@font/intermedium"
+        android:gravity="center"
+        android:letterSpacing="-.07"
+        android:textColor="@color/black"
+        android:textSize="120dp"
+        android:visibility="visible"
+        app:fontWeight="300"
+        app:layout_constraintCircle="@id/soc_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5"
+        android:text="50"
+/>
+
+    <TextView
+        android:id="@+id/big_soc_percent"
+        android:layout_width="0dp"
+        android:layout_marginStart="10dp"
+
+        android:layout_height="200dp"
+        android:fontFamily="@font/interbold"
+        android:gravity="center|left"
+        android:text="%"
+        android:textColor="@color/black"
+        android:textSize="40dp"
+
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/big_soc"
+        app:layout_constraintLeft_toRightOf="@id/big_soc"
+        app:layout_constraintTop_toTopOf="@id/big_soc" />
+
+    <ImageView
+        android:id="@+id/modely"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_modely"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+    <ImageView
+        android:id="@+id/frontleftdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_frontleftdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+    <ImageView
+        android:id="@+id/frontrightdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_frontrightdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+    <ImageView
+        android:id="@+id/rearleftdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_rearleftdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+    <ImageView
+        android:id="@+id/rearrightdoor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_rearrightdoor"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+
+    <ImageView
+        android:id="@+id/hatch"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_hatch"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+    <ImageView
+        android:id="@+id/hood"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_hood"
+        android:visibility="gone"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toStartOf="@id/modely"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent=".5" />
+
+    <TextView
+        android:id="@+id/party_time"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center|center"
+        android:textSize="20dp"
+
+        android:visibility="visible"
+        app:autoSizeMaxTextSize="40dp"
+        app:autoSizeMinTextSize="20dp"
+        app:autoSizeStepGranularity="5dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintTop_toBottomOf="@id/dc_12v_power_gauge"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/guideline4"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="24.2 hours until 20%" />
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/outside_temp_gauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintEnd_toStartOf="@id/guideline7"
+        app:layout_constraintBottom_toTopOf="@id/batt_temp_gauge"
+        />
+
+    <TextView
+        android:id="@+id/outside_temp_unit"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
+        android:text="&#176;C"
+        android:textSize="20dp"
+        app:layout_constraintCircle="@id/outside_temp_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5" />
+
+    <TextView
+        android:id="@+id/outside_temp_label"
+
+        android:layout_width="100dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|left"
+
+        android:text="Outside Temp"
+        app:layout_constraintStart_toEndOf="@id/guideline7"
+        app:layout_constraintTop_toTopOf="@id/outside_temp_gauge" />
+
+    <TextView
+        android:id="@+id/outside_temp"
+
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
+        android:fontFeatureSettings="tnum"
+        android:gravity="left|center"
+        android:text="0"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/outside_temp_gauge"
+        app:layout_constraintEnd_toEndOf="@id/outside_temp_label"
+        app:layout_constraintStart_toStartOf="@id/outside_temp_label" />
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/inside_temp_gauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toEndOf="@id/guideline8"
+        app:layout_constraintBottom_toTopOf="@id/inside_temp_req_gauge"
+        />
+
+    <TextView
+        android:id="@+id/inside_temp_unit"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
+        android:text="&#176;C"
+        android:textSize="20dp"
+        app:layout_constraintCircle="@id/inside_temp_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5" />
+
+    <TextView
+        android:id="@+id/inside_temp_label"
+
+        android:layout_width="110dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|right"
+
+        android:text="Inside Temp"
+        app:layout_constraintEnd_toStartOf="@id/guideline8"
+        app:layout_constraintTop_toTopOf="@id/inside_temp_gauge" />
+
+    <TextView
+        android:id="@+id/inside_temp"
+
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
+        android:fontFeatureSettings="tnum"
+        android:gravity="right|center"
+        android:text="0"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/inside_temp_gauge"
+        app:layout_constraintEnd_toEndOf="@id/inside_temp_label"
+        app:layout_constraintStart_toStartOf="@id/inside_temp_label" />
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/batt_temp_gauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintEnd_toStartOf="@id/guideline7"
+        app:layout_constraintBottom_toTopOf="@id/dc_12v_power_gauge" />
+
+    <TextView
+        android:id="@+id/batt_temp_unit"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
+        android:text="&#176;C"
+        android:textSize="20dp"
+        app:layout_constraintCircle="@id/batt_temp_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5" />
+
+    <TextView
+        android:id="@+id/batt_temp_label"
+
+        android:layout_width="100dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|left"
+
+        android:text="Battery Temp"
+        app:layout_constraintStart_toEndOf="@id/guideline7"
+        app:layout_constraintTop_toTopOf="@id/batt_temp_gauge" />
+
+    <TextView
+        android:id="@+id/batt_temp"
+
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
+        android:fontFeatureSettings="tnum"
+        android:gravity="left|center"
+        android:text="0"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/batt_temp_gauge"
+        app:layout_constraintEnd_toEndOf="@id/batt_temp_label"
+        app:layout_constraintStart_toStartOf="@id/batt_temp_label" />
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/inside_temp_req_gauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toEndOf="@id/guideline8"
+        app:layout_constraintBottom_toTopOf="@id/dc_power_gauge"
+        />
+
+    <TextView
+        android:id="@+id/inside_temp_req_unit"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
+        android:text="&#176;C"
+        android:textSize="20dp"
+        app:layout_constraintCircle="@id/inside_temp_req_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5" />
+
+    <TextView
+        android:id="@+id/inside_temp_req_label"
+
+        android:layout_width="110dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|right"
+
+        android:text="HVAC Setpoint"
+        app:layout_constraintEnd_toStartOf="@id/guideline8"
+        app:layout_constraintTop_toTopOf="@id/inside_temp_req_gauge" />
+
+    <TextView
+        android:id="@+id/inside_temp_req"
+
+        android:layout_width="wrap_content"
+        android:layout_height="27dp"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
+        android:fontFeatureSettings="tnum"
+        android:gravity="right|center"
+        android:text="LO"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/inside_temp_req_gauge"
+        app:layout_constraintEnd_toEndOf="@id/inside_temp_req_label" />
+
+    <TextView
+        android:id="@+id/inside_temp_req_auto_label"
+
+        android:layout_width="60dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="6dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|right"
+
+        android:text="(Auto)"
+        app:layout_constraintEnd_toStartOf="@id/inside_temp_req"
+        app:layout_constraintBottom_toBottomOf="@id/inside_temp_req" />
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/dc_12v_power_gauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintEnd_toStartOf="@id/guideline7"
+        app:layout_constraintTop_toBottomOf="@id/guideline5"
+        />
+
+    <TextView
+        android:id="@+id/dc_12v_power_unit"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
+        android:text="kW"
+        android:textSize="20dp"
+        app:layout_constraintCircle="@id/dc_12v_power_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5" />
+
+    <TextView
+        android:id="@+id/dc_12v_power_label"
+
+        android:layout_width="100dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|left"
+
+        android:text="12v DC Power"
+        app:layout_constraintStart_toEndOf="@id/guideline7"
+        app:layout_constraintTop_toTopOf="@id/dc_12v_power_gauge" />
+
+    <TextView
+        android:id="@+id/dc_12v_power"
+
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
+        android:fontFeatureSettings="tnum"
+        android:gravity="left|center"
+        android:text="0"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/dc_12v_power_gauge"
+        app:layout_constraintEnd_toEndOf="@id/dc_12v_power_label"
+        app:layout_constraintStart_toStartOf="@id/dc_12v_power_label" />
+
+    <app.candash.cluster.CircularGauge
+        android:id="@+id/dc_power_gauge"
+
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="5dp"
+        android:gravity="center"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+
+        app:layout_constraintHeight_percent=".5"
+        app:layout_constraintStart_toEndOf="@id/guideline8"
+        app:layout_constraintTop_toBottomOf="@id/guideline5"
+        />
+
+    <TextView
+        android:id="@+id/dc_power_unit"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+
+        android:text="kW"
+        android:textSize="20dp"
+        app:layout_constraintCircle="@id/dc_power_gauge"
+        app:layout_constraintCircleRadius="0dp"
+        app:layout_constraintHeight_percent=".5" />
+
+    <TextView
+        android:id="@+id/dc_power_label"
+
+        android:layout_width="110dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/interregular"
+        android:fontFeatureSettings="tnum"
+        android:gravity="bottom|right"
+
+        android:text="Total DC Power"
+        app:layout_constraintEnd_toStartOf="@id/guideline8"
+        app:layout_constraintTop_toTopOf="@id/dc_power_gauge" />
+
+    <TextView
+        android:id="@+id/dc_power"
+
+        android:layout_width="0dp"
+        android:layout_height="27dp"
+
+        android:layout_marginBottom="5dp"
+        android:fontFamily="sans-serif"
+        android:fontFeatureSettings="tnum"
+        android:gravity="right|center"
+        android:text="0"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="@id/dc_power_gauge"
+        app:layout_constraintEnd_toEndOf="@id/dc_power_label"
+        app:layout_constraintStart_toStartOf="@id/dc_power_label" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <!--These must always be last to cover all objects-->
+    <View
+        android:id="@+id/blackout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:visibility="gone" />
+
+    <!--Camp Mode Active should be visible even with blackout-->
+    <TextView
+        android:id="@+id/party_mode_label"
+        android:layout_width="350dp"
+        android:layout_height="30dp"
+
+        android:fontFamily="@font/interbold"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center|center"
+        android:textSize="20dp"
+
+        android:visibility="visible"
+        app:autoSizeMaxTextSize="40dp"
+        app:autoSizeMinTextSize="20dp"
+        app:autoSizeStepGranularity="5dp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Camp Mode Active" />
+
+    <TextView
+        android:id="@+id/infoToast"
+        android:drawablePadding="5dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:fontFamily="@font/interbold"
+        android:textColor="#cccccc"
+        android:visibility="invisible"
+        android:background="@drawable/rounded_corner"
+        android:gravity="center|center_vertical"
+        android:text="Some info goes here"
+        android:textAlignment="center"
+        app:autoSizeMinTextSize="15dp"
+        app:autoSizeMaxTextSize="25dp"
+        app:autoSizeStepGranularity="1dp"
+        app:autoSizeTextType="uniform"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <!--Don't put anything here! Put views above "blackout"-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

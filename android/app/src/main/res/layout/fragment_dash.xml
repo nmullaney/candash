@@ -1653,6 +1653,30 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <TextView
+        android:id="@+id/PINWarning"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/rounded_corner"
+        android:drawableLeft="@drawable/ic_pin"
+        android:drawablePadding="0dp"
+        android:fontFamily="@font/interbold"
+        android:gravity="center|center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingTop="5dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="5dp"
+        android:text="Enter PIN to Drive\non the main display"
+        android:textAlignment="center"
+        android:textColor="#cccccc"
+        android:textSize="15dp"
+        android:visibility="gone"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 <!--These must always be last to cover all objects-->
     <View
         android:id="@+id/blackout"
@@ -1688,28 +1712,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
-    <TextView
-        android:id="@+id/PINWarning"
-        android:layout_width="300dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/rounded_corner"
-        android:drawableLeft="@drawable/ic_pin"
-        android:drawablePadding="0dp"
-        android:fontFamily="@font/interbold"
-        android:gravity="center|center_vertical"
-        android:paddingLeft="12dp"
-        android:paddingTop="5dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="5dp"
-        android:text="Enter PIN to Drive\non the main display"
-        android:textAlignment="center"
-        android:textColor="#cccccc"
-        android:textSize="15dp"
-        android:visibility="gone"
+    <!--Don't put anything here! Put views above "blackout"-->
 
-
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
