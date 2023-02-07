@@ -328,11 +328,19 @@ class DashFragment : Fragment() {
         setGaugeVisibility()
         setLayoutOrder()
 
-        binding.minpower.setOnClickListener {
+        binding.minpower.setOnLongClickListener {
             prefs.setPref("minPower", 0f)
+            binding.infoToast.text = "Reset min power value"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
+            return@setOnLongClickListener true
         }
-        binding.maxpower.setOnClickListener {
+        binding.maxpower.setOnLongClickListener {
             prefs.setPref("maxPower", 0f)
+            binding.infoToast.text = "Reset max power value"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
+            return@setOnLongClickListener true
         }
         binding.root.setOnLongClickListener {
             viewModel.switchToInfoFragment()
@@ -341,6 +349,9 @@ class DashFragment : Fragment() {
         binding.batterypercent.setOnClickListener {
             prefs.setBooleanPref(Constants.showBattRange, !prefs.getBooleanPref(Constants.showBattRange))
             processBattery()
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.showBattRange)) "Showing battery range" else "Showing battery SOC"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
         }
         binding.unit.setOnClickListener {
             if (prefs.getPref(Constants.gaugeMode) < Constants.showFullGauges) {
@@ -349,6 +360,14 @@ class DashFragment : Fragment() {
                 prefs.setPref(Constants.gaugeMode, Constants.showSimpleGauges)
             }
             setGaugeVisibility()
+            binding.infoToast.text = when (prefs.getPref(Constants.gaugeMode)) {
+                Constants.showSimpleGauges -> "Showing simple gauges"
+                Constants.showRegularGauges -> "Showing regular gauges"
+                Constants.showFullGauges -> "Showing full gauges"
+                else -> "Unknown gauge selection"
+            }
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
         }
 
         binding.power.setOnClickListener {
@@ -357,17 +376,26 @@ class DashFragment : Fragment() {
             } else {
                 prefs.setPref(Constants.powerUnits, Constants.powerUnitKw)
             }
+            binding.infoToast.text = "Power unit:" + unitConverter.prefPowerUnit().tag
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
         }
 
         binding.PRND.setOnLongClickListener {
             prefs.setBooleanPref(Constants.forceRHD, !prefs.getBooleanPref(Constants.forceRHD))
             setLayoutOrder()
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceRHD)) "Force right-hand drive" else "Auto right-hand drive"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
             return@setOnLongClickListener true
         }
 
         binding.speed.setOnLongClickListener {
             prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
             setColors()
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceNightMode)) "Force dark mode" else "Auto dark mode"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
             return@setOnLongClickListener true
         }
 
