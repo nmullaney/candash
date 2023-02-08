@@ -133,6 +133,7 @@
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scroll_view_constraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -149,7 +150,6 @@
                 android:textStyle="bold"
                 android:layout_marginStart="50dp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/info_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/trash"
                 />
@@ -165,15 +165,57 @@
                 android:src="@drawable/ic_baseline_delete_24" />
 
 
-            <TextView
-                android:id="@+id/info_text"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/info_text_constraint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:textSize="18sp"
-                tools:text="Data goes here"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/header_text"/>
+
+            <app.candash.cluster.CircularGauge
+                android:id="@+id/zoom_gauge"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 app:layout_constraintTop_toBottomOf="@id/header_text"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="visible"
+                />
+
+            <TextView
+                android:id="@+id/zoom_value"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                app:autoSizeMaxTextSize="50dp"
+                app:autoSizeMinTextSize="30dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
+                android:text="1.2345"
+
+                app:layout_constraintTop_toTopOf="@id/zoom_gauge"
+                app:layout_constraintBottom_toBottomOf="@id/zoom_gauge"
+                app:layout_constraintLeft_toLeftOf="@id/zoom_gauge"
+                app:layout_constraintRight_toRightOf="@id/zoom_gauge"
+                />
+
+            <TextView
+                android:id="@+id/zoom_name"
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="50dp"
+                android:gravity="bottom|center"
+                app:autoSizeMaxTextSize="20dp"
+                app:autoSizeMinTextSize="10dp"
+                app:autoSizeStepGranularity="2dp"
+                app:autoSizeTextType="uniform"
+                android:text="SomeName"
+
+                app:layout_constraintBottom_toBottomOf="@id/zoom_gauge"
+                app:layout_constraintLeft_toLeftOf="@id/zoom_gauge"
+                app:layout_constraintRight_toRightOf="@id/zoom_gauge"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
