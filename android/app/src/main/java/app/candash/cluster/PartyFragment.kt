@@ -141,6 +141,9 @@ class PartyFragment : Fragment() {
                 )
                 setUnits()
                 updateTemps()
+                binding.infoToast.text = "Temp unit:" + unitConverter.prefTempUnit(party = true).tag
+                binding.infoToast.visible = true
+                binding.infoToast.startAnimation(fadeOut(5000))
             }
         }
 
@@ -162,6 +165,9 @@ class PartyFragment : Fragment() {
         binding.batteryPercent.setOnClickListener {
             prefs.setBooleanPref(Constants.showBattRange, !prefs.getBooleanPref(Constants.showBattRange))
             processBattery()
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.showBattRange)) "Showing battery range" else "Showing battery SOC"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
         }
 
         binding.root.setOnLongClickListener {
@@ -172,6 +178,9 @@ class PartyFragment : Fragment() {
         binding.bigSoc.setOnLongClickListener {
             prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
             setColors()
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceNightMode)) "Force dark mode" else "Auto dark mode"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
             return@setOnLongClickListener true
         }
 
