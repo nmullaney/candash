@@ -3,6 +3,9 @@ package app.candash.cluster
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.media.AudioAttributes
+import android.media.Ringtone
+import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +16,15 @@ import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentPartyBinding
+import kotlin.math.round
 
 class PartyFragment : Fragment() {
     private lateinit var binding: FragmentPartyBinding
     private lateinit var viewModel: DashViewModel
     private lateinit var unitConverter: UnitConverter
     private lateinit var prefs: SharedPreferences
+    private lateinit var alarmPlayer: Ringtone
+
     private var blackoutAfter = System.currentTimeMillis()
     private var tempDP = 0
 
@@ -104,10 +110,24 @@ class PartyFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Ensure the alarm is stopped when the user exits the view
+        alarmPlayer.stop()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         unitConverter = UnitConverter(prefs)
+
+        // Use default alarm tone
+        val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        alarmPlayer = RingtoneManager.getRingtone(this.context, alert)
+        alarmPlayer.audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build()
 
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
@@ -146,11 +166,15 @@ class PartyFragment : Fragment() {
 
         binding.partyTime.setOnClickListener {
             val newTarget = prefs.getPref(Constants.partyTimeTarget) + 5f
-            if (newTarget >= (viewModel.carState[SName.stateOfCharge] ?: 0f)) {
+            if (newTarget > 90f || alarmPlayer.isPlaying) {
                 prefs.setPref(Constants.partyTimeTarget, 20f)
             } else {
                 prefs.setPref(Constants.partyTimeTarget, newTarget)
             }
+            updateAlarm()
+            binding.infoToast.text = "Alarm at: " + prefs.getPref(Constants.partyTimeTarget).roundToString(0) + "%"
+            binding.infoToast.visible = true
+            binding.infoToast.startAnimation(fadeOut(5000))
         }
 
         binding.blackout.setOnClickListener {
@@ -235,19 +259,13 @@ class PartyFragment : Fragment() {
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.partyHoursLeft) {
-            if (it != null && it > 0 && (viewModel.carState[SName.slowPower] ?: 0f) > 100) {
-                val remaining = when {
-                    it >= 48 -> (it/24).roundToString(1) + " days"
-                    else -> it.roundToString(1) + " hours"
-                }
-                binding.partyTime.text =
-                    remaining + " to " + prefs.getPref(Constants.partyTimeTarget).roundToString(0) + "%"
-            } else {
-                binding.partyTime.text = ""
-            }
+            updatePartyTime()
         }
 
-        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.uiRange, SName.stateOfCharge, SName.chargeStatus)) { processBattery() }
+        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.uiRange, SName.stateOfCharge, SName.chargeStatus)) {
+            processBattery()
+            updateAlarm()
+        }
 
         setOf(
             Triple(binding.battHeat, SName.heatBattery, 1f),
@@ -278,6 +296,7 @@ class PartyFragment : Fragment() {
         if (!prefs.getBooleanPref(Constants.disableDisplaySync)
             && !anyDoorOpen()
             && viewModel.carState[SName.frontOccupancy] != 2f
+            && !alarmPlayer.isPlaying
         ) {
             binding.blackout.visible = true
             binding.infoToast.text =
@@ -323,6 +342,42 @@ class PartyFragment : Fragment() {
             SName.rearRightDoorState to binding.rearrightdoor
         ).forEach {
             it.value.visible = closureIsOpen(it.key)
+        }
+    }
+
+    private fun updatePartyTime() {
+        val partyHours = viewModel.carState[SName.partyHoursLeft]
+        if (alarmPlayer.isPlaying) {
+            binding.partyTime.text = "Tap to dismiss alarm"
+        } else if (partyHours != null && partyHours > 0 && (viewModel.carState[SName.slowPower]
+                ?: 0f) > 100
+        ) {
+            val remaining = when {
+                partyHours >= 48 -> (partyHours / 24).roundToString(1) + " days"
+                else -> partyHours.roundToString(1) + " hours"
+            }
+            binding.partyTime.text =
+                remaining + " to " + prefs.getPref(Constants.partyTimeTarget)
+                    .roundToString(0) + "%"
+        } else {
+            binding.partyTime.text = ""
+        }
+    }
+
+    private fun updateAlarm() {
+        if (round(
+                viewModel.carState[SName.stateOfCharge] ?: 100f
+            ) <= prefs.getPref(Constants.partyTimeTarget) && !carIsCharging()
+        ) {
+            if (!alarmPlayer.isPlaying) {
+                alarmPlayer.play()
+                updatePartyTime()
+                updateBlackout()
+            }
+        } else if (alarmPlayer.isPlaying) {
+            alarmPlayer.stop()
+            updatePartyTime()
+            updateBlackout()
         }
     }
 
