@@ -32,7 +32,6 @@ class FullscreenActivity : AppCompatActivity() {
     private var delay = 1000
 
     private lateinit var viewModel: DashViewModel
-    private lateinit var hotSpotReceiver: HotSpotReceiver
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -126,11 +125,6 @@ class FullscreenActivity : AppCompatActivity() {
                 else -> throw IllegalStateException("Attempting to switch to unknown fragment: $it")
             }
         }
-        hotSpotReceiver = HotSpotReceiver(viewModel)
-        this.registerReceiver(
-            hotSpotReceiver,
-            IntentFilter("android.net.wifi.WIFI_AP_STATE_CHANGED")
-        )
     }
 
     private fun switchToFragment(fragment: Fragment) {
@@ -158,7 +152,6 @@ class FullscreenActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         handler.removeCallbacks(runnable!!)
-        this.unregisterReceiver(hotSpotReceiver)
         super.onDestroy()
     }
 }
