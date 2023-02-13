@@ -135,6 +135,19 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
         }
     }
 
+    /**
+     * Returns a sorted list of all signal names available
+     */
+    fun allSignalNames(): List<String> {
+        val result = mutableListOf<String>()
+        liveCarState.forEach {
+            result.add(it.key)
+        }
+        // Sort by name
+        result.sort()
+        return result.toList()
+    }
+
     private fun getScreenWidth(): Int {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
