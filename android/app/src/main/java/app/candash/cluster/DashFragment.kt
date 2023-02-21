@@ -134,8 +134,7 @@ class DashFragment : Fragment() {
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
-            binding.autopilot,
-            binding.TACC
+            binding.autopilot
         )
 
     /**
@@ -153,7 +152,9 @@ class DashFragment : Fragment() {
             binding.battHeat,
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
-            binding.telltaleLimRegen
+            binding.telltaleLimRegen,
+            binding.TACC
+
         )
 
     private fun leftSideUIViews(): Set<View> =
