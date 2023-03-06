@@ -275,7 +275,7 @@ class PartyFragment : Fragment() {
 
     private fun updateBlackout() {
         // the displayOn signal is always true in party mode, so instead we look at doors and butts
-        if (prefs.getBooleanPref(Constants.blankDisplaySync)
+        if (!prefs.getBooleanPref(Constants.blankDisplaySync)
             && !anyDoorOpen()
             && viewModel.carState[SName.frontOccupancy] != 2f
         ) {

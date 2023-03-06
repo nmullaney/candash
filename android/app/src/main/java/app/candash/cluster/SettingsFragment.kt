@@ -102,9 +102,9 @@ class SettingsFragment() : Fragment() {
         }
         // This is not inverted, because defaulting to blank display makes the app appear broken on first launch
         if (binding.blankDisplaySync.isChecked) {
-            prefs.setBooleanPref(Constants.blankDisplaySync, true)
-        } else {
             prefs.setBooleanPref(Constants.blankDisplaySync, false)
+        } else {
+            prefs.setBooleanPref(Constants.blankDisplaySync, true)
         }
 
         if (binding.showEfficiency.isChecked) {

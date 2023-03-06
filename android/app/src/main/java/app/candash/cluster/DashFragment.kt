@@ -1049,7 +1049,7 @@ class DashFragment : Fragment() {
             // Don't change the visibility if we lost the signal, maintain the last state
             return
         }
-        if (prefs.getBooleanPref(Constants.blankDisplaySync)
+        if (!prefs.getBooleanPref(Constants.blankDisplaySync)
             && gearState() in setOf(SVal.gearPark, SVal.gearInvalid)
             && viewModel.carState[SName.displayOn] == 0f
         ) {
