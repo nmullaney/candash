@@ -1,4 +1,9 @@
+![image](https://user-images.githubusercontent.com/523563/223487408-89d8ac0a-a415-4be8-8ea7-13ba370e446d.png)
+![image](https://user-images.githubusercontent.com/523563/223487468-1e422398-cc06-4765-a0f7-c6eb250c68af.png)
+
+
 This is a custom mount for a Pixel 4 XL for the Open Source CANdash project for the Tesla Model 3 and Y. It can be used for anything you want a phone for, and is intended to provide a clean way to mount a smartphone. You will need some parts to complete this build.
+
 
 * [Right angle USB-C power cable](https://www.amazon.com/UGREEN-Charging-Braided-Compatible-Nintendo/dp/B07VKJNPH2) to run down the side and a usb power source under the dash. 
 * 2 M4 self tapping screws, I used fender screws from a Porsche, at least 15mm long
