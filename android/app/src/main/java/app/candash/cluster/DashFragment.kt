@@ -134,8 +134,11 @@ class DashFragment : Fragment() {
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
-            binding.autopilot
+            binding.autopilot,
+            binding.speed
         )
+
+
 
     /**
      * These are telltales which should be hidden when in split screen
@@ -153,7 +156,8 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen,
-            binding.TACC
+            binding.TACC,
+            binding.unit
 
         )
 
@@ -225,12 +229,14 @@ class DashFragment : Fragment() {
             binding.power,
             binding.speed,
             binding.unit,
+            binding.unitSplit
         )
 
     private fun centerDoorHiddenViews(): Set<View> =
         setOf(
             binding.speed,
             binding.unit,
+            binding.unitSplit
         ) + chargingViews()
 
     private fun doorViews(): Set<View> =
@@ -426,19 +432,33 @@ class DashFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
                 // only needed for Android 11+
                 if (isSplit) {
+                    binding.unitSplit.visible = true
+                    val params = binding.speed.layoutParams as ConstraintLayout.LayoutParams
+                    val savedParams = savedLayoutParams[binding.speed]
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
-                        params.setMargins(
-                            savedParams!!.leftMargin,
-                            savedParams.topMargin - 30.px,
-                            savedParams.rightMargin,
-                            savedParams.bottomMargin
-                        )
+                        if (topUIView.equals(binding.speed)){
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 30.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin + 30.px
+                            )
+                        } else {
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 30.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin
+                            )
+                        }
+
                         topUIView.layoutParams = params
                     }
                 } else {
                     //no split screen
+                    binding.unitSplit.visible = false
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
@@ -513,11 +533,15 @@ class DashFragment : Fragment() {
                 prefs.setBooleanPref(Constants.uiSpeedUnitsMPH, (uiSpeedUnits == 0f))
                 if (it[SName.brakeHold] == 1f) {
                     binding.unit.text = "HOLD"
+                    binding.unitSplit.text = "HOLD"
+
                 } else {
                     binding.unit.text = unitConverter.prefSpeedUnit().tag.trim().uppercase()
+                    binding.unitSplit.text = unitConverter.prefSpeedUnit().tag.trim().uppercase()
                 }
             } else {
                 binding.unit.text = ""
+                binding.unitSplit.text = ""
             }
         }
 
@@ -851,7 +875,9 @@ class DashFragment : Fragment() {
 
         drivingViews().forEach { it.visible = !carIsCharging() }
         chargingViews().forEach { it.visible = carIsCharging() }
-
+        if (!isSplitScreen()) {
+            binding.unitSplit.visible = false
+        }
         // Hide some gauges when doors are open
         if (anyDoorOpen()) {
             when {
@@ -1127,6 +1153,7 @@ class DashFragment : Fragment() {
         val textViewsSecondary = setOf(
             binding.chargerate,
             binding.unit,
+            binding.unitSplit,
             binding.batterypercent,
         )
         val textViewsDisabled = setOf(
