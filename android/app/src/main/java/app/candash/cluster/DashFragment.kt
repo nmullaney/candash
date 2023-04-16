@@ -430,8 +430,8 @@ class DashFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
                 // only needed for Android 11+
                 if (isSplit) {
-                    val params = binding.speed.layoutParams as ConstraintLayout.LayoutParams
-                    val savedParams = savedLayoutParams[binding.speed]
+/*                    val params = binding.speed.layoutParams as ConstraintLayout.LayoutParams
+                    val savedParams = savedLayoutParams[binding.speed]*/
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
@@ -443,10 +443,7 @@ class DashFragment : Fragment() {
                                 savedParams.bottomMargin + 30.px
                             )
 
-                        }else if (topUIView.equals(binding.unit)) {
-                            params.circleRadius = 105
-                        }
-                        else {
+                        }else {
                             params.setMargins(
                                 savedParams!!.leftMargin,
                                 savedParams.topMargin - 30.px,
@@ -454,7 +451,9 @@ class DashFragment : Fragment() {
                                 savedParams.bottomMargin
                             )
                         }
-
+                      if (topUIView.equals(binding.unit)) {
+                            params.circleRadius = savedParams.circleRadius - 30
+                        }
                         topUIView.layoutParams = params
                     }
                 } else {
@@ -468,9 +467,7 @@ class DashFragment : Fragment() {
                             savedParams.rightMargin,
                             savedParams.bottomMargin
                         )
-                        if (topUIView.equals(binding.unit)){
-                            params.circleRadius = 120
-                        }
+                        params.circleRadius = savedParams.circleRadius
                         topUIView.layoutParams = params
                     }
                 }
