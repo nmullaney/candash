@@ -443,7 +443,10 @@ class DashFragment : Fragment() {
                                 savedParams.bottomMargin + 30.px
                             )
 
-                        }else {
+                        }else if (topUIView.equals(binding.unit)) {
+                            params.circleRadius = 105
+                        }
+                        else {
                             params.setMargins(
                                 savedParams!!.leftMargin,
                                 savedParams.topMargin - 30.px,
@@ -451,9 +454,7 @@ class DashFragment : Fragment() {
                                 savedParams.bottomMargin
                             )
                         }
-                        if (topUIView.equals(binding.unit)) {
-                            params.circleRadius = 105
-                        }
+
                         topUIView.layoutParams = params
                     }
                 } else {
