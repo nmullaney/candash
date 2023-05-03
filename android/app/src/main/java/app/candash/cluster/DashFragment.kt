@@ -22,6 +22,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
@@ -134,8 +135,12 @@ class DashFragment : Fragment() {
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
-            binding.autopilot
+            binding.autopilot,
+            binding.speed,
+            binding.unit
         )
+
+
 
     /**
      * These are telltales which should be hidden when in split screen
@@ -154,7 +159,6 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen,
             binding.TACC
-
         )
 
     private fun leftSideUIViews(): Set<View> =
@@ -224,13 +228,13 @@ class DashFragment : Fragment() {
             binding.powerBar,
             binding.power,
             binding.speed,
-            binding.unit,
+            binding.unit
         )
 
     private fun centerDoorHiddenViews(): Set<View> =
         setOf(
             binding.speed,
-            binding.unit,
+            binding.unit
         ) + chargingViews()
 
     private fun doorViews(): Set<View> =
@@ -426,15 +430,30 @@ class DashFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
                 // only needed for Android 11+
                 if (isSplit) {
+/*                    val params = binding.speed.layoutParams as ConstraintLayout.LayoutParams
+                    val savedParams = savedLayoutParams[binding.speed]*/
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
-                        params.setMargins(
-                            savedParams!!.leftMargin,
-                            savedParams.topMargin - 30.px,
-                            savedParams.rightMargin,
-                            savedParams.bottomMargin
-                        )
+                        if (topUIView.equals(binding.speed)){
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 30.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin + 30.px
+                            )
+
+                        }else {
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 30.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin
+                            )
+                        }
+                      if (topUIView.equals(binding.unit)) {
+                            params.circleRadius = savedParams.circleRadius - 30
+                        }
                         topUIView.layoutParams = params
                     }
                 } else {
@@ -448,6 +467,7 @@ class DashFragment : Fragment() {
                             savedParams.rightMargin,
                             savedParams.bottomMargin
                         )
+                        params.circleRadius = savedParams.circleRadius
                         topUIView.layoutParams = params
                     }
                 }
@@ -513,6 +533,7 @@ class DashFragment : Fragment() {
                 prefs.setBooleanPref(Constants.uiSpeedUnitsMPH, (uiSpeedUnits == 0f))
                 if (it[SName.brakeHold] == 1f) {
                     binding.unit.text = "HOLD"
+
                 } else {
                     binding.unit.text = unitConverter.prefSpeedUnit().tag.trim().uppercase()
                 }

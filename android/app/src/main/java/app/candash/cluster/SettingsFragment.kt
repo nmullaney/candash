@@ -53,7 +53,8 @@ class SettingsFragment() : Fragment() {
         binding.showodo.isChecked = !prefs.getBooleanPref(Constants.hideOdometer)
         binding.showBs.isChecked = !prefs.getBooleanPref(Constants.hideBs)
         binding.showSpeedLimit.isChecked = !prefs.getBooleanPref(Constants.hideSpeedLimit)
-        binding.blankDisplaySync.isChecked = !prefs.getBooleanPref(Constants.blankDisplaySync)
+        // This is not inverted, because defaulting to blank display makes the app appear broken on first launch
+        binding.blankDisplaySync.isChecked = prefs.getBooleanPref(Constants.blankDisplaySync)
         binding.showEfficiency.isChecked = !prefs.getBooleanPref(Constants.hideEfficiency)
         if (prefs.getBooleanPref(Constants.tempInF)) {
             binding.tempUnitF.isChecked = true
