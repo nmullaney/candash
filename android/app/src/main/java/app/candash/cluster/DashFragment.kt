@@ -430,8 +430,6 @@ class DashFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
                 // only needed for Android 11+
                 if (isSplit) {
-/*                    val params = binding.speed.layoutParams as ConstraintLayout.LayoutParams
-                    val savedParams = savedLayoutParams[binding.speed]*/
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
@@ -1144,10 +1142,11 @@ class DashFragment : Fragment() {
             binding.coolantflow,
             binding.coolantflowlabel,
             binding.coolantflowunits,
-        )
-        val textViewsSecondary = setOf(
             binding.chargerate,
             binding.unit,
+        )
+        val textViewsSecondary = setOf(
+
             binding.batterypercent,
         )
         val textViewsDisabled = setOf(
@@ -1175,7 +1174,7 @@ class DashFragment : Fragment() {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
             textViewsPrimary.forEach { it.setTextColor(Color.BLACK) }
-            textViewsSecondary.forEach { it.setTextColor(Color.DKGRAY) }
+            textViewsSecondary.forEach { it.setTextColor(Color.parseColor("#FF888888")) }
             textViewsDisabled.forEach { it.setTextColor(Color.LTGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
