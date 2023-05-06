@@ -1135,7 +1135,6 @@ class DashFragment : Fragment() {
             binding.rearbraketemp,
             binding.rearbraketemplabel,
             binding.rearbraketempunits,
-
             binding.reartemp,
             binding.reartemplabel,
             binding.reartempunits,
@@ -1143,11 +1142,10 @@ class DashFragment : Fragment() {
             binding.coolantflowlabel,
             binding.coolantflowunits,
             binding.chargerate,
-            binding.unit,
-        )
-        val textViewsSecondary = setOf(
-
             binding.batterypercent,
+            )
+        val textViewsSecondary = setOf(
+            binding.unit
         )
         val textViewsDisabled = setOf(
             binding.odometer,
