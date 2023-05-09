@@ -1172,7 +1172,7 @@ class DashFragment : Fragment() {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
             textViewsPrimary.forEach { it.setTextColor(Color.BLACK) }
-            textViewsSecondary.forEach { it.setTextColor(Color.parseColor("#FF888888")) }
+            textViewsSecondary.forEach { it.setTextColor(Color.GRAY) }
             textViewsDisabled.forEach { it.setTextColor(Color.LTGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
