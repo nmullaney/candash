@@ -26,8 +26,8 @@
 
     <ImageView
         android:id="@+id/batt_charge"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_marginTop="16.5dp"
         android:gravity="center|center"
         android:src="@drawable/ic_batt_charging"
@@ -37,8 +37,8 @@
 
     <ImageView
         android:id="@+id/batt_heat"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_marginTop="16.5dp"
         android:gravity="center|center"
         android:src="@drawable/ic_batt_heating"
@@ -49,7 +49,7 @@
     <ImageView
         android:id="@+id/battery"
         android:layout_width="50dp"
-        android:layout_height="25dp"
+        android:layout_height="22dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="16.5dp"
         android:layout_marginEnd="20dp"
@@ -61,7 +61,7 @@
     <app.candash.cluster.BatteryGauge
         android:id="@+id/battery_overlay"
         android:layout_width="50dp"
-        android:layout_height="25dp"
+        android:layout_height="22dp"
         android:layout_marginTop="16.5dp"
         android:gravity="center|center"
         android:src="@drawable/ic_fullbattery"
@@ -70,8 +70,8 @@
 
     <ImageView
         android:id="@+id/lock_closed"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_marginTop="16.5dp"
         android:layout_marginEnd="6dp"
         android:gravity="center|center"
@@ -82,8 +82,8 @@
 
     <ImageView
         android:id="@+id/lock_open"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_marginTop="16.5dp"
         android:layout_marginEnd="6dp"
         android:gravity="center|center"
@@ -107,7 +107,7 @@
         android:id="@+id/big_soc"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:fontFamily="@font/intermedium"
+        android:fontFamily="@font/interlight"
         android:gravity="center"
         android:letterSpacing="-.07"
         android:textColor="@color/black"
@@ -304,11 +304,11 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/interlight"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/outside_temp_gauge"
         app:layout_constraintEnd_toEndOf="@id/outside_temp_label"
         app:layout_constraintStart_toStartOf="@id/outside_temp_label" />
@@ -368,11 +368,11 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/interlight"
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/inside_temp_gauge"
         app:layout_constraintEnd_toEndOf="@id/inside_temp_label"
         app:layout_constraintStart_toStartOf="@id/inside_temp_label" />
@@ -431,11 +431,11 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/interlight"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/batt_temp_gauge"
         app:layout_constraintEnd_toEndOf="@id/batt_temp_label"
         app:layout_constraintStart_toStartOf="@id/batt_temp_label" />
@@ -495,11 +495,11 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/interlight"
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="LO"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/inside_temp_req_gauge"
         app:layout_constraintEnd_toEndOf="@id/inside_temp_req_label" />
 
@@ -573,11 +573,11 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/interlight"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/dc_12v_power_gauge"
         app:layout_constraintEnd_toEndOf="@id/dc_12v_power_label"
         app:layout_constraintStart_toStartOf="@id/dc_12v_power_label" />
@@ -637,11 +637,11 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="sans-serif"
+        android:fontFamily="@font/interlight"
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/dc_power_gauge"
         app:layout_constraintEnd_toEndOf="@id/dc_power_label"
         app:layout_constraintStart_toStartOf="@id/dc_power_label" />
@@ -723,7 +723,7 @@
         android:text="Some info goes here"
         android:textAlignment="center"
         app:autoSizeMinTextSize="15dp"
-        app:autoSizeMaxTextSize="25dp"
+        app:autoSizeMaxTextSize="22dp"
         app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
         android:paddingLeft="10dp"
