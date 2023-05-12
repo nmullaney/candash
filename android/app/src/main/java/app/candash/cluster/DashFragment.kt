@@ -158,7 +158,8 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen,
-            binding.TACC
+            binding.TACC,
+            binding.efficiency
         )
 
     private fun leftSideUIViews(): Set<View> =
