@@ -158,8 +158,7 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultHard,
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen,
-            binding.TACC,
-            binding.efficiency
+            binding.TACC
         )
 
     private fun leftSideUIViews(): Set<View> =
@@ -179,7 +178,7 @@ class DashFragment : Fragment() {
             binding.rearbraketemp,
             binding.rearbraketemplabel,
             binding.rearbraketempunits,
-            binding.rearbraketempgauge,
+            binding.rearbraketempgauge
         )
 
     private fun rightSideUIViews(): Set<View> =
@@ -748,7 +747,7 @@ class DashFragment : Fragment() {
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
-            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency)) {
+            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
                 binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
