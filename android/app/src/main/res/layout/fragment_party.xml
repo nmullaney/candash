@@ -723,7 +723,7 @@
         android:text="Some info goes here"
         android:textAlignment="center"
         app:autoSizeMinTextSize="15dp"
-        app:autoSizeMaxTextSize="22dp"
+        app:autoSizeMaxTextSize="25dp"
         app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
         android:paddingLeft="10dp"
