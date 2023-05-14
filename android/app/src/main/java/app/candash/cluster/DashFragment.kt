@@ -178,7 +178,7 @@ class DashFragment : Fragment() {
             binding.rearbraketemp,
             binding.rearbraketemplabel,
             binding.rearbraketempunits,
-            binding.rearbraketempgauge,
+            binding.rearbraketempgauge
         )
 
     private fun rightSideUIViews(): Set<View> =
@@ -430,8 +430,6 @@ class DashFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && view.windowToken != null) {
                 // only needed for Android 11+
                 if (isSplit) {
-/*                    val params = binding.speed.layoutParams as ConstraintLayout.LayoutParams
-                    val savedParams = savedLayoutParams[binding.speed]*/
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
@@ -749,7 +747,7 @@ class DashFragment : Fragment() {
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
-            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency)) {
+            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
                 binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
@@ -1137,18 +1135,17 @@ class DashFragment : Fragment() {
             binding.rearbraketemp,
             binding.rearbraketemplabel,
             binding.rearbraketempunits,
-
             binding.reartemp,
             binding.reartemplabel,
             binding.reartempunits,
             binding.coolantflow,
             binding.coolantflowlabel,
             binding.coolantflowunits,
-        )
-        val textViewsSecondary = setOf(
             binding.chargerate,
-            binding.unit,
             binding.batterypercent,
+            )
+        val textViewsSecondary = setOf(
+            binding.unit
         )
         val textViewsDisabled = setOf(
             binding.odometer,
@@ -1175,7 +1172,7 @@ class DashFragment : Fragment() {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
             textViewsPrimary.forEach { it.setTextColor(Color.BLACK) }
-            textViewsSecondary.forEach { it.setTextColor(Color.DKGRAY) }
+            textViewsSecondary.forEach { it.setTextColor(Color.GRAY) }
             textViewsDisabled.forEach { it.setTextColor(Color.LTGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
