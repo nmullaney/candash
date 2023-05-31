@@ -39,6 +39,8 @@
         android:fontFamily="@font/intersemibold"
         android:gravity="center_horizontal|top"
         android:textSize="30dp"
+        android:textColor="@color/medium_gray"
+        android:paddingTop="5dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/speed"
         app:layout_constraintCircle="@id/speed"

@@ -107,7 +107,7 @@
         android:id="@+id/big_soc"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:fontFamily="@font/intermedium"
+        android:fontFamily="@font/interlight"
         android:gravity="center"
         android:letterSpacing="-.07"
         android:textColor="@color/black"
@@ -304,11 +304,15 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
+<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
+=======
+        android:fontFamily="@font/interlight"
+>>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/outside_temp_gauge"
         app:layout_constraintEnd_toEndOf="@id/outside_temp_label"
         app:layout_constraintStart_toStartOf="@id/outside_temp_label" />
@@ -368,11 +372,15 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
+<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
+=======
+        android:fontFamily="@font/interlight"
+>>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/inside_temp_gauge"
         app:layout_constraintEnd_toEndOf="@id/inside_temp_label"
         app:layout_constraintStart_toStartOf="@id/inside_temp_label" />
@@ -431,11 +439,15 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
+<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
+=======
+        android:fontFamily="@font/interlight"
+>>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/batt_temp_gauge"
         app:layout_constraintEnd_toEndOf="@id/batt_temp_label"
         app:layout_constraintStart_toStartOf="@id/batt_temp_label" />
@@ -495,11 +507,15 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
+<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
+=======
+        android:fontFamily="@font/interlight"
+>>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="LO"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/inside_temp_req_gauge"
         app:layout_constraintEnd_toEndOf="@id/inside_temp_req_label" />
 
@@ -573,11 +589,15 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
+<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
+=======
+        android:fontFamily="@font/interlight"
+>>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/dc_12v_power_gauge"
         app:layout_constraintEnd_toEndOf="@id/dc_12v_power_label"
         app:layout_constraintStart_toStartOf="@id/dc_12v_power_label" />
@@ -637,11 +657,15 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
+<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
+=======
+        android:fontFamily="@font/interlight"
+>>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
-        android:textSize="25dp"
+        android:textSize="22dp"
         app:layout_constraintBottom_toBottomOf="@id/dc_power_gauge"
         app:layout_constraintEnd_toEndOf="@id/dc_power_label"
         app:layout_constraintStart_toStartOf="@id/dc_power_label" />

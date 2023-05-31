@@ -22,6 +22,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
+import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
@@ -134,8 +135,12 @@ class DashFragment : Fragment() {
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
             binding.rightTurnSignalDark,
-            binding.autopilot
+            binding.autopilot,
+            binding.speed,
+            binding.unit
         )
+
+
 
     /**
      * These are telltales which should be hidden when in split screen
@@ -154,7 +159,6 @@ class DashFragment : Fragment() {
             binding.telltaleTPMSFaultSoft,
             binding.telltaleLimRegen,
             binding.TACC
-
         )
 
     private fun leftSideUIViews(): Set<View> =
@@ -174,7 +178,7 @@ class DashFragment : Fragment() {
             binding.rearbraketemp,
             binding.rearbraketemplabel,
             binding.rearbraketempunits,
-            binding.rearbraketempgauge,
+            binding.rearbraketempgauge
         )
 
     private fun rightSideUIViews(): Set<View> =
@@ -224,13 +228,13 @@ class DashFragment : Fragment() {
             binding.powerBar,
             binding.power,
             binding.speed,
-            binding.unit,
+            binding.unit
         )
 
     private fun centerDoorHiddenViews(): Set<View> =
         setOf(
             binding.speed,
-            binding.unit,
+            binding.unit
         ) + chargingViews()
 
     private fun doorViews(): Set<View> =
@@ -429,12 +433,25 @@ class DashFragment : Fragment() {
                     for (topUIView in topUIViews()) {
                         val params = topUIView.layoutParams as ConstraintLayout.LayoutParams
                         val savedParams = savedLayoutParams[topUIView]
-                        params.setMargins(
-                            savedParams!!.leftMargin,
-                            savedParams.topMargin - 30.px,
-                            savedParams.rightMargin,
-                            savedParams.bottomMargin
-                        )
+                        if (topUIView.equals(binding.speed)){
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 30.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin + 30.px
+                            )
+
+                        }else {
+                            params.setMargins(
+                                savedParams!!.leftMargin,
+                                savedParams.topMargin - 30.px,
+                                savedParams.rightMargin,
+                                savedParams.bottomMargin
+                            )
+                        }
+                      if (topUIView.equals(binding.unit)) {
+                            params.circleRadius = savedParams.circleRadius - 30
+                        }
                         topUIView.layoutParams = params
                     }
                 } else {
@@ -448,6 +465,7 @@ class DashFragment : Fragment() {
                             savedParams.rightMargin,
                             savedParams.bottomMargin
                         )
+                        params.circleRadius = savedParams.circleRadius
                         topUIView.layoutParams = params
                     }
                 }
@@ -513,6 +531,7 @@ class DashFragment : Fragment() {
                 prefs.setBooleanPref(Constants.uiSpeedUnitsMPH, (uiSpeedUnits == 0f))
                 if (it[SName.brakeHold] == 1f) {
                     binding.unit.text = "HOLD"
+
                 } else {
                     binding.unit.text = unitConverter.prefSpeedUnit().tag.trim().uppercase()
                 }
@@ -728,7 +747,7 @@ class DashFragment : Fragment() {
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
-            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency)) {
+            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
                 binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
@@ -1116,18 +1135,17 @@ class DashFragment : Fragment() {
             binding.rearbraketemp,
             binding.rearbraketemplabel,
             binding.rearbraketempunits,
-
             binding.reartemp,
             binding.reartemplabel,
             binding.reartempunits,
             binding.coolantflow,
             binding.coolantflowlabel,
             binding.coolantflowunits,
-        )
-        val textViewsSecondary = setOf(
             binding.chargerate,
-            binding.unit,
             binding.batterypercent,
+            )
+        val textViewsSecondary = setOf(
+            binding.unit
         )
         val textViewsDisabled = setOf(
             binding.odometer,
@@ -1154,7 +1172,7 @@ class DashFragment : Fragment() {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
             textViewsPrimary.forEach { it.setTextColor(Color.BLACK) }
-            textViewsSecondary.forEach { it.setTextColor(Color.DKGRAY) }
+            textViewsSecondary.forEach { it.setTextColor(Color.GRAY) }
             textViewsDisabled.forEach { it.setTextColor(Color.LTGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
