@@ -304,11 +304,7 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
-=======
-        android:fontFamily="@font/interlight"
->>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
@@ -336,7 +332,6 @@
 
     <TextView
         android:id="@+id/inside_temp_unit"
-
         android:layout_width="50dp"
         android:layout_height="50dp"
 
@@ -435,11 +430,7 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
-=======
-        android:fontFamily="@font/interlight"
->>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
@@ -503,11 +494,8 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
-=======
-        android:fontFamily="@font/interlight"
->>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
+
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="LO"
@@ -585,11 +573,7 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
-=======
-        android:fontFamily="@font/interlight"
->>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
@@ -653,11 +637,7 @@
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-<<<<<<< HEAD
         android:fontFamily="@font/intermedium"
-=======
-        android:fontFamily="@font/interlight"
->>>>>>> d30331b64f1a31aa8467ba7553b47a7c44423bae
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
