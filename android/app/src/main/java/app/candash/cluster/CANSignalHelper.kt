@@ -129,8 +129,8 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertCANSignal(SName.battVolts, Constants.vehicleBus, Hex(0x132), 0, 16, 0.01f, 0f)
         insertCANSignal(SName.battAmps, Constants.vehicleBus, Hex(0x132), 16, 16, -.1f, 0f, signed=true, sna=3276.7f)
 
-        insertCANSignal(SName.dc12vVolts, Constants.vehicleBus, Hex(0x2B4), 0, 10, 0.0390625f, 0f)
-        insertCANSignal(SName.dc12vAmps, Constants.vehicleBus, Hex(0x2B4), 24, 12, 0.1f, 0f)
+        insertCANSignal(SName.dc12vVolts, Constants.vehicleBus, Hex(0x2B4), 0, 13, 0.01f, 0f)
+        insertCANSignal(SName.dc12vAmps, Constants.vehicleBus, Hex(0x2B4), 32, 13, 0.1f, 0f)
 
         insertCANSignal(SName.uiSpeed, Constants.vehicleBus, Hex(0x257), 24, 9, 1f, 0f, sna=511f)
         //insertCANSignal(SName.uiSpeedHighSpeed, Constants.vehicleBus, Hex(0x257), 34, 9, 1f, 0f)
