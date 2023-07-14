@@ -31,7 +31,6 @@ class FullscreenActivity : AppCompatActivity() {
     private var runnable: Runnable? = null
     private var delay = 1000
 
-
     private lateinit var viewModel: DashViewModel
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -59,22 +58,6 @@ class FullscreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
-        val hotSpotReceiver = object : BroadcastReceiver() {
-            override fun onReceive(contxt: Context, intent: Intent) {
-                val action = intent.action
-                if ("android.net.wifi.WIFI_AP_STATE_CHANGED" == action) {
-                    val state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0)
-                    val prevState = intent.getIntExtra(WifiManager.EXTRA_PREVIOUS_WIFI_STATE, 0)
-                    if ((WifiManager.WIFI_STATE_ENABLED == state % 10) && (WifiManager.WIFI_STATE_ENABLED != prevState % 10)) {
-                        viewModel.restart()
-                    }
-                }
-            }
-        }
-        this.registerReceiver(
-            hotSpotReceiver,
-            IntentFilter("android.net.wifi.WIFI_AP_STATE_CHANGED")
-        )
         // check every second if battery is connected
         val context = applicationContext
 
