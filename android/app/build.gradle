@@ -15,14 +15,14 @@ android {
 
 
     }
-    compileSdk 31
+    compileSdk 33
 
 
     defaultConfig {
         applicationId "app.candash.cluster"
         minSdkVersion 24
-        targetSdkVersion 31
-        versionCode 55
+        targetSdkVersion 33
+        versionCode 56
         versionName "1.1.0git c"
 
 
