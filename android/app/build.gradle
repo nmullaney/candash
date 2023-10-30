@@ -20,10 +20,10 @@ android {
 
     defaultConfig {
         applicationId "app.candash.cluster"
-        minSdkVersion 33
+        minSdkVersion 24
         targetSdkVersion 33
-        versionCode 57
-        versionName "1.1.1"
+        versionCode 59
+        versionName "1.1.2"
 
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

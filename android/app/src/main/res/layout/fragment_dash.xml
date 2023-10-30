@@ -936,7 +936,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|left"
         android:paddingRight="0dp"
-
+        android:textSize="14dp"
         android:text="F OIL"
         app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="@id/fronttempgauge" />
@@ -1007,7 +1007,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="right|bottom"
         android:paddingRight="0dp"
-
+        android:textSize="14dp"
         android:text="F MOT"
         app:layout_constraintEnd_toStartOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="@id/fronttorquegauge" />
@@ -1041,7 +1041,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="left|bottom"
         android:paddingRight="0dp"
-
+        android:textSize="14dp"
         android:text="R OIL"
         app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/reartempunits" />
@@ -1111,6 +1111,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="left|bottom"
         android:paddingRight="0dp"
+        android:textSize="14dp"
         android:text="F BRK"
         app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toBottomOf="@id/guideline1"
@@ -1181,7 +1182,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|left"
         android:paddingRight="0dp"
-
+        android:textSize="14dp"
         android:text="R BRK"
         app:layout_constraintStart_toEndOf="@id/guideline3"
         app:layout_constraintTop_toTopOf="@id/rearbraketempgauge" />
@@ -1250,7 +1251,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="right|bottom"
         android:paddingRight="0dp"
-
+        android:textSize="14dp"
         android:text="R MOT"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/reartorqueunits" />
@@ -1321,6 +1322,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="right|bottom"
         android:paddingRight="0dp"
+        android:textSize="14dp"
         android:text="COOL"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintHeight_percent=".5"
@@ -1397,6 +1399,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="right|bottom"
         android:paddingRight="0dp"
+        android:textSize="14dp"
         android:text="BATT"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintHeight_percent=".5"
@@ -1509,8 +1512,8 @@
 
 
         app:autoSizeMaxTextSize="15dp"
-        app:autoSizeMinTextSize="10dp"
-        app:autoSizeStepGranularity="5dp"
+        app:autoSizeMinTextSize="4dp"
+        app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="@id/power"
         app:layout_constraintBottom_toTopOf="@id/power"
@@ -1527,8 +1530,8 @@
 
 
         app:autoSizeMaxTextSize="15dp"
-        app:autoSizeMinTextSize="10dp"
-        app:autoSizeStepGranularity="5dp"
+        app:autoSizeMinTextSize="4dp"
+        app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -1549,8 +1552,8 @@
 
 
         app:autoSizeMaxTextSize="15dp"
-        app:autoSizeMinTextSize="10dp"
-        app:autoSizeStepGranularity="5dp"
+        app:autoSizeMinTextSize="4dp"
+        app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -1568,8 +1571,8 @@
 
         android:gravity="right|center_vertical"
         app:autoSizeMaxTextSize="15dp"
-        app:autoSizeMinTextSize="10dp"
-        app:autoSizeStepGranularity="5dp"
+        app:autoSizeMinTextSize="4dp"
+        app:autoSizeStepGranularity="1dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

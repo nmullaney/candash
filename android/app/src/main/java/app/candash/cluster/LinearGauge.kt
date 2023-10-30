@@ -40,7 +40,10 @@ class LinearGauge @JvmOverloads constructor(
         return getRealScreenWidth() > getScreenWidth() * 2
     }
 
-
+    // converts dp to px
+    private fun Float.toPx(): Float {
+        return this * resources.displayMetrics.density
+    }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -52,11 +55,12 @@ class LinearGauge @JvmOverloads constructor(
         val paint = Paint()
         var startX : Float = 0f
         var stopX: Float = 0f
-        paint.strokeWidth = 20f
+
+        paint.strokeWidth = 6f.toPx()
         paint.strokeCap = Paint.Cap.ROUND
 
         paint.setColorFilter(backgroundLineColor)
-        canvas?.drawLine(50f, 10f, screenWidth.toFloat() - 50f, 10f, paint)
+        canvas?.drawLine(20f.toPx(), 3f.toPx(), screenWidth.toFloat() - 20f.toPx(), 3f.toPx(), paint)
 
         if (percentWidth < 0f){
             paint.setColorFilter(PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP))
@@ -68,7 +72,7 @@ class LinearGauge @JvmOverloads constructor(
             paint.setColorFilter(lineColor)
         }
         Log.d(TAG, "ScreenWidth $screenWidth RenderWidth $renderWidth")
-        canvas?.drawLine(startX, 10f, stopX, 10f, paint)
+        canvas?.drawLine(startX, 3f.toPx(), stopX, 3f.toPx(), paint)
         paint.setColorFilter(PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP))
 
 
@@ -76,7 +80,7 @@ class LinearGauge @JvmOverloads constructor(
     fun setGauge(percent:Float){
         percentWidth = percent
 
-        renderWidth = (screenWidth - 100f)/2f * (percent.absoluteValue)
+        renderWidth = (screenWidth - 100f.toPx())/2f * (percent.absoluteValue)
         Log.d(TAG, "percentWidth $screenWidth RenderWidth $renderWidth")
 
         this.invalidate()
