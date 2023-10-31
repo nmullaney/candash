@@ -41,7 +41,7 @@ class LinearGauge @JvmOverloads constructor(
     }
 
     // converts dp to px
-    private fun Float.toPx(): Float {
+    private fun Float.dpToPx(): Float {
         return this * resources.displayMetrics.density
     }
 
@@ -56,11 +56,11 @@ class LinearGauge @JvmOverloads constructor(
         var startX : Float = 0f
         var stopX: Float = 0f
 
-        paint.strokeWidth = 6f.toPx()
+        paint.strokeWidth = 6f.dpToPx()
         paint.strokeCap = Paint.Cap.ROUND
 
         paint.setColorFilter(backgroundLineColor)
-        canvas?.drawLine(20f.toPx(), 3f.toPx(), screenWidth.toFloat() - 20f.toPx(), 3f.toPx(), paint)
+        canvas?.drawLine(20f.dpToPx(), 3f.dpToPx(), screenWidth.toFloat() - 20f.dpToPx(), 3f.dpToPx(), paint)
 
         if (percentWidth < 0f){
             paint.setColorFilter(PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP))
@@ -73,7 +73,7 @@ class LinearGauge @JvmOverloads constructor(
         }
         Log.d(TAG, "ScreenWidth $screenWidth RenderWidth $renderWidth")
         // Y needs to be strokeWidth/2 so the line doesn't get cut off.
-        canvas?.drawLine(startX, 3f.toPx(), stopX, 3f.toPx(), paint)
+        canvas?.drawLine(startX, 3f.dpToPx(), stopX, 3f.dpToPx(), paint)
         paint.setColorFilter(PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP))
 
 
@@ -81,7 +81,7 @@ class LinearGauge @JvmOverloads constructor(
     fun setGauge(percent:Float){
         percentWidth = percent
 
-        renderWidth = (screenWidth - 100f.toPx())/2f * (percent.absoluteValue)
+        renderWidth = (screenWidth - 100f.dpToPx())/2f * (percent.absoluteValue)
         Log.d(TAG, "percentWidth $screenWidth RenderWidth $renderWidth")
 
         this.invalidate()
