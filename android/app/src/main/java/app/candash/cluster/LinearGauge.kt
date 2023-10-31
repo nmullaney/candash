@@ -72,6 +72,7 @@ class LinearGauge @JvmOverloads constructor(
             paint.setColorFilter(lineColor)
         }
         Log.d(TAG, "ScreenWidth $screenWidth RenderWidth $renderWidth")
+        // Y needs to be strokeWidth/2 so the line doesn't get cut off.
         canvas?.drawLine(startX, 3f.toPx(), stopX, 3f.toPx(), paint)
         paint.setColorFilter(PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP))
 
