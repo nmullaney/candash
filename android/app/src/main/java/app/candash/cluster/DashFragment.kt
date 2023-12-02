@@ -25,13 +25,17 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import app.candash.cluster.databinding.FragmentDashBinding
+import app.candash.cluster.databinding.FragmentDashCtBinding
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 
 class DashFragment : Fragment() {
+    private lateinit var bindingCt: FragmentDashCtBinding
     private lateinit var binding: FragmentDashBinding
+
     private lateinit var viewModel: DashViewModel
     private lateinit var unitConverter: UnitConverter
     private lateinit var prefs: SharedPreferences
@@ -89,7 +93,7 @@ class DashFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDashBinding.inflate(inflater, container, false)
+        bindingCt = FragmentDashCtBinding.inflate(inflater, container, false)
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         return binding.root
     }
