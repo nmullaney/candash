@@ -70,8 +70,8 @@ class MockCANService : CANService {
         listOf(
             createCarState(mutableMapOf(
                 SName.autopilotState to 2f,
+                SName.accSpeedLimit to 50f,
                 SName.accState to 4f,
-                SName.accActive to 0f,
                 SName.isSunUp to 1f,
                 SName.autopilotHands to 1f,
                 SName.gearSelected to SVal.gearDrive,
@@ -95,8 +95,8 @@ class MockCANService : CANService {
                 )),
             createCarState(mutableMapOf(
                 SName.autopilotState to 3f,
+                SName.accSpeedLimit to 204.6f,
                 SName.accState to 4f,
-                SName.accActive to 1f,
                 SName.turnSignalLeft to 1.0f,
                 SName.isSunUp to 1f,
                 SName.autopilotHands to 1f,
@@ -122,6 +122,7 @@ class MockCANService : CANService {
             )),
             createCarState(mutableMapOf(
                 SName.autopilotState to 1f,
+                SName.accSpeedLimit to 0f,
                 SName.accState to 2f,
                 SName.isSunUp to 1f,
                 SName.driveConfig to 1f,

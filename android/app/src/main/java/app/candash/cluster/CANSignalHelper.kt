@@ -19,9 +19,12 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
     private val augSigDepToName: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
     private val battAmpsHistory = mutableListOf<Float>()
+<<<<<<< HEAD
     private val slowPowerHistory = mutableListOf<Float>()
     private var accActive = 0f
     private var lastPartyHours = 0f
+=======
+>>>>>>> parent of 012172a (Add TACC icon, fix augment signal calculation)
 
     fun clearFiltersPacket(): ByteArray {
         return byteArrayOf(CLEAR_FILTERS_BYTE)
@@ -276,6 +279,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
                 return@insertAugmentedCANSignal Constants.l2DistanceLowSpeed
             }
         }
+<<<<<<< HEAD
         insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit)) {
             // accSpeedLimit is 204.6f (SNA) while TACC is active
             if (it[SName.accState] == 4f && it[SName.accSpeedLimit] == 204.6f) {
@@ -314,6 +318,8 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
             }
             return@insertAugmentedCANSignal volts * amps
         }
+=======
+>>>>>>> parent of 012172a (Add TACC icon, fix augment signal calculation)
     }
 
     private fun addToMapList(bus: Int, frameId: Hex, value: CANSignal) {

@@ -691,9 +691,10 @@ class DashFragment : Fragment() {
             updateAutopilotRotation()
         }
 
-        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.accState, SName.accActive, SName.gearSelected, SName.brakeApplied)) {
+        // Disabled until we replace the letters with an icon
+        /*viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.accState, SName.accSpeedLimit, SName.gearSelected, SName.brakeApplied)) {
             updateTaccUI()
-        }
+        }*/
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.gearSelected, SName.fusedSpeedLimit, SName.mapRegion)) {
             updateSpeedLimitSign()
@@ -1265,10 +1266,14 @@ class DashFragment : Fragment() {
     }
 
     private fun updateTaccUI(){
-        if (viewModel.carState[SName.accActive] == 1f) {
-            binding.TACC.setImageResource(R.drawable.ic_tacc)
+        // accSpeedLimit is 204.6f (SNA) while TACC is active
+        val taccActive = (viewModel.carState[SName.accSpeedLimit] == 204.6f)
+        if (taccActive) {
+            binding.TACC.setTextColor(requireContext().getColor(R.color.white))
+            binding.TACC.setBackgroundResource(R.drawable.rounded_corner)
         } else {
-            binding.TACC.setImageResource(R.drawable.ic_tacc_inactive)
+            binding.TACC.setTextColor(requireContext().getColor(R.color.autopilot_inactive))
+            binding.TACC.setBackgroundResource(0)
         }
 
         val brakeApplied = (viewModel.carState[SName.brakeApplied] == 2f)
