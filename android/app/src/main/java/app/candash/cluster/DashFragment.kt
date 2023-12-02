@@ -33,8 +33,7 @@ import kotlin.math.max
 import kotlin.math.pow
 
 class DashFragment : Fragment() {
-    private lateinit var bindingCt: FragmentDashCtBinding
-    private lateinit var binding: FragmentDashBinding
+    private lateinit var binding: FragmentDashCtBinding
 
     private lateinit var viewModel: DashViewModel
     private lateinit var unitConverter: UnitConverter
@@ -93,7 +92,7 @@ class DashFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        bindingCt = FragmentDashCtBinding.inflate(inflater, container, false)
+        binding = FragmentDashCtBinding.inflate(inflater, container, false)
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         return binding.root
     }
