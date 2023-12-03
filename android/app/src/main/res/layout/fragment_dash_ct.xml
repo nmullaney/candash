@@ -573,7 +573,7 @@
         android:text="377 km"
 
 
-        android:textSize="25dp"
+        android:textSize="20dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/battery"
         app:layout_constraintEnd_toStartOf="@id/battery" />
