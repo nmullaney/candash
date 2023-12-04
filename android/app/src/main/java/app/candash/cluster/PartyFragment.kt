@@ -421,9 +421,9 @@ class PartyFragment : Fragment() {
         // Save/use the last known value to prevent a light/dark flash upon launching
         val sunUp = viewModel.carState[SName.isSunUp]
         if (sunUp != null) {
-            prefs.setPref(Constants.lastSunUp, sunUp)
+            prefs.setPref(Constants.lastDarkMode, sunUp)
         }
-        return (prefs.getPref(Constants.lastSunUp) == 0f || prefs.getBooleanPref(Constants.forceNightMode))
+        return (prefs.getPref(Constants.lastDarkMode) == 0f || prefs.getBooleanPref(Constants.forceNightMode))
     }
 
     private fun setColors() {
