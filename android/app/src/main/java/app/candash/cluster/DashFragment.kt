@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.Orientation
@@ -22,7 +21,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
-import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import app.candash.cluster.databinding.FragmentDashBinding
@@ -508,6 +506,9 @@ class DashFragment : Fragment() {
             setColors()
         }
 
+        viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
+            setColors()
+        }
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.displayOn, SName.gearSelected)) {
             updateBlackout()
         }
@@ -1088,11 +1089,17 @@ class DashFragment : Fragment() {
     
     private fun shouldUseDarkMode(): Boolean {
         // Save/use the last known value to prevent a light/dark flash upon launching
-        val sunUp = viewModel.carState[SName.isSunUp]
-        if (sunUp != null) {
-            prefs.setPref(Constants.lastSunUp, sunUp)
+        var sunUp = viewModel.carState[SName.isSunUp]
+        val darkMode = viewModel.carState[SName.isDarkMode]
+        // check to see if darkMode exists (requires Chassis Bus) and if so it supersedes the sunUp value which works on single bus devices
+        if (darkMode != null) {
+            prefs.setPref(Constants.lastDarkMode, darkMode)
+        } else if (sunUp != null){
+            // darkMode is = 1 if dark mode, invert the sunUp value so that it is 1f when the screen should be dark
+            sunUp = if (sunUp == 0f) 1f else 0f
+            prefs.setPref(Constants.lastDarkMode, sunUp)
         }
-        return (prefs.getPref(Constants.lastSunUp) == 0f || prefs.getBooleanPref(Constants.forceNightMode))
+        return (prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode))
     }
 
     private fun setColors() {

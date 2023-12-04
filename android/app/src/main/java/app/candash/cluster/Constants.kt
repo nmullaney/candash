@@ -34,7 +34,7 @@ object Constants {
     const val efficiencyLookBack = "efficiencyLookBack"
     const val detectedRHD = "detectedRHD"
     const val forceRHD = "forceRHD"
-    const val lastSunUp = "lastSunUp"
+    const val lastDarkMode = "lastDarkMode"
     const val partyTimeTarget = "partyTimeTarget"
 
     // For efficiency history in prefs
