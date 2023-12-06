@@ -1069,8 +1069,7 @@ class DashFragment : Fragment() {
             // Don't change the visibility if we lost the signal, maintain the last state
             return
         }
-        // because all booleanprefs default to false, we invert the pref and setting. blankDisplaySync == false is enabled
-        if (!prefs.getBooleanPref(Constants.blankDisplaySync)
+        if (!prefs.getBooleanPref(Constants.disableDisplaySync)
             && gearState() in setOf(SVal.gearPark, SVal.gearInvalid)
             && viewModel.carState[SName.displayOn] == 0f
         ) {

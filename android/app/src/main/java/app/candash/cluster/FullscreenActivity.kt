@@ -82,7 +82,7 @@ class FullscreenActivity : AppCompatActivity() {
             }
             val lowBattery: Boolean = batteryPct == null || batteryPct <= 20f
 
-            if (isPlugged || (!lowBattery && prefs.getBooleanPref(Constants.blankDisplaySync))) {
+            if (isPlugged || (!lowBattery && !prefs.getBooleanPref(Constants.disableDisplaySync))) {
                 this@FullscreenActivity.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 //Log.d(TAG, "keep_screen_on")
             } else {
