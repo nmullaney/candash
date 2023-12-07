@@ -197,7 +197,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertCANSignal(SName.displayOn, Constants.vehicleBus, Hex(0x353), 5, 1, 1f, 0f)
         insertCANSignal(SName.keepClimateReq, Constants.vehicleBus, Hex(0x2F3), 33, 2, 1f, 0f)
         insertCANSignal(SName.outsideTemp, Constants.vehicleBus, Hex(0x321), 40, 8, 0.5f, -40f)
-        insertCANSignal(SName.insideTemp, Constants.vehicleBus, Hex(0x243), 30, 11, 0.1f, -40f, 2, 0)
+        insertCANSignal(SName.insideTemp, Constants.vehicleBus, Hex(0x243), 30, 11, 0.1f, -40f, 3, 0)
         insertCANSignal(SName.insideTempReq, Constants.vehicleBus, Hex(0x2F3), 0, 5, 0.5f, 15f)
         insertCANSignal(SName.hvacAirDistribution, Constants.vehicleBus, Hex(0x2F3), 13, 3, 1f, 0f)
         insertCANSignal(SName.lockStatus, Constants.vehicleBus, Hex(0x339), 54, 2, 1f, 0f, sna = 0f)
