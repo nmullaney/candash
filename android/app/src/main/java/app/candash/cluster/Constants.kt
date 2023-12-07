@@ -22,7 +22,7 @@ object Constants {
     const val hideOdometer = "hideOdometer"
     const val hideBs = "hideBs"
     const val hideSpeedLimit = "hideSpeedLimit"
-    const val blankDisplaySync = "blankDisplaySync"
+    const val disableDisplaySync = "disableDisplaySync"
     const val tempInF = "tempInF"
     const val partyTempInF = "partyTempInF"
     const val powerUnits = "powerUnits"

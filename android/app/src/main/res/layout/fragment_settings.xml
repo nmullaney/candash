@@ -132,7 +132,7 @@
         app:layout_constraintTop_toBottomOf="@id/showSpeedLimit" />
 
     <CheckBox
-        android:id="@+id/blankDisplaySync"
+        android:id="@+id/displaySync"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -148,7 +148,7 @@
         android:text="Long-press left side of screen to return\nto settings while display is off.\nRecommended only with OLED screens."
         android:textSize="12dp"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
-        app:layout_constraintTop_toBottomOf="@id/blankDisplaySync" />
+        app:layout_constraintTop_toBottomOf="@id/displaySync" />
 
 
     <androidx.constraintlayout.widget.Guideline
