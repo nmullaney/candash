@@ -21,10 +21,6 @@
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 
-    <style name="Theme.TeslaDashboard.Fullscreen" parent="Theme.TeslaDashboard">
-
-    </style>
-
     <style name="Theme.TeslaDashboard.Regular" parent="Theme.TeslaDashboard">
         <item name="fontHugeNum">@font/interextralight</item>
         <item name="fontLargeNum">@font/intermedium</item>
@@ -53,5 +49,9 @@
         <item name="maxSizeLargeNum">120dp</item>
 
         <item name="letterSpacing">0.0</item>
+    </style>
+
+    <style name="Theme.TeslaDashboard.Fullscreen" parent="Theme.TeslaDashboard.Regular">
+
     </style>
 </resources>
