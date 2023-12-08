@@ -187,7 +187,7 @@ class PartyFragment : Fragment() {
             }
         }
 
-        viewModel.onSignal(viewLifecycleOwner, SName.isSunUp) {
+        viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
             setColors()
         }
 
@@ -419,11 +419,11 @@ class PartyFragment : Fragment() {
 
     private fun shouldUseDarkMode(): Boolean {
         // Save/use the last known value to prevent a light/dark flash upon launching
-        val sunUp = viewModel.carState[SName.isSunUp]
-        if (sunUp != null) {
-            prefs.setPref(Constants.lastDarkMode, sunUp)
+        val darkMode = viewModel.carState[SName.isDarkMode]
+        if (darkMode != null) {
+            prefs.setPref(Constants.lastDarkMode, darkMode)
         }
-        return (prefs.getPref(Constants.lastDarkMode) == 0f || prefs.getBooleanPref(Constants.forceNightMode))
+        return (prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode))
     }
 
     private fun setColors() {
