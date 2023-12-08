@@ -48,7 +48,6 @@ object SName {
     const val hvacAirDistribution = "hvacAirDistribution"
     const val insideTemp = "insideTemp"
     const val insideTempReq = "insideTempReq"
-    const val isSunUp = "isSunUp"
     const val isDarkMode = "isDarkMode"
     const val keepClimateReq = "keepClimateReq"
     const val kwhChargeTotal = "kwhChargeTotal"

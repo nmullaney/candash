@@ -502,13 +502,10 @@ class DashFragment : Fragment() {
         }
 
         // set display night/day mode based on reported car status
-        viewModel.onSignal(viewLifecycleOwner, SName.isSunUp) {
-            setColors()
-        }
-
         viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
             setColors()
         }
+
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.displayOn, SName.gearSelected)) {
             updateBlackout()
         }
@@ -1088,15 +1085,9 @@ class DashFragment : Fragment() {
     
     private fun shouldUseDarkMode(): Boolean {
         // Save/use the last known value to prevent a light/dark flash upon launching
-        var sunUp = viewModel.carState[SName.isSunUp]
         val darkMode = viewModel.carState[SName.isDarkMode]
-        // check to see if darkMode exists (requires Chassis Bus) and if so it supersedes the sunUp value which works on single bus devices
         if (darkMode != null) {
             prefs.setPref(Constants.lastDarkMode, darkMode)
-        } else if (sunUp != null){
-            // darkMode is = 1 if dark mode, invert the sunUp value so that it is 1f when the screen should be dark
-            sunUp = if (sunUp == 0f) 1f else 0f
-            prefs.setPref(Constants.lastDarkMode, sunUp)
         }
         return (prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode))
     }
