@@ -91,6 +91,8 @@ class FullscreenActivity : AppCompatActivity() {
             }
         }.also { runnable = it }, delay.toLong())
 
+        setTheme()
+
         setContentView(R.layout.activity_fullscreen)
         // This is a known unsafe cast, but is safe in the only correct use case:
         // TeslaDashboardApplication extends Hilt_TeslaDashboardApplication
@@ -127,7 +129,17 @@ class FullscreenActivity : AppCompatActivity() {
         }
     }
 
+    private fun setTheme() {
+        val prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
+        if (prefs.getBooleanPref(Constants.cyberMode)) {
+            setTheme(R.style.Theme_TeslaDashboard_Cyber)
+        } else {
+            setTheme(R.style.Theme_TeslaDashboard_Regular)
+        }
+    }
+
     private fun switchToFragment(fragment: Fragment) {
+        setTheme()
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, fragment)

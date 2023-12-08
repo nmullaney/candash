@@ -8,4 +8,39 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
+
+    <style name="textHugeNum">
+        <item name="android:fontFamily">?attr/fontHugeNum</item>
+        <item name="autoSizeMaxTextSize">?attr/maxSizeHugeNum</item>
+        <item name="android:scaleY">?attr/scaleTextY</item>
+        <item name="android:letterSpacing">?attr/letterSpacing</item>
+    </style>
+
+    <style name="textLargeNum">
+        <item name="android:fontFamily">?attr/fontLargeNum</item>
+        <item name="autoSizeMaxTextSize">?attr/maxSizeLargeNum</item>
+        <item name="android:scaleY">?attr/scaleTextY</item>
+        <item name="android:letterSpacing">?attr/letterSpacing</item>
+    </style>
+
+    <style name="textUnitLabel">
+        <item name="fontFamily">?attr/fontSemiBold</item>
+        <item name="android:scaleY">?attr/scaleTextY</item>
+    </style>
+
+    <style name="textLabelBold">
+        <item name="fontFamily">?attr/fontBold</item>
+    </style>
+
+    <style name="textLabelMedium">
+        <item name="fontFamily">?attr/fontMedium</item>
+        <item name="android:scaleY">?attr/scaleTextY</item>
+        <item name="android:letterSpacing">?attr/letterSpacing</item>
+    </style>
+
+    <style name="textLabelRegular">
+        <item name="fontFamily">?attr/fontRegular</item>
+        <item name="android:scaleY">?attr/scaleTextY</item>
+    </style>
+
 </resources>

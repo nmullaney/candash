@@ -49,6 +49,7 @@ class SettingsFragment() : Fragment() {
             Constants.showRegularGauges -> binding.gaugemoderegular.isChecked = true
             Constants.showSimpleGauges -> binding.gaugemodesimple.isChecked = true
         }
+        binding.cyberMode.isChecked = prefs.getBooleanPref(Constants.cyberMode)
         // These are inverted so that the default value (false) shows the object (show = !hide)
         binding.showodo.isChecked = !prefs.getBooleanPref(Constants.hideOdometer)
         binding.showBs.isChecked = !prefs.getBooleanPref(Constants.hideBs)
@@ -83,6 +84,11 @@ class SettingsFragment() : Fragment() {
             R.id.gaugemodefull -> prefs.setPref(Constants.gaugeMode, Constants.showFullGauges)
             R.id.gaugemoderegular -> prefs.setPref(Constants.gaugeMode, Constants.showRegularGauges)
             R.id.gaugemodesimple -> prefs.setPref(Constants.gaugeMode, Constants.showSimpleGauges)
+        }
+        if (binding.cyberMode.isChecked) {
+            prefs.setBooleanPref(Constants.cyberMode, true)
+        } else {
+            prefs.setBooleanPref(Constants.cyberMode, false)
         }
         // These are inverted so that the default value (false) shows the object (show = !hide)
         if (binding.showodo.isChecked) {
