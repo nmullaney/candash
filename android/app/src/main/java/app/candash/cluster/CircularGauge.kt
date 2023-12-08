@@ -24,6 +24,8 @@ class CircularGauge @JvmOverloads constructor(
     private var strokeWidthPct : Float = 12f
     private var charging : Boolean = false
 
+    private var cyber : Boolean = false
+
 
     fun getScreenWidth(): Int {
         var displayMetrics = DisplayMetrics()
@@ -81,6 +83,10 @@ class CircularGauge @JvmOverloads constructor(
         }
         if (charging){
             paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+        }
+        if (cyber) {
+            paint.strokeCap = Paint.Cap.SQUARE
+        } else {
             paint.strokeCap = Paint.Cap.ROUND
         }
         if (powerWidth != 0f) {
@@ -117,6 +123,11 @@ class CircularGauge @JvmOverloads constructor(
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
         }
+        this.invalidate()
+    }
+
+    fun setCyberMode(cyberMode: Boolean = false){
+        cyber = cyberMode
         this.invalidate()
     }
 }

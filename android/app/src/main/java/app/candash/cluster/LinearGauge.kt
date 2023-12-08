@@ -1,5 +1,6 @@
 package app.candash.cluster
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -23,6 +24,11 @@ class LinearGauge @JvmOverloads constructor(
     private var isSplitScreen = MutableLiveData<Boolean>()
 
     private var renderWidth : Float = 100f
+
+    private var cyber : Boolean = false
+    private var animationPosition : Float = 3f
+
+    private var startupAnimator: ValueAnimator? = null
 
     fun getScreenWidth(): Int {
         var displayMetrics = DisplayMetrics()
@@ -57,11 +63,42 @@ class LinearGauge @JvmOverloads constructor(
         var stopX: Float = 0f
 
         paint.strokeWidth = 6f.dpToPx()
-        paint.strokeCap = Paint.Cap.ROUND
+        if (cyber) {
+            paint.strokeCap = Paint.Cap.SQUARE
+        } else {
+            paint.strokeCap = Paint.Cap.ROUND
+        }
 
+        // Startup Animation Drawing:
+        val bgAnimationPosition = if (animationPosition > 1f) 1f else animationPosition
         paint.setColorFilter(backgroundLineColor)
-        canvas?.drawLine(20f.dpToPx(), 3f.dpToPx(), screenWidth.toFloat() - 20f.dpToPx(), 3f.dpToPx(), paint)
+        val screenXCenter = screenWidth / 2f
+        startX = screenXCenter - (screenXCenter - 20f.dpToPx()) * bgAnimationPosition
+        stopX = screenXCenter + (screenXCenter - 20f.dpToPx()) * bgAnimationPosition
+        canvas?.drawLine(startX, 3f.dpToPx(), stopX, 3f.dpToPx(), paint)
 
+        if (animationPosition < 1f) {
+            return
+        } else if (animationPosition < 2f) {
+            paint.setColorFilter(lineColor)
+            // start at both ends and move to center (2 separate lines)
+            val startXLeft = 20f.dpToPx()
+            val stopXLeft = 20f.dpToPx() + (screenXCenter - 20f.dpToPx()) * (animationPosition - 1f)
+            val startXRight = screenWidth - 20f.dpToPx()
+            val stopXRight = screenWidth - 20f.dpToPx() - (screenXCenter - 20f.dpToPx()) * (animationPosition - 1f)
+            canvas?.drawLine(startXLeft, 3f.dpToPx(), stopXLeft, 3f.dpToPx(), paint)
+            canvas?.drawLine(startXRight, 3f.dpToPx(), stopXRight, 3f.dpToPx(), paint)
+            return
+        } else if (animationPosition < 3f) {
+            paint.setColorFilter(lineColor)
+            val invertedAnimationPosition = 3f - animationPosition
+            // start at full line and shrink to center
+            startX = screenXCenter - (screenXCenter - 20f.dpToPx()) * (invertedAnimationPosition)
+            stopX = screenXCenter + (screenXCenter - 20f.dpToPx()) * (invertedAnimationPosition)
+            canvas?.drawLine(startX, 3f.dpToPx(), stopX, 3f.dpToPx(), paint)
+        }
+
+        // Actual Gauge Drawing:
         if (percentWidth < 0f){
             paint.setColorFilter(PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP))
             startX = (screenWidth / 2f) - renderWidth
@@ -95,6 +132,22 @@ class LinearGauge @JvmOverloads constructor(
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
         }
+        this.invalidate()
+    }
+
+    fun setCyberMode(cyberMode:Boolean){
+        if (!cyber && cyberMode) {
+            startupAnimator = ValueAnimator.ofFloat(0f, 3f).apply {
+                duration = 2000L
+                addUpdateListener { animator ->
+                    val fraction = animator.animatedValue as Float
+                    animationPosition = fraction
+                    invalidate()
+                }
+                start()
+            }
+        }
+        cyber = cyberMode
         this.invalidate()
     }
 }
