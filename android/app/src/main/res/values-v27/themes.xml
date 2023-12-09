@@ -45,8 +45,8 @@
         <item name="fontBold">@font/blenderprobold</item>
 
         <item name="scaleTextY">1.0</item>
-        <item name="maxSizeHugeNum">200dp</item>
-        <item name="maxSizeLargeNum">120dp</item>
+        <item name="maxSizeHugeNum">175dp</item>
+        <item name="maxSizeLargeNum">110dp</item>
 
         <item name="letterSpacing">0.0</item>
     </style>
