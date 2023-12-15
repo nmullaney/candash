@@ -15,7 +15,7 @@ class BatteryGauge @JvmOverloads constructor(
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var screenWidth : Int = 100
     private var percentWidth : Float = 0f
-    private var isSunUp : Int = 0
+    private var lightMode : Int = 0
     private var isChargeMode : Boolean = false
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
@@ -66,7 +66,7 @@ class BatteryGauge @JvmOverloads constructor(
         lineColor = if (isChargeMode) {
             PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
         } else {
-            if (isSunUp == 1){
+            if (lightMode == 1){
                 PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
             } else {
                 PorterDuffColorFilter(resources.getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
@@ -75,8 +75,8 @@ class BatteryGauge @JvmOverloads constructor(
         this.invalidate()
     }
 
-    fun setDayValue(isSunUpVal: Int = 1){
-        isSunUp = isSunUpVal
+    fun setDayValue(lightModeVal: Int = 1){
+        lightMode = lightModeVal
         setColor()
     }
 
