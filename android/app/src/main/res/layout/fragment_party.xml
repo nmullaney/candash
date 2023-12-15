@@ -21,6 +21,7 @@
 
         android:textSize="20dp"
         app:autoSizeTextType="uniform"
+        app:layout_constraintTop_toTopOf="@+id/battery"
         app:layout_constraintBottom_toBottomOf="@id/battery"
         app:layout_constraintEnd_toStartOf="@id/battery" />
 
@@ -46,26 +47,17 @@
         app:layout_constraintEnd_toStartOf="@+id/batt_charge"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/battery"
-        android:layout_width="50dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="16.5dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center|center"
-        android:src="@drawable/ic_deadbattery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <app.candash.cluster.BatteryGauge
-        android:id="@+id/battery_overlay"
+        android:id="@+id/battery"
+        android:visibility="visible"
         android:layout_width="50dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="16.5dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="19dp"
         android:gravity="center|center"
-        android:src="@drawable/ic_fullbattery"
-        app:layout_constraintEnd_toEndOf="@id/battery"
+        android:paddingTop="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

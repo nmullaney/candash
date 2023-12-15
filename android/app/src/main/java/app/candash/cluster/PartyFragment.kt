@@ -349,8 +349,8 @@ class PartyFragment : Fragment() {
         } else {
             binding.batteryPercent.text = if (socVal != null) socVal.roundToString(0) + " %" else ""
         }
-        binding.batteryOverlay.setGauge(socVal ?: 0f)
-        binding.batteryOverlay.setChargeMode(carIsCharging())
+        binding.battery.setGauge(socVal ?: 0f)
+        binding.battery.setChargeMode(carIsCharging())
         binding.battery.visible = (socVal != null)
 
         if (socVal != null) {
@@ -491,8 +491,7 @@ class PartyFragment : Fragment() {
             textViewsSecondary.forEach { it.setTextColor(Color.LTGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.LTGRAY) }
             circleGauges.forEach { it.setDayValue(0) }
-            binding.battery.setColorFilter(Color.DKGRAY)
-            binding.batteryOverlay.setDayValue(0)
+            binding.battery.setDayValue(0)
             binding.partyModeLabel.setTextColor(Color.DKGRAY)
         } else {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
@@ -501,8 +500,7 @@ class PartyFragment : Fragment() {
             textViewsSecondary.forEach { it.setTextColor(Color.DKGRAY) }
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
-            binding.battery.setColorFilter(Color.parseColor("#FFAAAAAA"))
-            binding.batteryOverlay.setDayValue(1)
+            binding.battery.setDayValue(1)
             // "Camp Mode Active" is always visible, so make it dark gray if the screen is blanked
             if (binding.blackout.visible) {
                 binding.partyModeLabel.setTextColor(Color.DKGRAY)

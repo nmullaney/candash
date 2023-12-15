@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 
 class BatteryGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -18,9 +19,9 @@ class BatteryGauge @JvmOverloads constructor(
     private var lightMode : Int = 0
     private var isChargeMode : Boolean = false
     private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
+    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.parseColor("#FFAAAAAA"), PorterDuff.Mode.SRC_ATOP)
 
-    private var powerWidth : Float = 0f
+    private var powerWidth : Float = 20f
 
     fun getScreenWidth(): Int {
         var displayMetrics = DisplayMetrics()
@@ -42,6 +43,12 @@ class BatteryGauge @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        if (canvas == null) return
+        // first insert @drawable/ic_deadbattery
+        val deadBattery = ContextCompat.getDrawable(context, R.drawable.ic_deadbattery)
+        deadBattery?.setBounds(0, 0, 50.px, 20.px)
+        deadBattery?.draw(canvas)
+
         screenWidth = getRealScreenWidth()
         // check if split screen
         if (isSplitScreen()){
@@ -52,7 +59,7 @@ class BatteryGauge @JvmOverloads constructor(
         var stopX: Float = 0f
         paint.strokeWidth = 15f.px
         paint.setColorFilter(lineColor)
-        canvas?.drawLine(3f.px, 12.5f.px, (3f+powerWidth).px, 12.5f.px, paint)
+        canvas.drawLine(3f.px, 10f.px, (3f+powerWidth).px, 10f.px, paint)
 
 
     }
@@ -71,6 +78,11 @@ class BatteryGauge @JvmOverloads constructor(
             } else {
                 PorterDuffColorFilter(resources.getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
             }
+        }
+        backgroundLineColor = if (lightMode == 1){
+            PorterDuffColorFilter(Color.parseColor("#FFAAAAAA"), PorterDuff.Mode.SRC_ATOP)
+        } else {
+            PorterDuffColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_ATOP)
         }
         this.invalidate()
     }
