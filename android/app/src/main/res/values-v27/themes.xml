@@ -34,6 +34,8 @@
         <item name="maxSizeLargeNum">220dp</item>
 
         <item name="letterSpacing">-0.1</item>
+
+        <item name="cyberMode">false</item>
     </style>
 
     <style name="Theme.TeslaDashboard.Cyber" parent="Theme.TeslaDashboard">
@@ -49,6 +51,8 @@
         <item name="maxSizeLargeNum">110dp</item>
 
         <item name="letterSpacing">0.0</item>
+
+        <item name="cyberMode">true</item>
     </style>
 
     <style name="Theme.TeslaDashboard.Fullscreen" parent="Theme.TeslaDashboard.Regular">

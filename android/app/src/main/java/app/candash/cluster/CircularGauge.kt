@@ -1,6 +1,7 @@
 package app.candash.cluster
 
 import android.content.Context
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.*
 import android.util.AttributeSet
@@ -88,6 +89,12 @@ class CircularGauge @JvmOverloads constructor(
 
 
     override fun onDraw(canvas: Canvas?) {
+        // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
+        val attrSet = intArrayOf(R.attr.cyberMode)
+        val typedArray = context.obtainStyledAttributes(attrSet)
+        cyber = typedArray.getBoolean(0, false)
+        typedArray.recycle()
+
         Log.d(TAG, "width $width height $height")
 
         super.onDraw(canvas)
@@ -180,11 +187,6 @@ class CircularGauge @JvmOverloads constructor(
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
         }
-        this.invalidate()
-    }
-
-    fun setCyberMode(cyberMode: Boolean = false){
-        cyber = cyberMode
         this.invalidate()
     }
 }

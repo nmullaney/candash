@@ -52,6 +52,25 @@ class LinearGauge @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
+        // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
+        val attrSet = intArrayOf(R.attr.cyberMode)
+        val typedArray = context.obtainStyledAttributes(attrSet)
+        val newCyber = typedArray.getBoolean(0, false)
+        typedArray.recycle()
+
+        if (!cyber && newCyber) {
+            startupAnimator = ValueAnimator.ofFloat(0f, 3f).apply {
+                duration = 2000L
+                addUpdateListener { animator ->
+                    val fraction = animator.animatedValue as Float
+                    animationPosition = fraction
+                    invalidate()
+                }
+                start()
+            }
+        }
+        cyber = newCyber
+
         super.onDraw(canvas)
         screenWidth = getRealScreenWidth()
         // check if split screen
@@ -132,22 +151,6 @@ class LinearGauge @JvmOverloads constructor(
             lineColor = PorterDuffColorFilter(getResources().getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
             backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
         }
-        this.invalidate()
-    }
-
-    fun setCyberMode(cyberMode:Boolean){
-        if (!cyber && cyberMode) {
-            startupAnimator = ValueAnimator.ofFloat(0f, 3f).apply {
-                duration = 2000L
-                addUpdateListener { animator ->
-                    val fraction = animator.animatedValue as Float
-                    animationPosition = fraction
-                    invalidate()
-                }
-                start()
-            }
-        }
-        cyber = cyberMode
         this.invalidate()
     }
 }

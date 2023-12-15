@@ -285,22 +285,6 @@ class DashFragment : Fragment() {
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         unitConverter = UnitConverter(prefs)
 
-        val cyberMode = prefs.getBooleanPref(Constants.cyberMode)
-        // update all bindings of gauges to set cybermode
-        binding.run {
-            for (field in this::class.java.declaredFields) {
-                if (field.type == CircularGauge::class.java) {
-                    field.isAccessible = true
-                    val gauge = field.get(this) as CircularGauge
-                    gauge.setCyberMode(cyberMode)
-                } else if (field.type == LinearGauge::class.java) {
-                    field.isAccessible = true
-                    val gauge = field.get(this) as LinearGauge
-                    gauge.setCyberMode(cyberMode)
-                }
-            }
-        }
-
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
