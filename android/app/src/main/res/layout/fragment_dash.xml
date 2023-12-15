@@ -562,7 +562,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
 
-        android:gravity="end|top"
+        android:gravity="end|center"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingBottom="0dp"
