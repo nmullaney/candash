@@ -9,17 +9,16 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import kotlin.math.cos
+import kotlin.math.sin
 
 class CircularGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private val TAG = DashViewModel::class.java.simpleName
-    private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private var screenWidth : Int = 100
-    private var percentWidth : Float = 0f
     private var lightMode : Int = 0
-    private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
+    private var lineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+    private val greenColor : ColorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
 
     private val hexAngle = 60.0
     private val paint = Paint()
@@ -34,10 +33,11 @@ class CircularGauge @JvmOverloads constructor(
     private var cyber : Boolean = false
 
     private fun buildHexPaths() {
-        val radius = Math.min(width, height) / 2f - paint.strokeWidth / 2
+        hexPath.reset()
+        val radius = width.coerceAtMost(height) / 2f - paint.strokeWidth / 2
         for (i in 0 until 6) {
-            val x = width / 2 + radius * Math.cos(Math.toRadians((i * hexAngle))).toFloat()
-            val y = height / 2 + radius * Math.sin(Math.toRadians((i * hexAngle))).toFloat()
+            val x = width / 2 + radius * cos(Math.toRadians((i * hexAngle))).toFloat()
+            val y = height / 2 + radius * sin(Math.toRadians((i * hexAngle))).toFloat()
             if (i == 0) {
                 hexPath.moveTo(x, y)
             } else {
@@ -46,10 +46,11 @@ class CircularGauge @JvmOverloads constructor(
         }
         hexPath.close()
 
-        val innerRadius = Math.min(width, height) / 2f - paint.strokeWidth
+        innerHexPath.reset()
+        val innerRadius = width.coerceAtMost(height) / 2f - paint.strokeWidth
         for (i in 0 until 6) {
-            val x = width / 2 + innerRadius * Math.cos(Math.toRadians((i * hexAngle))).toFloat()
-            val y = height / 2 + innerRadius * Math.sin(Math.toRadians((i * hexAngle))).toFloat()
+            val x = width / 2 + innerRadius * cos(Math.toRadians((i * hexAngle))).toFloat()
+            val y = height / 2 + innerRadius * sin(Math.toRadians((i * hexAngle))).toFloat()
             if (i == 0) {
                 innerHexPath.moveTo(x, y)
             } else {
@@ -58,10 +59,11 @@ class CircularGauge @JvmOverloads constructor(
         }
         innerHexPath.close()
 
-        val outerRadius = Math.min(width, height) / 2f
+        outerHexPath.reset()
+        val outerRadius = width.coerceAtMost(height) / 2f
         for (i in 0 until 6) {
-            val x = width / 2 + outerRadius * Math.cos(Math.toRadians((i * hexAngle))).toFloat()
-            val y = height / 2 + outerRadius * Math.sin(Math.toRadians((i * hexAngle))).toFloat()
+            val x = width / 2 + outerRadius * cos(Math.toRadians((i * hexAngle))).toFloat()
+            val y = height / 2 + outerRadius * sin(Math.toRadians((i * hexAngle))).toFloat()
             if (i == 0) {
                 outerHexPath.moveTo(x, y)
             } else {
@@ -70,23 +72,6 @@ class CircularGauge @JvmOverloads constructor(
         }
         outerHexPath.close()
     }
-    fun getScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    fun getRealScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getRealMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    private fun isSplitScreen(): Boolean {
-        return getRealScreenWidth() > getScreenWidth() * 2
-    }
-
-
 
     override fun onDraw(canvas: Canvas?) {
         // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
@@ -95,14 +80,7 @@ class CircularGauge @JvmOverloads constructor(
         cyber = typedArray.getBoolean(0, false)
         typedArray.recycle()
 
-        Log.d(TAG, "width $width height $height")
-
         super.onDraw(canvas)
-        screenWidth = getRealScreenWidth()
-        // check if split screen
-        if (isSplitScreen()){
-            screenWidth = getScreenWidth()
-        }
 
         paint.strokeWidth = strokeWidthPct / 100f * width
         paint.style = Paint.Style.STROKE
@@ -125,12 +103,12 @@ class CircularGauge @JvmOverloads constructor(
         }
 
         if (powerWidth < 0f) {
-            paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+            paint.colorFilter = greenColor
         } else {
             paint.colorFilter = lineColor
         }
         if (charging){
-            paint.colorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
+            paint.colorFilter = greenColor
         }
         if (cyber) {
             paint.strokeCap = Paint.Cap.BUTT
@@ -181,11 +159,11 @@ class CircularGauge @JvmOverloads constructor(
     fun setDayValue(lightModeVal: Int = 1){
         lightMode = lightModeVal
         if (lightMode == 1){
-            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
-            backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
+            lineColor = PorterDuffColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
+            backgroundLineColor = PorterDuffColorFilter(resources.getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
         } else {
-            lineColor = PorterDuffColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
-            backgroundLineColor = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+            lineColor = PorterDuffColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
+            backgroundLineColor = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
         }
         this.invalidate()
     }

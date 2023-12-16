@@ -12,36 +12,14 @@ import androidx.core.content.ContextCompat
 class BatteryGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private val TAG = DashViewModel::class.java.simpleName
-    private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private var screenWidth : Int = 100
-    private var percentWidth : Float = 0f
     private var lightMode : Int = 0
     private var isChargeMode : Boolean = false
-    private var lineColor : ColorFilter = PorterDuffColorFilter(getResources().getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
+    private var lineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
     private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.parseColor("#FFAAAAAA"), PorterDuff.Mode.SRC_ATOP)
 
     private var powerPercent : Float = 50f
 
     private var cyber : Boolean = false
-
-    fun getScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    fun getRealScreenWidth(): Int {
-        var displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getRealMetrics(displayMetrics)
-        return displayMetrics.widthPixels
-    }
-
-    private fun isSplitScreen(): Boolean {
-        return getRealScreenWidth() > getScreenWidth() * 2
-    }
-
-
 
     override fun onDraw(canvas: Canvas?) {
         // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
@@ -52,11 +30,6 @@ class BatteryGauge @JvmOverloads constructor(
 
         super.onDraw(canvas)
         if (canvas == null) return
-        screenWidth = getRealScreenWidth()
-        // check if split screen
-        if (isSplitScreen()){
-            screenWidth = getScreenWidth()
-        }
 
         if (cyber) {
             drawCyber(canvas)
@@ -73,8 +46,6 @@ class BatteryGauge @JvmOverloads constructor(
 
         val powerWidth = powerPercent / 100 * 41f
         val paint = Paint()
-        var startX : Float = 0f
-        var stopX: Float = 0f
         paint.strokeWidth = 15f.px
         paint.setColorFilter(lineColor)
         canvas.drawLine(3f.px, 10f.px, (3f+powerWidth).px, 10f.px, paint)
@@ -108,7 +79,7 @@ class BatteryGauge @JvmOverloads constructor(
         paint.setColorFilter(lineColor)
         // draw diagonal power lines, same as above, but only up to powerPercent
         val fullLineCount = (powerPercent / 10).toInt()
-        for (i in 0..fullLineCount - 1) {
+        for (i in 0 until fullLineCount) {
             canvas.drawLine(
                 i * step + xOffset,
                 height.toFloat() - clipMargin,
@@ -140,7 +111,7 @@ class BatteryGauge @JvmOverloads constructor(
         this.invalidate()
     }
 
-    fun setColor() {
+    private fun setColor() {
         lineColor = if (isChargeMode) {
             PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
         } else {
