@@ -758,12 +758,24 @@ class DashFragment : Fragment() {
             if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
                 updateBSWarning(it, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
+            // Use new BSM signal for USS-less cars (since 2023.44.30)
+            // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
+            if (viewModel.carState[SName.leftVehicle] == null) { // (if no USS)
+                binding.blindSpotLeft1.visible = it == 1f
+                binding.blindSpotLeft2.visible = it == 2f
+            }
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
             // Don't show BS warning if in AP
             if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
                 updateBSWarning(it, binding.BSWarningRight, Orientation.RIGHT_LEFT)
+            }
+            // Use new BSM signal for USS-less cars (since 2023.44.30)
+            // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
+            if (viewModel.carState[SName.rightVehicle] == null) { // (if no USS)
+                binding.blindSpotRight1.visible = it == 1f
+                binding.blindSpotRight2.visible = it == 2f
             }
         }
 
@@ -1387,7 +1399,11 @@ class DashFragment : Fragment() {
             1f -> blindspotAnimation.duration = 300
             2f -> blindspotAnimation.duration = 150
         }
-        if (bsValue in setOf(1f, 2f)) {
+        val signalOn =
+            viewModel.carState[SName.turnSignalLeft] in setOf(1f, 2f) ||
+            viewModel.carState[SName.turnSignalRight] in setOf(1f, 2f)
+
+        if (bsValue == 2f || (bsValue == 1f && signalOn)) {
             // Warning toast:
             bsBinding.clearAnimation()
             bsBinding.visible = true
