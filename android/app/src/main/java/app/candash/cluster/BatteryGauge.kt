@@ -52,56 +52,53 @@ class BatteryGauge @JvmOverloads constructor(
     }
 
     private fun drawCyber(canvas: Canvas) {
-        // start by drawing 10 diagonal background lines
+        val path = Path()
         val paint = Paint()
-        paint.setColorFilter(backgroundLineColor)
-        paint.strokeWidth = 2f.px
-        paint.strokeCap = Paint.Cap.SQUARE
+        paint.strokeWidth = 0f
+        paint.style = Paint.Style.FILL
 
-        // Clip is to keep the ends of the lines parallel to the edge of the screen
-        val clipMargin = 10f
-        val rectClipPath = Path()
-        rectClipPath.addRect(0f, clipMargin, width.toFloat(), height.toFloat() - clipMargin, Path.Direction.CW)
-        canvas.clipPath(rectClipPath)
-
-        val step = (width * 9 / 10 / 10).toFloat() // each step is 10% of 90% of the width, because each line is step*2
-        val xOffset = 1f.px
-        for (i in 0..9) {
-            canvas.drawLine(
-                i * step + xOffset,
-                height.toFloat() - clipMargin,
-                (i + 2) * step + xOffset,
-                clipMargin,
-                paint
-            )
-        }
-
-        paint.setColorFilter(lineColor)
-        // draw diagonal power lines, same as above, but only up to powerPercent
+        // calculate position helpers
+        val step = (width * 9 / 10 / 10).toFloat() // pitch from line to line, leaving room at the right
+        val lineWidth = step / 2
+        val tbMargin = 12f // top and bottom margin, because cyber is thinner than classic battery
+        val top = 0f + tbMargin
+        val bottom = height.toFloat() - tbMargin
         val fullLineCount = (powerPercent / 10).toInt()
-        for (i in 0 until fullLineCount) {
-            canvas.drawLine(
-                i * step + xOffset,
-                height.toFloat() - clipMargin,
-                (i + 2) * step + xOffset,
-                clipMargin,
-                paint
-            )
-        }
-        // draw the remainder
-        paint.strokeCap = Paint.Cap.BUTT
         val remainder = powerPercent % 10
-        val drawHeight = height.toFloat() - clipMargin * 2
-        val remHeight = drawHeight * remainder / 10
+        val remHeight = remainder / 10 * (bottom - top)
         val remWidth = remainder / 10 * step * 2
+
+        // draw background lines from fullLineCount to end
+        paint.setColorFilter(backgroundLineColor)
+        for (i in fullLineCount until 10) {
+            path.reset()
+            path.moveTo(i * step, bottom) // bottom left
+            path.lineTo((i + 2) * step, top) // top left
+            path.lineTo((i + 2) * step + lineWidth, top) // top right
+            path.lineTo(i * step + lineWidth, bottom) // bottom right
+            path.close()
+            canvas.drawPath(path, paint)
+        }
+        // draw full lines, same as above, but only up to powerPercent
+        paint.setColorFilter(lineColor)
+        for (i in 0 until fullLineCount) {
+            path.reset()
+            path.moveTo(i * step, bottom) // bottom left
+            path.lineTo((i + 2) * step, top) // top left
+            path.lineTo((i + 2) * step + lineWidth, top) // top right
+            path.lineTo(i * step + lineWidth, bottom) // bottom right
+            path.close()
+            canvas.drawPath(path, paint)
+        }
+        // draw the partial line
         if (remainder > 0) {
-            canvas.drawLine(
-                fullLineCount * step + xOffset,
-                height.toFloat() - clipMargin,
-                fullLineCount * step + xOffset + remWidth,
-                clipMargin + drawHeight - remHeight,
-                paint
-            )
+            path.reset()
+            path.moveTo(fullLineCount * step, bottom) // bottom left
+            path.lineTo(fullLineCount * step + remWidth, bottom - remHeight) // top left
+            path.lineTo(fullLineCount * step + remWidth + lineWidth, bottom - remHeight) // top right
+            path.lineTo(fullLineCount * step + lineWidth, bottom) // bottom right
+            path.close()
+            canvas.drawPath(path, paint)
         }
     }
 
