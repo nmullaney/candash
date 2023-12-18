@@ -10,10 +10,11 @@
         android:id="@+id/speed"
         style="@style/textHugeNum"
         android:layout_width="0dp"
-        android:layout_height="380dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="20dp"
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
+        android:maxLines="1"
         android:paddingBottom="0dp"
         android:textColor="@color/black"
         app:autoSizeMinTextSize="30dp"
@@ -422,7 +423,7 @@
         app:layout_constraintEnd_toEndOf="@+id/speed"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/speed"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/speed"
         tools:visibility="gone" />
 
     <TextView
@@ -481,7 +482,7 @@
         app:layout_constraintEnd_toEndOf="@+id/speed"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="@+id/speed"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/speed"
         tools:visibility="gone" />
 
     <TextView
@@ -515,7 +516,7 @@
         app:layout_constraintEnd_toEndOf="@+id/speed"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="@+id/speed"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/speed" />
 
     <TextView
         android:id="@+id/PRND"
