@@ -760,12 +760,9 @@ class DashFragment : Fragment() {
                 val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
                 updateBSWarning(bsw, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
-            // Use new BSM signal for USS-less cars (since 2023.44.30)
-            // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
-            if (viewModel.carState[SName.leftVehicle] == null) { // (if no USS)
-                binding.blindSpotLeft1.visible = it == 1f
-                binding.blindSpotLeft2.visible = it == 2f
-            }
+            // Use new BSM signal for arcs
+            binding.blindSpotLeft1.visible = it == 1f
+            binding.blindSpotLeft2.visible = it == 2f
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
@@ -775,42 +772,13 @@ class DashFragment : Fragment() {
                 val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
                 updateBSWarning(bsw, binding.BSWarningRight, Orientation.RIGHT_LEFT)
             }
-            // Use new BSM signal for USS-less cars (since 2023.44.30)
-            // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
-            if (viewModel.carState[SName.rightVehicle] == null) { // (if no USS)
-                binding.blindSpotRight1.visible = it == 1f
-                binding.blindSpotRight2.visible = it == 2f
-            }
+            // Use new BSM signal for arcs
+            binding.blindSpotRight1.visible = it == 1f
+            binding.blindSpotRight2.visible = it == 2f
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.forwardCollisionWarning) {
             updateFCWWarning(it)
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.leftVehicle) {
-            val distance = it ?: 99999f
-            val l1Distance = viewModel.carState[SName.l1Distance] ?: Constants.l1DistanceLowSpeed
-            val l2Distance = viewModel.carState[SName.l2Distance] ?: Constants.l2DistanceLowSpeed
-            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
-                binding.blindSpotLeft1.visible = false
-                binding.blindSpotLeft2.visible = false
-            } else {
-                binding.blindSpotLeft1.visible = (distance in l2Distance..l1Distance)
-                binding.blindSpotLeft2.visible = (distance < l2Distance)
-            }
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.rightVehicle) {
-            val distance = it ?: 99999f
-            val l1Distance = viewModel.carState[SName.l1Distance] ?: Constants.l1DistanceLowSpeed
-            val l2Distance = viewModel.carState[SName.l2Distance] ?: Constants.l2DistanceLowSpeed
-            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
-                binding.blindSpotRight1.visible = false
-                binding.blindSpotRight2.visible = false
-            } else {
-                binding.blindSpotRight1.visible = (distance in l2Distance..l1Distance)
-                binding.blindSpotRight2.visible = (distance < l2Distance)
-            }
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.PINpassed, SName.brakeApplied)) {

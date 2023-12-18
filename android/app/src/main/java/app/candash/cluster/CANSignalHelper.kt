@@ -156,10 +156,6 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
 
         insertCANSignal(SName.isDarkMode, Constants.vehicleBus, Hex(0x3DF), 22, 1, 1f, 0f)
 
-        //insertCANSignal(SName.rearLeftVehicle, Constants.chassisBus, Hex(0x22E), 36, 9, 1f, 0f)
-        //insertCANSignal(SName.rearRightVehicle, Constants.chassisBus, Hex(0x22E), 9, 9, 1f, 0f)
-        insertCANSignal(SName.leftVehicle, Constants.chassisBus, Hex(0x22E), 45, 9, 1f, 0f, sna=511f)
-        insertCANSignal(SName.rightVehicle, Constants.chassisBus, Hex(0x22E), 0, 9, 1f, 0f, sna=511f)
         insertCANSignal(SName.autopilotState, Constants.chassisBus, Hex(0x399), 0, 4, 1f, 0f, sna=15f)
         insertCANSignal(SName.autopilotHands, Constants.chassisBus, Hex(0x399), 42, 4, 1f, 0f, sna=15f)
         // These don't exist anymore. 0x368 is absent on chassis bus, and is something different on vehicle bus:
@@ -259,22 +255,6 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
             } else {
                 slowPowerHistory.clear()
                 return@insertAugmentedCANSignal null
-            }
-        }
-        insertAugmentedCANSignal(SName.l1Distance, listOf(SName.uiSpeed)) {
-            val sensingSpeedLimit = if (it[SName.uiSpeedUnits] == 1f) 55f else 35f
-            if ((it[SName.uiSpeed] ?: 0f) >= sensingSpeedLimit) {
-                return@insertAugmentedCANSignal Constants.l1DistanceHighSpeed
-            } else {
-                return@insertAugmentedCANSignal Constants.l1DistanceLowSpeed
-            }
-        }
-        insertAugmentedCANSignal(SName.l2Distance, listOf(SName.uiSpeed)) {
-            val sensingSpeedLimit = if (it[SName.uiSpeedUnits] == 1f) 55f else 35f
-            if ((it[SName.uiSpeed] ?: 0f) >= sensingSpeedLimit) {
-                return@insertAugmentedCANSignal Constants.l2DistanceHighSpeed
-            } else {
-                return@insertAugmentedCANSignal Constants.l2DistanceLowSpeed
             }
         }
         insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit)) {
