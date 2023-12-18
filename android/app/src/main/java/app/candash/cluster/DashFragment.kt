@@ -756,7 +756,9 @@ class DashFragment : Fragment() {
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotLeft) {
             // Don't show BS warning if in AP
             if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
-                updateBSWarning(it, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
+                val signalOn = viewModel.carState[SName.turnSignalLeft] in setOf(1f, 2f)
+                val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
+                updateBSWarning(bsw, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
             // Use new BSM signal for USS-less cars (since 2023.44.30)
             // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
@@ -769,7 +771,9 @@ class DashFragment : Fragment() {
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
             // Don't show BS warning if in AP
             if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
-                updateBSWarning(it, binding.BSWarningRight, Orientation.RIGHT_LEFT)
+                val signalOn = viewModel.carState[SName.turnSignalRight] in setOf(1f, 2f)
+                val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
+                updateBSWarning(bsw, binding.BSWarningRight, Orientation.RIGHT_LEFT)
             }
             // Use new BSM signal for USS-less cars (since 2023.44.30)
             // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
@@ -1399,11 +1403,7 @@ class DashFragment : Fragment() {
             1f -> blindspotAnimation.duration = 300
             2f -> blindspotAnimation.duration = 150
         }
-        val signalOn =
-            viewModel.carState[SName.turnSignalLeft] in setOf(1f, 2f) ||
-            viewModel.carState[SName.turnSignalRight] in setOf(1f, 2f)
-
-        if (bsValue == 2f || (bsValue == 1f && signalOn)) {
+        if (bsValue in setOf(1f, 2f)) {
             // Warning toast:
             bsBinding.clearAnimation()
             bsBinding.visible = true
