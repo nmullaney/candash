@@ -6,27 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/day_background">
 
-    <ImageView
-        android:id="@+id/blindSpotGradientLeft"
-        android:layout_width="30dp"
-        android:layout_height="match_parent"
-        android:src="@drawable/bsm_gradient"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="invisible"
-        />
-
-    <ImageView
-        android:id="@+id/blindSpotGradientRight"
-        android:layout_width="30dp"
-        android:layout_height="match_parent"
-        android:src="@drawable/bsm_gradient"
-        android:rotation="180"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="invisible"
-        />
-
     <TextView
         android:id="@+id/speed"
         android:layout_width="0dp"
