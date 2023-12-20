@@ -760,9 +760,8 @@ class DashFragment : Fragment() {
                 val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
                 updateBSWarning(bsw, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
-            // Use new BSM signal for arcs
-            binding.blindSpotLeft1.visible = it == 1f
-            binding.blindSpotLeft2.visible = it == 2f
+            // Use new BSM signal for edge gradient
+            binding.blindSpotGradientLeft.visible = it == 1f || it == 2f
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
@@ -772,9 +771,8 @@ class DashFragment : Fragment() {
                 val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
                 updateBSWarning(bsw, binding.BSWarningRight, Orientation.RIGHT_LEFT)
             }
-            // Use new BSM signal for arcs
-            binding.blindSpotRight1.visible = it == 1f
-            binding.blindSpotRight2.visible = it == 2f
+            // Use new BSM signal for edge gradient
+            binding.blindSpotGradientRight.visible = it == 1f || it == 2f
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.forwardCollisionWarning) {
