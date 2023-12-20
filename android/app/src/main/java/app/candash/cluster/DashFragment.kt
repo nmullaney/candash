@@ -761,7 +761,7 @@ class DashFragment : Fragment() {
                 updateBSWarning(bsw, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
             // Use new BSM signal for edge gradient
-            binding.blindSpotGradientLeft.visible = it == 1f || it == 2f
+            binding.blindSpotGradientLeft.visible = (it == 1f || it == 2f) && !prefs.getBooleanPref(Constants.hideBs)
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
@@ -772,7 +772,7 @@ class DashFragment : Fragment() {
                 updateBSWarning(bsw, binding.BSWarningRight, Orientation.RIGHT_LEFT)
             }
             // Use new BSM signal for edge gradient
-            binding.blindSpotGradientRight.visible = it == 1f || it == 2f
+            binding.blindSpotGradientRight.visible = (it == 1f || it == 2f) && !prefs.getBooleanPref(Constants.hideBs)
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.forwardCollisionWarning) {
