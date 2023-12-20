@@ -763,8 +763,7 @@ class DashFragment : Fragment() {
             // Use new BSM signal for USS-less cars (since 2023.44.30)
             // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
             if (viewModel.carState[SName.leftVehicle] == null) { // (if no USS)
-                binding.blindSpotLeft1.visible = it == 1f
-                binding.blindSpotLeft2.visible = it == 2f
+                binding.blindSpotGradientLeft.visible = it == 1f || it == 2f
             }
         }
 
@@ -778,8 +777,7 @@ class DashFragment : Fragment() {
             // Use new BSM signal for USS-less cars (since 2023.44.30)
             // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
             if (viewModel.carState[SName.rightVehicle] == null) { // (if no USS)
-                binding.blindSpotRight1.visible = it == 1f
-                binding.blindSpotRight2.visible = it == 2f
+                binding.blindSpotGradientRight.visible = it == 1f || it == 2f
             }
         }
 
