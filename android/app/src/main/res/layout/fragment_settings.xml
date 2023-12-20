@@ -109,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:text="Show Blindspot Monitoring"
+        android:text="Show Blindspot Arcs"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
         app:layout_constraintTop_toBottomOf="@id/showodo" />
 
