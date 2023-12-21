@@ -744,8 +744,9 @@ class DashFragment : Fragment() {
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.odometer, SName.gearSelected)) {
             efficiencyCalculator.updateKwhHistory()
-            binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
-
+            if (!prefs.getBooleanPref(Constants.hideEfficiency)) {
+                binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
+            }
         }
 
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
