@@ -998,7 +998,7 @@ class DashFragment : Fragment() {
             }
             binding.telltaleHb.visible = true
         } else {
-            if (viewModel.carState[SName.autoHighBeamEnabled] == 1f && viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
+            if (viewModel.carState[SName.highBeamRequest] == SVal.highBeamAuto) {
                 binding.telltaleHb.setImageResource(R.drawable.ic_telltale_ahb_stdby)
                 binding.telltaleHb.visible = true
             } else {
