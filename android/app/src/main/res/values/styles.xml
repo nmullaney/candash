@@ -32,6 +32,10 @@
         <item name="fontFamily">?attr/fontBold</item>
     </style>
 
+    <style name="textLabelSemiBold">
+        <item name="fontFamily">?attr/fontSemiBold</item>
+    </style>
+
     <style name="textLabelMedium">
         <item name="fontFamily">?attr/fontMedium</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
