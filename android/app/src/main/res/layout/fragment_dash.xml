@@ -1664,7 +1664,7 @@
         android:drawablePadding="3dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fontFamily="@font/interbold"
+        android:fontFamily="@font/intersemibold"
         android:textColor="@color/black"
         android:visibility="gone"
         android:gravity="center|center_vertical"
