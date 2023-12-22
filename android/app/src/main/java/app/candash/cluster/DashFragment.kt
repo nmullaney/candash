@@ -753,26 +753,28 @@ class DashFragment : Fragment() {
             }
         }
 
-        viewModel.onSignal(viewLifecycleOwner, SName.blindSpotLeft) {
+        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.blindSpotLeft, SName.turnSignalLeft)) {
+            val signalOn = it[SName.turnSignalLeft] in setOf(1f, 2f)
+            val bsm = it[SName.blindSpotLeft] ?: 0f
+            val bsw = if (signalOn || bsm == 2f) bsm else 0f // don't warn for level 1 without signal
             // Don't show BS warning if in AP
-            if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
-                val signalOn = viewModel.carState[SName.turnSignalLeft] in setOf(1f, 2f)
-                val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
+            if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || bsm == 0f) {
                 updateBSWarning(bsw, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
             }
             // Use new BSM signal for arcs
-            binding.blindSpotLeft2.visible = (it == 1f || it == 2f) && !prefs.getBooleanPref(Constants.hideBs)
+            binding.blindSpotLeft2.visible = (bsm == 1f || bsm == 2f) && !prefs.getBooleanPref(Constants.hideBs)
         }
 
-        viewModel.onSignal(viewLifecycleOwner, SName.blindSpotRight) {
+        viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.blindSpotRight, SName.turnSignalRight)) {
+            val signalOn = it[SName.turnSignalRight] in setOf(1f, 2f)
+            val bsm = it[SName.blindSpotRight] ?: 0f
+            val bsw = if (signalOn || bsm == 2f) bsm else 0f // don't warn for level 1 without signal
             // Don't show BS warning if in AP
-            if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || it == 0f) {
-                val signalOn = viewModel.carState[SName.turnSignalRight] in setOf(1f, 2f)
-                val bsw = if (signalOn || it == 2f) it else 0f // don't warn for level 1 without signal
+            if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || bsm == 0f) {
                 updateBSWarning(bsw, binding.BSWarningRight, Orientation.RIGHT_LEFT)
             }
             // Use new BSM signal for arcs
-            binding.blindSpotRight2.visible = (it == 1f || it == 2f) && !prefs.getBooleanPref(Constants.hideBs)
+            binding.blindSpotRight2.visible = (bsm == 1f || bsm == 2f) && !prefs.getBooleanPref(Constants.hideBs)
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.forwardCollisionWarning) {
@@ -1366,20 +1368,22 @@ class DashFragment : Fragment() {
 
     private fun updateBSWarning(bsValue: Float?, bsBinding: View, orientation: Orientation) {
         when (bsValue) {
-            1f -> blindspotAnimation.duration = 300
-            2f -> blindspotAnimation.duration = 150
+            1f -> blindspotAnimation.duration = 500
+            2f -> blindspotAnimation.duration = 200
         }
         if (bsValue in setOf(1f, 2f)) {
             // Warning toast:
-            bsBinding.clearAnimation()
-            bsBinding.visible = true
+            if (!bsBinding.visible) {
+                bsBinding.clearAnimation()
+                bsBinding.visible = true
 
-            // Gradient overlay:
-            overlayGradient.orientation = orientation
-            blindspotAnimation.repeatCount = ValueAnimator.INFINITE
-            blindspotAnimation.repeatMode = ValueAnimator.REVERSE
-            blindspotAnimation.start()
-            binding.warningGradientOverlay.visible = true
+                // Gradient overlay:
+                overlayGradient.orientation = orientation
+                blindspotAnimation.repeatCount = ValueAnimator.INFINITE
+                blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                blindspotAnimation.start()
+                binding.warningGradientOverlay.visible = true
+            }
         } else {
             // Warning toast:
             if (bsBinding.visible) {
