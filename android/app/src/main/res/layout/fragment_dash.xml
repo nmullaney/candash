@@ -1661,8 +1661,8 @@
     <TextView
         android:id="@+id/APWarning"
         android:drawableTop="@drawable/ic_autopilot_hands"
-        android:drawablePadding="0dp"
-        android:layout_width="370dp"
+        android:drawablePadding="3dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fontFamily="@font/interbold"
         android:textColor="@color/black"
@@ -1670,9 +1670,10 @@
         android:gravity="center|center_vertical"
         android:text="Apply slight turning force to steering wheel"
         android:textAlignment="center"
-        android:textSize="17dp"
+        android:textSize="20dp"
         android:layout_marginTop="4dp"
-
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
