@@ -93,14 +93,27 @@ class EfficiencyCalculator(
         values: List<Pair<Float, Float>>,
         windowSizeKm: Float
     ): List<Pair<Float, Float>> {
-        if (windowSizeKm <= 0 || values.size <= 1) return values.toList()
+        if (windowSizeKm <= 0 || values.size <= 1) return values
+
         val result = mutableListOf<Pair<Float, Float>>()
+        var startIdx = 0
+        var endIdx = 0
+        var sum = 0f
+        var count = 0
+
         for ((km, _) in values) {
-            val start = values.indexOfFirst { it.first >= km - windowSizeKm / 2 }
-            val end = values.indexOfLast { it.first <= km + windowSizeKm / 2 }
-            val window = values.slice(start until end + 1)
-            val smoothedValue = window.sumOf { it.second.toDouble() } / window.size
-            result.add(Pair(km, smoothedValue.toFloat()))
+            while (startIdx < values.size && values[startIdx].first < km - windowSizeKm / 2) {
+                sum -= values[startIdx].second
+                count -= 1
+                startIdx += 1
+            }
+            while (endIdx < values.size && values[endIdx].first <= km + windowSizeKm / 2) {
+                sum += values[endIdx].second
+                count += 1
+                endIdx += 1
+            }
+            val smoothedValue = if (count > 0) sum / count else 0f
+            result.add(Pair(km, smoothedValue))
         }
         return result
     }
