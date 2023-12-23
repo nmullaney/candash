@@ -1580,6 +1580,27 @@
         tools:text="0 W" />
 
     <ImageView
+        android:id="@+id/blindSpotGradientLeft"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/bsm_gradient"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/blindSpotGradientRight"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/bsm_gradient"
+        android:rotation="180"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
+
+    <ImageView
         android:id="@+id/warning_gradient_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
