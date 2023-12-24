@@ -128,7 +128,6 @@ class DashFragment : Fragment() {
             binding.PRND,
             binding.batterypercent,
             binding.battery,
-            binding.batteryOverlay,
             binding.leftTurnSignalLight,
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
@@ -854,8 +853,8 @@ class DashFragment : Fragment() {
         } else {
             binding.batterypercent.text = if (socVal != null) socVal.roundToString(0) + " %" else ""
         }
-        binding.batteryOverlay.setGauge(socVal ?: 0f)
-        binding.batteryOverlay.setChargeMode(carIsCharging())
+        binding.battery.setGauge(socVal ?: 0f)
+        binding.battery.setChargeMode(carIsCharging())
         binding.battery.visible = (socVal != null)
 
         // Set charge meter stuff too, although they may be hidden
@@ -1180,8 +1179,7 @@ class DashFragment : Fragment() {
             imageViewsSecondary.forEach { it.setColorFilter(Color.LTGRAY) }
             circleGauges.forEach { it.setDayValue(0) }
             binding.powerBar.setDayValue(0)
-            binding.battery.setColorFilter(Color.DKGRAY)
-            binding.batteryOverlay.setDayValue(0)
+            binding.battery.setDayValue(0)
         } else {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
@@ -1191,8 +1189,7 @@ class DashFragment : Fragment() {
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
             binding.powerBar.setDayValue(1)
-            binding.battery.setColorFilter(Color.parseColor("#FFAAAAAA"))
-            binding.batteryOverlay.setDayValue(1)
+            binding.battery.setDayValue(1)
         }
         updateGearView()
     }

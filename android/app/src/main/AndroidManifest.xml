@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TeslaDashboard"
+        android:theme="@style/Theme.TeslaDashboard.Regular"
         >
         <activity
             android:name="app.candash.cluster.FullscreenActivity"
