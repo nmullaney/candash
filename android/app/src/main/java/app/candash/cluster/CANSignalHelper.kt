@@ -3,6 +3,7 @@ package app.candash.cluster
 import android.content.SharedPreferences
 import android.util.Log
 import java.lang.Float.max
+import kotlin.math.roundToInt
 
 class CANSignalHelper(val sharedPreferences: SharedPreferences) {
     private val TAG = CANSignalHelper::class.java.simpleName
@@ -279,7 +280,12 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         }
         insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit)) {
             // accSpeedLimit is 204.6f (SNA) while TACC is active
-            if (it[SName.accState] == 4f && it[SName.accSpeedLimit] == 204.6f) {
+            // on 2023.44.30+, it's 102.2f while TACC is active
+            // TODO: once 44.30 dbc is available, look for a better signal, this is def wrong.
+
+            // round to tenths to fix floating point errors
+            val accSpeedLimit = if (it[SName.accSpeedLimit] != null) (it[SName.accSpeedLimit]!! * 10f).roundToInt() / 10f else null
+            if (it[SName.accState] == 4f && (accSpeedLimit == 204.6f || accSpeedLimit == 102.2f)) {
                 accActive = 1f
             }
             // accActive stays latched on until accState is cancelled

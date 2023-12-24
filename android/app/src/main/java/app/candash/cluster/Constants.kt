@@ -40,6 +40,7 @@ object Constants {
     const val forceRHD = "forceRHD"
     const val lastDarkMode = "lastDarkMode"
     const val partyTimeTarget = "partyTimeTarget"
+    const val cyberMode = "cyberMode"
 
     // For efficiency history in prefs
     const val kwhHistory = "kwhHistory"

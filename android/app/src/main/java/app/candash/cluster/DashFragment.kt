@@ -118,6 +118,8 @@ class DashFragment : Fragment() {
             binding.BSWarningRight,
             binding.FCWarning,
             binding.warningGradientOverlay,
+            binding.blindSpotGradientLeft,
+            binding.blindSpotGradientRight,
         ) + minMaxPowerViews() + doorViewsCenter() + doorViews()
 
     /**
@@ -128,7 +130,6 @@ class DashFragment : Fragment() {
             binding.PRND,
             binding.batterypercent,
             binding.battery,
-            binding.batteryOverlay,
             binding.leftTurnSignalLight,
             binding.leftTurnSignalDark,
             binding.rightTurnSignalLight,
@@ -763,12 +764,11 @@ class DashFragment : Fragment() {
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.blindSpotLeft, SName.turnSignalLeft)) {
             val signalOn = it[SName.turnSignalLeft] in setOf(1f, 2f)
-            val bsm = it[SName.blindSpotLeft] ?: 0f
-            val bsw = if (signalOn || bsm == 2f) bsm else 0f // don't warn for level 1 without signal
-            // Don't show BS warning if in AP
-            if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || bsm == 0f) {
-                updateBSWarning(bsw, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
-            }
+            val bsm = it[SName.blindSpotLeft]
+            // Static gradient only with turn signal
+            binding.blindSpotGradientLeft.visible = bsm == 1f && signalOn
+            updateBSWarning(bsm, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
+
             // Use new BSM signal for USS-less cars (since 2023.44.30)
             // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
             if (viewModel.carState[SName.leftVehicle] == null) { // (if no USS)
@@ -778,12 +778,11 @@ class DashFragment : Fragment() {
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.blindSpotRight, SName.turnSignalRight)) {
             val signalOn = it[SName.turnSignalRight] in setOf(1f, 2f)
-            val bsm = it[SName.blindSpotRight] ?: 0f
-            val bsw = if (signalOn || bsm == 2f) bsm else 0f // don't warn for level 1 without signal
-            // Don't show BS warning if in AP
-            if ((viewModel.carState[SName.autopilotState] ?: 0f) !in 3f..7f || bsm == 0f) {
-                updateBSWarning(bsw, binding.BSWarningRight, Orientation.RIGHT_LEFT)
-            }
+            val bsm = it[SName.blindSpotRight]
+            // Static gradient only with turn signal
+            binding.blindSpotGradientRight.visible = bsm == 1f && signalOn
+            updateBSWarning(bsm, binding.BSWarningRight, Orientation.RIGHT_LEFT)
+
             // Use new BSM signal for USS-less cars (since 2023.44.30)
             // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
             if (viewModel.carState[SName.rightVehicle] == null) { // (if no USS)
@@ -862,8 +861,8 @@ class DashFragment : Fragment() {
         } else {
             binding.batterypercent.text = if (socVal != null) socVal.roundToString(0) + " %" else ""
         }
-        binding.batteryOverlay.setGauge(socVal ?: 0f)
-        binding.batteryOverlay.setChargeMode(carIsCharging())
+        binding.battery.setGauge(socVal ?: 0f)
+        binding.battery.setChargeMode(carIsCharging())
         binding.battery.visible = (socVal != null)
 
         // Set charge meter stuff too, although they may be hidden
@@ -1188,8 +1187,7 @@ class DashFragment : Fragment() {
             imageViewsSecondary.forEach { it.setColorFilter(Color.LTGRAY) }
             circleGauges.forEach { it.setDayValue(0) }
             binding.powerBar.setDayValue(0)
-            binding.battery.setColorFilter(Color.DKGRAY)
-            binding.batteryOverlay.setDayValue(0)
+            binding.battery.setDayValue(0)
         } else {
             window?.statusBarColor = Color.parseColor("#FFEEEEEE")
             binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
@@ -1199,8 +1197,7 @@ class DashFragment : Fragment() {
             imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
             circleGauges.forEach { it.setDayValue(1) }
             binding.powerBar.setDayValue(1)
-            binding.battery.setColorFilter(Color.parseColor("#FFAAAAAA"))
-            binding.batteryOverlay.setDayValue(1)
+            binding.battery.setDayValue(1)
         }
         binding.efficiencyChart.setDarkMode(shouldUseDarkMode())
         updateGearView()
@@ -1408,11 +1405,8 @@ class DashFragment : Fragment() {
     }
 
     private fun updateBSWarning(bsValue: Float?, bsBinding: View, orientation: Orientation) {
-        when (bsValue) {
-            1f -> blindspotAnimation.duration = 500
-            2f -> blindspotAnimation.duration = 200
-        }
-        if (bsValue in setOf(1f, 2f)) {
+        // Only flash for level 2, level 1 logic is bsm listener
+        if (bsValue == 2f) {
             // Warning toast:
             if (!bsBinding.visible) {
                 bsBinding.clearAnimation()
@@ -1422,6 +1416,7 @@ class DashFragment : Fragment() {
                 overlayGradient.orientation = orientation
                 blindspotAnimation.repeatCount = ValueAnimator.INFINITE
                 blindspotAnimation.repeatMode = ValueAnimator.REVERSE
+                blindspotAnimation.duration = 200
                 blindspotAnimation.start()
                 binding.warningGradientOverlay.visible = true
             }
