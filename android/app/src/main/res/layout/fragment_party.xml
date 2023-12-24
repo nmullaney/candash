@@ -7,11 +7,11 @@
 
     <TextView
         android:id="@+id/battery_percent"
+        style="@style/textLabelBold"
         android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:fontFamily="@font/interbold"
 
         android:gravity="end|top"
         android:paddingLeft="5dp"
@@ -21,6 +21,7 @@
 
         android:textSize="20dp"
         app:autoSizeTextType="uniform"
+        app:layout_constraintTop_toTopOf="@+id/battery"
         app:layout_constraintBottom_toBottomOf="@id/battery"
         app:layout_constraintEnd_toStartOf="@id/battery" />
 
@@ -46,26 +47,17 @@
         app:layout_constraintEnd_toStartOf="@+id/batt_charge"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/battery"
-        android:layout_width="50dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="16.5dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center|center"
-        android:src="@drawable/ic_deadbattery"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <app.candash.cluster.BatteryGauge
-        android:id="@+id/battery_overlay"
+        android:id="@+id/battery"
+        android:visibility="visible"
         android:layout_width="50dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="16.5dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="19dp"
         android:gravity="center|center"
-        android:src="@drawable/ic_fullbattery"
-        app:layout_constraintEnd_toEndOf="@id/battery"
+        android:paddingTop="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -105,11 +97,10 @@
 
     <TextView
         android:id="@+id/big_soc"
+        style="@style/textLargeNum"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:fontFamily="@font/interlight"
         android:gravity="center"
-        android:letterSpacing="-.07"
         android:textColor="@color/black"
         android:textSize="120dp"
         android:visibility="visible"
@@ -122,11 +113,11 @@
 
     <TextView
         android:id="@+id/big_soc_percent"
+        style="@style/textLabelBold"
         android:layout_width="0dp"
         android:layout_marginStart="10dp"
 
         android:layout_height="200dp"
-        android:fontFamily="@font/interbold"
         android:gravity="center|left"
         android:text="%"
         android:textColor="@color/black"
@@ -230,10 +221,10 @@
 
     <TextView
         android:id="@+id/party_time"
+        style="@style/textLabelBold"
         android:layout_width="350dp"
         android:layout_height="50dp"
 
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:textSize="20dp"
@@ -251,6 +242,7 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/outside_temp_gauge"
+        style="@style/textLabelBold"
 
         android:layout_height="50dp"
         android:layout_width="50dp"
@@ -258,7 +250,6 @@
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
         app:layout_constraintHeight_percent=".5"
@@ -268,12 +259,12 @@
 
     <TextView
         android:id="@+id/outside_temp_unit"
+        style="@style/textLabelBold"
 
         android:layout_width="50dp"
         android:layout_height="50dp"
 
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
 
@@ -285,11 +276,11 @@
 
     <TextView
         android:id="@+id/outside_temp_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="100dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|left"
 
@@ -299,12 +290,12 @@
 
     <TextView
         android:id="@+id/outside_temp"
+        style="@style/textLabelMedium"
 
         android:layout_width="0dp"
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
@@ -315,6 +306,7 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/inside_temp_gauge"
+        style="@style/textLabelBold"
 
         android:layout_height="50dp"
         android:layout_width="50dp"
@@ -322,7 +314,6 @@
         android:layout_marginBottom="20dp"
         android:layout_marginStart="5dp"
         android:gravity="center"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
         app:layout_constraintHeight_percent=".5"
@@ -332,11 +323,11 @@
 
     <TextView
         android:id="@+id/inside_temp_unit"
+        style="@style/textLabelBold"
         android:layout_width="50dp"
         android:layout_height="50dp"
 
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
 
@@ -348,11 +339,11 @@
 
     <TextView
         android:id="@+id/inside_temp_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="110dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|right"
 
@@ -362,12 +353,12 @@
 
     <TextView
         android:id="@+id/inside_temp"
+        style="@style/textLabelMedium"
 
         android:layout_width="0dp"
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
@@ -378,6 +369,7 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/batt_temp_gauge"
+        style="@style/textLabelBold"
 
         android:layout_height="50dp"
         android:layout_width="50dp"
@@ -385,7 +377,6 @@
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
         app:layout_constraintHeight_percent=".5"
@@ -394,12 +385,12 @@
 
     <TextView
         android:id="@+id/batt_temp_unit"
+        style="@style/textLabelBold"
 
         android:layout_width="50dp"
         android:layout_height="50dp"
 
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
 
@@ -411,11 +402,11 @@
 
     <TextView
         android:id="@+id/batt_temp_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="100dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|left"
 
@@ -425,12 +416,12 @@
 
     <TextView
         android:id="@+id/batt_temp"
+        style="@style/textLabelMedium"
 
         android:layout_width="0dp"
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
@@ -441,6 +432,7 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/inside_temp_req_gauge"
+        style="@style/textLabelBold"
 
         android:layout_height="50dp"
         android:layout_width="50dp"
@@ -448,7 +440,6 @@
         android:layout_marginBottom="20dp"
         android:layout_marginStart="5dp"
         android:gravity="center"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
         app:layout_constraintHeight_percent=".5"
@@ -458,12 +449,12 @@
 
     <TextView
         android:id="@+id/inside_temp_req_unit"
+        style="@style/textLabelBold"
 
         android:layout_width="50dp"
         android:layout_height="50dp"
 
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
 
@@ -475,11 +466,11 @@
 
     <TextView
         android:id="@+id/inside_temp_req_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="110dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|right"
 
@@ -489,12 +480,12 @@
 
     <TextView
         android:id="@+id/inside_temp_req"
+        style="@style/textLabelMedium"
 
         android:layout_width="wrap_content"
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/intermedium"
 
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
@@ -505,12 +496,12 @@
 
     <TextView
         android:id="@+id/inside_temp_req_auto_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="60dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="6dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|right"
 
@@ -520,6 +511,7 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/dc_12v_power_gauge"
+        style="@style/textLabelBold"
 
         android:layout_height="50dp"
         android:layout_width="50dp"
@@ -527,7 +519,6 @@
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="5dp"
         android:gravity="center"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
         app:layout_constraintHeight_percent=".5"
@@ -537,12 +528,12 @@
 
     <TextView
         android:id="@+id/dc_12v_power_unit"
+        style="@style/textLabelBold"
 
         android:layout_width="50dp"
         android:layout_height="50dp"
 
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
 
@@ -554,11 +545,11 @@
 
     <TextView
         android:id="@+id/dc_12v_power_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="100dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|left"
 
@@ -568,12 +559,12 @@
 
     <TextView
         android:id="@+id/dc_12v_power"
+        style="@style/textLabelMedium"
 
         android:layout_width="0dp"
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:gravity="left|center"
         android:text="0"
@@ -584,6 +575,7 @@
 
     <app.candash.cluster.CircularGauge
         android:id="@+id/dc_power_gauge"
+        style="@style/textLabelBold"
 
         android:layout_height="50dp"
         android:layout_width="50dp"
@@ -591,7 +583,6 @@
         android:layout_marginBottom="10dp"
         android:layout_marginStart="5dp"
         android:gravity="center"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
 
         app:layout_constraintHeight_percent=".5"
@@ -601,12 +592,12 @@
 
     <TextView
         android:id="@+id/dc_power_unit"
+        style="@style/textLabelBold"
 
         android:layout_width="50dp"
         android:layout_height="50dp"
 
         android:layout_marginBottom="10dp"
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center"
 
@@ -618,11 +609,11 @@
 
     <TextView
         android:id="@+id/dc_power_label"
+        style="@style/textLabelRegular"
 
         android:layout_width="110dp"
         android:layout_height="16dp"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/interregular"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|right"
 
@@ -632,12 +623,12 @@
 
     <TextView
         android:id="@+id/dc_power"
+        style="@style/textLabelMedium"
 
         android:layout_width="0dp"
         android:layout_height="27dp"
 
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/intermedium"
         android:fontFeatureSettings="tnum"
         android:gravity="right|center"
         android:text="0"
@@ -692,10 +683,10 @@
     <!--Camp Mode Active should be visible even with blackout-->
     <TextView
         android:id="@+id/party_mode_label"
+        style="@style/textLabelBold"
         android:layout_width="350dp"
         android:layout_height="30dp"
 
-        android:fontFamily="@font/interbold"
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:textSize="20dp"
@@ -712,10 +703,10 @@
 
     <TextView
         android:id="@+id/infoToast"
+        style="@style/textLabelBold"
         android:drawablePadding="5dp"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:fontFamily="@font/interbold"
         android:textColor="#cccccc"
         android:visibility="invisible"
         android:background="@drawable/rounded_corner"

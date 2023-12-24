@@ -76,6 +76,15 @@
             android:text="Simple" />
     </RadioGroup>
 
+    <CheckBox
+        android:id="@+id/cyberMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="CYBERMODE"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gaugemode" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelinevleft"
         android:layout_width="wrap_content"
