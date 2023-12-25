@@ -22,7 +22,7 @@ android {
         applicationId "app.candash.cluster"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 64
+        versionCode 65
         versionName "1.2.1"
 
 
