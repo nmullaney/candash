@@ -1156,6 +1156,8 @@ class DashFragment : Fragment() {
             binding.coolantflowunits,
             binding.chargerate,
             binding.batterypercent,
+
+            binding.APWarning,
             )
         val textViewsSecondary = setOf(
             binding.unit
@@ -1299,7 +1301,7 @@ class DashFragment : Fragment() {
         val speedLimitVal = viewModel.carState[SName.fusedSpeedLimit] ?: SVal.fusedSpeedNone
         val map = viewModel.carState[SName.mapRegion]
         if (speedLimitVal == SVal.fusedSpeedNone || map == null || gearState() != SVal.gearDrive
-            || prefs.getBooleanPref(Constants.hideSpeedLimit) || isSplitScreen()
+            || prefs.getBooleanPref(Constants.hideSpeedLimit) || isSplitScreen() || binding.APWarning.visible
         ) {
             binding.speedLimitUs.visible = false
             binding.speedLimitRound.visible = false
@@ -1393,6 +1395,8 @@ class DashFragment : Fragment() {
                 overlayGradient.colors = intArrayOf(gradientColorFrom, gradientColorFrom)
             }
         }
+        // Speed limit sign is dependent on warning visibility
+        updateSpeedLimitSign()
     }
 
     private fun updateBSWarning(bsValue: Float?, bsBinding: View, orientation: Orientation) {
