@@ -52,7 +52,6 @@ object SName {
     const val keepClimateReq = "keepClimateReq"
     const val kwhChargeTotal = "kwhChargeTotal"
     const val kwhDischargeTotal = "kwhDischargeTotal"
-    const val leftVehicle = "leftVehDetected"
     const val liftgateState = "liftgateState"
     const val lightingState = "lightingState"
     const val lightSwitch = "lightSwitch"
@@ -72,12 +71,9 @@ object SName {
     const val PINpassed = "PINpassed"
     const val rearFogStatus = "rearFogStatus"
     const val rearLeftDoorState = "RearLeftDoor"
-    const val rearLeftVehicle = "rearLeftVehDetected"
     const val rearRightDoorState = "RearRightDoor"
-    const val rearRightVehicle = "rearRightVehDetected"
     const val rearTemp = "rearTemp"
     const val rearTorque = "rearTorque"
-    const val rightVehicle = "rightVehDetected"
     const val slowPower = "slowPower"
     const val stateOfCharge = "UI_SOC"
     const val steeringAngle = "SteeringAngle"
@@ -95,8 +91,6 @@ object SName {
     // Augmented signals:
     const val power = "power"
     const val smoothBattAmps = "smoothBattAmps"
-    const val l1Distance = "l1Distance"
-    const val l2Distance = "l2Distance"
 }
 
 object SGroup {

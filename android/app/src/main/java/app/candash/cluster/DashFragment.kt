@@ -769,11 +769,8 @@ class DashFragment : Fragment() {
             binding.blindSpotGradientLeft.visible = bsm == 1f && signalOn
             updateBSWarning(bsm, binding.BSWarningLeft, Orientation.LEFT_RIGHT)
 
-            // Use new BSM signal for USS-less cars (since 2023.44.30)
-            // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
-            if (viewModel.carState[SName.leftVehicle] == null) { // (if no USS)
-                binding.blindSpotLeft2.visible = (bsm == 1f || bsm == 2f) && !prefs.getBooleanPref(Constants.hideBs)
-            }
+            // Use new BSM signal for arcs
+            binding.blindSpotLeft2.visible = (bsm == 1f || bsm == 2f) && !prefs.getBooleanPref(Constants.hideBs)
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.blindSpotRight, SName.turnSignalRight)) {
@@ -783,41 +780,12 @@ class DashFragment : Fragment() {
             binding.blindSpotGradientRight.visible = bsm == 1f && signalOn
             updateBSWarning(bsm, binding.BSWarningRight, Orientation.RIGHT_LEFT)
 
-            // Use new BSM signal for USS-less cars (since 2023.44.30)
-            // TODO: once most cars have >= 44.30, replace USS with this as it's more accurate
-            if (viewModel.carState[SName.rightVehicle] == null) { // (if no USS)
-                binding.blindSpotRight2.visible = (bsm == 1f || bsm == 2f) && !prefs.getBooleanPref(Constants.hideBs)
-            }
+            // Use new BSM signal for arcs
+            binding.blindSpotRight2.visible = (bsm == 1f || bsm == 2f) && !prefs.getBooleanPref(Constants.hideBs)
         }
 
         viewModel.onSignal(viewLifecycleOwner, SName.forwardCollisionWarning) {
             updateFCWWarning(it)
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.leftVehicle) {
-            val distance = it ?: 99999f
-            val l1Distance = viewModel.carState[SName.l1Distance] ?: Constants.l1DistanceLowSpeed
-            val l2Distance = viewModel.carState[SName.l2Distance] ?: Constants.l2DistanceLowSpeed
-            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
-                binding.blindSpotLeft1.visible = false
-                binding.blindSpotLeft2.visible = false
-            } else {
-                binding.blindSpotLeft1.visible = (distance in l2Distance..l1Distance)
-                binding.blindSpotLeft2.visible = (distance < l2Distance)
-            }
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.rightVehicle) {
-            val distance = it ?: 99999f
-            val l1Distance = viewModel.carState[SName.l1Distance] ?: Constants.l1DistanceLowSpeed
-            val l2Distance = viewModel.carState[SName.l2Distance] ?: Constants.l2DistanceLowSpeed
-            if (gearState() in setOf(SVal.gearPark, SVal.gearInvalid) || prefs.getBooleanPref(Constants.hideBs)) {
-                binding.blindSpotRight1.visible = false
-                binding.blindSpotRight2.visible = false
-            } else {
-                binding.blindSpotRight1.visible = (distance in l2Distance..l1Distance)
-                binding.blindSpotRight2.visible = (distance < l2Distance)
-            }
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.PINpassed, SName.brakeApplied)) {
@@ -1164,6 +1132,8 @@ class DashFragment : Fragment() {
             binding.coolantflowunits,
             binding.chargerate,
             binding.batterypercent,
+
+            binding.APWarning,
             )
         val textViewsSecondary = setOf(
             binding.unit
@@ -1308,7 +1278,7 @@ class DashFragment : Fragment() {
         val speedLimitVal = viewModel.carState[SName.fusedSpeedLimit] ?: SVal.fusedSpeedNone
         val map = viewModel.carState[SName.mapRegion]
         if (speedLimitVal == SVal.fusedSpeedNone || map == null || gearState() != SVal.gearDrive
-            || prefs.getBooleanPref(Constants.hideSpeedLimit) || isSplitScreen()
+            || prefs.getBooleanPref(Constants.hideSpeedLimit) || isSplitScreen() || binding.APWarning.visible
         ) {
             binding.speedLimitUs.visible = false
             binding.speedLimitRound.visible = false
@@ -1402,6 +1372,8 @@ class DashFragment : Fragment() {
                 overlayGradient.colors = intArrayOf(gradientColorFrom, gradientColorFrom)
             }
         }
+        // Speed limit sign is dependent on warning visibility
+        updateSpeedLimitSign()
     }
 
     private fun updateBSWarning(bsValue: Float?, bsBinding: View, orientation: Orientation) {
