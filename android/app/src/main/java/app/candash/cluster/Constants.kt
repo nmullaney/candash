@@ -35,6 +35,7 @@ object Constants {
     const val powerUnitPs = 2f
     const val torqueInLbfFt = "torqueInLbfFt"
     const val hideEfficiency = "hideEfficiency"
+    const val hideEfficiencyChart = "hideEfficiencyChart"
     const val efficiencyLookBack = "efficiencyLookBack"
     const val detectedRHD = "detectedRHD"
     const val forceRHD = "forceRHD"

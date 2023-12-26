@@ -411,14 +411,14 @@ class DashFragment : Fragment() {
 
         val efficiencyCalculator = EfficiencyCalculator(viewModel, prefs)
         binding.efficiencyChart.setLookBack(prefs.getPref(Constants.efficiencyLookBack))
-        binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
+        updateEfficiencyChart(efficiencyCalculator)
 
         binding.efficiency.setOnClickListener {
             binding.infoToast.text = efficiencyCalculator.changeLookBack()
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
             binding.efficiencyChart.setLookBack(prefs.getPref(Constants.efficiencyLookBack))
-            binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
+            updateEfficiencyChart(efficiencyCalculator)
         }
 
         binding.efficiency.setOnLongClickListener {
@@ -426,6 +426,7 @@ class DashFragment : Fragment() {
             binding.infoToast.text = "Cleared efficiency history"
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
+            updateEfficiencyChart(efficiencyCalculator)
             return@setOnLongClickListener true
         }
 
@@ -745,9 +746,7 @@ class DashFragment : Fragment() {
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.odometer, SName.gearSelected)) {
             efficiencyCalculator.updateKwhHistory()
-            if (!prefs.getBooleanPref(Constants.hideEfficiency)) {
-                binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
-            }
+            updateEfficiencyChart(efficiencyCalculator)
         }
 
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
@@ -759,7 +758,6 @@ class DashFragment : Fragment() {
                 binding.efficiency.text = efficiencyText
                 binding.efficiency.visible = true
             }
-            binding.efficiencyChart.visible = !prefs.getBooleanPref(Constants.hideEfficiency)
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.blindSpotLeft, SName.turnSignalLeft)) {
@@ -1071,6 +1069,15 @@ class DashFragment : Fragment() {
             }
         } else {
             binding.blackout.visible = false
+        }
+    }
+
+    private fun updateEfficiencyChart(efficiencyCalculator: EfficiencyCalculator) {
+        if (!prefs.getBooleanPref(Constants.hideEfficiency) && !prefs.getBooleanPref(Constants.hideEfficiencyChart) && !isSplitScreen()) {
+            binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
+            binding.efficiencyChart.visible = true
+        } else {
+            binding.efficiencyChart.visible = false
         }
     }
     
