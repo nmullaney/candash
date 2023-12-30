@@ -19,13 +19,15 @@
     <color name="prnd_not_selected">#FFDDDDDD</color>
     <color name="day_background">#FFEEEEEE</color>
     <color name="night_background">#FF000000</color>
-    <color name="autopilot_blue">#FF0048FF</color>
+    <color name="autopilot_blue">#FF3E6BE2</color>
     <color name="autopilot_inactive">#FF808080</color>
     <color name="start_color">#4CAF50</color>
     <color name="stop_color">#F44336</color>
     <color name="light_gray">#EEEEEE</color>
     <color name="medium_gray">#CCCCCC</color>
     <color name="dark_gray">#444444</color>
+    <color name="battery_bg_night">#FF333333</color>
+    <color name="battery_bg_day">#FFA7A7A7</color>
     <color name="telltale_darkgreen">#00A933</color>
     <color name="telltale_green">#02e359</color>
     <color name="telltale_orange">#ffb641</color>

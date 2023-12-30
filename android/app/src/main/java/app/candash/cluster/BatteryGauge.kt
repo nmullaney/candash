@@ -12,10 +12,10 @@ import androidx.core.content.ContextCompat
 class BatteryGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var lightMode : Int = 0
+    private var lightMode : Int = 1
     private var isChargeMode : Boolean = false
     private var lineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.parseColor("#FFAAAAAA"), PorterDuff.Mode.SRC_ATOP)
+    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.battery_bg_day), PorterDuff.Mode.SRC_ATOP)
 
     private var powerPercent : Float = 50f
 
@@ -40,7 +40,7 @@ class BatteryGauge @JvmOverloads constructor(
 
     private fun drawClassic(canvas: Canvas) {
         // first insert @drawable/ic_deadbattery
-        val deadBattery = ContextCompat.getDrawable(context, R.drawable.ic_deadbattery)
+        val deadBattery = if (lightMode == 1) ContextCompat.getDrawable(context, R.drawable.ic_deadbattery) else ContextCompat.getDrawable(context, R.drawable.ic_deadbattery_night)
         deadBattery?.setBounds(0, 0, 50.px, 20.px)
         deadBattery?.draw(canvas)
 
@@ -119,9 +119,9 @@ class BatteryGauge @JvmOverloads constructor(
             }
         }
         backgroundLineColor = if (lightMode == 1){
-            PorterDuffColorFilter(Color.parseColor("#FFAAAAAA"), PorterDuff.Mode.SRC_ATOP)
+            PorterDuffColorFilter(resources.getColor(R.color.battery_bg_day), PorterDuff.Mode.SRC_ATOP)
         } else {
-            PorterDuffColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_ATOP)
+            PorterDuffColorFilter(resources.getColor(R.color.battery_bg_night), PorterDuff.Mode.SRC_ATOP)
         }
         this.invalidate()
     }
