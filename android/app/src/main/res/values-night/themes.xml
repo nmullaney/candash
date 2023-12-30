@@ -20,4 +20,42 @@
         <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
         <item name="fullscreenTextColor">@color/light_blue_A400</item>
     </style>
+
+    <style name="Theme.TeslaDashboard.Regular" parent="Theme.TeslaDashboard">
+        <item name="fontHugeNum">@font/interextralight</item>
+        <item name="fontLargeNum">@font/intermedium</item>
+        <item name="fontRegular">@font/interregular</item>
+        <item name="fontMedium">@font/intermedium</item>
+        <item name="fontSemiBold">@font/intersemibold</item>
+        <item name="fontBold">@font/interbold</item>
+
+        <item name="scaleTextY">0.9</item>
+        <item name="maxSizeHugeNum">300dp</item>
+        <item name="maxSizeLargeNum">220dp</item>
+
+        <item name="letterSpacing">-0.1</item>
+
+        <item name="cyberMode">false</item>
+    </style>
+
+    <style name="Theme.TeslaDashboard.Cyber" parent="Theme.TeslaDashboard">
+        <item name="fontHugeNum">@font/orbitronlight</item>
+        <item name="fontLargeNum">@font/orbitronmedium</item>
+        <item name="fontRegular">@font/blenderprobook</item>
+        <item name="fontMedium">@font/blenderpromedium</item>
+        <item name="fontSemiBold">@font/blenderprobold</item>
+        <item name="fontBold">@font/blenderprobold</item>
+
+        <item name="scaleTextY">1.0</item>
+        <item name="maxSizeHugeNum">175dp</item>
+        <item name="maxSizeLargeNum">110dp</item>
+
+        <item name="letterSpacing">0.0</item>
+
+        <item name="cyberMode">true</item>
+    </style>
+
+    <style name="Theme.TeslaDashboard.Fullscreen" parent="Theme.TeslaDashboard.Regular">
+
+    </style>
 </resources>
