@@ -13,7 +13,7 @@
           android:pathData="M2347,1173C2347,1379 2293,1582 2190,1760 2087,1939 1939,2087 1760,2190 1582,2293 1379,2347 1174,2347 968,2347 765,2293 587,2190 408,2087 260,1939 157,1760 54,1582 0,1379 0,1173 0,968 54,765 157,587 260,408 408,260 587,157 765,54 968,0 1174,0 1379,0 1582,54 1760,157 1939,260 2087,408 2190,587 2293,765 2347,968 2347,1173L2347,1173Z"
           android:strokeLineJoin="round"
           android:strokeWidth="28.222"
-          android:fillColor="#0048FF"
+          android:fillColor="@color/autopilot_blue"
           android:strokeColor="#00000000"
           android:fillType="evenOdd"/>
       <path

@@ -5,7 +5,7 @@
     android:viewportHeight="800">
   <path
       android:pathData="M400,400m-400,0a400,400 0,1 1,800 0a400,400 0,1 1,-800 0"
-      android:fillColor="#0048ff"/>
+      android:fillColor="@color/autopilot_blue"/>
   <path
       android:pathData="M399.87,399.96m-73.98,0a73.98,73.98 0,1 1,147.96 0a73.98,73.98 0,1 1,-147.96 0"
       android:strokeWidth="45"
