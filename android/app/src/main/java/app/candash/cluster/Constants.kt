@@ -11,6 +11,10 @@ object Constants {
     // For PIWIS-WLAN
     const val ipAddressLocalNetwork = "192.168.4.1"
 
+    const val efficiencyOdoStepKm = 0.001f
+    // Smooths to x of the entire chart size
+    const val efficiencyChartSmoothing = 0.1f
+
     // Prefs
     const val uiSpeedUnitsMPH = "uiSpeedUnitsMPH"
     const val forceNightMode = "forceNightMode"
@@ -31,6 +35,7 @@ object Constants {
     const val powerUnitPs = 2f
     const val torqueInLbfFt = "torqueInLbfFt"
     const val hideEfficiency = "hideEfficiency"
+    const val hideEfficiencyChart = "hideEfficiencyChart"
     const val efficiencyLookBack = "efficiencyLookBack"
     const val detectedRHD = "detectedRHD"
     const val forceRHD = "forceRHD"

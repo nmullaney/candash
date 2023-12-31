@@ -17,6 +17,13 @@ class EfficiencyCalculator(
     private val tripleFloatListType =
         object : TypeToken<MutableList<Triple<Float, Float, Float>>>() {}.type
 
+    private var lastSavedAtKm = 0f
+
+    init {
+        loadHistoryFromPrefs()
+        lastSavedAtKm = kwhHistory.lastOrNull()?.first ?: 0f
+    }
+
     fun changeLookBack(): String {
         val inMiles = prefs.getBooleanPref(Constants.uiSpeedUnitsMPH)
         val old = prefs.getPref(Constants.efficiencyLookBack)
@@ -28,10 +35,24 @@ class EfficiencyCalculator(
         val index = (options.indexOf(old) + 1) % options.size
         prefs.setPref(Constants.efficiencyLookBack, options[index])
 
+        // When it cycles back to 0, toggle the efficiency chart
+        var chartString = ""
+        if (options[index] == 0f) {
+            prefs.setBooleanPref(
+                Constants.hideEfficiencyChart,
+                !prefs.getBooleanPref(Constants.hideEfficiencyChart)
+            )
+            chartString = if (prefs.getBooleanPref(Constants.hideEfficiencyChart)) {
+                " (chart off)"
+            } else {
+                " (chart on)"
+            }
+        }
+
         return if (inMiles) {
-            "Last %.0f miles".format(options[index].kmToMi)
+            "Last %.0f miles%s".format(options[index].kmToMi, chartString)
         } else {
-            "Last %.0f kilometers".format(options[index])
+            "Last %.0f km%s".format(options[index], chartString)
         }
     }
 
@@ -52,8 +73,66 @@ class EfficiencyCalculator(
         }
     }
 
+    /**
+     * Returns a list of pairs, where first is km from now (e.g. -10), and second
+     * is the efficiency in Wh/km. The result is smoothed and length is based on
+     * the efficiency look-back pref.
+     */
+    fun getEfficiencyHistory(): List<Pair<Float, Float>> {
+        val lookBack = prefs.getPref(Constants.efficiencyLookBack)
+        if (lookBack == 0f) return listOf()
+        val nowOdo = kwhHistory.lastOrNull()?.first ?: 0f
+
+        val data = mutableListOf<Pair<Float, Float>>()
+
+        for (i in 1 until kwhHistory.size) {
+            val (lastOdo, lastDischarge, lastCharge) = kwhHistory[i-1]
+            val (odo, discharge, charge) = kwhHistory[i]
+            // Skip parked consumption/charges
+            val parked = parkedKwhHistory.firstOrNull { it.first in lastOdo..odo }
+            if (parked != null) continue
+
+            val odoDelta = odo - lastOdo
+            val dischargeDelta = discharge - lastDischarge
+            val chargeDelta = charge - lastCharge
+            val consumedWh = (dischargeDelta - chargeDelta) * 1000f
+            data.add(Pair(odo - nowOdo, consumedWh / odoDelta))
+        }
+        // Smooth to 1/50th of the look-back
+        val smoothWindowKm = lookBack * Constants.efficiencyChartSmoothing
+        return smoothEfficiencyHistory(data.toList(), smoothWindowKm)
+    }
+
+    private fun smoothEfficiencyHistory(
+        values: List<Pair<Float, Float>>,
+        windowSizeKm: Float
+    ): List<Pair<Float, Float>> {
+        if (windowSizeKm <= 0 || values.size <= 1) return values
+
+        val result = mutableListOf<Pair<Float, Float>>()
+        var startIdx = 0
+        var endIdx = 0
+        var sum = 0f
+        var count = 0
+
+        for ((km, _) in values) {
+            while (startIdx < values.size && values[startIdx].first < km - windowSizeKm / 2) {
+                sum -= values[startIdx].second
+                count -= 1
+                startIdx += 1
+            }
+            while (endIdx < values.size && values[endIdx].first <= km + windowSizeKm / 2) {
+                sum += values[endIdx].second
+                count += 1
+                endIdx += 1
+            }
+            val smoothedValue = if (count > 0) sum / count else 0f
+            result.add(Pair(km, smoothedValue))
+        }
+        return result
+    }
+
     fun updateKwhHistory() {
-        loadHistoryFromPrefs()
         val odo = viewModel.carState[SName.odometer]
         val kwhDischargeTotal = viewModel.carState[SName.kwhDischargeTotal]
         val kwhChargeTotal = viewModel.carState[SName.kwhChargeTotal]
@@ -83,22 +162,20 @@ class EfficiencyCalculator(
                 )
             )
             parkedStartKwh = null
-            while (parkedKwhHistory.firstOrNull { it.first < odo - 51f } != null) {
-                parkedKwhHistory.removeFirst()
-            }
+            parkedKwhHistory.removeIf { it.first < odo - 51f }
             saveHistoryToPrefs()
             return
         }
     }
 
     private fun updateHistory(odo: Float, discharge: Float, charge: Float) {
-        val histEndOdo = kwhHistory.lastOrNull()?.first ?: 0f
+        val lastOdo = kwhHistory.lastOrNull()?.first ?: 0f
         val newTriple = Triple(odo, discharge, charge)
-        if (odo - histEndOdo >= 1.0 || odo - histEndOdo < 0f) {
+        if (odo - lastOdo >= 8.0 || odo - lastOdo < 0) {
             // We're missing too much data, start over
-            kwhHistory.clear()
+            clearHistory()
             kwhHistory.add(newTriple)
-        } else if (odo - histEndOdo >= 0.1) {
+        } else if (odo - lastOdo >= Constants.efficiencyOdoStepKm) {
             // We have travelled far enough, add to history
             kwhHistory.add(newTriple)
         } else {
@@ -107,23 +184,22 @@ class EfficiencyCalculator(
             return
         }
         // Cleanup history from more than 51 km ago
-        while (kwhHistory.firstOrNull { it.first < odo - 51f } != null) {
-            kwhHistory.removeFirst()
+        kwhHistory.removeIf { it.first < odo - 51f }
+        // Don't spam writing to disk while driving, the app is unlikely to restart in-motion
+        if (odo - lastSavedAtKm >= 0.5) {
+            saveHistoryToPrefs()
         }
-        saveHistoryToPrefs()
     }
 
-    private fun getInstantEfficiencyText(inMiles: Boolean, power: Float): String? {
+    private fun getInstantEfficiencyText(inMiles: Boolean, power: Float): String {
         val speed = viewModel.carState[SName.uiSpeed] ?: 0f
-        // If speed is 0 (or null) return to prevent "infinity kWh/mi"
-        if (speed == 0f) {
-            return null
-        }
+        val unit = if (inMiles) "kWh/mi" else "kWh/km"
         val instantEfficiency = power / speed / 1000f
-        return if (inMiles) {
-            "%.2f kWh/mi".format(instantEfficiency)
+        // If speed is 0 return a dash instead of infinity
+        return if (speed > 0) {
+            "%.2f %s".format(instantEfficiency, unit)
         } else {
-            "%.2f kWh/km".format(instantEfficiency)
+            "- %s".format(unit)
         }
     }
 
@@ -180,6 +256,7 @@ class EfficiencyCalculator(
         prefs.setStringPref(Constants.parkedKwhHistory, gson.toJson(parkedKwhHistory))
         prefs.setPref(Constants.parkedStartKwhDischarge, parkedStartKwh?.first ?: 0f)
         prefs.setPref(Constants.parkedStartKwhCharge, parkedStartKwh?.second ?: 0f)
+        lastSavedAtKm = kwhHistory.lastOrNull()?.first ?: 0f
     }
 
     private fun loadHistoryFromPrefs() {

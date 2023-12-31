@@ -410,11 +410,15 @@ class DashFragment : Fragment() {
         }
 
         val efficiencyCalculator = EfficiencyCalculator(viewModel, prefs)
+        binding.efficiencyChart.setLookBack(prefs.getPref(Constants.efficiencyLookBack))
+        updateEfficiencyChart(efficiencyCalculator)
 
         binding.efficiency.setOnClickListener {
             binding.infoToast.text = efficiencyCalculator.changeLookBack()
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
+            binding.efficiencyChart.setLookBack(prefs.getPref(Constants.efficiencyLookBack))
+            updateEfficiencyChart(efficiencyCalculator)
         }
 
         binding.efficiency.setOnLongClickListener {
@@ -422,6 +426,7 @@ class DashFragment : Fragment() {
             binding.infoToast.text = "Cleared efficiency history"
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
+            updateEfficiencyChart(efficiencyCalculator)
             return@setOnLongClickListener true
         }
 
@@ -741,12 +746,13 @@ class DashFragment : Fragment() {
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.odometer, SName.gearSelected)) {
             efficiencyCalculator.updateKwhHistory()
+            updateEfficiencyChart(efficiencyCalculator)
         }
 
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
-            if (efficiencyText == null || gearState() in setOf(SVal.gearInvalid, SVal.gearPark) || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
+            if (efficiencyText == null || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
                 binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
@@ -1065,6 +1071,15 @@ class DashFragment : Fragment() {
             binding.blackout.visible = false
         }
     }
+
+    private fun updateEfficiencyChart(efficiencyCalculator: EfficiencyCalculator) {
+        if (!prefs.getBooleanPref(Constants.hideEfficiency) && !prefs.getBooleanPref(Constants.hideEfficiencyChart) && !isSplitScreen()) {
+            binding.efficiencyChart.updateHistory(efficiencyCalculator.getEfficiencyHistory())
+            binding.efficiencyChart.visible = true
+        } else {
+            binding.efficiencyChart.visible = false
+        }
+    }
     
     private fun shouldUseDarkMode(): Boolean {
         // Save/use the last known value to prevent a light/dark flash upon launching
@@ -1161,6 +1176,7 @@ class DashFragment : Fragment() {
             binding.powerBar.setDayValue(1)
             binding.battery.setDayValue(1)
         }
+        binding.efficiencyChart.setDarkMode(shouldUseDarkMode())
         updateGearView()
     }
 
