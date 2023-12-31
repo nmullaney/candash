@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/day_background">
+    android:background="?attr/colorBackground">
 
     <TextView
         android:id="@+id/display_mode_label"
@@ -255,6 +255,7 @@
 
     <Button
         android:id="@+id/save_settings"
+        android:backgroundTint="@color/medium_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -268,6 +269,7 @@
 
     <Button
         android:id="@+id/cancel_settings"
+        android:backgroundTint="@color/medium_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

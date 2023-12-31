@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/day_background">
+    android:background="?attr/colorBackground">
 
     <TextView
         android:id="@+id/battery_percent"
@@ -17,6 +17,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="377 km"
+        android:textColor="?attr/colorPrimary"
 
 
         android:textSize="20dp"
@@ -101,7 +102,6 @@
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:gravity="center"
-        android:textColor="@color/black"
         android:textSize="120dp"
         android:visibility="visible"
         app:fontWeight="300"
@@ -120,7 +120,6 @@
         android:layout_height="200dp"
         android:gravity="center|left"
         android:text="%"
-        android:textColor="@color/black"
         android:textSize="40dp"
 
         android:visibility="visible"
@@ -228,6 +227,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:textSize="20dp"
+        android:textColor="?attr/colorPrimary"
 
         android:visibility="visible"
         app:autoSizeMaxTextSize="40dp"
@@ -504,6 +504,7 @@
         android:layout_marginEnd="6dp"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|right"
+        android:textColor="?attr/colorPrimary"
 
         android:text="(Auto)"
         app:layout_constraintEnd_toStartOf="@id/inside_temp_req"
@@ -690,6 +691,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:textSize="20dp"
+        android:textColor="@color/medium_gray"
 
         android:visibility="visible"
         app:autoSizeMaxTextSize="40dp"

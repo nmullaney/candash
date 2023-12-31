@@ -13,6 +13,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -328,7 +329,6 @@ class DashFragment : Fragment() {
         }
 
         // This is executed now to kick-start some logic even before we get car state data
-        setColors()
         setGaugeVisibility()
         setLayoutOrder()
 
@@ -396,10 +396,10 @@ class DashFragment : Fragment() {
 
         binding.speed.setOnLongClickListener {
             prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
-            setColors()
             binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceNightMode)) "Force dark mode" else "Auto dark mode"
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
+            viewModel.updateTheme()
             return@setOnLongClickListener true
         }
 
@@ -505,11 +505,6 @@ class DashFragment : Fragment() {
             if (it == SVal.rwd) {
                 awdOnlyViews().forEach { view -> view.visible = false }
             }
-        }
-
-        // set display night/day mode based on reported car status
-        viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
-            setColors()
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, listOf(SName.displayOn, SName.gearSelected)) {
@@ -1022,11 +1017,14 @@ class DashFragment : Fragment() {
     }
     
     private fun updateGearView() {
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        val primaryColor = typedValue.data
+
         val apState = viewModel.carState[SName.autopilotState] ?: 0f
         val gearColorSelected = when {
             apState in 3f..7f -> requireContext().getColor(R.color.autopilot_blue)
-            shouldUseDarkMode() -> Color.LTGRAY
-            else -> Color.DKGRAY
+            else -> primaryColor
         }
         val gearLetterIndex = when (gearState()) {
             SVal.gearPark -> 0
@@ -1079,105 +1077,6 @@ class DashFragment : Fragment() {
         } else {
             binding.efficiencyChart.visible = false
         }
-    }
-    
-    private fun shouldUseDarkMode(): Boolean {
-        // Save/use the last known value to prevent a light/dark flash upon launching
-        val darkMode = viewModel.carState[SName.isDarkMode]
-        if (darkMode != null) {
-            prefs.setPref(Constants.lastDarkMode, darkMode)
-        }
-        return (prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode))
-    }
-
-    private fun setColors() {
-        val window: Window? = activity?.window
-        val circleGauges = setOf(
-            binding.fronttorquegauge,
-            binding.reartorquegauge,
-            binding.batttempgauge,
-            binding.fronttempgauge,
-            binding.reartempgauge,
-            binding.frontbraketempgauge,
-            binding.rearbraketempgauge,
-            binding.coolantflowgauge,
-            binding.chargemeter
-        )
-        val textViewsPrimary = setOf(
-            binding.speed,
-            binding.bigsoc,
-            binding.bigsocpercent,
-            binding.power,
-            binding.efficiency,
-
-            binding.minpower,
-            binding.maxpower,
-            binding.fronttorque,
-            binding.fronttorquelabel,
-            binding.fronttorqueunits,
-
-            binding.reartorque,
-            binding.reartorquelabel,
-            binding.reartorqueunits,
-            binding.batttemp,
-            binding.batttemplabel,
-            binding.batttempunits,
-            binding.fronttemp,
-            binding.fronttemplabel,
-            binding.fronttempunits,
-            binding.frontbraketemp,
-            binding.frontbraketemplabel,
-            binding.frontbraketempunits,
-            binding.rearbraketemp,
-            binding.rearbraketemplabel,
-            binding.rearbraketempunits,
-            binding.reartemp,
-            binding.reartemplabel,
-            binding.reartempunits,
-            binding.coolantflow,
-            binding.coolantflowlabel,
-            binding.coolantflowunits,
-            binding.chargerate,
-            binding.batterypercent,
-
-            binding.APWarning,
-            )
-        val textViewsSecondary = setOf(
-            binding.unit
-        )
-        val textViewsDisabled = setOf(
-            binding.odometer,
-            binding.PRND
-        )
-        val imageViewsSecondary = setOf(
-            binding.modely,
-            binding.modelyCenter
-        )
-
-        // Not using dark-mode for compatibility with older version of Android (pre-29)
-        if (shouldUseDarkMode()) {
-            window?.statusBarColor = Color.BLACK
-            binding.root.setBackgroundColor(Color.BLACK)
-            textViewsPrimary.forEach { it.setTextColor(Color.WHITE) }
-            textViewsSecondary.forEach { it.setTextColor(Color.LTGRAY) }
-            textViewsDisabled.forEach { it.setTextColor(Color.DKGRAY) }
-            imageViewsSecondary.forEach { it.setColorFilter(Color.LTGRAY) }
-            circleGauges.forEach { it.setDayValue(0) }
-            binding.powerBar.setDayValue(0)
-            binding.battery.setDayValue(0)
-        } else {
-            window?.statusBarColor = Color.parseColor("#FFEEEEEE")
-            binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
-            textViewsPrimary.forEach { it.setTextColor(Color.BLACK) }
-            textViewsSecondary.forEach { it.setTextColor(Color.GRAY) }
-            textViewsDisabled.forEach { it.setTextColor(Color.LTGRAY) }
-            imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
-            circleGauges.forEach { it.setDayValue(1) }
-            binding.powerBar.setDayValue(1)
-            binding.battery.setDayValue(1)
-        }
-        binding.efficiencyChart.setDarkMode(shouldUseDarkMode())
-        updateGearView()
     }
 
     private fun formatPower(power: Float): String {

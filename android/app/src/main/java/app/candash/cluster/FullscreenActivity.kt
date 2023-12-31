@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
@@ -30,6 +32,8 @@ class FullscreenActivity : AppCompatActivity() {
     private var handler: Handler = Handler()
     private var runnable: Runnable? = null
     private var delay = 1000
+    
+    private var currentFragmentName: String = "dash"
 
     private lateinit var viewModel: DashViewModel
 
@@ -91,7 +95,10 @@ class FullscreenActivity : AppCompatActivity() {
             }
         }.also { runnable = it }, delay.toLong())
 
-        setTheme()
+        // Set initial theme
+        val theme = getTheme(prefs)
+        setTheme(theme)
+        setStatusBarColor(prefs)
 
         setContentView(R.layout.activity_fullscreen)
         // This is a known unsafe cast, but is safe in the only correct use case:
@@ -119,27 +126,64 @@ class FullscreenActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
         viewModel.isSplitScreen()
         viewModel.fragmentNameToShow().observe(this) {
-            when (it) {
-                "dash" -> switchToFragment(DashFragment())
-                "info" -> switchToFragment(InfoFragment())
-                "settings" -> switchToFragment(SettingsFragment())
-                "party" -> switchToFragment(PartyFragment())
-                else -> throw IllegalStateException("Attempting to switch to unknown fragment: $it")
+            currentFragmentName = it
+            setTheme(getTheme(prefs))
+            setStatusBarColor(prefs)
+            switchToFragment(it)
+        }
+
+        // Listen for carstate theme changes
+        viewModel.onSignal(this, SName.isDarkMode) {
+            if (it != null) {
+                if (it != prefs.getPref(Constants.lastDarkMode)) {
+                    prefs.setPref(Constants.lastDarkMode, it)
+                    updateTheme(getTheme(prefs))
+                    setStatusBarColor(prefs)
+                }
             }
         }
-    }
 
-    private fun setTheme() {
-        val prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
-        if (prefs.getBooleanPref(Constants.cyberMode)) {
-            setTheme(R.style.Theme_TeslaDashboard_Cyber)
-        } else {
-            setTheme(R.style.Theme_TeslaDashboard_Regular)
+        // Listen for manual theme changes
+        viewModel.themeUpdate.observe(this) {
+            updateTheme(getTheme(prefs))
+            setStatusBarColor(prefs)
         }
     }
 
-    private fun switchToFragment(fragment: Fragment) {
-        setTheme()
+    private fun getTheme(prefs: SharedPreferences): Int {
+        val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode)
+        val cyber = prefs.getBooleanPref(Constants.cyberMode)
+        return when {
+            dark && cyber -> R.style.Theme_TeslaDashboard_Cyber_Night
+            cyber -> R.style.Theme_TeslaDashboard_Cyber
+            dark -> R.style.Theme_TeslaDashboard_Night
+            else -> R.style.Theme_TeslaDashboard
+        }
+    }
+
+    private fun updateTheme(theme: Int) {
+        setTheme(theme)
+        // Don't recreate the activity, just recreate the fragment
+        switchToFragment(currentFragmentName)
+    }
+
+    private fun setStatusBarColor(prefs: SharedPreferences) {
+        val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode)
+        if (dark) {
+            window.statusBarColor = Color.BLACK
+        } else {
+            window.statusBarColor = Color.parseColor("#FFEEEEEE")
+        }
+    }
+
+    private fun switchToFragment(fragmentName: String) {
+        val fragment = when (fragmentName) {
+            "dash" -> DashFragment()
+            "info" -> InfoFragment()
+            "settings" -> SettingsFragment()
+            "party" -> PartyFragment()
+            else -> throw IllegalStateException("Attempting to switch to unknown fragment: $fragmentName")
+        }
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, fragment)

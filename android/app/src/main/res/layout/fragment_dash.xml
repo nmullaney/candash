@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/day_background">
+    android:background="?attr/colorBackground">
 
     <app.candash.cluster.EfficiencyChart
         android:id="@+id/efficiency_chart"
@@ -25,7 +25,6 @@
         android:gravity="center|center"
         android:maxLines="1"
         android:paddingBottom="0dp"
-        android:textColor="@color/black"
         app:autoSizeMinTextSize="30dp"
         app:autoSizeStepGranularity="10dp"
         app:autoSizeTextType="uniform"
@@ -45,7 +44,6 @@
         android:layout_height="40dp"
         android:gravity="center_horizontal|top"
         android:textSize="30dp"
-        android:textColor="@color/medium_gray"
         android:paddingTop="5dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="@id/speed"
@@ -73,7 +71,6 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:gravity="center"
-        android:textColor="@color/black"
         android:textSize="30dp"
         android:visibility="invisible"
         app:autoSizeMinTextSize="30dp"
@@ -96,7 +93,6 @@
         android:layout_width="100dp"
         android:layout_height="200dp"
         android:gravity="center|left"
-        android:textColor="@color/black"
         android:textSize="40dp"
 
         app:layout_constraintLeft_toRightOf="@id/bigsoc"
@@ -538,7 +534,7 @@
         android:paddingRight="10dp"
         android:text="P  R  N  D"
         android:textAlignment="center"
-        android:textColor="@color/prnd_not_selected"
+        android:textColor="?attr/colorSecondary"
         android:textSize="20dp"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -550,6 +546,7 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
+        android:textColor="?attr/colorSecondary"
 
         android:gravity="start|center_vertical"
         android:paddingRight="5dp"
@@ -577,6 +574,7 @@
         android:paddingRight="5dp"
         android:paddingBottom="0dp"
         android:text="377 km"
+        android:textColor="?attr/colorPrimary"
 
 
         android:textSize="20dp"
@@ -1659,7 +1657,6 @@
         android:drawablePadding="3dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:textColor="@color/black"
         android:visibility="gone"
         android:gravity="center|center_vertical"
         android:text="Apply slight turning force to steering wheel"

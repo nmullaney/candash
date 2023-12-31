@@ -22,7 +22,7 @@ class EfficiencyChart @JvmOverloads constructor(
     private val positiveColor = Color.GRAY
     private val negativeColor = Color.GREEN
     private val neutralColor = 0x1B888888
-    private var transparency = 0.5f
+    private val transparency = 0.5f
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -30,11 +30,6 @@ class EfficiencyChart @JvmOverloads constructor(
 
         this.alpha = transparency
         drawLineChart(canvas, odoEfficiencyToPointF(odoEfficiencyPairs))
-    }
-
-    fun setDarkMode(darkMode: Boolean) {
-        transparency = if (darkMode) 0.8f else 0.5f
-        this.invalidate()
     }
 
     fun setLookBack(sizeKm: Float) {

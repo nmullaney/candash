@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="?attr/colorBackground">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -16,22 +17,23 @@
         android:paddingTop="20dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:orientation="vertical"
-            android:paddingTop="20dp">
+            android:paddingTop="0dp">
         <ImageButton
             android:id="@+id/settings"
+            style="@style/ButtonStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:layout_constraintTop_toTopOf="@id/infolabel"
-            app:layout_constraintStart_toStartOf="@id/infolabel"
-            app:layout_constraintBottom_toBottomOf="@id/infolabel"
-            android:src="@drawable/ic_baseline_settings_24" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_baseline_settings_24"
+            android:scaleType="center"
+            />
         <TextView
             android:id="@+id/infolabel"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:padding="0dp"
             android:text="Network Settings"
@@ -51,12 +53,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/ip_address"
+            android:textColorHint="?attr/colorPrimary"
             android:padding="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_ip_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number|text"
+                android:maxLines="1"
+                android:textColor="?attr/colorPrimarySolid"
+                android:background="?attr/colorSecondary"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -72,6 +79,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:text="@string/save"
+                android:backgroundTint="@color/medium_gray"
                 />
 
             <Button
@@ -119,7 +127,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:text="@string/email_logs" />
+                android:text="@string/email_logs"
+                android:backgroundTint="@color/medium_gray"
+                />
 
         </LinearLayout>
 
@@ -142,9 +152,9 @@
             <TextView
                 android:id="@+id/header_text"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:gravity="center"
-                android:padding="20dp"
+                android:padding="0dp"
                 android:text="@string/panda_data_received"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -156,6 +166,7 @@
 
             <ImageButton
                 android:id="@+id/trash"
+                style="@style/ButtonStyle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 app:layout_constraintTop_toTopOf="@id/header_text"
