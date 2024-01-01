@@ -17,7 +17,7 @@
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="377 km"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorSecondary"
 
 
         android:textSize="20dp"
@@ -227,7 +227,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:textSize="20dp"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorSecondary"
 
         android:visibility="visible"
         app:autoSizeMaxTextSize="40dp"
@@ -504,7 +504,7 @@
         android:layout_marginEnd="6dp"
         android:fontFeatureSettings="tnum"
         android:gravity="bottom|right"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorSecondary"
 
         android:text="(Auto)"
         app:layout_constraintEnd_toStartOf="@id/inside_temp_req"

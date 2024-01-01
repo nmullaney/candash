@@ -227,6 +227,7 @@ class DashFragment : Fragment() {
         setOf(
             binding.powerBar,
             binding.power,
+            binding.efficiency,
             binding.speed,
             binding.unit
         )
@@ -395,8 +396,8 @@ class DashFragment : Fragment() {
         }
 
         binding.speed.setOnLongClickListener {
-            prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
-            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceNightMode)) "Force dark mode" else "Auto dark mode"
+            prefs.setBooleanPref(Constants.forceDarkMode, !prefs.getBooleanPref(Constants.forceDarkMode))
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceDarkMode)) "Force dark mode" else "Auto dark mode"
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
             viewModel.updateTheme()
@@ -1018,7 +1019,7 @@ class DashFragment : Fragment() {
     
     private fun updateGearView() {
         val typedValue = TypedValue()
-        context?.theme?.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        context?.theme?.resolveAttribute(R.attr.colorSecondary, typedValue, true)
         val primaryColor = typedValue.data
 
         val apState = viewModel.carState[SName.autopilotState] ?: 0f

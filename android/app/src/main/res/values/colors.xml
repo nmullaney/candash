@@ -17,8 +17,6 @@
     <color name="high_active_signal">@color/light_green</color>
     <color name="low_active_signal">@color/green</color>
     <color name="prnd_not_selected">#FFDDDDDD</color>
-    <color name="day_background">#FFEEEEEE</color>
-    <color name="night_background">#FF000000</color>
     <color name="autopilot_blue">#FF3E6BE2</color>
     <color name="autopilot_inactive">#FF808080</color>
     <color name="start_color">#4CAF50</color>
@@ -34,4 +32,20 @@
     <color name="telltale_inactive">#909090</color>
     <color name="very_red">#ff0000</color>
     <color name="transparent_blank">#00000000</color>
+
+
+    <color name="day_primary">#FF000000</color>
+    <color name="day_secondary">#FF666666</color>
+    <color name="day_ghost">#FFCCCCCC</color>
+    <color name="day_background">#FFEEEEEE</color>
+
+    <color name="dark_primary">#FFFFFFFF</color>
+    <color name="dark_secondary">#FFCCCCCC</color>
+    <color name="dark_ghost">#FF444444</color>
+    <color name="dark_background">#FF161616</color>
+
+    <color name="night_primary">#FFCCCCCC</color>
+    <color name="night_secondary">#FF888888</color>
+    <color name="night_ghost">#FF222222</color>
+    <color name="night_background">#FF000000</color>
 </resources>

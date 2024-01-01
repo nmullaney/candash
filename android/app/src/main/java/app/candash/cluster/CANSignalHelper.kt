@@ -156,6 +156,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertCANSignal(SName.courtesyLightRequest, Constants.vehicleBus, Hex(0x3F5), 24, 1, 1f, 0f)
 
         insertCANSignal(SName.isDarkMode, Constants.vehicleBus, Hex(0x3DF), 22, 1, 1f, 0f)
+        insertCANSignal(SName.isSunUp, Constants.anyBus, Hex(0x2D3), 25, 2, 1f, 0f, sna=3f)
 
         insertCANSignal(SName.autopilotState, Constants.chassisBus, Hex(0x399), 0, 4, 1f, 0f, sna=15f)
         insertCANSignal(SName.autopilotHands, Constants.chassisBus, Hex(0x399), 42, 4, 1f, 0f, sna=15f)

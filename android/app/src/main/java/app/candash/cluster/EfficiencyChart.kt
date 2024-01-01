@@ -3,6 +3,7 @@ package app.candash.cluster
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import java.lang.Float.max
 import java.lang.Float.min
@@ -19,16 +20,25 @@ class EfficiencyChart @JvmOverloads constructor(
     private val paint = Paint()
 
     // Transparency is added in onDraw
-    private val positiveColor = Color.GRAY
+    private var positiveColor: Int
+    private var neutralColor: Int
     private val negativeColor = Color.GREEN
-    private val neutralColor = 0x1B888888
-    private val transparency = 0.5f
+
+    init {
+        val typedValue = TypedValue()
+
+        context.theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
+        positiveColor = typedValue.data
+
+        context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
+        neutralColor = typedValue.data
+    }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (canvas == null) return
 
-        this.alpha = transparency
+        this.alpha = 0.5f
         drawLineChart(canvas, odoEfficiencyToPointF(odoEfficiencyPairs))
     }
 

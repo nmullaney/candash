@@ -534,7 +534,7 @@
         android:paddingRight="10dp"
         android:text="P  R  N  D"
         android:textAlignment="center"
-        android:textColor="?attr/colorSecondary"
+        android:textColor="?attr/colorGhost"
         android:textSize="20dp"
 
         app:layout_constraintStart_toStartOf="parent"
@@ -546,7 +546,7 @@
         android:layout_width="100dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:textColor="?attr/colorSecondary"
+        android:textColor="?attr/colorGhost"
 
         android:gravity="start|center_vertical"
         android:paddingRight="5dp"
@@ -574,7 +574,7 @@
         android:paddingRight="5dp"
         android:paddingBottom="0dp"
         android:text="377 km"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorSecondary"
 
 
         android:textSize="20dp"

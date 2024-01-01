@@ -16,9 +16,9 @@
 
         <attr name="cyberMode" format="boolean" />
 
-        <attr name="colorPrimarySolid" format="color" />
         <attr name="colorPrimary" format="color" />
         <attr name="colorSecondary" format="color" />
+        <attr name="colorGhost" format="color" />
         <attr name="colorBackground" format="color" />
     </declare-styleable>
 </resources>

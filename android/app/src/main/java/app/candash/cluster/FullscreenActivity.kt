@@ -142,6 +142,15 @@ class FullscreenActivity : AppCompatActivity() {
                 }
             }
         }
+        viewModel.onSignal(this, SName.isSunUp) {
+            if (it != null) {
+                if (it != prefs.getPref(Constants.lastSunUp)) {
+                    prefs.setPref(Constants.lastSunUp, it)
+                    updateTheme(getTheme(prefs))
+                    setStatusBarColor(prefs)
+                }
+            }
+        }
 
         // Listen for manual theme changes
         viewModel.themeUpdate.observe(this) {
@@ -151,11 +160,14 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     private fun getTheme(prefs: SharedPreferences): Int {
-        val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode)
+        val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceDarkMode)
+        val sunUp = prefs.getPref(Constants.lastSunUp) == 1f
         val cyber = prefs.getBooleanPref(Constants.cyberMode)
         return when {
+            dark && sunUp && cyber -> R.style.Theme_TeslaDashboard_Cyber_Dark
             dark && cyber -> R.style.Theme_TeslaDashboard_Cyber_Night
             cyber -> R.style.Theme_TeslaDashboard_Cyber
+            dark && sunUp -> R.style.Theme_TeslaDashboard_Dark
             dark -> R.style.Theme_TeslaDashboard_Night
             else -> R.style.Theme_TeslaDashboard
         }
@@ -168,7 +180,7 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     private fun setStatusBarColor(prefs: SharedPreferences) {
-        val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode)
+        val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceDarkMode)
         if (dark) {
             window.statusBarColor = Color.BLACK
         } else {

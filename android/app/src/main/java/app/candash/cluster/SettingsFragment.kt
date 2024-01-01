@@ -39,7 +39,7 @@ class SettingsFragment() : Fragment() {
         binding.cancelSettings.setOnClickListener {
             launchInfoFragment()
         }
-        if (prefs.getBooleanPref(Constants.forceNightMode)) {
+        if (prefs.getBooleanPref(Constants.forceDarkMode)) {
             binding.displaydark.isChecked = true
         } else {
             binding.displayauto.isChecked = true
@@ -77,8 +77,8 @@ class SettingsFragment() : Fragment() {
 
     private fun saveSettings() {
         when (binding.displaysettings.checkedRadioButtonId) {
-            R.id.displaydark -> prefs.setBooleanPref(Constants.forceNightMode, true)
-            R.id.displayauto -> prefs.setBooleanPref(Constants.forceNightMode, false)
+            R.id.displaydark -> prefs.setBooleanPref(Constants.forceDarkMode, true)
+            R.id.displayauto -> prefs.setBooleanPref(Constants.forceDarkMode, false)
         }
         when (binding.gaugemode.checkedRadioButtonId) {
             R.id.gaugemodefull -> prefs.setPref(Constants.gaugeMode, Constants.showFullGauges)

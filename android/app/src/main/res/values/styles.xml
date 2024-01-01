@@ -14,7 +14,7 @@
         <item name="autoSizeMaxTextSize">?attr/maxSizeHugeNum</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
         <item name="android:letterSpacing">?attr/letterSpacing</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="textLargeNum">
@@ -22,59 +22,59 @@
         <item name="autoSizeMaxTextSize">?attr/maxSizeLargeNum</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
         <item name="android:letterSpacing">?attr/letterSpacing</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="textUnitLabel">
         <item name="fontFamily">?attr/fontSemiBold</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
-        <item name="android:textColor">@color/medium_gray</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
     </style>
 
     <style name="textLabelBold">
         <item name="fontFamily">?attr/fontBold</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="textLabelSemiBold">
         <item name="fontFamily">?attr/fontSemiBold</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="textLabelMedium">
         <item name="fontFamily">?attr/fontMedium</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
         <item name="android:letterSpacing">?attr/letterSpacing</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="textLabelRegular">
         <item name="fontFamily">?attr/fontRegular</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
     <style name="ButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:buttonTint">?attr/colorPrimary</item>
-        <item name="android:backgroundTint">?attr/colorSecondary</item>
+        <item name="android:buttonTint">?attr/colorSecondary</item>
+        <item name="android:backgroundTint">?attr/colorGhost</item>
     </style>
 
     <style name="SpinnerStyle" parent="Widget.AppCompat.Spinner">
-        <item name="android:backgroundTint">?attr/colorSecondary</item>
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
-        <item name="android:popupBackground">?attr/colorSecondary</item>
+        <item name="android:backgroundTint">?attr/colorGhost</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:popupBackground">?attr/colorGhost</item>
     </style>
 
     <style name="RadioButtonStyle"  parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:padding">10dp</item>
-        <item name="android:buttonTint">?attr/colorPrimary</item>
+        <item name="android:buttonTint">?attr/colorSecondary</item>
     </style>
 
     <style name="CheckboxStyle"  parent="Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:textColor">?attr/colorPrimarySolid</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:padding">10dp</item>
-        <item name="android:buttonTint">?attr/colorPrimary</item>
+        <item name="android:buttonTint">?attr/colorSecondary</item>
     </style>
 
 </resources>

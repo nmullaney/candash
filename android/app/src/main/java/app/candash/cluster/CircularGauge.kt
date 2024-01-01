@@ -37,10 +37,10 @@ class CircularGauge @JvmOverloads constructor(
         context.theme.resolveAttribute(R.attr.cyberMode, typedValue, true)
         cyber = typedValue.data != 0
 
-        context.theme.resolveAttribute(R.attr.colorPrimarySolid, typedValue, true)
+        context.theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
         lineColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
-        context.theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
+        context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)

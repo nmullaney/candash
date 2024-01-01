@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="@string/ip_address"
-            android:textColorHint="?attr/colorPrimary"
+            android:textColorHint="?attr/colorSecondary"
             android:padding="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -62,8 +62,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="number|text"
                 android:maxLines="1"
-                android:textColor="?attr/colorPrimarySolid"
-                android:background="?attr/colorSecondary"
+                android:textColor="?attr/colorPrimary"
+                android:background="?attr/colorGhost"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>

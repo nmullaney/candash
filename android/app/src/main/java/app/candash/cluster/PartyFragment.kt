@@ -169,7 +169,7 @@ class PartyFragment : Fragment() {
         }
 
         binding.bigSoc.setOnLongClickListener {
-            prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
+            prefs.setBooleanPref(Constants.forceDarkMode, !prefs.getBooleanPref(Constants.forceDarkMode))
             viewModel.updateTheme()
             return@setOnLongClickListener true
         }
