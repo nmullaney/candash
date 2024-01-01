@@ -7,7 +7,7 @@
     <color name="green">#FF00FF00</color>
     <color name="high_active_signal">@color/light_green</color>
     <color name="low_active_signal">@color/green</color>
-    <color name="autopilot_blue">#FF3E6BE2</color>
+    <color name="autopilot_blue">#FF0070FF</color>
     <color name="start_color">#4CAF50</color>
     <color name="stop_color">#F44336</color>
     <color name="light_gray">#FFBBBBBB</color>
