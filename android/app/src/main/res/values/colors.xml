@@ -24,16 +24,16 @@
 
 
     <color name="day_primary">#FF111111</color>
-    <color name="day_secondary">#FF555555</color>
-    <color name="day_tertiary">#FFAAAAAA</color>
-    <color name="day_ghost">#FFCCCCCC</color>
+    <color name="day_secondary">#FF666666</color>
+    <color name="day_tertiary">#FFBBBBBB</color>
+    <color name="day_ghost">#FFD8D8D8</color>
     <color name="day_background">#FFEEEEEE</color>
 
     <color name="dark_primary">#FFFFFFFF</color>
-    <color name="dark_secondary">#FFDDDDDD</color>
-    <color name="dark_tertiary">#FF555555</color>
-    <color name="dark_ghost">#FF444444</color>
-    <color name="dark_background">#FF161616</color>
+    <color name="dark_secondary">#FFEEEEEE</color>
+    <color name="dark_tertiary">#FF777777</color>
+    <color name="dark_ghost">#FF555555</color>
+    <color name="dark_background">#FF222222</color>
 
     <color name="night_primary">#FFEEEEEE</color>
     <color name="night_secondary">#FFCCCCCC</color>
