@@ -98,24 +98,25 @@
     <TextView
         android:id="@+id/big_soc"
         style="@style/textLargeNum"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="200dp"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="120dp"
         android:visibility="visible"
+        app:autoSizeMinTextSize="30dp"
+        app:autoSizeStepGranularity="10dp"
+        app:autoSizeTextType="uniform"
         app:fontWeight="300"
         app:layout_constraintCircle="@id/soc_gauge"
         app:layout_constraintCircleRadius="0dp"
         app:layout_constraintHeight_percent=".5"
-        android:text="50"
+        android:text="100"
 />
 
     <TextView
         android:id="@+id/big_soc_percent"
         style="@style/textLabelBold"
         android:layout_width="0dp"
-        android:layout_marginStart="10dp"
 
         android:layout_height="200dp"
         android:gravity="center|left"
