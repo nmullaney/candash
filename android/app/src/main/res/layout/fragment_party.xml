@@ -691,7 +691,7 @@
         android:fontFeatureSettings="tnum"
         android:gravity="center|center"
         android:textSize="20dp"
-        android:textColor="@color/medium_gray"
+        android:textColor="?attr/colorTertiary"
 
         android:visibility="visible"
         app:autoSizeMaxTextSize="40dp"

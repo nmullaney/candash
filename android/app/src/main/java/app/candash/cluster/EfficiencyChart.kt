@@ -22,7 +22,7 @@ class EfficiencyChart @JvmOverloads constructor(
     // Transparency is added in onDraw
     private var positiveColor: Int
     private var neutralColor: Int
-    private val negativeColor = Color.GREEN
+    private val negativeColor = resources.getColor(R.color.telltale_green)
 
     init {
         val typedValue = TypedValue()

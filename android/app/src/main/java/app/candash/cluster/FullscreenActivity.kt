@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.Color
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
@@ -182,9 +181,9 @@ class FullscreenActivity : AppCompatActivity() {
     private fun setStatusBarColor(prefs: SharedPreferences) {
         val dark = prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceDarkMode)
         if (dark) {
-            window.statusBarColor = Color.BLACK
+            window.statusBarColor = resources.getColor(R.color.night_background)
         } else {
-            window.statusBarColor = Color.parseColor("#FFEEEEEE")
+            window.statusBarColor = resources.getColor(R.color.day_background)
         }
     }
 
