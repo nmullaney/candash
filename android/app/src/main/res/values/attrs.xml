@@ -18,6 +18,7 @@
 
         <attr name="colorPrimary" format="color" />
         <attr name="colorSecondary" format="color" />
+        <attr name="colorTertiary" format="color" />
         <attr name="colorGhost" format="color" />
         <attr name="colorBackground" format="color" />
     </declare-styleable>

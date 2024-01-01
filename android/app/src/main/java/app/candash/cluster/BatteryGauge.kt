@@ -30,7 +30,7 @@ class BatteryGauge @JvmOverloads constructor(
         context.theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
         lineColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
-        context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
+        context.theme.resolveAttribute(R.attr.colorTertiary, typedValue, true)
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)

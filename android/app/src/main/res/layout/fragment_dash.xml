@@ -534,7 +534,7 @@
         android:paddingRight="10dp"
         android:text="P  R  N  D"
         android:textAlignment="center"
-        android:textColor="?attr/colorGhost"
+        android:textColor="?attr/colorTertiary"
         android:textSize="20dp"
 
         app:layout_constraintStart_toStartOf="parent"

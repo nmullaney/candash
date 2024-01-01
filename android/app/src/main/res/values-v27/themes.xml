@@ -25,6 +25,7 @@
 
         <item name="colorPrimary">@color/day_primary</item>
         <item name="colorSecondary">@color/day_secondary</item>
+        <item name="colorTertiary">@color/day_tertiary</item>
         <item name="colorGhost">@color/day_ghost</item>
         <item name="colorBackground">@color/day_background</item>
 
@@ -56,6 +57,7 @@
     <style name="Theme.TeslaDashboard.Dark" parent="Theme.TeslaDashboard">
         <item name="colorPrimary">@color/dark_primary</item>
         <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorTertiary">@color/dark_tertiary</item>
         <item name="colorGhost">@color/dark_ghost</item>
         <item name="colorBackground">@color/dark_background</item>
     </style>
@@ -64,6 +66,7 @@
     <style name="Theme.TeslaDashboard.Night" parent="Theme.TeslaDashboard">
         <item name="colorPrimary">@color/night_primary</item>
         <item name="colorSecondary">@color/night_secondary</item>
+        <item name="colorTertiary">@color/night_tertiary</item>
         <item name="colorGhost">@color/night_ghost</item>
         <item name="colorBackground">@color/night_background</item>
     </style>
@@ -72,6 +75,7 @@
     <style name="Theme.TeslaDashboard.Cyber.Dark" parent="Theme.TeslaDashboard.Cyber">
         <item name="colorPrimary">@color/dark_primary</item>
         <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorTertiary">@color/dark_tertiary</item>
         <item name="colorGhost">@color/dark_ghost</item>
         <item name="colorBackground">@color/dark_background</item>
     </style>
@@ -80,6 +84,7 @@
     <style name="Theme.TeslaDashboard.Cyber.Night" parent="Theme.TeslaDashboard.Cyber">
         <item name="colorPrimary">@color/night_primary</item>
         <item name="colorSecondary">@color/night_secondary</item>
+        <item name="colorTertiary">@color/night_tertiary</item>
         <item name="colorGhost">@color/night_ghost</item>
         <item name="colorBackground">@color/night_background</item>
     </style>
