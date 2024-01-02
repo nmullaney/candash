@@ -8,6 +8,8 @@
     <color name="high_active_signal">@color/light_green</color>
     <color name="low_active_signal">@color/green</color>
     <color name="autopilot_blue">#FF0070FF</color>
+    <color name="autopilot_inactive">#FF808080</color>
+    <color name="autopilot_background">#33888888</color>
     <color name="start_color">#4CAF50</color>
     <color name="stop_color">#F44336</color>
     <color name="light_gray">#FFBBBBBB</color>
