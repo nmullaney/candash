@@ -20,18 +20,25 @@ class EfficiencyChart @JvmOverloads constructor(
     private val paint = Paint()
 
     // Transparency is added in onDraw
-    private var positiveColor: Int
-    private var neutralColor: Int
-    private val negativeColor = resources.getColor(R.color.telltale_green)
+    private var positiveEndColor: Int
+    private var positiveStartColor: Int
+    private val negativeEndColor = resources.getColor(R.color.telltale_green)
+    // negative start color is slightly transparent version of negative end color
+    private val negativeStartColor = Color.argb(
+        (Color.alpha(negativeEndColor) * 0.3).toInt(),
+        Color.red(negativeEndColor),
+        Color.green(negativeEndColor),
+        Color.blue(negativeEndColor)
+    )
 
     init {
         val typedValue = TypedValue()
 
         context.theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
-        positiveColor = typedValue.data
+        positiveEndColor = typedValue.data
 
         context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
-        neutralColor = typedValue.data
+        positiveStartColor = typedValue.data
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -68,8 +75,8 @@ class EfficiencyChart @JvmOverloads constructor(
                 zeroY,
                 0f,
                 height.toFloat(),
-                neutralColor,
-                negativeColor,
+                negativeStartColor,
+                negativeEndColor,
                 Shader.TileMode.CLAMP
             )
         val positiveShader =
@@ -78,8 +85,8 @@ class EfficiencyChart @JvmOverloads constructor(
                 zeroY,
                 0f,
                 fullPositiveColor,
-                neutralColor,
-                positiveColor,
+                positiveStartColor,
+                positiveEndColor,
                 Shader.TileMode.CLAMP
             )
         paint.style = Paint.Style.FILL
