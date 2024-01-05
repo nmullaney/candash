@@ -28,7 +28,7 @@
     <style name="textUnitLabel">
         <item name="fontFamily">?attr/fontSemiBold</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
-        <item name="android:textColor">?attr/colorTertiary</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
     </style>
 
     <style name="textLabelBold">
