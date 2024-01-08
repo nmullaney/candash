@@ -226,6 +226,7 @@ class DashFragment : Fragment() {
         setOf(
             binding.powerBar,
             binding.power,
+            binding.efficiency,
             binding.speed,
             binding.unit
         )
