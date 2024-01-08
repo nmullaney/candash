@@ -320,11 +320,10 @@ class DashFragment : Fragment() {
 
         binding.blackout.visible = false
 
-        if (!isSplitScreen()) {
-            for (topUIView in topUIViews()) {
-                savedLayoutParams[topUIView] =
-                    ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
-            }
+        // The initial layout params are saved onViewCreated, used later when switching between splitscreen modes
+        for (topUIView in topUIViews()) {
+            savedLayoutParams[topUIView] =
+                ConstraintLayout.LayoutParams(topUIView.layoutParams as ConstraintLayout.LayoutParams)
         }
 
         // This is executed now to kick-start some logic even before we get car state data
