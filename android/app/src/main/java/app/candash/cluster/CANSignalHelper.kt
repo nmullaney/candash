@@ -140,7 +140,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertCANSignal(SName.blindSpotLeft, Constants.chassisBus, Hex(0x399), 4, 2, 1f, 0f, sna=3f)
         insertCANSignal(SName.blindSpotRight, Constants.chassisBus, Hex(0x399), 6, 2, 1f, 0f, sna=3f)
         insertCANSignal(SName.forwardCollisionWarning, Constants.chassisBus, Hex(0x449), 3, 1, 1f, 0f)
-        //insertCANSignal(SName.displayBrightnessLev, Constants.vehicleBus, Hex(0x273), 32, 8, .5f, 0)
+        insertCANSignal(SName.displayBrightnessLev, Constants.vehicleBus, Hex(0x273), 32, 8, .5f, 0f, sna=127.5f)
         insertCANSignal(SName.uiRange, Constants.vehicleBus, Hex(0x33A), 0, 10, 1f, 0f)
         insertCANSignal(SName.turnSignalLeft, Constants.vehicleBus, Hex(0x3F5), 0, 2, 1f, 0f)
         insertCANSignal(SName.turnSignalRight, Constants.vehicleBus, Hex(0x3F5), 2, 2, 1f, 0f)

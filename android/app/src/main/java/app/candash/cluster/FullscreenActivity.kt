@@ -129,6 +129,7 @@ class FullscreenActivity : AppCompatActivity() {
             setTheme(getTheme(prefs))
             setStatusBarColor(prefs)
             switchToFragment(it)
+            setBrightness(viewModel, prefs)
         }
 
         // Listen for carstate theme changes
@@ -155,6 +156,28 @@ class FullscreenActivity : AppCompatActivity() {
         viewModel.themeUpdate.observe(this) {
             updateTheme(getTheme(prefs))
             setStatusBarColor(prefs)
+            setBrightness(viewModel, prefs)
+        }
+
+        // Listen for display brightness changes
+        viewModel.onSignal(this, SName.displayBrightnessLev) {
+            setBrightness(viewModel, prefs)
+        }
+        // Initial set of brightness
+        setBrightness(viewModel, prefs)
+    }
+
+    private fun setBrightness(viewModel: DashViewModel, prefs: SharedPreferences) {
+        val displayBrightnessLev = viewModel.carState[SName.displayBrightnessLev]
+        if (displayBrightnessLev != null) {
+            // level is 0-100, but we want 0-1
+            var level = displayBrightnessLev / 100f
+            // if user has forced dark mode but car is in light mode, add 0.5 to level to compensate
+            if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
+                level += 0.5f
+            }
+            level = level.coerceIn(0f, 1f)
+            window.attributes.screenBrightness = level
         }
     }
 
