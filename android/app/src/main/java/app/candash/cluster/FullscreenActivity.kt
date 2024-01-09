@@ -163,6 +163,10 @@ class FullscreenActivity : AppCompatActivity() {
 
     private fun setBrightness() {
         val displayBrightnessLev = viewModel.carState[SName.displayBrightnessLev]
+        if (prefs.getBooleanPref(Constants.disableAutoBrightness)) {
+            window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            return
+        }
         if (displayBrightnessLev != null) {
             // if user has forced dark mode but car is in light mode, add 0.3 to level to compensate
             window.attributes.screenBrightness =

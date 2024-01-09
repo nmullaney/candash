@@ -141,13 +141,22 @@
         app:layout_constraintTop_toBottomOf="@id/showSpeedLimit" />
 
     <CheckBox
+        android:id="@+id/autoBrightness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="Automatically Adjust Brightness"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/showEfficiency" />
+
+    <CheckBox
         android:id="@+id/displaySync"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:text="Blackout Screen w/ Center Display"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
-        app:layout_constraintTop_toBottomOf="@id/showEfficiency" />
+        app:layout_constraintTop_toBottomOf="@id/autoBrightness" />
 
     <TextView
         android:id="@+id/blankDisplayHint"
