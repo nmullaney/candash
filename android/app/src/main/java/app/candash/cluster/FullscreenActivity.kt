@@ -160,9 +160,14 @@ class FullscreenActivity : AppCompatActivity() {
         return prefs.getBooleanPref(Constants.forceDarkMode) || dark == 1f
     }
 
+    private fun isSunUp(): Boolean {
+        val sunUp = viewModel.carState[SName.isSunUp] ?: prefs.getPref(Constants.lastSunUp)
+        return sunUp == 1f
+    }
+
     private fun getDashTheme(): Int {
         val dark = isDarkMode()
-        val sunUp = (viewModel.carState[SName.isSunUp] ?: prefs.getPref(Constants.lastSunUp)) == 1f
+        val sunUp = isSunUp()
         val cyber = prefs.getBooleanPref(Constants.cyberMode)
         return when {
             dark && sunUp && cyber -> R.style.Theme_TeslaDashboard_Cyber_Dark
@@ -193,10 +198,18 @@ class FullscreenActivity : AppCompatActivity() {
         if (findViewById<View>(android.R.id.content ) == null) {
             return
         }
-        if (isDarkMode()) {
-            window.statusBarColor = resources.getColor(R.color.night_background)
-            window.navigationBarColor = resources.getColor(R.color.night_background)
+        val color = if (isDarkMode() && isSunUp()) {
+            resources.getColor(R.color.dark_background)
+        } else if (isDarkMode()) {
+            resources.getColor(R.color.night_background)
+        } else {
+            resources.getColor(R.color.day_background)
+        }
+        window.statusBarColor = color
+        window.navigationBarColor = color
 
+        // Set status bar text color to match background to try to hide it
+        if (isDarkMode()) {
             // For Android 11 and above
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 window.insetsController?.setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS)
@@ -206,9 +219,6 @@ class FullscreenActivity : AppCompatActivity() {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
         } else {
-            window.statusBarColor = resources.getColor(R.color.day_background)
-            window.navigationBarColor = resources.getColor(R.color.day_background)
-
             // For Android 11 and above
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 window.insetsController?.setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS)
