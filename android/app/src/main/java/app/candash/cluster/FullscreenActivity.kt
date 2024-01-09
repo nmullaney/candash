@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.pow
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -129,7 +130,6 @@ class FullscreenActivity : AppCompatActivity() {
             currentFragmentName = it
             applyTheme(getDashTheme())
             switchToFragment(it)
-            setBrightness(viewModel, prefs)
         }
 
         // Listen for carstate theme changes
@@ -153,28 +153,24 @@ class FullscreenActivity : AppCompatActivity() {
         // Listen for manual theme changes
         viewModel.themeUpdate.observe(this) {
             applyThemeAndReload(getDashTheme())
-            setBrightness(viewModel, prefs)
         }
 
         // Listen for display brightness changes
         viewModel.onSignal(this, SName.displayBrightnessLev) {
-            setBrightness(viewModel, prefs)
+            setBrightness()
         }
-        // Initial set of brightness
-        setBrightness(viewModel, prefs)
     }
 
-    private fun setBrightness(viewModel: DashViewModel, prefs: SharedPreferences) {
+    private fun setBrightness() {
         val displayBrightnessLev = viewModel.carState[SName.displayBrightnessLev]
         if (displayBrightnessLev != null) {
-            // level is 0-100, but we want 0-1
-            var level = displayBrightnessLev / 100f
-            // if user has forced dark mode but car is in light mode, add 0.5 to level to compensate
-            if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
-                level += 0.5f
-            }
-            level = level.coerceIn(0f, 1f)
-            window.attributes.screenBrightness = level
+            // if user has forced dark mode but car is in light mode, add 0.3 to level to compensate
+            window.attributes.screenBrightness =
+                if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
+                    (displayBrightnessLev.pow(0.5f)).coerceIn(0f, 1f)
+                } else {
+                    displayBrightnessLev.coerceIn(0f, 1f)
+                }
         }
     }
 
@@ -208,6 +204,7 @@ class FullscreenActivity : AppCompatActivity() {
             setTheme(theme)
             setStatusBarColor()
         }
+        setBrightness()
     }
 
     private fun applyThemeAndReload(theme: Int) {
