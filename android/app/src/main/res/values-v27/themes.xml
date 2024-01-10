@@ -28,6 +28,7 @@
         <item name="colorTertiary">@color/day_tertiary</item>
         <item name="colorGhost">@color/day_ghost</item>
         <item name="colorBackground">@color/day_background</item>
+        <item name="colorWhite">@color/day_white</item>
 
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="android:buttonStyle">@style/ButtonStyle</item>
@@ -60,6 +61,7 @@
         <item name="colorTertiary">@color/dark_tertiary</item>
         <item name="colorGhost">@color/dark_ghost</item>
         <item name="colorBackground">@color/dark_background</item>
+        <item name="colorWhite">@color/dark_white</item>
     </style>
 
 
@@ -69,6 +71,7 @@
         <item name="colorTertiary">@color/night_tertiary</item>
         <item name="colorGhost">@color/night_ghost</item>
         <item name="colorBackground">@color/night_background</item>
+        <item name="colorWhite">@color/night_white</item>
     </style>
 
 
@@ -78,6 +81,7 @@
         <item name="colorTertiary">@color/dark_tertiary</item>
         <item name="colorGhost">@color/dark_ghost</item>
         <item name="colorBackground">@color/dark_background</item>
+        <item name="colorWhite">@color/dark_white</item>
     </style>
 
 
@@ -87,5 +91,6 @@
         <item name="colorTertiary">@color/night_tertiary</item>
         <item name="colorGhost">@color/night_ghost</item>
         <item name="colorBackground">@color/night_background</item>
+        <item name="colorWhite">@color/night_white</item>
     </style>
 </resources>

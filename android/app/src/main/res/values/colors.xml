@@ -30,16 +30,19 @@
     <color name="day_tertiary">#FFBBBBBB</color>
     <color name="day_ghost">#FFD8D8D8</color>
     <color name="day_background">#FFEEEEEE</color>
+    <color name="day_white">#FFFFFFFF</color>
 
     <color name="dark_primary">#FFFFFFFF</color>
     <color name="dark_secondary">#FFEEEEEE</color>
     <color name="dark_tertiary">#FF777777</color>
     <color name="dark_ghost">#FF555555</color>
     <color name="dark_background">#FF222222</color>
+    <color name="dark_white">#FFFFFFFF</color>
 
-    <color name="night_primary">#FFEEEEEE</color>
-    <color name="night_secondary">#FFCCCCCC</color>
+    <color name="night_primary">#FFDDDDDD</color>
+    <color name="night_secondary">#FFBBBBBB</color>
     <color name="night_tertiary">#FF444444</color>
     <color name="night_ghost">#FF333333</color>
     <color name="night_background">#FF000000</color>
+    <color name="night_white">#FFDDDDDD</color>
 </resources>

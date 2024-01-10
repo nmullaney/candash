@@ -21,5 +21,6 @@
         <attr name="colorTertiary" format="color" />
         <attr name="colorGhost" format="color" />
         <attr name="colorBackground" format="color" />
+        <attr name="colorWhite" format="color" />
     </declare-styleable>
 </resources>

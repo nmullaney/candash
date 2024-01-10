@@ -710,7 +710,7 @@
         android:drawablePadding="5dp"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:textColor="#cccccc"
+        android:textColor="?attr/colorWhite"
         android:visibility="invisible"
         android:background="@drawable/rounded_corner"
         android:gravity="center|center_vertical"
