@@ -168,13 +168,16 @@ class FullscreenActivity : AppCompatActivity() {
             return
         }
         if (displayBrightnessLev != null) {
-            // if user has forced dark mode but car is in light mode, add 0.3 to level to compensate
-            window.attributes.screenBrightness =
-                if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
-                    (displayBrightnessLev.pow(0.5f)).coerceIn(0f, 1f)
-                } else {
-                    displayBrightnessLev.coerceIn(0f, 1f)
-                }
+            var level = displayBrightnessLev
+            // If user has forced dark mode but car is in light mode, use a log scale to compensate
+            if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
+                level = level.pow(0.5f)
+            }
+            // Tesla seems to darken the entire UI when sun is down, cut brightness to compensate
+            if (!isSunUp()) {
+                level *= 0.3f
+            }
+            window.attributes.screenBrightness = level.coerceIn(0f, 1f)
         }
     }
 
