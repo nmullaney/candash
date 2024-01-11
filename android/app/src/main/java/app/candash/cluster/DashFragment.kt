@@ -752,7 +752,7 @@ class DashFragment : Fragment() {
         // Power is always changing, it's enough to only observe this for rapid updates to the efficiency view
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             val efficiencyText = efficiencyCalculator.getEfficiencyText()
-            if (efficiencyText == null || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen()) {
+            if (efficiencyText == null || prefs.getBooleanPref(Constants.hideEfficiency) || isSplitScreen() || carIsCharging()) {
                 binding.efficiency.visible = false
             } else {
                 binding.efficiency.text = efficiencyText
