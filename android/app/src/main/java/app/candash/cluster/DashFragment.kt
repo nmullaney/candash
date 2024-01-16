@@ -547,8 +547,8 @@ class DashFragment : Fragment() {
         viewModel.onSignal(viewLifecycleOwner, SName.power) {
             if (it != null) {
                 if (it > prefs.getPref("maxPower")) prefs.setPref("maxPower", it)
-                if (!carIsCharging()) {
-                    // do not store min power if car is charging
+                if (gearState() in setOf(SVal.gearDrive, SVal.gearReverse)) {
+                    // Only store min power when car is driving
                     if (it < prefs.getPref("minPower")) prefs.setPref("minPower", it)
                 }
                 binding.minpower.text = formatPower(prefs.getPref("minPower"))
