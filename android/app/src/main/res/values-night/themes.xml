@@ -1,27 +1,12 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
     <style name="Theme.TeslaDashboard" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <!-- Customize your theme here. -->
-    </style>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
 
-    <style name="ThemeOverlay.TeslaDashboard.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
-        <item name="fullscreenTextColor">@color/light_blue_A400</item>
-    </style>
 
-    <style name="Theme.TeslaDashboard.Regular" parent="Theme.TeslaDashboard">
         <item name="fontHugeNum">@font/interextralight</item>
         <item name="fontLargeNum">@font/intermedium</item>
         <item name="fontRegular">@font/interregular</item>
@@ -36,6 +21,20 @@
         <item name="letterSpacing">-0.1</item>
 
         <item name="cyberMode">false</item>
+
+
+        <item name="colorPrimary">@color/day_primary</item>
+        <item name="colorSecondary">@color/day_secondary</item>
+        <item name="colorTertiary">@color/day_tertiary</item>
+        <item name="colorGhost">@color/day_ghost</item>
+        <item name="colorBackground">@color/day_background</item>
+        <item name="colorWhite">@color/day_white</item>
+
+        <item name="android:textColor">?attr/colorSecondary</item>
+        <item name="android:buttonStyle">@style/ButtonStyle</item>
+        <item name="spinnerStyle">@style/SpinnerStyle</item>
+        <item name="radioButtonStyle">@style/RadioButtonStyle</item>
+        <item name="checkboxStyle">@style/CheckboxStyle</item>
     </style>
 
     <style name="Theme.TeslaDashboard.Cyber" parent="Theme.TeslaDashboard">
@@ -55,7 +54,43 @@
         <item name="cyberMode">true</item>
     </style>
 
-    <style name="Theme.TeslaDashboard.Fullscreen" parent="Theme.TeslaDashboard.Regular">
 
+    <style name="Theme.TeslaDashboard.Dark" parent="Theme.TeslaDashboard">
+        <item name="colorPrimary">@color/dark_primary</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorTertiary">@color/dark_tertiary</item>
+        <item name="colorGhost">@color/dark_ghost</item>
+        <item name="colorBackground">@color/dark_background</item>
+        <item name="colorWhite">@color/dark_white</item>
+    </style>
+
+
+    <style name="Theme.TeslaDashboard.Night" parent="Theme.TeslaDashboard">
+        <item name="colorPrimary">@color/night_primary</item>
+        <item name="colorSecondary">@color/night_secondary</item>
+        <item name="colorTertiary">@color/night_tertiary</item>
+        <item name="colorGhost">@color/night_ghost</item>
+        <item name="colorBackground">@color/night_background</item>
+        <item name="colorWhite">@color/night_white</item>
+    </style>
+
+
+    <style name="Theme.TeslaDashboard.Cyber.Dark" parent="Theme.TeslaDashboard.Cyber">
+        <item name="colorPrimary">@color/dark_primary</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorTertiary">@color/dark_tertiary</item>
+        <item name="colorGhost">@color/dark_ghost</item>
+        <item name="colorBackground">@color/dark_background</item>
+        <item name="colorWhite">@color/dark_white</item>
+    </style>
+
+
+    <style name="Theme.TeslaDashboard.Cyber.Night" parent="Theme.TeslaDashboard.Cyber">
+        <item name="colorPrimary">@color/night_primary</item>
+        <item name="colorSecondary">@color/night_secondary</item>
+        <item name="colorTertiary">@color/night_tertiary</item>
+        <item name="colorGhost">@color/night_ghost</item>
+        <item name="colorBackground">@color/night_background</item>
+        <item name="colorWhite">@color/night_white</item>
     </style>
 </resources>

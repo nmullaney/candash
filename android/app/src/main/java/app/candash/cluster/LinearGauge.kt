@@ -6,6 +6,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import androidx.lifecycle.MutableLiveData
@@ -15,17 +16,31 @@ class LinearGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
     private var percentWidth : Float = 0.5f
-    private var lightMode : Int = 0
-    private var lineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private val greenColor : ColorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
+    private var lineColor : ColorFilter
+    private var chargeColor : ColorFilter
+    private var backgroundColor : ColorFilter
+    private var cyber : Boolean = false
+
     private val paint = Paint()
 
-    private var cyber : Boolean = false
     private var animationPosition : Float = 3f
 
     private var startupAnimator: ValueAnimator? = null
 
+    init {
+        val typedValue = TypedValue()
+
+        context.theme.resolveAttribute(R.attr.cyberMode, typedValue, true)
+        cyber = typedValue.data != 0
+
+        context.theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        lineColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
+
+        context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
+        backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
+
+        chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
+    }
     override fun onDraw(canvas: Canvas?) {
         // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
         val attrSet = intArrayOf(R.attr.cyberMode)
@@ -59,7 +74,7 @@ class LinearGauge @JvmOverloads constructor(
 
         // Startup Animation Drawing:
         val bgAnimationPosition = if (animationPosition > 1f) 1f else animationPosition
-        paint.setColorFilter(backgroundLineColor)
+        paint.setColorFilter(backgroundColor)
         val halfX = width / 2f
         startX = halfX - halfX * bgAnimationPosition
         stopX = halfX + halfX * bgAnimationPosition
@@ -89,7 +104,7 @@ class LinearGauge @JvmOverloads constructor(
         // Actual Gauge Drawing:
         val renderWidth = width / 2f * (percentWidth.absoluteValue)
         if (percentWidth < 0f){
-            paint.setColorFilter(greenColor)
+            paint.setColorFilter(chargeColor)
             startX = (width / 2f) - renderWidth
             stopX = width / 2f
         }else {
@@ -103,17 +118,6 @@ class LinearGauge @JvmOverloads constructor(
     fun setGauge(percent:Float){
         percentWidth = percent
 
-        this.invalidate()
-    }
-    fun setDayValue(lightModeVal: Int = 1){
-        lightMode = lightModeVal
-        if (lightMode == 1){
-            lineColor = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-            backgroundLineColor = PorterDuffColorFilter(Color.LTGRAY, PorterDuff.Mode.SRC_ATOP)
-        } else {
-            lineColor = PorterDuffColorFilter(resources.getColor(R.color.light_gray), PorterDuff.Mode.SRC_ATOP)
-            backgroundLineColor = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-        }
         this.invalidate()
     }
 }

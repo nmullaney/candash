@@ -7,6 +7,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import kotlin.math.cos
@@ -15,10 +16,10 @@ import kotlin.math.sin
 class CircularGauge @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
-    private var lightMode : Int = 0
-    private var lineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-    private val greenColor : ColorFilter = PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP)
-    private var backgroundLineColor : ColorFilter = PorterDuffColorFilter(resources.getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
+    private var lineColor : ColorFilter
+    private var chargeColor : ColorFilter
+    private var backgroundColor : ColorFilter
+    private var cyber : Boolean = false
 
     private val hexAngle = 60.0
     private val paint = Paint()
@@ -30,7 +31,20 @@ class CircularGauge @JvmOverloads constructor(
     private var strokeWidthPct : Float = 12f
     private var charging : Boolean = false
 
-    private var cyber : Boolean = false
+    init {
+        val typedValue = TypedValue()
+
+        context.theme.resolveAttribute(R.attr.cyberMode, typedValue, true)
+        cyber = typedValue.data != 0
+
+        context.theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
+        lineColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
+
+        context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
+        backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
+
+        chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
+    }
 
     private fun buildHexPaths() {
         hexPath.reset()
@@ -74,17 +88,11 @@ class CircularGauge @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas?) {
-        // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
-        val attrSet = intArrayOf(R.attr.cyberMode)
-        val typedArray = context.obtainStyledAttributes(attrSet)
-        cyber = typedArray.getBoolean(0, false)
-        typedArray.recycle()
-
         super.onDraw(canvas)
 
         paint.strokeWidth = strokeWidthPct / 100f * width
         paint.style = Paint.Style.STROKE
-        paint.setColorFilter(backgroundLineColor)
+        paint.setColorFilter(backgroundColor)
 
         if (cyber) {
             buildHexPaths()
@@ -103,12 +111,12 @@ class CircularGauge @JvmOverloads constructor(
         }
 
         if (powerWidth < 0f) {
-            paint.colorFilter = greenColor
+            paint.colorFilter = chargeColor
         } else {
             paint.colorFilter = lineColor
         }
         if (charging){
-            paint.colorFilter = greenColor
+            paint.colorFilter = chargeColor
         }
         if (cyber) {
             paint.strokeCap = Paint.Cap.BUTT
@@ -152,19 +160,6 @@ class CircularGauge @JvmOverloads constructor(
         charging = charge
         strokeWidthPct = sWidthPct
 
-        this.invalidate()
-    }
-
-
-    fun setDayValue(lightModeVal: Int = 1){
-        lightMode = lightModeVal
-        if (lightMode == 1){
-            lineColor = PorterDuffColorFilter(resources.getColor(R.color.black), PorterDuff.Mode.SRC_ATOP)
-            backgroundLineColor = PorterDuffColorFilter(resources.getColor(R.color.medium_gray), PorterDuff.Mode.SRC_ATOP)
-        } else {
-            lineColor = PorterDuffColorFilter(resources.getColor(R.color.white), PorterDuff.Mode.SRC_ATOP)
-            backgroundLineColor = PorterDuffColorFilter(resources.getColor(R.color.dark_gray), PorterDuff.Mode.SRC_ATOP)
-        }
         this.invalidate()
     }
 }

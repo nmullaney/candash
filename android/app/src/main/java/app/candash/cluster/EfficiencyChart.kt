@@ -3,6 +3,7 @@ package app.candash.cluster
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import java.lang.Float.max
 import java.lang.Float.min
@@ -19,22 +20,33 @@ class EfficiencyChart @JvmOverloads constructor(
     private val paint = Paint()
 
     // Transparency is added in onDraw
-    private val positiveColor = Color.GRAY
-    private val negativeColor = Color.GREEN
-    private val neutralColor = 0x1B888888
-    private var transparency = 0.5f
+    private var positiveEndColor: Int
+    private var positiveStartColor: Int
+    private val negativeEndColor = resources.getColor(R.color.telltale_green)
+    // negative start color is slightly transparent version of negative end color
+    private val negativeStartColor = Color.argb(
+        (Color.alpha(negativeEndColor) * 0.3).toInt(),
+        Color.red(negativeEndColor),
+        Color.green(negativeEndColor),
+        Color.blue(negativeEndColor)
+    )
+
+    init {
+        val typedValue = TypedValue()
+
+        context.theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
+        positiveEndColor = typedValue.data
+
+        context.theme.resolveAttribute(R.attr.colorGhost, typedValue, true)
+        positiveStartColor = typedValue.data
+    }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         if (canvas == null) return
 
-        this.alpha = transparency
+        this.alpha = 0.5f
         drawLineChart(canvas, odoEfficiencyToPointF(odoEfficiencyPairs))
-    }
-
-    fun setDarkMode(darkMode: Boolean) {
-        transparency = if (darkMode) 0.8f else 0.5f
-        this.invalidate()
     }
 
     fun setLookBack(sizeKm: Float) {
@@ -63,8 +75,8 @@ class EfficiencyChart @JvmOverloads constructor(
                 zeroY,
                 0f,
                 height.toFloat(),
-                neutralColor,
-                negativeColor,
+                negativeStartColor,
+                negativeEndColor,
                 Shader.TileMode.CLAMP
             )
         val positiveShader =
@@ -73,8 +85,8 @@ class EfficiencyChart @JvmOverloads constructor(
                 zeroY,
                 0f,
                 fullPositiveColor,
-                neutralColor,
-                positiveColor,
+                positiveStartColor,
+                positiveEndColor,
                 Shader.TileMode.CLAMP
             )
         paint.style = Paint.Style.FILL

@@ -15,5 +15,12 @@
         <attr name="letterSpacing" format="float" />
 
         <attr name="cyberMode" format="boolean" />
+
+        <attr name="colorPrimary" format="color" />
+        <attr name="colorSecondary" format="color" />
+        <attr name="colorTertiary" format="color" />
+        <attr name="colorGhost" format="color" />
+        <attr name="colorBackground" format="color" />
+        <attr name="colorWhite" format="color" />
     </declare-styleable>
 </resources>

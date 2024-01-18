@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.wifi.WifiManager
 import android.os.BatteryManager
@@ -30,15 +31,18 @@ class FullscreenActivity : AppCompatActivity() {
     private var handler: Handler = Handler()
     private var runnable: Runnable? = null
     private var delay = 1000
+    private var currentTheme = 0
+    
+    private var currentFragmentName: String = "dash"
 
     private lateinit var viewModel: DashViewModel
+    private lateinit var prefs: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         // Checks the orientation of the screen
         if (isInMultiWindowMode) {
-            viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
             // isInMultiWindowMode is always true in versions > R, so only do this for R
             if (Build.VERSION.SDK_INT == Build.VERSION_CODES.R) {
                 window.insetsController?.show(WindowInsets.Type.statusBars())
@@ -56,8 +60,10 @@ class FullscreenActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
+        prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
+
         // check every second if battery is connected
         val context = applicationContext
 
@@ -91,9 +97,11 @@ class FullscreenActivity : AppCompatActivity() {
             }
         }.also { runnable = it }, delay.toLong())
 
-        setTheme()
+        // Set initial theme
+        applyTheme(getDashTheme())
 
         setContentView(R.layout.activity_fullscreen)
+        setStatusBarColor()
         // This is a known unsafe cast, but is safe in the only correct use case:
         // TeslaDashboardApplication extends Hilt_TeslaDashboardApplication
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -116,30 +124,120 @@ class FullscreenActivity : AppCompatActivity() {
             .add(R.id.fragment_container, DashFragment())
             .commit()
 
-        viewModel = ViewModelProvider(this).get(DashViewModel::class.java)
         viewModel.isSplitScreen()
         viewModel.fragmentNameToShow().observe(this) {
-            when (it) {
-                "dash" -> switchToFragment(DashFragment())
-                "info" -> switchToFragment(InfoFragment())
-                "settings" -> switchToFragment(SettingsFragment())
-                "party" -> switchToFragment(PartyFragment())
-                else -> throw IllegalStateException("Attempting to switch to unknown fragment: $it")
+            currentFragmentName = it
+            applyTheme(getDashTheme())
+            switchToFragment(it)
+        }
+
+        // Listen for carstate theme changes
+        viewModel.onSignal(this, SName.isDarkMode) {
+            if (it != null) {
+                if (it != prefs.getPref(Constants.lastDarkMode)) {
+                    prefs.setPref(Constants.lastDarkMode, it)
+                    applyThemeAndReload(getDashTheme())
+                }
+            }
+        }
+        viewModel.onSignal(this, SName.isSunUp) {
+            if (it != null) {
+                if (it != prefs.getPref(Constants.lastSunUp)) {
+                    prefs.setPref(Constants.lastSunUp, it)
+                    applyThemeAndReload(getDashTheme())
+                }
+            }
+        }
+
+        // Listen for manual theme changes
+        viewModel.themeUpdate.observe(this) {
+            applyThemeAndReload(getDashTheme())
+        }
+    }
+
+    private fun isDarkMode(): Boolean {
+        val dark = viewModel.carState[SName.isDarkMode] ?: prefs.getPref(Constants.lastDarkMode)
+        return prefs.getBooleanPref(Constants.forceDarkMode) || dark == 1f
+    }
+
+    private fun isSunUp(): Boolean {
+        val sunUp = viewModel.carState[SName.isSunUp] ?: prefs.getPref(Constants.lastSunUp)
+        return sunUp == 1f
+    }
+
+    private fun getDashTheme(): Int {
+        val dark = isDarkMode()
+        val sunUp = isSunUp()
+        val cyber = prefs.getBooleanPref(Constants.cyberMode)
+        return when {
+            dark && sunUp && cyber -> R.style.Theme_TeslaDashboard_Cyber_Dark
+            dark && cyber -> R.style.Theme_TeslaDashboard_Cyber_Night
+            cyber -> R.style.Theme_TeslaDashboard_Cyber
+            dark && sunUp -> R.style.Theme_TeslaDashboard_Dark
+            dark -> R.style.Theme_TeslaDashboard_Night
+            else -> R.style.Theme_TeslaDashboard
+        }
+    }
+    
+    private fun applyTheme(theme: Int) {
+        if (currentTheme != theme) {
+            currentTheme = theme
+            setTheme(theme)
+            setStatusBarColor()
+        }
+    }
+
+    private fun applyThemeAndReload(theme: Int) {
+        applyTheme(theme)
+        // Don't recreate the activity, just recreate the fragment
+        switchToFragment(currentFragmentName)
+    }
+
+    private fun setStatusBarColor() {
+        // this could fail if content view is not set yet
+        if (findViewById<View>(android.R.id.content ) == null) {
+            return
+        }
+        val color = if (isDarkMode() && isSunUp()) {
+            resources.getColor(R.color.dark_background)
+        } else if (isDarkMode()) {
+            resources.getColor(R.color.night_background)
+        } else {
+            resources.getColor(R.color.day_background)
+        }
+        window.statusBarColor = color
+        window.navigationBarColor = color
+
+        // Set status bar text color to match background to try to hide it
+        if (isDarkMode()) {
+            // For Android 11 and above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                // For earlier versions
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        } else {
+            // For Android 11 and above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS)
+            } else {
+                // For earlier versions
+                @Suppress("DEPRECATION")
+                window.decorView.systemUiVisibility = 0
             }
         }
     }
 
-    private fun setTheme() {
-        val prefs = getSharedPreferences("dash", Context.MODE_PRIVATE)
-        if (prefs.getBooleanPref(Constants.cyberMode)) {
-            setTheme(R.style.Theme_TeslaDashboard_Cyber)
-        } else {
-            setTheme(R.style.Theme_TeslaDashboard_Regular)
+    private fun switchToFragment(fragmentName: String) {
+        val fragment = when (fragmentName) {
+            "dash" -> DashFragment()
+            "info" -> InfoFragment()
+            "settings" -> SettingsFragment()
+            "party" -> PartyFragment()
+            else -> throw IllegalStateException("Attempting to switch to unknown fragment: $fragmentName")
         }
-    }
-
-    private fun switchToFragment(fragment: Fragment) {
-        setTheme()
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.fragment_container, fragment)

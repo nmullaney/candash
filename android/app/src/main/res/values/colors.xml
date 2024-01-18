@@ -1,33 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="light_green">#8BC34A</color>
     <color name="green">#FF00FF00</color>
     <color name="high_active_signal">@color/light_green</color>
     <color name="low_active_signal">@color/green</color>
-    <color name="prnd_not_selected">#FFDDDDDD</color>
-    <color name="day_background">#FFEEEEEE</color>
-    <color name="night_background">#FF000000</color>
     <color name="autopilot_blue">#FF0070FF</color>
     <color name="autopilot_inactive">#FF808080</color>
+    <color name="autopilot_background">#33888888</color>
     <color name="start_color">#4CAF50</color>
     <color name="stop_color">#F44336</color>
-    <color name="light_gray">#EEEEEE</color>
-    <color name="medium_gray">#CCCCCC</color>
-    <color name="dark_gray">#444444</color>
-    <color name="battery_bg_night">#FF333333</color>
-    <color name="battery_bg_day">#FFA7A7A7</color>
+    <color name="light_gray">#FFBBBBBB</color>
+    <color name="medium_gray">#FF888888</color>
+    <color name="dark_gray">#FF333333</color>
     <color name="telltale_darkgreen">#00A933</color>
     <color name="telltale_green">#02e359</color>
     <color name="telltale_orange">#ffb641</color>
@@ -36,4 +23,26 @@
     <color name="telltale_inactive">#909090</color>
     <color name="very_red">#ff0000</color>
     <color name="transparent_blank">#00000000</color>
+
+
+    <color name="day_primary">#FF111111</color>
+    <color name="day_secondary">#FF666666</color>
+    <color name="day_tertiary">#FFBBBBBB</color>
+    <color name="day_ghost">#FFD8D8D8</color>
+    <color name="day_background">#FFEEEEEE</color>
+    <color name="day_white">#FFFFFFFF</color>
+
+    <color name="dark_primary">#FFFFFFFF</color>
+    <color name="dark_secondary">#FFEEEEEE</color>
+    <color name="dark_tertiary">#FF777777</color>
+    <color name="dark_ghost">#FF555555</color>
+    <color name="dark_background">#FF222222</color>
+    <color name="dark_white">#FFFFFFFF</color>
+
+    <color name="night_primary">#FFDDDDDD</color>
+    <color name="night_secondary">#FFBBBBBB</color>
+    <color name="night_tertiary">#FF444444</color>
+    <color name="night_ghost">#FF333333</color>
+    <color name="night_background">#FF000000</color>
+    <color name="night_white">#FFDDDDDD</color>
 </resources>

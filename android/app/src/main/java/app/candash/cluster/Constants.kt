@@ -17,7 +17,7 @@ object Constants {
 
     // Prefs
     const val uiSpeedUnitsMPH = "uiSpeedUnitsMPH"
-    const val forceNightMode = "forceNightMode"
+    const val forceDarkMode = "forceDarkMode"
     const val gaugeMode = "gaugeMode"
     const val showSimpleGauges = 0f
     const val showRegularGauges = 1f
@@ -40,6 +40,7 @@ object Constants {
     const val detectedRHD = "detectedRHD"
     const val forceRHD = "forceRHD"
     const val lastDarkMode = "lastDarkMode"
+    const val lastSunUp = "lastSunUp"
     const val partyTimeTarget = "partyTimeTarget"
     const val cyberMode = "cyberMode"
 

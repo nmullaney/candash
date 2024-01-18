@@ -25,10 +25,16 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private var isSplitScreen = MutableLiveData<Boolean>()
     private val _zeroConfIpAddress = MutableLiveData("0.0.0.0")
+    private val _themeUpdate = MutableLiveData<Boolean>()
+    val themeUpdate: LiveData<Boolean> = _themeUpdate
     val zeroConfIpAddress : LiveData<String>
         get() = _zeroConfIpAddress
     private var discoveryListener : NsdManager.DiscoveryListener? = null
     private var signalsToRequest : List <String> = arrayListOf()
+
+    fun updateTheme() {
+        _themeUpdate.value = true
+    }
 
     fun getCurrentCANServiceIndex() : Int {
         return dashRepository.getCANServiceType().ordinal

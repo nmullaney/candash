@@ -193,7 +193,6 @@ class PartyFragment : Fragment() {
         binding.blackout.visible = false
 
         // This is executed now to kick-start some logic even before we get car state data
-        setColors()
         setGaugeVisibility()
         setUnits()
 
@@ -249,9 +248,9 @@ class PartyFragment : Fragment() {
         }
 
         binding.bigSoc.setOnLongClickListener {
-            prefs.setBooleanPref(Constants.forceNightMode, !prefs.getBooleanPref(Constants.forceNightMode))
-            setColors()
-            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceNightMode)) "Force dark mode" else "Auto dark mode"
+            prefs.setBooleanPref(Constants.forceDarkMode, !prefs.getBooleanPref(Constants.forceDarkMode))
+            viewModel.updateTheme()
+            binding.infoToast.text = if (prefs.getBooleanPref(Constants.forceDarkMode)) "Force dark mode" else "Auto dark mode"
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
             return@setOnLongClickListener true
@@ -267,10 +266,6 @@ class PartyFragment : Fragment() {
             if (it != SVal.keepClimateParty) {
                 viewModel.switchToDashFragment()
             }
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
-            setColors()
         }
 
         viewModel.onSomeSignals(viewLifecycleOwner, SGroup.closures) { updateDoorStateUI() }
@@ -367,9 +362,6 @@ class PartyFragment : Fragment() {
         } else {
             binding.blackout.visible = false
         }
-        // Set the colors because the camp mode label is still visible in blackout,
-        // but may need to have it's color updated from light to dark
-        setColors()
     }
 
     private fun setGaugeVisibility() {
@@ -527,87 +519,6 @@ class PartyFragment : Fragment() {
             binding.battTempUnit.text = "°C"
             binding.insideTempReqUnit.text = "°C"
             tempDP = 1
-        }
-    }
-
-    private fun shouldUseDarkMode(): Boolean {
-        // Save/use the last known value to prevent a light/dark flash upon launching
-        val darkMode = viewModel.carState[SName.isDarkMode]
-        if (darkMode != null) {
-            prefs.setPref(Constants.lastDarkMode, darkMode)
-        }
-        return (prefs.getPref(Constants.lastDarkMode) == 1f || prefs.getBooleanPref(Constants.forceNightMode))
-    }
-
-    private fun setColors() {
-        val window: Window? = activity?.window
-        val circleGauges = setOf(
-            binding.socGauge,
-            binding.outsideTempGauge,
-            binding.insideTempGauge,
-            binding.battTempGauge,
-            binding.insideTempReqGauge,
-            binding.dc12vPowerGauge,
-            binding.dcPowerGauge
-        )
-        val textViewsPrimary = setOf(
-            binding.bigSoc,
-            binding.bigSocPercent,
-
-            binding.outsideTemp,
-            binding.outsideTempLabel,
-            binding.outsideTempUnit,
-            binding.insideTemp,
-            binding.insideTempLabel,
-            binding.insideTempUnit,
-            binding.battTemp,
-            binding.battTempLabel,
-            binding.battTempUnit,
-            binding.insideTempReq,
-            binding.insideTempReqLabel,
-            binding.insideTempReqUnit,
-            binding.dcPower,
-            binding.dcPowerLabel,
-            binding.dcPowerUnit,
-            binding.dc12vPower,
-            binding.dc12vPowerLabel,
-            binding.dc12vPowerUnit,
-        )
-        val textViewsSecondary = setOf(
-            binding.partyTime,
-            binding.batteryPercent,
-            binding.insideTempReqAutoLabel,
-        )
-        val imageViewsSecondary = setOf(
-            binding.modely,
-            binding.lockClosed,
-            binding.lockOpen,
-        )
-
-        // Not using dark-mode for compatibility with older version of Android (pre-29)
-        if (shouldUseDarkMode()) {
-            window?.statusBarColor = Color.BLACK
-            binding.root.setBackgroundColor(Color.BLACK)
-            textViewsPrimary.forEach { it.setTextColor(Color.WHITE) }
-            textViewsSecondary.forEach { it.setTextColor(Color.LTGRAY) }
-            imageViewsSecondary.forEach { it.setColorFilter(Color.LTGRAY) }
-            circleGauges.forEach { it.setDayValue(0) }
-            binding.battery.setDayValue(0)
-            binding.partyModeLabel.setTextColor(Color.DKGRAY)
-        } else {
-            window?.statusBarColor = Color.parseColor("#FFEEEEEE")
-            binding.root.setBackgroundColor(requireContext().getColor(R.color.day_background))
-            textViewsPrimary.forEach { it.setTextColor(Color.BLACK) }
-            textViewsSecondary.forEach { it.setTextColor(Color.DKGRAY) }
-            imageViewsSecondary.forEach { it.setColorFilter(Color.DKGRAY) }
-            circleGauges.forEach { it.setDayValue(1) }
-            binding.battery.setDayValue(1)
-            // "Camp Mode Active" is always visible, so make it dark gray if the screen is blanked
-            if (binding.blackout.visible) {
-                binding.partyModeLabel.setTextColor(Color.DKGRAY)
-            } else {
-                binding.partyModeLabel.setTextColor(Color.LTGRAY)
-            }
         }
     }
 
