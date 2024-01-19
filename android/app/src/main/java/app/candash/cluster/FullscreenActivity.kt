@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.pow
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -153,6 +154,31 @@ class FullscreenActivity : AppCompatActivity() {
         viewModel.themeUpdate.observe(this) {
             applyThemeAndReload(getDashTheme())
         }
+
+        // Listen for display brightness changes
+        viewModel.onSignal(this, SName.displayBrightnessLev) {
+            setBrightness()
+        }
+    }
+
+    private fun setBrightness() {
+        val displayBrightnessLev = viewModel.carState[SName.displayBrightnessLev]
+        if (prefs.getBooleanPref(Constants.disableAutoBrightness)) {
+            window.attributes.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            return
+        }
+        if (displayBrightnessLev != null) {
+            var level = displayBrightnessLev
+            // If user has forced dark mode but car is in light mode, use a log scale to compensate
+            if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
+                level = level.pow(0.5f)
+            }
+            // Tesla seems to darken the entire UI when sun is down, cut brightness to compensate
+            if (!isSunUp()) {
+                level *= 0.3f
+            }
+            window.attributes.screenBrightness = level.coerceIn(0f, 1f)
+        }
     }
 
     private fun isDarkMode(): Boolean {
@@ -185,6 +211,7 @@ class FullscreenActivity : AppCompatActivity() {
             setTheme(theme)
             setStatusBarColor()
         }
+        setBrightness()
     }
 
     private fun applyThemeAndReload(theme: Int) {

@@ -43,6 +43,7 @@ object Constants {
     const val lastSunUp = "lastSunUp"
     const val partyTimeTarget = "partyTimeTarget"
     const val cyberMode = "cyberMode"
+    const val disableAutoBrightness = "disableAutoBrightness"
 
     // For efficiency history in prefs
     const val kwhHistory = "kwhHistory"

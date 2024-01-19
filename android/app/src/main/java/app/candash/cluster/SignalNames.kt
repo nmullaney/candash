@@ -27,6 +27,7 @@ object SName {
     const val dc12vAmps = "dc12vAmps"
     const val dc12vPower = "dc12vPower"
     const val dc12vVolts = "dc12vVolts"
+    const val displayBrightnessRaw = "displayBrightnessRaw"
     const val displayBrightnessLev = "displayBrightnessLev"
     const val displayOn = "displayOn"
     const val driveConfig = "driveConfig"

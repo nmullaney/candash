@@ -140,7 +140,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertCANSignal(SName.blindSpotLeft, Constants.chassisBus, Hex(0x399), 4, 2, 1f, 0f, sna=3f)
         insertCANSignal(SName.blindSpotRight, Constants.chassisBus, Hex(0x399), 6, 2, 1f, 0f, sna=3f)
         insertCANSignal(SName.forwardCollisionWarning, Constants.chassisBus, Hex(0x449), 3, 1, 1f, 0f)
-        //insertCANSignal(SName.displayBrightnessLev, Constants.vehicleBus, Hex(0x273), 32, 8, .5f, 0)
+        insertCANSignal(SName.displayBrightnessRaw, Constants.vehicleBus, Hex(0x273), 32, 8, .5f, 0f, sna=127.5f)
         insertCANSignal(SName.uiRange, Constants.vehicleBus, Hex(0x33A), 0, 10, 1f, 0f)
         insertCANSignal(SName.turnSignalLeft, Constants.vehicleBus, Hex(0x3F5), 0, 2, 1f, 0f)
         insertCANSignal(SName.turnSignalRight, Constants.vehicleBus, Hex(0x3F5), 2, 2, 1f, 0f)
@@ -301,6 +301,16 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
                 return@insertAugmentedCANSignal null
             }
             return@insertAugmentedCANSignal volts * amps
+        }
+
+        insertAugmentedCANSignal(SName.displayBrightnessLev, listOf(SName.displayBrightnessRaw)) {
+            val raw = it[SName.displayBrightnessRaw]
+            if (raw != null) {
+                // raw is from 5.5 to 100, we want to rescale that to 0-1
+                return@insertAugmentedCANSignal (raw - 5.5f) / 94.5f
+            } else {
+                return@insertAugmentedCANSignal null
+            }
         }
     }
 

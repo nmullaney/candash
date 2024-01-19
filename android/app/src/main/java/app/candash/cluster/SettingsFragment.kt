@@ -55,6 +55,7 @@ class SettingsFragment() : Fragment() {
         binding.showBs.isChecked = !prefs.getBooleanPref(Constants.hideBs)
         binding.showSpeedLimit.isChecked = !prefs.getBooleanPref(Constants.hideSpeedLimit)
         binding.displaySync.isChecked = !prefs.getBooleanPref(Constants.disableDisplaySync)
+        binding.autoBrightness.isChecked = !prefs.getBooleanPref(Constants.disableAutoBrightness)
         binding.showEfficiency.isChecked = !prefs.getBooleanPref(Constants.hideEfficiency)
         if (prefs.getBooleanPref(Constants.tempInF)) {
             binding.tempUnitF.isChecked = true
@@ -110,6 +111,11 @@ class SettingsFragment() : Fragment() {
             prefs.setBooleanPref(Constants.disableDisplaySync, false)
         } else {
             prefs.setBooleanPref(Constants.disableDisplaySync, true)
+        }
+        if (binding.autoBrightness.isChecked) {
+            prefs.setBooleanPref(Constants.disableAutoBrightness, false)
+        } else {
+            prefs.setBooleanPref(Constants.disableAutoBrightness, true)
         }
 
         if (binding.showEfficiency.isChecked) {
