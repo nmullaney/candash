@@ -22,8 +22,8 @@ android {
         applicationId "app.candash.cluster"
         minSdkVersion 24
         targetSdkVersion 33
-        versionCode 67
-        versionName "1.2.3"
+        versionCode 68
+        versionName "1.2.4"
 
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
