@@ -21,7 +21,7 @@
         <item name="android:fontFamily">?attr/fontLargeNum</item>
         <item name="autoSizeMaxTextSize">?attr/maxSizeLargeNum</item>
         <item name="android:scaleY">?attr/scaleTextY</item>
-        <item name="android:letterSpacing">?attr/letterSpacing</item>
+        <item name="android:letterSpacing">?attr/letterSpacingBold</item>
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
