@@ -49,15 +49,30 @@ class BatteryGauge @JvmOverloads constructor(
 
     private fun drawClassic(canvas: Canvas) {
         // first insert @drawable/ic_deadbattery
+        val battWidth = 50f.px
+        val battHeight = 20f.px
+        val capWidth = 4f.px
+        val margin = 1.75f.px
         val deadBattery = ContextCompat.getDrawable(context, R.drawable.ic_deadbattery)
-        deadBattery?.setBounds(0, 0, 50.px, 20.px)
+        deadBattery?.setBounds(0, 0, battWidth.toInt(), battHeight.toInt())
         deadBattery?.draw(canvas)
 
-        val powerWidth = powerPercent / 100 * 41f
+        // then draw mask with rounded corners, filled by powerWidth
+        val powerWidth = powerPercent / 100 * (battWidth - capWidth - margin * 2)
         val paint = Paint()
-        paint.strokeWidth = 15f.px
         paint.setColorFilter(if (isChargeMode) chargeColor else lineColor)
-        canvas.drawLine(3f.px, 10f.px, (3f+powerWidth).px, 10f.px, paint)
+        val path = Path()
+        path.addRoundRect(
+            margin,
+            margin,
+            battWidth - capWidth - margin,
+            battHeight - margin,
+            2.5f.px,
+            2.5f.px,
+            Path.Direction.CW
+        )
+        canvas.clipPath(path)
+        canvas.drawRect(margin, margin, margin + powerWidth, battHeight - margin, paint)
     }
 
     private fun drawCyber(canvas: Canvas) {
