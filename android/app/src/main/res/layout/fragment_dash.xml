@@ -226,7 +226,7 @@
         android:layout_height="150dp"
         android:paddingTop="18dp"
 
-        android:src="@drawable/ic_brake_hold"
+        android:src="?attr/drawableBrakeHold"
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="@+id/speed"
         app:layout_constraintEnd_toEndOf="parent"
@@ -831,7 +831,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
-        android:src="@drawable/ic_bsl1_big" />
+        android:src="?attr/drawableBSL1" />
 
     <ImageView
         android:id="@+id/blind_spot_left_2"
@@ -847,7 +847,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
-        android:src="@drawable/ic_bsl2_big" />
+        android:src="?attr/drawableBSL2" />
 
     <ImageView
         android:id="@+id/blind_spot_right_1"
@@ -863,7 +863,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
-        android:src="@drawable/ic_bsr1_big" />
+        android:src="?attr/drawableBSR1" />
 
     <ImageView
         android:id="@+id/blind_spot_right_2"
@@ -879,7 +879,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/unit"
         app:layout_constraintHeight_percent="0.5"
-        android:src="@drawable/ic_bsr2_big" />
+        android:src="?attr/drawableBSR2" />
     <app.candash.cluster.CircularGauge
         android:id="@+id/fronttempgauge"
         style="@style/textLabelBold"

@@ -1,0 +1,41 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="53.728054dp"
+    android:viewportWidth="744.49"
+    android:viewportHeight="625">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 597.75,312.5 L 486,506.06 L 262.5,506.06 L 150.75,312.5 L 262.5,118.94 L 486,118.94 Z"
+        android:strokeWidth="40"
+        android:strokeColor="@color/telltale_inactive" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 162.5,506.06 L 50.75,312.5 L 162.5,118.94"
+        android:strokeWidth="40"
+        android:strokeColor="@color/telltale_inactive"
+        android:strokeLineCap="butt" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M 586.0,118.94 L 697.75,312.5 L 586.0,506.06"
+        android:strokeWidth="40"
+        android:strokeColor="@color/telltale_inactive"
+        android:strokeLineCap="butt" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M320.25,393.32L320.25,225.65"
+        android:strokeWidth="40"
+        android:strokeColor="@color/telltale_inactive"
+        android:strokeLineCap="square" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M428.25,394.35L428.25,226.68"
+        android:strokeWidth="40"
+        android:strokeColor="@color/telltale_inactive"
+        android:strokeLineCap="square" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M320.25,309.49L428.25,310.51"
+        android:strokeWidth="40"
+        android:strokeColor="@color/telltale_inactive"
+        android:strokeLineCap="square" />
+</vector>

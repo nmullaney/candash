@@ -35,6 +35,12 @@
         <item name="spinnerStyle">@style/SpinnerStyle</item>
         <item name="radioButtonStyle">@style/RadioButtonStyle</item>
         <item name="checkboxStyle">@style/CheckboxStyle</item>
+
+        <item name="drawableBSL1">@drawable/ic_bsl1_big</item>
+        <item name="drawableBSL2">@drawable/ic_bsl2_big</item>
+        <item name="drawableBSR1">@drawable/ic_bsr1_big</item>
+        <item name="drawableBSR2">@drawable/ic_bsr2_big</item>
+        <item name="drawableBrakeHold">@drawable/ic_brake_hold</item>
     </style>
 
     <style name="Theme.TeslaDashboard.Cyber" parent="Theme.TeslaDashboard">
@@ -52,6 +58,12 @@
         <item name="letterSpacing">0.0</item>
 
         <item name="cyberMode">true</item>
+
+        <item name="drawableBSL1">@drawable/ic_bsl1_big_cyber</item>
+        <item name="drawableBSL2">@drawable/ic_bsl2_big_cyber</item>
+        <item name="drawableBSR1">@drawable/ic_bsr1_big_cyber</item>
+        <item name="drawableBSR2">@drawable/ic_bsr2_big_cyber</item>
+        <item name="drawableBrakeHold">@drawable/ic_brake_hold_cyber</item>
     </style>
 
 

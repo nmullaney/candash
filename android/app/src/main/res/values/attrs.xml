@@ -22,5 +22,11 @@
         <attr name="colorGhost" format="color" />
         <attr name="colorBackground" format="color" />
         <attr name="colorWhite" format="color" />
+
+        <attr name="drawableBSL1" format="reference" />
+        <attr name="drawableBSL2" format="reference" />
+        <attr name="drawableBSR1" format="reference" />
+        <attr name="drawableBSR2" format="reference" />
+        <attr name="drawableBrakeHold" format="reference" />
     </declare-styleable>
 </resources>
