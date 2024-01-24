@@ -16,7 +16,9 @@ class BatteryGauge @JvmOverloads constructor(
     private var isChargeMode : Boolean = false
     private var lineColor : ColorFilter
     private var backgroundColor : ColorFilter
-    private var chargeColor : ColorFilter
+    private val chargeColor : ColorFilter
+    private val lowColor : ColorFilter
+    private val veryLowColor : ColorFilter
     private var cyber : Boolean = false
 
     private var powerPercent : Float = 50f
@@ -34,6 +36,8 @@ class BatteryGauge @JvmOverloads constructor(
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
+        lowColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_orange), PorterDuff.Mode.SRC_ATOP)
+        veryLowColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_red), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -44,6 +48,18 @@ class BatteryGauge @JvmOverloads constructor(
             drawCyber(canvas)
         } else {
             drawClassic(canvas)
+        }
+    }
+
+    private fun lineColor(): ColorFilter {
+        return if (isChargeMode) {
+            chargeColor
+        } else if (powerPercent <= 10) {
+            veryLowColor
+        } else if (powerPercent <= 20) {
+            lowColor
+        } else {
+            lineColor
         }
     }
 
@@ -60,7 +76,7 @@ class BatteryGauge @JvmOverloads constructor(
         // then draw mask with rounded corners, filled by powerWidth
         val powerWidth = powerPercent / 100 * (battWidth - capWidth - margin * 2)
         val paint = Paint()
-        paint.setColorFilter(if (isChargeMode) chargeColor else lineColor)
+        paint.setColorFilter(lineColor())
         val path = Path()
         path.addRoundRect(
             margin,
@@ -104,7 +120,7 @@ class BatteryGauge @JvmOverloads constructor(
             canvas.drawPath(path, paint)
         }
         // draw full lines, same as above, but only up to powerPercent
-        paint.setColorFilter(if (isChargeMode) chargeColor else lineColor)
+        paint.setColorFilter(lineColor())
         for (i in 0 until fullLineCount) {
             path.reset()
             path.moveTo(i * step, bottom) // bottom left
