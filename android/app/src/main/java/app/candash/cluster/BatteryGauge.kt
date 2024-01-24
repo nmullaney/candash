@@ -54,7 +54,7 @@ class BatteryGauge @JvmOverloads constructor(
     private fun lineColor(): ColorFilter {
         return if (isChargeMode) {
             chargeColor
-        } else if (powerPercent <= 10) {
+        } else if (powerPercent <= 5) {
             veryLowColor
         } else if (powerPercent <= 20) {
             lowColor
@@ -69,12 +69,16 @@ class BatteryGauge @JvmOverloads constructor(
         val battHeight = 20f.px
         val capWidth = 4f.px
         val margin = 1.75f.px
+        val minBattThickness = 4f.px
         val deadBattery = ContextCompat.getDrawable(context, R.drawable.ic_deadbattery)
         deadBattery?.setBounds(0, 0, battWidth.toInt(), battHeight.toInt())
         deadBattery?.draw(canvas)
 
         // then draw mask with rounded corners, filled by powerWidth
-        val powerWidth = powerPercent / 100 * (battWidth - capWidth - margin * 2)
+        var powerWidth = powerPercent / 100 * (battWidth - capWidth - margin * 2)
+        if (powerPercent > 0 && powerWidth < minBattThickness) {
+            powerWidth = minBattThickness
+        }
         val paint = Paint()
         paint.setColorFilter(lineColor())
         val path = Path()
