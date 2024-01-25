@@ -36,8 +36,8 @@ class BatteryGauge @JvmOverloads constructor(
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
-        lowColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_orange), PorterDuff.Mode.SRC_ATOP)
-        veryLowColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_red), PorterDuff.Mode.SRC_ATOP)
+        lowColor = PorterDuffColorFilter(resources.getColor(R.color.battery_orange), PorterDuff.Mode.SRC_ATOP)
+        veryLowColor = PorterDuffColorFilter(resources.getColor(R.color.battery_red), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -54,7 +54,7 @@ class BatteryGauge @JvmOverloads constructor(
     private fun lineColor(): ColorFilter {
         return if (isChargeMode) {
             chargeColor
-        } else if (powerPercent <= 5) {
+        } else if (powerPercent <= 7) {
             veryLowColor
         } else if (powerPercent <= 20) {
             lowColor
@@ -69,7 +69,7 @@ class BatteryGauge @JvmOverloads constructor(
         val battHeight = 20f.px
         val capWidth = 4f.px
         val margin = 1.75f.px
-        val minBattThickness = 4f.px
+        val minBattThickness = 3f.px
         val deadBattery = ContextCompat.getDrawable(context, R.drawable.ic_deadbattery)
         deadBattery?.setBounds(0, 0, battWidth.toInt(), battHeight.toInt())
         deadBattery?.draw(canvas)
