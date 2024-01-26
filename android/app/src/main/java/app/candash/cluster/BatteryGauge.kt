@@ -16,7 +16,9 @@ class BatteryGauge @JvmOverloads constructor(
     private var isChargeMode : Boolean = false
     private var lineColor : ColorFilter
     private var backgroundColor : ColorFilter
-    private var chargeColor : ColorFilter
+    private val chargeColor : ColorFilter
+    private val lowColor : ColorFilter
+    private val veryLowColor : ColorFilter
     private var cyber : Boolean = false
 
     private var powerPercent : Float = 50f
@@ -34,6 +36,8 @@ class BatteryGauge @JvmOverloads constructor(
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
+        lowColor = PorterDuffColorFilter(resources.getColor(R.color.battery_orange), PorterDuff.Mode.SRC_ATOP)
+        veryLowColor = PorterDuffColorFilter(resources.getColor(R.color.battery_red), PorterDuff.Mode.SRC_ATOP)
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -47,17 +51,48 @@ class BatteryGauge @JvmOverloads constructor(
         }
     }
 
+    private fun lineColor(): ColorFilter {
+        return if (isChargeMode) {
+            chargeColor
+        } else if (powerPercent <= 7) {
+            veryLowColor
+        } else if (powerPercent <= 20) {
+            lowColor
+        } else {
+            lineColor
+        }
+    }
+
     private fun drawClassic(canvas: Canvas) {
         // first insert @drawable/ic_deadbattery
+        val battWidth = 50f.px
+        val battHeight = 20f.px
+        val capWidth = 4f.px
+        val margin = 1.75f.px
+        val minBattThickness = 3f.px
         val deadBattery = ContextCompat.getDrawable(context, R.drawable.ic_deadbattery)
-        deadBattery?.setBounds(0, 0, 50.px, 20.px)
+        deadBattery?.setBounds(0, 0, battWidth.toInt(), battHeight.toInt())
         deadBattery?.draw(canvas)
 
-        val powerWidth = powerPercent / 100 * 41f
+        // then draw mask with rounded corners, filled by powerWidth
+        var powerWidth = powerPercent / 100 * (battWidth - capWidth - margin * 2)
+        if (powerPercent > 0 && powerWidth < minBattThickness) {
+            powerWidth = minBattThickness
+        }
         val paint = Paint()
-        paint.strokeWidth = 15f.px
-        paint.setColorFilter(if (isChargeMode) chargeColor else lineColor)
-        canvas.drawLine(3f.px, 10f.px, (3f+powerWidth).px, 10f.px, paint)
+        paint.setColorFilter(lineColor())
+        val path = Path()
+        path.addRoundRect(
+            margin,
+            margin,
+            battWidth - capWidth - margin,
+            battHeight - margin,
+            2.5f.px,
+            2.5f.px,
+            Path.Direction.CW
+        )
+        canvas.clipPath(path)
+        canvas.drawRect(margin, margin, margin + powerWidth, battHeight - margin, paint)
     }
 
     private fun drawCyber(canvas: Canvas) {
@@ -89,7 +124,7 @@ class BatteryGauge @JvmOverloads constructor(
             canvas.drawPath(path, paint)
         }
         // draw full lines, same as above, but only up to powerPercent
-        paint.setColorFilter(if (isChargeMode) chargeColor else lineColor)
+        paint.setColorFilter(lineColor())
         for (i in 0 until fullLineCount) {
             path.reset()
             path.moveTo(i * step, bottom) // bottom left
