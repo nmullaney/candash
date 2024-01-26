@@ -19,6 +19,7 @@
         <item name="maxSizeLargeNum">220dp</item>
 
         <item name="letterSpacing">-0.1</item>
+        <item name="letterSpacingBold">-0.08</item>
 
         <item name="cyberMode">false</item>
 
@@ -50,6 +51,7 @@
         <item name="maxSizeLargeNum">110dp</item>
 
         <item name="letterSpacing">0.0</item>
+        <item name="letterSpacingBold">0.0</item>
 
         <item name="cyberMode">true</item>
     </style>
