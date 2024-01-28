@@ -157,6 +157,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
 
         insertCANSignal(SName.isDarkMode, Constants.vehicleBus, Hex(0x3DF), 22, 1, 1f, 0f)
         insertCANSignal(SName.isSunUp, Constants.anyBus, Hex(0x2D3), 25, 2, 1f, 0f, sna=3f)
+        insertCANSignal(SName.solarElevation, Constants.anyBus, Hex(0x2D3), 32, 8, 1f, 0f, signed = true, sna=127f)
 
         insertCANSignal(SName.autopilotState, Constants.chassisBus, Hex(0x399), 0, 4, 1f, 0f, sna=15f)
         insertCANSignal(SName.autopilotHands, Constants.chassisBus, Hex(0x399), 42, 4, 1f, 0f, sna=15f)
@@ -169,7 +170,6 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertCANSignal(SName.liftgateState, Constants.vehicleBus, Hex(0x103), 56, 4, 1f, 0f, sna=0f)
         insertCANSignal(SName.frunkState, Constants.vehicleBus, Hex(0x2E1), 3, 4, 1f, 0f, 3, 0, sna=0f)
         //insertCANSignal(SName.conditionalSpeedLimit, Constants.chassisBus, Hex(0x3D9), 56, 5, 5f, 0f)
-        //insertCANSignal(SName.solarAngle, Constants.chassisBus, Hex(0x2D3), 32, 8, 1f, 0, signed = true)
         insertCANSignal(SName.gearSelected, Constants.vehicleBus, Hex(0x118), 21, 3, 1f, 0f, sna=7f)
         insertCANSignal(SName.frontLeftDoorState, Constants.vehicleBus, Hex(0x102), 0, 4, 1f, 0f, sna=0f)
         insertCANSignal(SName.frontRightDoorState, Constants.vehicleBus, Hex(0x103), 0, 4, 1f, 0f, sna=0f)
@@ -308,6 +308,18 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
             if (raw != null) {
                 // raw is from 5.5 to 100, we want to rescale that to 0-1
                 return@insertAugmentedCANSignal (raw - 5.5f) / 94.5f
+            } else {
+                return@insertAugmentedCANSignal null
+            }
+        }
+
+        insertAugmentedCANSignal(SName.solarBrightnessFactor, listOf(SName.solarElevation)) {
+            val elevation = it[SName.solarElevation]
+            if (elevation != null) {
+                // elevation is from -90 to 90, however we want to cap it between -10 and 0
+                // and then rescale that to 0.3-1
+                val capped = elevation.coerceIn(-10f, 0f)
+                return@insertAugmentedCANSignal (capped + 10f) / 10f * 0.7f + 0.3f
             } else {
                 return@insertAugmentedCANSignal null
             }

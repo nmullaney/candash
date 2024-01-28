@@ -173,10 +173,9 @@ class FullscreenActivity : AppCompatActivity() {
             if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
                 level = level.pow(0.5f)
             }
-            // Tesla seems to darken the entire UI when sun is down, cut brightness to compensate
-            if (!isSunUp()) {
-                level *= 0.3f
-            }
+            // Tesla seems to darken the entire UI based on solar angle
+            level *= viewModel.carState[SName.solarBrightnessFactor] ?: 1f
+
             window.attributes.screenBrightness = level.coerceIn(0f, 1f)
         }
     }
