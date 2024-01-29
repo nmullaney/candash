@@ -156,7 +156,7 @@ class FullscreenActivity : AppCompatActivity() {
         }
 
         // Listen for display brightness changes
-        viewModel.onSignal(this, SName.displayBrightnessLev) {
+        viewModel.onSomeSignals(this, listOf(SName.displayBrightnessLev, SName.solarBrightnessFactor)) {
             setBrightness()
         }
     }
