@@ -45,7 +45,7 @@ class EfficiencyChart @JvmOverloads constructor(
         super.onDraw(canvas)
         if (canvas == null) return
 
-        this.alpha = 0.5f
+        this.alpha = 0.3f
         drawLineChart(canvas, odoEfficiencyToPointF(odoEfficiencyPairs))
     }
 
@@ -67,7 +67,7 @@ class EfficiencyChart @JvmOverloads constructor(
 
         val zeroY = efficiencyToY(0f)
         val firstX = points[0].x
-        val fullPositiveColor = efficiencyToY(400f)
+        val fullPositiveColor = efficiencyToY(200f)
 
         val negativeShader =
             LinearGradient(
