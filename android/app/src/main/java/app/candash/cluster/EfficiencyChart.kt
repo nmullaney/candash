@@ -98,16 +98,41 @@ class EfficiencyChart @JvmOverloads constructor(
         positivePath.moveTo(firstX, zeroY)
 
         // Draw each path segment to the next point
+        val lastIndex = points.size - 1
         for (i in points.indices) {
-            val point = points[i]
-            // clamp last point.x to edge of screen
-            val pointX = if (i == points.size - 1) width.toFloat() else point.x
+            // Clamp last point.x to screen width
+            val point = if (i == lastIndex)
+                PointF(width.toFloat(), points[i].y)
+            else points[i]
+
+            // Clamp last nextPoint.x to screen width
+            val nextPoint = if (i + 1 == lastIndex)
+                PointF(width.toFloat(), points[i + 1].y)
+            else if (i < lastIndex)
+                points[i + 1]
+            else null
+
             if (point.y >= zeroY) {
-                negativePath.lineTo(pointX, point.y)
-                positivePath.lineTo(pointX, zeroY)
+                negativePath.lineTo(point.x, point.y)
+                positivePath.lineTo(point.x, zeroY)
             } else {
-                negativePath.lineTo(pointX, zeroY)
-                positivePath.lineTo(pointX, point.y)
+                negativePath.lineTo(point.x, zeroY)
+                positivePath.lineTo(point.x, point.y)
+            }
+
+            // Check for intersection with zero Y-axis in the next segment
+            if (nextPoint != null && (point.y - zeroY) * (nextPoint.y - zeroY) < 0) {
+                // There is a zero crossing, find the intersection X
+                val intersectionX = findIntersectionX(point, nextPoint, zeroY)
+
+                // Draw lines to intersection X, to be completed in the next iteration
+                if (point.y >= zeroY) {
+                    negativePath.lineTo(intersectionX, zeroY)
+                    positivePath.lineTo(intersectionX, zeroY)
+                } else {
+                    positivePath.lineTo(intersectionX, zeroY)
+                    negativePath.lineTo(intersectionX, zeroY)
+                }
             }
         }
 
@@ -122,6 +147,11 @@ class EfficiencyChart @JvmOverloads constructor(
         canvas.drawPath(negativePath, paint)
         paint.shader = positiveShader
         canvas.drawPath(positivePath, paint)
+    }
+
+    private fun findIntersectionX(p1: PointF, p2: PointF, zeroY: Float): Float {
+        val slope = (p2.y - p1.y) / (p2.x - p1.x)
+        return p1.x + (zeroY - p1.y) / slope
     }
 
     /**
