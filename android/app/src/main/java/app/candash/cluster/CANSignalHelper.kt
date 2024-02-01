@@ -316,10 +316,9 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
         insertAugmentedCANSignal(SName.solarBrightnessFactor, listOf(SName.solarElevation)) {
             val elevation = it[SName.solarElevation]
             if (elevation != null) {
-                // elevation is from -90 to 90, however we want to cap it between -10 and 0
-                // and then rescale that to 0.3-1
-                val capped = elevation.coerceIn(-10f, 0f)
-                return@insertAugmentedCANSignal (capped + 10f) / 10f * 0.7f + 0.3f
+                val capped = elevation.coerceIn(Constants.solarElevationMin, Constants.solarElevationMax)
+                val normalized = (capped - Constants.solarElevationMin) / (Constants.solarElevationMax - Constants.solarElevationMin)
+                return@insertAugmentedCANSignal normalized * (1 - Constants.solarElevationMinFactor) + Constants.solarElevationMinFactor
             } else {
                 return@insertAugmentedCANSignal null
             }
