@@ -57,6 +57,15 @@ class SettingsFragment() : Fragment() {
         binding.displaySync.isChecked = !prefs.getBooleanPref(Constants.disableDisplaySync)
         binding.autoBrightness.isChecked = !prefs.getBooleanPref(Constants.disableAutoBrightness)
         binding.showEfficiency.isChecked = !prefs.getBooleanPref(Constants.hideEfficiency)
+        // Uncheck and disable efficiency chart if efficiency is hidden
+        if (!binding.showEfficiency.isChecked) {
+            binding.showEfficiencyChart.isChecked = false
+            binding.showEfficiencyChart.isEnabled = false
+            binding.showEfficiencyChart.alpha = 0.3f
+        } else {
+            binding.showEfficiencyChart.isChecked = !prefs.getBooleanPref(Constants.hideEfficiencyChart)
+            binding.showEfficiencyChart.alpha = 1f
+        }
         if (prefs.getBooleanPref(Constants.tempInF)) {
             binding.tempUnitF.isChecked = true
         } else {
@@ -73,6 +82,14 @@ class SettingsFragment() : Fragment() {
             binding.torqueUnitNm.isChecked = true
         }
 
+        // Update efficiency chart checkbox on efficiency checkbox change
+        binding.showEfficiency.setOnCheckedChangeListener { _, isChecked ->
+            binding.showEfficiencyChart.isEnabled = isChecked
+            binding.showEfficiencyChart.alpha = if (isChecked) 1f else 0.3f
+            if (!isChecked) {
+                binding.showEfficiencyChart.isChecked = false
+            }
+        }
     }
 
 
@@ -122,6 +139,11 @@ class SettingsFragment() : Fragment() {
             prefs.setBooleanPref(Constants.hideEfficiency, false)
         } else {
             prefs.setBooleanPref(Constants.hideEfficiency, true)
+        }
+        if (binding.showEfficiencyChart.isChecked) {
+            prefs.setBooleanPref(Constants.hideEfficiencyChart, false)
+        } else {
+            prefs.setBooleanPref(Constants.hideEfficiencyChart, true)
         }
         when (binding.tempUnits.checkedRadioButtonId) {
             R.id.tempUnitC -> prefs.setBooleanPref(Constants.tempInF, false)

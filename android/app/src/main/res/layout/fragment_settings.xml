@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
 
-        app:layout_constraintGuide_percent=".333" />
+        app:layout_constraintGuide_percent=".3" />
 
     <TextView
         android:id="@+id/displayOptionsLabel"
@@ -141,13 +141,22 @@
         app:layout_constraintTop_toBottomOf="@id/showSpeedLimit" />
 
     <CheckBox
+        android:id="@+id/showEfficiencyChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="44dp"
+        android:text="Show Efficiency Chart"
+        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
+        app:layout_constraintTop_toBottomOf="@id/showEfficiency" />
+
+    <CheckBox
         android:id="@+id/autoBrightness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:text="Automatically Adjust Brightness"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
-        app:layout_constraintTop_toBottomOf="@id/showEfficiency" />
+        app:layout_constraintTop_toBottomOf="@id/showEfficiencyChart" />
 
     <CheckBox
         android:id="@+id/displaySync"
@@ -162,8 +171,8 @@
         android:id="@+id/blankDisplayHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:text="Long-press left side of screen to return\nto settings while display is off.\nRecommended only with OLED screens."
+        android:paddingLeft="52dp"
+        android:text="Recommended only with OLED screens."
         android:textSize="12dp"
         app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
         app:layout_constraintTop_toBottomOf="@id/displaySync" />
@@ -175,7 +184,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
 
-        app:layout_constraintGuide_percent=".667" />
+        app:layout_constraintGuide_percent=".7" />
 
     <TextView
         android:id="@+id/unitsLabel"
@@ -272,7 +281,7 @@
         android:gravity="center"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/guidelinevright"
+        app:layout_constraintRight_toLeftOf="@id/guidelinevleft"
 
         />
 
@@ -286,8 +295,7 @@
         android:gravity="center"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/guidelinevleft"
-
+        app:layout_constraintLeft_toLeftOf="parent"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
