@@ -422,8 +422,13 @@ class DashFragment : Fragment() {
         }
 
         binding.efficiency.setOnLongClickListener {
-            efficiencyCalculator.clearHistory()
-            binding.infoToast.text = "Cleared efficiency history"
+            if (prefs.getBooleanPref(Constants.hideEfficiencyChart)) {
+                prefs.setBooleanPref(Constants.hideEfficiencyChart, false)
+                binding.infoToast.text = "Efficiency chart enabled"
+            } else {
+                prefs.setBooleanPref(Constants.hideEfficiencyChart, true)
+                binding.infoToast.text = "Efficiency chart disabled"
+            }
             binding.infoToast.visible = true
             binding.infoToast.startAnimation(fadeOut(5000))
             updateEfficiencyChart(efficiencyCalculator)

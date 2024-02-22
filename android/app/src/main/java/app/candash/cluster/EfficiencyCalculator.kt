@@ -35,24 +35,10 @@ class EfficiencyCalculator(
         val index = (options.indexOf(old) + 1) % options.size
         prefs.setPref(Constants.efficiencyLookBack, options[index])
 
-        // When it cycles back to 0, toggle the efficiency chart
-        var chartString = ""
-        if (options[index] == 0f) {
-            prefs.setBooleanPref(
-                Constants.hideEfficiencyChart,
-                !prefs.getBooleanPref(Constants.hideEfficiencyChart)
-            )
-            chartString = if (prefs.getBooleanPref(Constants.hideEfficiencyChart)) {
-                " (chart off)"
-            } else {
-                " (chart on)"
-            }
-        }
-
         return if (inMiles) {
-            "Last %.0f miles%s".format(options[index].kmToMi, chartString)
+            "Last %.0f miles".format(options[index].kmToMi)
         } else {
-            "Last %.0f km%s".format(options[index], chartString)
+            "Last %.0f km".format(options[index])
         }
     }
 
