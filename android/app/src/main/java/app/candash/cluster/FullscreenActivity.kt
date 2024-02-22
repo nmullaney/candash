@@ -149,6 +149,14 @@ class FullscreenActivity : AppCompatActivity() {
                 }
             }
         }
+        viewModel.onSignal(this, SName.solarBrightnessFactor) {
+            if (it != null) {
+                if (it != prefs.getPref(Constants.lastSolarBrightnessFactor)) {
+                    prefs.setPref(Constants.lastSolarBrightnessFactor, it)
+                }
+                setBrightness()
+            }
+        }
 
         // Listen for manual theme changes
         viewModel.themeUpdate.observe(this) {
@@ -173,10 +181,11 @@ class FullscreenActivity : AppCompatActivity() {
             if (prefs.getBooleanPref(Constants.forceDarkMode) && prefs.getPref(Constants.lastDarkMode) == 0f) {
                 level = level.pow(0.5f)
             }
-            // Tesla seems to darken the entire UI when sun is down, cut brightness to compensate
-            if (!isSunUp()) {
-                level *= 0.3f
+            else if (isDarkMode() && level <= 1f) {
+                // Tesla seems to darken the entire UI based on solar angle
+                level *= solarBrightnessFactor()
             }
+
             window.attributes.screenBrightness = level.coerceIn(0f, 1f)
         }
     }
@@ -189,6 +198,13 @@ class FullscreenActivity : AppCompatActivity() {
     private fun isSunUp(): Boolean {
         val sunUp = viewModel.carState[SName.isSunUp] ?: prefs.getPref(Constants.lastSunUp)
         return sunUp == 1f
+    }
+
+    private fun solarBrightnessFactor(): Float {
+        // If last factor is 0, it was never set, use 1 as default
+        val lastFactor = if (prefs.getPref(Constants.lastSolarBrightnessFactor) == 0f) 1f
+            else prefs.getPref(Constants.lastSolarBrightnessFactor)
+        return viewModel.carState[SName.solarBrightnessFactor] ?: lastFactor
     }
 
     private fun getDashTheme(): Int {
