@@ -41,6 +41,7 @@ object Constants {
     const val forceRHD = "forceRHD"
     const val lastDarkMode = "lastDarkMode"
     const val lastSunUp = "lastSunUp"
+    const val lastSolarBrightnessFactor = "lastSolarBrightnessFactor"
     const val partyTimeTarget = "partyTimeTarget"
     const val cyberMode = "cyberMode"
     const val disableAutoBrightness = "disableAutoBrightness"
@@ -56,6 +57,11 @@ object Constants {
     const val l2DistanceLowSpeed = 200f
     const val l1DistanceHighSpeed = 400f
     const val l2DistanceHighSpeed = 250f
+
+    // For solar elevation brightness scaling
+    const val solarElevationMax = 7f
+    const val solarElevationMin = -7f
+    const val solarElevationMinFactor = 0.25f
 
     const val blackoutOverrideSeconds = 10
     const val partyBlackoutDelaySeconds = 600
