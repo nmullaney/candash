@@ -1,19 +1,14 @@
 package app.candash.cluster
 
-import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
@@ -119,16 +114,6 @@ class PartyFragment : Fragment() {
         alarmPlayer.stop()
     }
 
-    private fun isUriAccessible(uri: Uri): Boolean {
-        return try {
-            val inputStream = context?.contentResolver?.openInputStream(uri)
-            inputStream?.close()
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
@@ -136,42 +121,6 @@ class PartyFragment : Fragment() {
 
         // Use default alarm tone
         val alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        // This could be a file in external storage, so we need to ask for permission
-        // Check if alert uri is accessible, or if we need to ask for permission
-        if (!isUriAccessible(alert)) {
-            // Check if we have permission to read external storage
-            if (context?.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted, request it
-                binding.infoToast.text = "Permission needed to read storage for SOC alarm tone, tap to allow"
-                binding.infoToast.visible = true
-                view.postDelayed({
-                    try {
-                        if (binding.infoToast.visible) {
-                            binding.infoToast.startAnimation(fadeOut(2000))
-                        }
-                    }
-                    catch (e: Exception) {
-                        return@postDelayed
-                    }
-
-                }, 8000)
-                view.postDelayed({
-                    try {
-                        binding.infoToast.setOnClickListener(null)
-                    }
-                    catch (e: Exception) {
-                        return@postDelayed
-                    }
-                }, 10000)
-                binding.infoToast.setOnClickListener {
-                    binding.infoToast.visible = false
-                    activity?.requestPermissions(
-                        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                        101
-                    )
-                }
-            }
-        }
         alarmPlayer = RingtoneManager.getRingtone(this.context, alert)
         alarmPlayer.audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ALARM)
@@ -217,7 +166,9 @@ class PartyFragment : Fragment() {
 
         binding.partyTime.setOnClickListener {
             val newTarget = prefs.getPref(Constants.partyTimeTarget) + 5f
-            if (newTarget > 90f || alarmPlayer.isPlaying) {
+            if (newTarget > 90f || newTarget >= (viewModel.carState[SName.stateOfCharge]
+                    ?: 90f)
+            ) {
                 prefs.setPref(Constants.partyTimeTarget, 20f)
             } else {
                 prefs.setPref(Constants.partyTimeTarget, newTarget)
@@ -421,14 +372,12 @@ class PartyFragment : Fragment() {
         ) {
             if (!alarmPlayer.isPlaying) {
                 alarmPlayer.play()
-                updatePartyTime()
-                updateBlackout()
             }
         } else if (alarmPlayer.isPlaying) {
             alarmPlayer.stop()
-            updatePartyTime()
-            updateBlackout()
         }
+        updatePartyTime()
+        updateBlackout()
     }
 
     private fun processBattery() {
