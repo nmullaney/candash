@@ -27,6 +27,8 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private val _zeroConfIpAddress = MutableLiveData("0.0.0.0")
     private val _themeUpdate = MutableLiveData<Boolean>()
     val themeUpdate: LiveData<Boolean> = _themeUpdate
+    private val _brightnessUpdate = MutableLiveData<Boolean>()
+    val brightnessUpdate: LiveData<Boolean> = _brightnessUpdate
     val zeroConfIpAddress : LiveData<String>
         get() = _zeroConfIpAddress
     private var discoveryListener : NsdManager.DiscoveryListener? = null
@@ -34,6 +36,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     fun updateTheme() {
         _themeUpdate.value = true
+    }
+
+    fun updateBrightness() {
+        _brightnessUpdate.value = true
     }
 
     fun getCurrentCANServiceIndex() : Int {
