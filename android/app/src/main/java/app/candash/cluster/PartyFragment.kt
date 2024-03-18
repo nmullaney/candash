@@ -372,12 +372,14 @@ class PartyFragment : Fragment() {
         ) {
             if (!alarmPlayer.isPlaying) {
                 alarmPlayer.play()
+                updatePartyTime()
+                updateBlackout()
             }
         } else if (alarmPlayer.isPlaying) {
             alarmPlayer.stop()
+            updatePartyTime()
+            updateBlackout()
         }
-        updatePartyTime()
-        updateBlackout()
     }
 
     private fun processBattery() {
