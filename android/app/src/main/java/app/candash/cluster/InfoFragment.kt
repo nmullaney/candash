@@ -1,9 +1,7 @@
 package app.candash.cluster
 
 import android.content.ClipData
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -27,7 +25,6 @@ class InfoFragment : Fragment() {
     private val TAG = InfoFragment::class.java.simpleName
     private lateinit var binding: FragmentInfoBinding
     private lateinit var viewModel: DashViewModel
-    private lateinit var prefs: SharedPreferences
 
     private val infoTextViews = mutableListOf<View>()
     private var zoomSignal: String? = null
@@ -41,7 +38,6 @@ class InfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentInfoBinding.inflate(inflater, container, false)
-        prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
         return binding.root
     }
 
@@ -112,36 +108,8 @@ class InfoFragment : Fragment() {
         }
 
 
-        viewModel.onSomeSignals(
-            viewLifecycleOwner, listOf(
-                SName.displayBrightnessLev,
-                SName.solarBrightnessFactor
-            )
-        ) {
-            val solarBrightnessFactor = it[SName.solarBrightnessFactor]
-            if (solarBrightnessFactor != null) {
-                prefs.setPref(Constants.lastSolarBrightnessFactor, solarBrightnessFactor)
-            }
-            viewModel.updateBrightness()
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastDarkMode)) {
-                    prefs.setPref(Constants.lastDarkMode, it)
-                    viewModel.updateTheme()
-                }
-            }
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.isSunUp) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastSunUp)) {
-                    prefs.setPref(Constants.lastSunUp, it)
-                    viewModel.updateTheme()
-                }
-            }
-        }
+        viewModel.startThemeListener(viewLifecycleOwner)
+        viewModel.startBrightnessListener(viewLifecycleOwner)
 
         viewModel.allSignalNames().forEach { signal ->
             signalMaxes[signal] = null

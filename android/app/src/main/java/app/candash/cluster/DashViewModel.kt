@@ -237,6 +237,41 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private fun createDiscoveryListener() : NsdManager.DiscoveryListener =
         NsdDiscoveryListener(nsdManager, _zeroConfIpAddress)
 
+
+    fun startThemeListener(owner: LifecycleOwner) {
+        this.onSignal(owner, SName.isDarkMode) {
+            if (it != null) {
+                if (it != sharedPreferences.getPref(Constants.lastDarkMode)) {
+                    sharedPreferences.setPref(Constants.lastDarkMode, it)
+                    this.updateTheme()
+                }
+            }
+        }
+
+        this.onSignal(owner, SName.isSunUp) {
+            if (it != null) {
+                if (it != sharedPreferences.getPref(Constants.lastSunUp)) {
+                    sharedPreferences.setPref(Constants.lastSunUp, it)
+                    this.updateTheme()
+                }
+            }
+        }
+    }
+
+    fun startBrightnessListener(owner: LifecycleOwner) {
+        this.onSomeSignals(
+            owner, listOf(
+                SName.displayBrightnessLev,
+                SName.solarBrightnessFactor
+            )
+        ) {
+            val solarBrightnessFactor = it[SName.solarBrightnessFactor]
+            if (solarBrightnessFactor != null) {
+                sharedPreferences.setPref(Constants.lastSolarBrightnessFactor, solarBrightnessFactor)
+            }
+            this.updateBrightness()
+        }
+    }
 }
 
 class NsdDiscoveryListener(

@@ -32,37 +32,9 @@ class SettingsFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
-        
-        viewModel.onSomeSignals(
-            viewLifecycleOwner, listOf(
-                SName.displayBrightnessLev,
-                SName.solarBrightnessFactor
-            )
-        ) {
-            val solarBrightnessFactor = it[SName.solarBrightnessFactor]
-            if (solarBrightnessFactor != null) {
-                prefs.setPref(Constants.lastSolarBrightnessFactor, solarBrightnessFactor)
-            }
-            viewModel.updateBrightness()
-        }
 
-        viewModel.onSignal(viewLifecycleOwner, SName.isDarkMode) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastDarkMode)) {
-                    prefs.setPref(Constants.lastDarkMode, it)
-                    viewModel.updateTheme()
-                }
-            }
-        }
-
-        viewModel.onSignal(viewLifecycleOwner, SName.isSunUp) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastSunUp)) {
-                    prefs.setPref(Constants.lastSunUp, it)
-                    viewModel.updateTheme()
-                }
-            }
-        }
+        viewModel.startThemeListener(viewLifecycleOwner)
+        viewModel.startBrightnessListener(viewLifecycleOwner)
 
         binding.saveSettings.setOnClickListener {
             saveSettings()
