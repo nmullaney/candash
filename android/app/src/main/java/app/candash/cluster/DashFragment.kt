@@ -492,6 +492,9 @@ class DashFragment : Fragment() {
          * Remember that it will only run when the value of the signal(s) change
          */
 
+        viewModel.startThemeListener(viewLifecycleOwner)
+        viewModel.startBrightnessListener(viewLifecycleOwner)
+
         viewModel.onSignal(viewLifecycleOwner, SName.keepClimateReq) {
             if (it == SVal.keepClimateParty) {
                 viewModel.switchToPartyFragment()

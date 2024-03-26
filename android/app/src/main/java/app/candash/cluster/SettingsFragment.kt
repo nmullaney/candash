@@ -33,6 +33,9 @@ class SettingsFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = ViewModelProvider(requireActivity()).get(DashViewModel::class.java)
 
+        viewModel.startThemeListener(viewLifecycleOwner)
+        viewModel.startBrightnessListener(viewLifecycleOwner)
+
         binding.saveSettings.setOnClickListener {
             saveSettings()
         }

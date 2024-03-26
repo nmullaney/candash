@@ -27,6 +27,8 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private val _zeroConfIpAddress = MutableLiveData("0.0.0.0")
     private val _themeUpdate = MutableLiveData<Boolean>()
     val themeUpdate: LiveData<Boolean> = _themeUpdate
+    private val _brightnessUpdate = MutableLiveData<Boolean>()
+    val brightnessUpdate: LiveData<Boolean> = _brightnessUpdate
     val zeroConfIpAddress : LiveData<String>
         get() = _zeroConfIpAddress
     private var discoveryListener : NsdManager.DiscoveryListener? = null
@@ -34,6 +36,10 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
 
     fun updateTheme() {
         _themeUpdate.value = true
+    }
+
+    fun updateBrightness() {
+        _brightnessUpdate.value = true
     }
 
     fun getCurrentCANServiceIndex() : Int {
@@ -231,6 +237,41 @@ class DashViewModel @Inject constructor(private val dashRepository: DashReposito
     private fun createDiscoveryListener() : NsdManager.DiscoveryListener =
         NsdDiscoveryListener(nsdManager, _zeroConfIpAddress)
 
+
+    fun startThemeListener(owner: LifecycleOwner) {
+        this.onSignal(owner, SName.isDarkMode) {
+            if (it != null) {
+                if (it != sharedPreferences.getPref(Constants.lastDarkMode)) {
+                    sharedPreferences.setPref(Constants.lastDarkMode, it)
+                    this.updateTheme()
+                }
+            }
+        }
+
+        this.onSignal(owner, SName.isSunUp) {
+            if (it != null) {
+                if (it != sharedPreferences.getPref(Constants.lastSunUp)) {
+                    sharedPreferences.setPref(Constants.lastSunUp, it)
+                    this.updateTheme()
+                }
+            }
+        }
+    }
+
+    fun startBrightnessListener(owner: LifecycleOwner) {
+        this.onSomeSignals(
+            owner, listOf(
+                SName.displayBrightnessLev,
+                SName.solarBrightnessFactor
+            )
+        ) {
+            val solarBrightnessFactor = it[SName.solarBrightnessFactor]
+            if (solarBrightnessFactor != null) {
+                sharedPreferences.setPref(Constants.lastSolarBrightnessFactor, solarBrightnessFactor)
+            }
+            this.updateBrightness()
+        }
+    }
 }
 
 class NsdDiscoveryListener(
