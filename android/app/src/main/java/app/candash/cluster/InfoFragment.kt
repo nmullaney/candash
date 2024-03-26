@@ -107,6 +107,10 @@ class InfoFragment : Fragment() {
             binding.zoomName.visibility = View.INVISIBLE
         }
 
+
+        viewModel.startThemeListener(viewLifecycleOwner)
+        viewModel.startBrightnessListener(viewLifecycleOwner)
+
         viewModel.allSignalNames().forEach { signal ->
             signalMaxes[signal] = null
             signalMinis[signal] = null

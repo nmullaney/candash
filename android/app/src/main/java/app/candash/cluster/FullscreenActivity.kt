@@ -132,39 +132,13 @@ class FullscreenActivity : AppCompatActivity() {
             switchToFragment(it)
         }
 
-        // Listen for carstate theme changes
-        viewModel.onSignal(this, SName.isDarkMode) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastDarkMode)) {
-                    prefs.setPref(Constants.lastDarkMode, it)
-                    applyThemeAndReload(getDashTheme())
-                }
-            }
-        }
-        viewModel.onSignal(this, SName.isSunUp) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastSunUp)) {
-                    prefs.setPref(Constants.lastSunUp, it)
-                    applyThemeAndReload(getDashTheme())
-                }
-            }
-        }
-        viewModel.onSignal(this, SName.solarBrightnessFactor) {
-            if (it != null) {
-                if (it != prefs.getPref(Constants.lastSolarBrightnessFactor)) {
-                    prefs.setPref(Constants.lastSolarBrightnessFactor, it)
-                }
-                setBrightness()
-            }
-        }
-
-        // Listen for manual theme changes
+        // Listen for theme changes
         viewModel.themeUpdate.observe(this) {
             applyThemeAndReload(getDashTheme())
         }
 
-        // Listen for display brightness changes
-        viewModel.onSignal(this, SName.displayBrightnessLev) {
+        // Listen for brightness changes
+        viewModel.brightnessUpdate.observe(this) {
             setBrightness()
         }
     }

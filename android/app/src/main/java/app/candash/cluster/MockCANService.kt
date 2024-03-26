@@ -19,7 +19,9 @@ class MockCANService : CANService {
         withContext(pandaContext) {
             shutdown = false
             while (!shutdown) {
-                val newState = mockCarStates()[count.getAndAdd(1) % mockCarStates().size]
+                val mockStates = mockCarStates()
+                // val mockStates = mockPartyStates()
+                val newState = mockStates[count.getAndAdd(1) % mockStates.size]
                 carState.clear()
                 liveCarState.clear()
                 for (state in newState) {
@@ -161,110 +163,33 @@ class MockCANService : CANService {
             ))
         )
 
-
-}
-/*
-    private fun mockCarStates() : List<CarState> =
+    private fun mockPartyStates(): List<CarState> =
         listOf(
             createCarState(mutableMapOf(
-                SName.battVolts to 390.1f,
-                SName.frontLeftDoorState to 1.0f,
-                SName.displayBrightnessLev to 11.5f,
-                SName.stateOfCharge to 1.0f,
-                SName.uiRange to 273.0f,
-                SName.uiSpeed to 0.0f,
-                //SName.blindSpotLeft to 3.0f,
-                SName.blindSpotRight to 0.0f,
-                SName.turnSignalLeft to 1.0f,
-                SName.isDarkMode to 0.0f,
-                SName.autopilotState to 2f,
-                SName.autopilotHands to 1f,
-                SName.uiSpeedUnits to 0f,
-                SName.gearSelected to SVal.gearPark,
-                SName.battAmps to 20.0f,
-                SName.displayOn to 1f
-
+                SName.keepClimateReq to SVal.keepClimateParty,
+                SName.stateOfCharge to 69f,
+                SName.outsideTemp to 24f,
+                SName.insideTemp to 20f,
+                SName.insideTempReq to 20f,
+                SName.battBrickMin to 35f,
+                SName.dc12vPower to 200f,
+                SName.power to 400f,
+                SName.slowPower to 400f,
+                SName.partyHoursLeft to 2f,
+                SName.frontOccupancy to 2f,
             )),
             createCarState(mutableMapOf(
-                SName.battVolts to 390.0f,
-                SName.frontLeftDoorState to 1.0f,
-
-                SName.displayBrightnessLev to 10.5f,
-                SName.stateOfCharge to 79.0f,
-                SName.uiRange to 270.0f,
-                SName.uiSpeed to 20.0f,
-                //SName.blindSpotLeft to 3.0f,
-                SName.blindSpotRight to 0.0f,
-                SName.turnSignalLeft to 2.0f,
-                SName.turnSignalRight to 1.0f,
-                SName.isDarkMode to 0.0f,
-                SName.autopilotState to 1f,
-                SName.autopilotHands to 3f,
-                SName.cruiseControlSpeed to 45.0f,
-                SName.uiSpeedUnits to 0f,
-                SName.gearSelected to SVal.gearPark,
-                SName.battAmps to 140.0f,
-                SName.displayOn to 1f
+                SName.keepClimateReq to SVal.keepClimateParty,
+                SName.stateOfCharge to 60f,
+                SName.outsideTemp to 24f,
+                SName.insideTemp to 20f,
+                SName.insideTempReq to 20f,
+                SName.battBrickMin to 35f,
+                SName.dc12vPower to 200f,
+                SName.power to 400f,
+                SName.slowPower to 400f,
+                SName.partyHoursLeft to 2f,
+                SName.frontOccupancy to 2f,
             )),
-            createCarState(mutableMapOf(
-                SName.battVolts to 389.9f,
-                //SName.blindSpotLeft to 1.0f,
-                //SName.blindSpotRight to 1.0f,
-                SName.displayBrightnessLev to 9.5f,
-                SName.stateOfCharge to 50.0f,
-                SName.uiRange to 268.0f,
-                SName.uiSpeed to 21.0f,
-                SName.blindSpotLeft to 0.0f,
-                //SName.blindSpotRight to 2.0f,
-                SName.turnSignalLeft to 1.0f,
-                SName.turnSignalRight to 1.0f,
-                SName.isDarkMode to 0.0f,
-                SName.autopilotState to 3f,
-                SName.autopilotHands to 3f,
-                SName.maxSpeedAP to 45.0f,
-                SName.cruiseControlSpeed to 45.0f,
-                SName.uiSpeedUnits to 0f,
-                SName.gearSelected to SVal.gearDrive,
-                SName.battAmps to 3.0f,
-                SName.displayOn to 1f
-            )),
-            createCarState(mutableMapOf(
-                SName.battVolts to 389.8f,
-                SName.displayBrightnessLev to 8.5f,
-                SName.stateOfCharge to 25.0f,
-                SName.uiRange to 265.0f,
-                SName.uiSpeed to 25.0f,
-
-                SName.turnSignalLeft to 0.0f,
-                SName.turnSignalRight to 1.0f,
-                SName.isDarkMode to 0.0f,
-                SName.autopilotState to 3f,
-                SName.autopilotHands to 3f,
-                SName.maxSpeedAP to 45.0f,
-                SName.uiSpeedUnits to 0f,
-                SName.cruiseControlSpeed to 45.0f,
-                SName.battAmps to 750.0f,
-                SName.displayOn to 1f
-            )),
-            createCarState(mutableMapOf(
-                SName.battVolts to 389.7f,
-
-                SName.displayBrightnessLev to 7.5f,
-                SName.stateOfCharge to 76.0f,
-                SName.uiRange to 264.0f,
-                SName.uiSpeed to 29.0f,
-
-                SName.turnSignalLeft to 0.0f,
-                SName.turnSignalRight to 1.0f,
-                SName.isDarkMode to 1.0f,
-                SName.autopilotState to 3f,
-                SName.autopilotHands to 1f,
-                SName.uiSpeedUnits to 0f,
-                SName.maxSpeedAP to 25.0f,
-                SName.cruiseControlSpeed to 23.0f,
-                SName.battAmps to -200.0f,
-                SName.displayOn to 1f
-            )))
+        )
 }
-
- */
