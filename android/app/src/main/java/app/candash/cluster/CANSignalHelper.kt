@@ -259,10 +259,18 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
                 return@insertAugmentedCANSignal null
             }
         }
-        insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit)) {
+        insertAugmentedCANSignal(SName.accActive, listOf(SName.accState, SName.accSpeedLimit, SName.autopilotState)) {
             // accSpeedLimit is 204.6f (SNA) while TACC is active
             // on 2023.44.30+, it's 102.2f while TACC is active
             // TODO: once 44.30 dbc is available, look for a better signal, this is def wrong.
+
+            // If AP is active, TACC is definitely active
+            // This solves for v12 auto set speed where accSpeedLimit goes SNA, because of single-tap it's redundant
+            val apState = it[SName.autopilotState] ?: 0f
+            if (apState in 3f..7f) {
+                accActive = 1f
+                return@insertAugmentedCANSignal accActive
+            }
 
             // round to tenths to fix floating point errors
             val accSpeedLimit = if (it[SName.accSpeedLimit] != null) (it[SName.accSpeedLimit]!! * 10f).roundToInt() / 10f else null
