@@ -36,6 +36,11 @@ class DashFragment : Fragment() {
     private lateinit var prefs: SharedPreferences
     private var savedLayoutParams: MutableMap<View, ConstraintLayout.LayoutParams> = mutableMapOf()
 
+    private val updateBlackoutRunnable = Runnable { updateBlackout() }
+    private val discoveryRunnable: Runnable = Runnable {
+        viewModel.startDiscoveryService()
+    }
+
     // Gradient animations:
     private lateinit var autopilotAnimation: ValueAnimator
     private lateinit var blindspotAnimation: ValueAnimator
@@ -284,6 +289,11 @@ class DashFragment : Fragment() {
         return getRealScreenWidth() > getScreenWidth() * 2
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.root.removeCallbacks(updateBlackoutRunnable)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         prefs = requireContext().getSharedPreferences("dash", Context.MODE_PRIVATE)
@@ -406,7 +416,8 @@ class DashFragment : Fragment() {
         binding.blackout.setOnClickListener {
             // wake screen on tap, then eventually sleep again
             binding.blackout.visible = false
-            view.postDelayed({updateBlackout()}, Constants.blackoutOverrideSeconds * 1000L)
+            binding.root.removeCallbacks(updateBlackoutRunnable)
+            view.postDelayed(updateBlackoutRunnable, Constants.blackoutOverrideSeconds * 1000L)
         }
 
         val efficiencyCalculator = EfficiencyCalculator(viewModel, prefs)
@@ -1369,9 +1380,7 @@ class DashFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupZeroConfListener()
-        binding.root.postDelayed({
-            viewModel.startDiscoveryService()
-        }, 2000)
+        binding.root.postDelayed(discoveryRunnable, 2000)
     }
     override fun onDestroy() {
         viewModel.stopDiscoveryService()
@@ -1379,6 +1388,7 @@ class DashFragment : Fragment() {
     }
 
     override fun onPause() {
+        binding.root.removeCallbacks(discoveryRunnable)
         viewModel.stopDiscoveryService()
         super.onPause()
     }

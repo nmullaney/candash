@@ -23,7 +23,10 @@ class PartyFragment : Fragment() {
     private lateinit var prefs: SharedPreferences
     private lateinit var alarmPlayer: Ringtone
 
-    private var blackoutAfter = System.currentTimeMillis()
+    private val updateBlackoutRunnable = Runnable { updateBlackout() }
+    private val discoveryRunnable: Runnable = Runnable {
+        viewModel.startDiscoveryService()
+    }
     private var tempDP = 0
 
     /**
@@ -112,6 +115,8 @@ class PartyFragment : Fragment() {
         super.onDestroyView()
         // Ensure the alarm is stopped when the user exits the view
         alarmPlayer.stop()
+        // Remove any pending blackout tasks
+        binding.root.removeCallbacks(updateBlackoutRunnable)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -288,14 +293,11 @@ class PartyFragment : Fragment() {
 
     /**
      * Waits for [delayMs] then updates the blackout based on the future conditions.
-     * If this is called multiple times within [delayMs], it will only update after the latest call + [delayMs]
+     * If this is called multiple times within [delayMs], it will only execute for the latest call + [delayMs].
      */
     private fun blackoutAfterDelay(delayMs: Long) {
-        blackoutAfter = System.currentTimeMillis() + delayMs
-        view?.postDelayed(
-            { if (System.currentTimeMillis() >= blackoutAfter && context != null) updateBlackout() },
-            delayMs
-        )
+        binding.root.removeCallbacks(updateBlackoutRunnable)
+        view?.postDelayed(updateBlackoutRunnable, delayMs)
     }
 
     private fun updateBlackout() {
@@ -495,9 +497,7 @@ class PartyFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setupZeroConfListener()
-        binding.root.postDelayed({
-            viewModel.startDiscoveryService()
-        }, 2000)
+        binding.root.postDelayed(discoveryRunnable, 2000)
     }
 
     override fun onDestroy() {
@@ -506,6 +506,7 @@ class PartyFragment : Fragment() {
     }
 
     override fun onPause() {
+        binding.root.removeCallbacks(discoveryRunnable)
         viewModel.stopDiscoveryService()
         super.onPause()
     }
