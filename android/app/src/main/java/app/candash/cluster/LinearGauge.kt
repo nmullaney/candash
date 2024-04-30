@@ -40,15 +40,8 @@ class LinearGauge @JvmOverloads constructor(
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
-    }
-    override fun onDraw(canvas: Canvas?) {
-        // check the value of the current theme's 'cyberMode' attribute to set 'cyber'
-        val attrSet = intArrayOf(R.attr.cyberMode)
-        val typedArray = context.obtainStyledAttributes(attrSet)
-        val newCyber = typedArray.getBoolean(0, false)
-        typedArray.recycle()
 
-        if (!cyber && newCyber) {
+        if (cyber) {
             startupAnimator = ValueAnimator.ofFloat(0f, 3f).apply {
                 duration = 2000L
                 addUpdateListener { animator ->
@@ -59,8 +52,8 @@ class LinearGauge @JvmOverloads constructor(
                 start()
             }
         }
-        cyber = newCyber
-
+    }
+    override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         var startX: Float
         var stopX: Float
