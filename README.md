@@ -36,6 +36,8 @@ Launch the CAN Dash and long press any blank area on the screen to bring up the 
 Once you are sure you are connected to the CANserver, click ‘scan’ and if the phone and CANserver are on the same network, the IP address should auto populate and you should start seeing data appear on the right side of the screen. Once you see this, press the ‘DASH’ button to start the dashboard.
 If you do not plug in the phone it will follow your display preferences for sleep and time out. If the device has power then it will keep the display on with any auto-brightness you have enabled.
 
+More tips and tricks on the wiki: https://github.com/nmullaney/candash/wiki
+
 # Dash View
 
 This screen should work without any user interaction required.
