@@ -26,6 +26,9 @@ class CircularGauge @JvmOverloads constructor(
     private val hexPath = Path()
     private val innerHexPath = Path()
     private val outerHexPath = Path()
+    private val fullCirclePath = Path()
+    private var pathMeasure: PathMeasure? = null
+    private val partialCirclePath = Path()
 
     private var powerWidth : Float = 0f
     private var strokeWidthPct : Float = 12f
@@ -44,8 +47,25 @@ class CircularGauge @JvmOverloads constructor(
         backgroundColor = PorterDuffColorFilter(typedValue.data, PorterDuff.Mode.SRC_ATOP)
 
         chargeColor = PorterDuffColorFilter(resources.getColor(R.color.telltale_green), PorterDuff.Mode.SRC_ATOP)
+
+        paint.apply {
+            style = Paint.Style.STROKE
+            strokeCap = if (cyber) Paint.Cap.BUTT else Paint.Cap.ROUND
+        }
     }
 
+    private fun buildFullCirclePath() {
+        fullCirclePath.reset() // Clear any previous paths.
+        // Define the bounds for the full circle
+        val diameter = width.coerceAtMost(height) - paint.strokeWidth
+        val left = paint.strokeWidth / 2
+        val top = paint.strokeWidth / 2
+        val right = left + diameter
+        val bottom = top + diameter
+        // Create a full circle path starting from the bottom (6 o'clock)
+        fullCirclePath.addArc(left, top, right, bottom, 90f, 360f)
+        pathMeasure = PathMeasure(fullCirclePath, true)
+    }
     private fun buildHexPaths() {
         hexPath.reset()
         val radius = width.coerceAtMost(height) / 2f - paint.strokeWidth / 2
@@ -87,78 +107,64 @@ class CircularGauge @JvmOverloads constructor(
         outerHexPath.close()
     }
 
+    private fun setStrokeWidth() {
+        paint.strokeWidth = strokeWidthPct / 100f * width
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        setStrokeWidth()
+        buildFullCirclePath()
+        buildHexPaths()
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        paint.strokeWidth = strokeWidthPct / 100f * width
-        paint.style = Paint.Style.STROKE
-        paint.setColorFilter(backgroundColor)
+        setStrokeWidth()
+        paint.colorFilter = backgroundColor
 
         if (cyber) {
-            buildHexPaths()
             canvas?.drawPath(hexPath, paint)
         } else {
-            canvas?.drawArc(
-                0f + paint.strokeWidth / 2,
-                0f + paint.strokeWidth / 2,
-                width - paint.strokeWidth / 2,
-                height - paint.strokeWidth / 2,
-                90f,
-                360f,
-                false,
-                paint
-            )
+            canvas?.drawPath(fullCirclePath, paint)
         }
 
-        if (powerWidth < 0f) {
-            paint.colorFilter = chargeColor
-        } else {
-            paint.colorFilter = lineColor
-        }
-        if (charging){
-            paint.colorFilter = chargeColor
-        }
-        if (cyber) {
-            paint.strokeCap = Paint.Cap.BUTT
-        } else {
-            paint.strokeCap = Paint.Cap.ROUND
+        paint.colorFilter = when {
+            charging -> chargeColor
+            powerWidth < 0f -> chargeColor
+            else -> lineColor
         }
         if (powerWidth != 0f) {
             if (cyber) {
-                // We're cheating a bit and drawing an arc under a hex mask
+                // We're cheating a bit and drawing the arc path under a hex mask
                 canvas?.save()
                 canvas?.clipPath(outerHexPath)
                 canvas?.clipPath(innerHexPath, Region.Op.DIFFERENCE)
-                paint.strokeWidth = paint.strokeWidth * 3
-                canvas?.drawArc(
-                    0f + paint.strokeWidth / 2,
-                    0f + paint.strokeWidth / 2,
-                    width - paint.strokeWidth / 2,
-                    height - paint.strokeWidth / 2,
-                    90f,
-                    powerWidth,
-                    false,
-                    paint
-                )
+                paint.strokeWidth *= 5 // this will be reset in setStrokeWidth on next draw
+            }
+
+            // Calculate the length of the path that corresponds to the current powerWidth.
+            val length = pathMeasure?.length ?: 0f
+            val stop = length * (powerWidth / 360f)
+            partialCirclePath.reset()
+            pathMeasure?.getSegment(0f, stop, partialCirclePath, true)
+            canvas?.drawPath(partialCirclePath, paint)
+
+            if (cyber) {
                 canvas?.restore()
-            } else {
-                canvas?.drawArc(
-                    0f + paint.strokeWidth / 2,
-                    0f + paint.strokeWidth / 2,
-                    width - paint.strokeWidth / 2,
-                    height - paint.strokeWidth / 2,
-                    90f,
-                    powerWidth,
-                    false,
-                    paint
-                )
             }
         }
     }
     fun setGauge(percent:Float, sWidthPct:Float = strokeWidthPct, charge:Boolean = false){
         powerWidth = percent * 360f
         charging = charge
-        strokeWidthPct = sWidthPct
+        if (strokeWidthPct != sWidthPct) {
+            strokeWidthPct = sWidthPct
+            setStrokeWidth()
+            buildFullCirclePath()
+            buildHexPaths()
+        }
 
         this.invalidate()
     }
