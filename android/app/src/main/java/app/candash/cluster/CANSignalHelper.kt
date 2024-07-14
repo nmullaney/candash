@@ -125,7 +125,7 @@ class CANSignalHelper(val sharedPreferences: SharedPreferences) {
 
     private fun createCANSignals() {
         // Technically uSOE (usable State Of Energy), this better matches what the car shows.
-        insertCANSignal(SName.stateOfCharge, Constants.vehicleBus, Hex(0x33A), 27, 7, 1f, 0f)
+        insertCANSignal(SName.stateOfCharge, Constants.vehicleBus, Hex(0x33A), 56, 7, 1f, 0f)
         insertCANSignal(SName.nominalFullPackEnergy, Constants.vehicleBus, Hex(0x352), 16, 16, 0.02f, 0f, 2, 0, sna = 1310.7f)
         insertCANSignal(SName.battVolts, Constants.vehicleBus, Hex(0x132), 0, 16, 0.01f, 0f)
         insertCANSignal(SName.battAmps, Constants.vehicleBus, Hex(0x132), 16, 16, -.1f, 0f, signed=true, sna=3276.7f)

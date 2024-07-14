@@ -40,9 +40,9 @@ class BatteryGauge @JvmOverloads constructor(
         veryLowColor = PorterDuffColorFilter(resources.getColor(R.color.battery_red), PorterDuff.Mode.SRC_ATOP)
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (canvas == null) return
+
 
         if (cyber) {
             drawCyber(canvas)

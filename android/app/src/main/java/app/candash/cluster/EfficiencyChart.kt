@@ -41,9 +41,8 @@ class EfficiencyChart @JvmOverloads constructor(
         positiveStartColor = typedValue.data
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (canvas == null) return
 
         this.alpha = 0.3f
         drawLineChart(canvas, odoEfficiencyToPointF(odoEfficiencyPairs))
