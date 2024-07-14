@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
+import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -146,9 +147,15 @@ class CircularGauge @JvmOverloads constructor(
 
             // Calculate the length of the path that corresponds to the current powerWidth.
             val length = pathMeasure?.length ?: 0f
-            val stop = length * (powerWidth / 360f)
+            val stop = length * (powerWidth.absoluteValue / 360f)
             partialCirclePath.reset()
-            pathMeasure?.getSegment(0f, stop, partialCirclePath, true)
+            if (powerWidth < 0) {
+                // Draw counter-clockwise
+                val start = length - stop
+                pathMeasure?.getSegment(start, length, partialCirclePath, true)
+            } else {
+                pathMeasure?.getSegment(0f, stop, partialCirclePath, true)
+            }
             canvas?.drawPath(partialCirclePath, paint)
 
             if (cyber) {
