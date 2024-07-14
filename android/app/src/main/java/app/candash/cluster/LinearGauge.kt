@@ -53,7 +53,7 @@ class LinearGauge @JvmOverloads constructor(
             }
         }
     }
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         var startX: Float
         var stopX: Float
@@ -71,7 +71,7 @@ class LinearGauge @JvmOverloads constructor(
         val halfX = width / 2f
         startX = halfX - halfX * bgAnimationPosition
         stopX = halfX + halfX * bgAnimationPosition
-        canvas?.drawLine(startX, 3f.px, stopX, 3f.px, paint)
+        canvas.drawLine(startX, 3f.px, stopX, 3f.px, paint)
 
         if (animationPosition < 1f) {
             return
@@ -82,8 +82,8 @@ class LinearGauge @JvmOverloads constructor(
             val stopXLeft = halfX * (animationPosition - 1f)
             val startXRight = width.toFloat()
             val stopXRight = width - halfX * (animationPosition - 1f)
-            canvas?.drawLine(startXLeft, 3f.px, stopXLeft, 3f.px, paint)
-            canvas?.drawLine(startXRight, 3f.px, stopXRight, 3f.px, paint)
+            canvas.drawLine(startXLeft, 3f.px, stopXLeft, 3f.px, paint)
+            canvas.drawLine(startXRight, 3f.px, stopXRight, 3f.px, paint)
             return
         } else if (animationPosition < 3f) {
             paint.setColorFilter(lineColor)
@@ -91,7 +91,7 @@ class LinearGauge @JvmOverloads constructor(
             // start at full line and shrink to center
             startX = halfX - (halfX * invertedAnimationPosition)
             stopX = halfX + (halfX * invertedAnimationPosition)
-            canvas?.drawLine(startX, 3f.px, stopX, 3f.px, paint)
+            canvas.drawLine(startX, 3f.px, stopX, 3f.px, paint)
         }
 
         // Actual Gauge Drawing:

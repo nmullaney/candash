@@ -119,16 +119,16 @@ class CircularGauge @JvmOverloads constructor(
         buildHexPaths()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         setStrokeWidth()
         paint.colorFilter = backgroundColor
 
         if (cyber) {
-            canvas?.drawPath(hexPath, paint)
+            canvas.drawPath(hexPath, paint)
         } else {
-            canvas?.drawPath(fullCirclePath, paint)
+            canvas.drawPath(fullCirclePath, paint)
         }
 
         paint.colorFilter = when {
@@ -139,9 +139,9 @@ class CircularGauge @JvmOverloads constructor(
         if (powerWidth != 0f) {
             if (cyber) {
                 // We're cheating a bit and drawing the arc path under a hex mask
-                canvas?.save()
-                canvas?.clipPath(outerHexPath)
-                canvas?.clipPath(innerHexPath, Region.Op.DIFFERENCE)
+                canvas.save()
+                canvas.clipPath(outerHexPath)
+                canvas.clipPath(innerHexPath, Region.Op.DIFFERENCE)
                 paint.strokeWidth *= 5 // this will be reset in setStrokeWidth on next draw
             }
 
